@@ -389,6 +389,7 @@ def plot_correlation_matrix(
     Computes Pearson correlation matrix, saves styled heatmap asset,
     and extracts top positive/negative correlations.
     """
+    plt.close("all")
     target_cols = numeric_cols or [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 1]
     
     if len(target_cols) < 2:
@@ -396,16 +397,20 @@ def plot_correlation_matrix(
         
     corr_matrix = df[target_cols].corr()
     
-    plt.figure(figsize=(max(8, len(target_cols) * 0.8), max(6, len(target_cols) * 0.7)))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", center=0, square=True, linewidths=0.5)
-    plt.title("Pearson Correlation Matrix", fontsize=14, pad=12)
-    plt.tight_layout()
-    
     os.makedirs(output_dir, exist_ok=True)
     full_save_path = os.path.join(output_dir, os.path.basename(save_path))
-    plt.savefig(full_save_path, dpi=300, bbox_inches="tight")
-    plt.close()
-    
+
+    try:
+        fig, ax = plt.subplots(figsize=(max(8, len(target_cols) * 0.8), max(6, len(target_cols) * 0.7)))
+        sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", center=0, square=True, linewidths=0.5, ax=ax)
+        ax.set_title("Pearson Correlation Matrix", fontsize=14, pad=12)
+        plt.tight_layout()
+        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+    except Exception as e:
+        print(f"[tools] Warning: Heatmap rendering error: {e}")
+        plt.close("all")
+
     # Extract top positive & negative correlation pairs
     pairs = []
     for i in range(len(target_cols)):
@@ -438,6 +443,7 @@ def plot_target_interaction(
     Generates and saves a segmented visual plot (boxplot/violinplot/scatter)
     comparing key feature distribution against target variable.
     """
+    plt.close("all")
     if not target_col or target_col not in df.columns:
         numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
         target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
@@ -446,27 +452,30 @@ def plot_target_interaction(
         candidates = [c for c in df.columns if c != target_col]
         feature_col = candidates[0] if candidates else df.columns[0]
         
-    plt.figure(figsize=(9, 6))
-    
-    target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
-    feat_is_num = pd.api.types.is_numeric_dtype(df[feature_col])
-    
-    if target_is_num and feat_is_num:
-        sns.regplot(data=df, x=feature_col, y=target_col, scatter_kws={"alpha": 0.6}, line_kws={"color": "red"})
-        plt.title(f"Scatter Interaction: {feature_col} vs {target_col}", fontsize=13)
-    elif not target_is_num and feat_is_num:
-        sns.boxplot(data=df, x=target_col, y=feature_col, palette="Set2")
-        plt.title(f"Boxplot Segmented by Target: {feature_col} vs {target_col}", fontsize=13)
-    else:
-        sns.countplot(data=df, x=feature_col, hue=target_col, palette="Set1")
-        plt.title(f"Categorical Interaction: {feature_col} by {target_col}", fontsize=13)
-        
-    plt.tight_layout()
-    
     os.makedirs(output_dir, exist_ok=True)
     full_save_path = os.path.join(output_dir, os.path.basename(save_path))
-    plt.savefig(full_save_path, dpi=300, bbox_inches="tight")
-    plt.close()
+
+    try:
+        fig, ax = plt.subplots(figsize=(9, 6))
+        target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
+        feat_is_num = pd.api.types.is_numeric_dtype(df[feature_col])
+        
+        if target_is_num and feat_is_num:
+            sns.regplot(data=df, x=feature_col, y=target_col, scatter_kws={"alpha": 0.6}, line_kws={"color": "red"}, ax=ax)
+            ax.set_title(f"Scatter Interaction: {feature_col} vs {target_col}", fontsize=13)
+        elif not target_is_num and feat_is_num:
+            sns.boxplot(data=df, x=target_col, y=feature_col, palette="Set2", ax=ax)
+            ax.set_title(f"Boxplot Segmented by Target: {feature_col} vs {target_col}", fontsize=13)
+        else:
+            sns.countplot(data=df, x=feature_col, hue=target_col, palette="Set1", ax=ax)
+            ax.set_title(f"Categorical Interaction: {feature_col} by {target_col}", fontsize=13)
+            
+        plt.tight_layout()
+        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+    except Exception as e:
+        print(f"[tools] Warning: Target interaction plot error: {e}")
+        plt.close("all")
     
     return {
         "plot_saved": full_save_path,
@@ -476,15 +485,99 @@ def plot_target_interaction(
 
 
 # =====================================================================
+# FEATURE DISTRIBUTION PLOTTING TOOL (LLM DECIDES IMPORTANT COLUMNS)
+# =====================================================================
+def plot_feature_distributions(
+    df: pd.DataFrame,
+    columns: Optional[List[str]] = None,
+    save_path: str = "feature_distributions.png",
+    output_dir: str = "./sandbox_run",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Plots probability distributions / KDE histograms or countplots for key important columns.
+    The list of important columns is decided dynamically by the LLM and sent via kwargs/columns.
+    """
+    plt.close("all")
+    target_cols = columns or kwargs.get("important_columns") or kwargs.get("cols") or kwargs.get("feature_cols")
+    if not target_cols:
+        target_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])][:6]
+
+    if isinstance(target_cols, str):
+        target_cols = [target_cols]
+
+    valid_cols = [c for c in target_cols if c in df.columns]
+    if not valid_cols:
+        valid_cols = list(df.columns[:min(6, len(df.columns))])
+
+    num_plots = len(valid_cols)
+    ncols = min(3, num_plots)
+    nrows = math.ceil(num_plots / ncols)
+
+    os.makedirs(output_dir, exist_ok=True)
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+
+    try:
+        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4.5 * ncols, 3.5 * nrows))
+        if num_plots == 1:
+            axes_list = [axes]
+        else:
+            axes_list = axes.flatten()
+
+        for idx, col in enumerate(valid_cols):
+            ax = axes_list[idx]
+            if pd.api.types.is_numeric_dtype(df[col]):
+                sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
+                ax.set_title(f"Distribution: {col}", fontsize=10)
+            else:
+                sns.countplot(x=df[col].dropna(), ax=ax, palette="Set2")
+                ax.set_title(f"Counts: {col}", fontsize=10)
+                ax.tick_params(axis='x', rotation=30)
+
+        for idx in range(num_plots, len(axes_list)):
+            fig.delaxes(axes_list[idx])
+
+        plt.tight_layout()
+        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        print(f"[tools] Distribution plot saved for important columns {valid_cols} to: {full_save_path}")
+    except Exception as e:
+        print(f"[tools] Warning: Distribution plot error: {e}")
+        plt.close("all")
+
+    return {
+        "plot_saved": full_save_path,
+        "plotted_columns": valid_cols
+    }
+
+
+# =====================================================================
 # 7. PREDICTIVE MODELING BLUEPRINT GENERATOR TOOL
 # =====================================================================
 def generate_predictive_blueprint(
     df: pd.DataFrame,
-    target_col: Optional[str] = None
+    target_col: Optional[str] = None,
+    custom_blueprint: Optional[Dict[str, Any]] = None,
+    **kwargs
 ) -> Dict[str, Any]:
     """
-    Generates a recommended machine learning strategy blueprint based on data characteristics.
+    Generates a predictive modeling blueprint. If custom_blueprint or kwargs are provided
+    by the LLM, it uses the LLM's dynamic domain strategy.
     """
+    if custom_blueprint and isinstance(custom_blueprint, dict):
+        return custom_blueprint
+
+    if kwargs and ("recommended_algorithms" in kwargs or "validation_strategy" in kwargs):
+        return {
+            "target_definition": target_col or kwargs.get("target_definition", "Target"),
+            "problem_type": kwargs.get("problem_type", "Regression/Classification"),
+            "recommended_algorithms": kwargs.get("recommended_algorithms", []),
+            "feature_selection_strategy": kwargs.get("feature_selection_strategy", []),
+            "validation_strategy": kwargs.get("validation_strategy", []),
+            "overfitting_risk_mitigation": kwargs.get("overfitting_risk_mitigation", []),
+            "executive_summary": kwargs.get("executive_summary", "Custom LLM predictive modeling blueprint.")
+        }
+
     num_rows, num_cols = df.shape
     
     if target_col and target_col in df.columns:
@@ -637,6 +730,11 @@ TOOL_REGISTRY = {
         "function": plot_correlation_matrix,
         "description": "Generates Pearson correlation matrix heatmap PNG image asset.",
         "parameters": {"save_path": "'correlation_matrix.png'"}
+    },
+    "plot_feature_distributions": {
+        "function": plot_feature_distributions,
+        "description": "Plots histograms, KDE distributions, or countplots for important columns identified by the LLM (passed via 'columns' argument).",
+        "parameters": {"columns": "List of key/important column names to plot distributions for", "save_path": "'feature_distributions.png'"}
     },
     "plot_target_interaction": {
         "function": plot_target_interaction,

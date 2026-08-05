@@ -1,482 +1,362 @@
 {
   "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\dataset_2191_sleep.csv",
     "shape": {
       "rows": 62,
       "columns": 8
     },
     "target_column": "total_sleep",
-    "profile_dimensions": {
-      "rows": 62,
-      "columns": 8
-    },
-    "profile_schema": {
-      "body_weight": {
-        "type": "float64",
-        "cardinality": 60,
-        "key_metric": "Range: [0.01 to 6654.00] | Mean: 198.79 | Median: 3.34 | Highly Skewed (6.56)"
-      },
-      "brain_weight": {
-        "type": "float64",
-        "cardinality": 59,
-        "key_metric": "Range: [0.14 to 5712.00] | Mean: 283.13 | Median: 17.25 | Highly Skewed (5.07)"
-      },
-      "max_life_span": {
-        "type": "object",
-        "cardinality": 48,
-        "key_metric": "Top Values: '?': 4, '7': 3, '27': 2"
-      },
-      "gestation_time": {
-        "type": "object",
-        "cardinality": 50,
-        "key_metric": "Top Values: '?': 4, '42': 3, '63': 3"
-      },
-      "predation_index": {
-        "type": "int64",
-        "cardinality": 5,
-        "key_metric": "Range: [1.00 to 5.00] | Mean: 2.87 | Median: 3.00"
-      },
-      "sleep_exposure_index": {
-        "type": "int64",
-        "cardinality": 5,
-        "key_metric": "Range: [1.00 to 5.00] | Mean: 2.42 | Median: 2.00"
-      },
-      "danger_index": {
-        "type": "int64",
-        "cardinality": 5,
-        "key_metric": "Range: [1.00 to 5.00] | Mean: 2.61 | Median: 2.00"
-      },
-      "total_sleep": {
-        "type": "object",
-        "cardinality": 45,
-        "key_metric": "Top Values: '?': 4, '10.3': 3, '8.4': 3"
-      }
-    },
     "column_summary": {
       "body_weight": {
         "dtype": "float64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 60
       },
       "brain_weight": {
         "dtype": "float64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 59
       },
       "max_life_span": {
         "dtype": "float64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 48
       },
       "gestation_time": {
         "dtype": "float64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 50
       },
       "predation_index": {
         "dtype": "int64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 5
       },
       "sleep_exposure_index": {
         "dtype": "int64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 5
       },
       "danger_index": {
         "dtype": "int64",
         "missing_count": 0,
-        "missing_percentage": 0.0,
         "cardinality": 5
       },
       "total_sleep": {
         "dtype": "float64",
-        "missing_count": 4,
-        "missing_percentage": 6.451612903225806,
-        "cardinality": 44
+        "missing_count": 0,
+        "cardinality": 45
       }
-    },
-    "numeric_columns_inferred_from_text": [
-      "max_life_span",
-      "gestation_time",
-      "total_sleep"
-    ],
-    "original_missing_counts": {
-      "body_weight": 0,
-      "brain_weight": 0,
-      "max_life_span": 0,
-      "gestation_time": 0,
-      "predation_index": 0,
-      "sleep_exposure_index": 0,
-      "danger_index": 0,
-      "total_sleep": 0
     }
   },
   "imputation_summary": {
-    "rules": {
-      "numeric_highly_skewed": "Median imputation when absolute skewness is greater than 1.",
-      "numeric_symmetric": "Mean imputation when absolute skewness is less than or equal to 1.",
-      "categorical": "Mode imputation, or Unknown when no mode exists.",
-      "target": "Target values are not imputed for statistical testing or modeling."
-    },
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
     "columns": {
       "body_weight": {
         "dtype": "float64",
         "missing_before": 0,
-        "filled_count": 0,
+        "missing_after": 0,
         "method": "none",
-        "replacement_value": null,
-        "skewness": 6.563608062833757
+        "fill_value": null
       },
       "brain_weight": {
         "dtype": "float64",
         "missing_before": 0,
-        "filled_count": 0,
+        "missing_after": 0,
         "method": "none",
-        "replacement_value": null,
-        "skewness": 5.071589456939673
+        "fill_value": null
       },
       "max_life_span": {
         "dtype": "float64",
         "missing_before": 4,
-        "filled_count": 4,
-        "method": "median",
-        "replacement_value": 15.1,
-        "skewness": 2.013759505306088
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 2.01,
+        "fill_value": 19.877586206896552
       },
       "gestation_time": {
         "dtype": "float64",
         "missing_before": 4,
-        "filled_count": 4,
-        "method": "median",
-        "replacement_value": 79.0,
-        "skewness": 1.6835007981286436
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 1.68,
+        "fill_value": 142.35344827586206
       },
       "predation_index": {
         "dtype": "int64",
         "missing_before": 0,
-        "filled_count": 0,
+        "missing_after": 0,
         "method": "none",
-        "replacement_value": null,
-        "skewness": 0.22951866524133507
+        "fill_value": null
       },
       "sleep_exposure_index": {
         "dtype": "int64",
         "missing_before": 0,
-        "filled_count": 0,
+        "missing_after": 0,
         "method": "none",
-        "replacement_value": null,
-        "skewness": 0.6795356866646011
+        "fill_value": null
       },
       "danger_index": {
         "dtype": "int64",
         "missing_before": 0,
-        "filled_count": 0,
+        "missing_after": 0,
         "method": "none",
-        "replacement_value": null,
-        "skewness": 0.3776558762515312
+        "fill_value": null
       },
       "total_sleep": {
         "dtype": "float64",
         "missing_before": 4,
-        "filled_count": 0,
-        "method": "not_imputed_target",
-        "replacement_value": null,
-        "skewness": 0.20124523613049736
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.2,
+        "fill_value": 10.532758620689652
       }
     }
   },
   "outlier_analysis": {
     "body_weight": {
-      "Q1": 0.4975,
-      "Q3": 34.1625,
-      "IQR": 33.665,
-      "lower_bound": -50.0,
-      "upper_bound": 84.66,
+      "q1": 0.6,
+      "q3": 48.2025,
+      "iqr": 47.6025,
+      "lower_bound": -70.8038,
+      "upper_bound": 119.6063,
       "outlier_count": 10,
-      "outlier_percentage": 17.24137931034483
+      "outlier_percentage": 16.13,
+      "action_taken": "profile"
     },
     "brain_weight": {
-      "Q1": 3.925,
-      "Q3": 147.625,
-      "IQR": 143.7,
-      "lower_bound": -211.62499999999997,
-      "upper_bound": 363.17499999999995,
-      "outlier_count": 8,
-      "outlier_percentage": 13.793103448275861
-    },
-    "max_life_span": {
-      "Q1": 6.625,
-      "Q3": 27.0,
-      "IQR": 20.375,
-      "lower_bound": -23.9375,
-      "upper_bound": 57.5625,
-      "outlier_count": 2,
-      "outlier_percentage": 3.4482758620689653
-    },
-    "gestation_time": {
-      "Q1": 42.0,
-      "Q3": 177.5,
-      "IQR": 135.5,
-      "lower_bound": -161.25,
-      "upper_bound": 380.75,
-      "outlier_count": 3,
-      "outlier_percentage": 5.172413793103448
+      "q1": 4.25,
+      "q3": 166.0,
+      "iqr": 161.75,
+      "lower_bound": -238.375,
+      "upper_bound": 408.625,
+      "outlier_count": 9,
+      "outlier_percentage": 14.52,
+      "action_taken": "profile"
     },
     "predation_index": {
-      "Q1": 2.0,
-      "Q3": 4.0,
-      "IQR": 2.0,
+      "q1": 2.0,
+      "q3": 4.0,
+      "iqr": 2.0,
       "lower_bound": -1.0,
       "upper_bound": 7.0,
       "outlier_count": 0,
-      "outlier_percentage": 0.0
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
     },
     "sleep_exposure_index": {
-      "Q1": 1.0,
-      "Q3": 3.75,
-      "IQR": 2.75,
-      "lower_bound": -3.125,
-      "upper_bound": 7.875,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "danger_index": {
-      "Q1": 1.0,
-      "Q3": 4.0,
-      "IQR": 3.0,
+      "q1": 1.0,
+      "q3": 4.0,
+      "iqr": 3.0,
       "lower_bound": -3.5,
       "upper_bound": 8.5,
       "outlier_count": 0,
-      "outlier_percentage": 0.0
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
     },
-    "brain_body_ratio": {
-      "Q1": 3.393440034973527,
-      "Q3": 14.75473817211849,
-      "IQR": 11.361298137144964,
-      "lower_bound": -13.648507170743919,
-      "upper_bound": 31.796685377835935,
-      "outlier_count": 2,
-      "outlier_percentage": 3.4482758620689653
-    },
-    "log_body_weight": {
-      "Q1": 0.4035952985648066,
-      "Q3": 3.553723575294876,
-      "IQR": 3.1501282767300696,
-      "lower_bound": -4.321597116530298,
-      "upper_bound": 8.278915990389981,
-      "outlier_count": 1,
-      "outlier_percentage": 1.7241379310344827
-    },
-    "predation_danger_interaction": {
-      "Q1": 2.0,
-      "Q3": 15.75,
-      "IQR": 13.75,
-      "lower_bound": -18.625,
-      "upper_bound": 36.375,
+    "danger_index": {
+      "q1": 1.0,
+      "q3": 4.0,
+      "iqr": 3.0,
+      "lower_bound": -3.5,
+      "upper_bound": 8.5,
       "outlier_count": 0,
-      "outlier_percentage": 0.0
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "brain_body_ratio",
-      "formula_method": "brain_weight / body_weight",
-      "data_type": "float64",
-      "rationale_purpose": "Approximates relative brain investment while reducing raw body-size scale effects.",
-      "correlation_with_target": 0.2574395600466507
-    },
-    {
-      "feature_name": "log_body_weight",
-      "formula_method": "log1p(body_weight)",
-      "data_type": "float64",
-      "rationale_purpose": "Compresses extreme body-weight values and improves linear-model stability under severe right skew.",
-      "correlation_with_target": -0.534962452547035
-    },
-    {
-      "feature_name": "predation_danger_interaction",
-      "formula_method": "predation_index * danger_index",
-      "data_type": "int64",
-      "rationale_purpose": "Captures combined ecological risk that may not be represented by either index independently.",
-      "correlation_with_target": -0.5311444719635463
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
-    "top_positive_correlations": [
+    "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
+    "top_correlations": [
       {
-        "feature": "brain_body_ratio",
-        "correlation": 0.2574395600466507
+        "feature_1": "body_weight",
+        "feature_2": "brain_weight",
+        "correlation": 0.9342
+      },
+      {
+        "feature_1": "predation_index",
+        "feature_2": "danger_index",
+        "correlation": 0.916
+      },
+      {
+        "feature_1": "sleep_exposure_index",
+        "feature_2": "danger_index",
+        "correlation": 0.7872
+      },
+      {
+        "feature_1": "brain_weight",
+        "feature_2": "gestation_time",
+        "correlation": 0.7452
+      },
+      {
+        "feature_1": "body_weight",
+        "feature_2": "gestation_time",
+        "correlation": 0.6501
+      },
+      {
+        "feature_1": "gestation_time",
+        "feature_2": "sleep_exposure_index",
+        "correlation": 0.6247
+      },
+      {
+        "feature_1": "predation_index",
+        "feature_2": "sleep_exposure_index",
+        "correlation": 0.6182
+      },
+      {
+        "feature_1": "max_life_span",
+        "feature_2": "gestation_time",
+        "correlation": 0.5956
+      },
+      {
+        "feature_1": "sleep_exposure_index",
+        "feature_2": "total_sleep",
+        "correlation": -0.5941
+      },
+      {
+        "feature_1": "gestation_time",
+        "feature_2": "total_sleep",
+        "correlation": -0.5639
       }
     ],
-    "top_negative_correlations": [
-      {
-        "feature": "sleep_exposure_index",
-        "correlation": -0.6422845069751524
-      },
-      {
-        "feature": "gestation_time",
-        "correlation": -0.611612901566673
-      },
-      {
-        "feature": "danger_index",
-        "correlation": -0.587742406021697
-      },
-      {
-        "feature": "log_body_weight",
-        "correlation": -0.534962452547035
-      },
-      {
-        "feature": "predation_danger_interaction",
-        "correlation": -0.5311444719635463
-      },
-      {
-        "feature": "max_life_span",
-        "correlation": -0.40943670234738955
-      },
-      {
-        "feature": "predation_index",
-        "correlation": -0.3958349723579138
-      },
-      {
-        "feature": "brain_weight",
-        "correlation": -0.3581020287205459
-      },
-      {
-        "feature": "body_weight",
-        "correlation": -0.30718591141343754
-      }
-    ],
-    "target_correlations": [
-      {
-        "feature": "brain_body_ratio",
-        "correlation": 0.2574395600466507
-      },
-      {
-        "feature": "body_weight",
-        "correlation": -0.30718591141343754
-      },
-      {
-        "feature": "brain_weight",
-        "correlation": -0.3581020287205459
-      },
-      {
-        "feature": "predation_index",
-        "correlation": -0.3958349723579138
-      },
-      {
-        "feature": "max_life_span",
-        "correlation": -0.40943670234738955
-      },
-      {
-        "feature": "predation_danger_interaction",
-        "correlation": -0.5311444719635463
-      },
-      {
-        "feature": "log_body_weight",
-        "correlation": -0.534962452547035
-      },
-      {
-        "feature": "danger_index",
-        "correlation": -0.587742406021697
-      },
-      {
-        "feature": "gestation_time",
-        "correlation": -0.611612901566673
-      },
-      {
-        "feature": "sleep_exposure_index",
-        "correlation": -0.6422845069751524
-      }
-    ],
-    "correlation_matrix_plain_text": "Pearson correlation matrix:\n                              body_weight  brain_weight  max_life_span  gestation_time  predation_index  sleep_exposure_index  danger_index  total_sleep  brain_body_ratio  log_body_weight  predation_danger_interaction\nbody_weight                        1.0000        0.9342         0.3019          0.6882           0.0520                0.3560        0.1298      -0.3072           -0.2107           0.5847                        0.0599\nbrain_weight                       0.9342        1.0000         0.5086          0.7841           0.0200                0.3826        0.1362      -0.3581           -0.2017           0.6654                        0.0542\nmax_life_span                      0.3019        0.5086         1.0000          0.6300          -0.1224                0.3750        0.0452      -0.4094           -0.1158           0.6624                        0.0236\ngestation_time                     0.6882        0.7841         0.6300          1.0000           0.1368                0.6375        0.3232      -0.6116           -0.2770           0.8247                        0.2422\npredation_index                    0.0520        0.0200        -0.1224          0.1368           1.0000                0.6032        0.9283      -0.3958           -0.0461           0.0971                        0.9538\nsleep_exposure_index               0.3560        0.3826         0.3750          0.6375           0.6032                1.0000        0.7582      -0.6423           -0.2994           0.6463                        0.7423\ndanger_index                       0.1298        0.1362         0.0452          0.3232           0.9283                0.7582        1.0000      -0.5877           -0.1776           0.2858                        0.9725\ntotal_sleep                       -0.3072       -0.3581        -0.4094         -0.6116          -0.3958               -0.6423       -0.5877       1.0000            0.2574          -0.5350                       -0.5311\nbrain_body_ratio                  -0.2107       -0.2017        -0.1158         -0.2770          -0.0461               -0.2994       -0.1776       0.2574            1.0000          -0.5177                       -0.1491\nlog_body_weight                    0.5847        0.6654         0.6624          0.8247           0.0971                0.6463        0.2858      -0.5350           -0.5177           1.0000                        0.2579\npredation_danger_interaction       0.0599        0.0542         0.0236          0.2422           0.9538                0.7423        0.9725      -0.5311           -0.1491           0.2579                        1.0000"
-  },
-  "statistical_hypothesis_tests": {
-    "tests_by_feature": {
+    "correlation_matrix_text": {
       "body_weight": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.3071859114134374,
-        "p_value": 0.01899884984424099,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 1.0,
+        "brain_weight": 0.934,
+        "max_life_span": 0.302,
+        "gestation_time": 0.65,
+        "predation_index": 0.059,
+        "sleep_exposure_index": 0.338,
+        "danger_index": 0.134,
+        "total_sleep": -0.307
       },
       "brain_weight": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.358102028720546,
-        "p_value": 0.005779531184993355,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.934,
+        "brain_weight": 1.0,
+        "max_life_span": 0.508,
+        "gestation_time": 0.745,
+        "predation_index": 0.034,
+        "sleep_exposure_index": 0.368,
+        "danger_index": 0.146,
+        "total_sleep": -0.357
       },
       "max_life_span": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.40943670234738944,
-        "p_value": 0.0014155565556093212,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.302,
+        "brain_weight": 0.508,
+        "max_life_span": 1.0,
+        "gestation_time": 0.596,
+        "predation_index": -0.1,
+        "sleep_exposure_index": 0.353,
+        "danger_index": 0.061,
+        "total_sleep": -0.402
       },
       "gestation_time": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.6116129015666729,
-        "p_value": 3.3914580231402315e-07,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.65,
+        "brain_weight": 0.745,
+        "max_life_span": 0.596,
+        "gestation_time": 1.0,
+        "predation_index": 0.194,
+        "sleep_exposure_index": 0.625,
+        "danger_index": 0.369,
+        "total_sleep": -0.564
       },
       "predation_index": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.39583497235791393,
-        "p_value": 0.0021004323154479544,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.059,
+        "brain_weight": 0.034,
+        "max_life_span": -0.1,
+        "gestation_time": 0.194,
+        "predation_index": 1.0,
+        "sleep_exposure_index": 0.618,
+        "danger_index": 0.916,
+        "total_sleep": -0.382
       },
       "sleep_exposure_index": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.6422845069751527,
-        "p_value": 5.491561092557894e-08,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.338,
+        "brain_weight": 0.368,
+        "max_life_span": 0.353,
+        "gestation_time": 0.625,
+        "predation_index": 0.618,
+        "sleep_exposure_index": 1.0,
+        "danger_index": 0.787,
+        "total_sleep": -0.594
       },
       "danger_index": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.587742406021697,
-        "p_value": 1.2304662935063863e-06,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+        "body_weight": 0.134,
+        "brain_weight": 0.146,
+        "max_life_span": 0.061,
+        "gestation_time": 0.369,
+        "predation_index": 0.916,
+        "sleep_exposure_index": 0.787,
+        "danger_index": 1.0,
+        "total_sleep": -0.549
       },
-      "brain_body_ratio": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": 0.2574395600466507,
-        "p_value": 0.05106387747569431,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": false,
-        "interpretation_summary": "Insufficient evidence of a statistically significant association with the target."
-      },
-      "log_body_weight": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.5349624525470348,
-        "p_value": 1.5168270882255296e-05,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
-      },
-      "predation_danger_interaction": {
-        "test_name": "Pearson correlation significance test",
-        "statistic_value": -0.5311444719635462,
-        "p_value": 1.7900896882968624e-05,
-        "degrees_of_freedom": 56,
-        "is_statistically_significant": true,
-        "interpretation_summary": "Evidence suggests a statistically significant association with the target."
+      "total_sleep": {
+        "body_weight": -0.307,
+        "brain_weight": -0.357,
+        "max_life_span": -0.402,
+        "gestation_time": -0.564,
+        "predation_index": -0.382,
+        "sleep_exposure_index": -0.594,
+        "danger_index": -0.549,
+        "total_sleep": 1.0
       }
+    }
+  },
+  "statistical_hypothesis_tests": {
+    "body_weight": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.3066,
+      "p_value": 0.01534955228116339,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.3066, p = 1.5350e-02. (Statistically Significant)"
+    },
+    "brain_weight": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.357,
+      "p_value": 0.004394429645029218,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.3570, p = 4.3944e-03. (Statistically Significant)"
+    },
+    "max_life_span": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.4024,
+      "p_value": 0.0011870950313360245,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.4024, p = 1.1871e-03. (Statistically Significant)"
+    },
+    "gestation_time": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.5639,
+      "p_value": 1.818498270486246e-06,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.5639, p = 1.8185e-06. (Statistically Significant)"
+    },
+    "predation_index": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.3815,
+      "p_value": 0.0022171297409629685,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.3815, p = 2.2171e-03. (Statistically Significant)"
+    },
+    "sleep_exposure_index": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.5941,
+      "p_value": 3.5726728315040183e-07,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.5941, p = 3.5727e-07. (Statistically Significant)"
+    },
+    "danger_index": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.5487,
+      "p_value": 3.889482320488439e-06,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.5487, p = 3.8895e-06. (Statistically Significant)"
     },
     "significant_predictors": [
       "body_weight",
@@ -485,89 +365,47 @@
       "gestation_time",
       "predation_index",
       "sleep_exposure_index",
-      "danger_index",
-      "log_body_weight",
-      "predation_danger_interaction"
-    ],
-    "alpha": 0.05
-  },
-  "extracted_insights": {
-    "key_findings": [
-      "sleep_exposure_index has the strongest linear association with total_sleep: r = -0.642.",
-      "Statistically significant predictors at alpha = 0.05 include: body_weight, brain_weight, max_life_span, gestation_time, predation_index, sleep_exposure_index, danger_index, log_body_weight, predation_danger_interaction.",
-      "body_weight is strongly skewed; logarithmic transformation is recommended."
-    ],
-    "data_quality_issues": [
-      "max_life_span contained 4 missing values and was handled using median.",
-      "gestation_time contained 4 missing values and was handled using median.",
-      "total_sleep contained 4 missing values and was handled using not_imputed_target.",
-      "body_weight has 17.24% IQR-defined outliers; robust scaling or log transformation should be considered.",
-      "brain_weight has 13.79% IQR-defined outliers; robust scaling or log transformation should be considered.",
-      "gestation_time has 5.17% IQR-defined outliers; robust scaling or log transformation should be considered.",
-      "max_life_span uses textual missing-value markers in 4 records.",
-      "gestation_time uses textual missing-value markers in 4 records.",
-      "total_sleep uses textual missing-value markers in 4 records."
-    ],
-    "data_quality_issues_caveats": [
-      "The dataset is small, so p-values and model estimates may be unstable.",
-      "IQR outlier flags indicate unusual observations, not necessarily data errors.",
-      "Correlation does not establish causation.",
-      "Feature selection and preprocessing must occur inside cross-validation to avoid leakage."
-    ],
-    "top_key_feature_drivers": [
-      "brain_body_ratio",
-      "body_weight",
-      "brain_weight",
-      "predation_index",
-      "max_life_span",
-      "predation_danger_interaction",
-      "log_body_weight",
-      "danger_index",
-      "gestation_time",
-      "sleep_exposure_index"
+      "danger_index"
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": {
-      "target_column": "total_sleep",
-      "target_type": "float64",
-      "target_missing_values_excluded": 4
-    },
+    "target_definition": "total_sleep",
     "problem_type": "Regression",
     "recommended_algorithms": [
-      "Regularized linear regression with log-transformed skewed predictors",
+      "Regularized Linear Regression (Ridge / Lasso)",
       "Random Forest Regressor",
       "Gradient Boosting Regressor",
-      "HistGradientBoostingRegressor",
-      "Elastic Net regression"
+      "Support Vector Regressor (SVR)"
     ],
     "feature_selection_strategy": [
-      "Use domain-informed features including brain_body_ratio and log_body_weight.",
-      "Rank features using cross-validated permutation importance and mutual information.",
-      "Inspect pairwise correlation and remove redundant raw/derived variables when appropriate.",
-      "Retain statistically significant predictors as candidates, but validate selection within each training fold."
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Use repeated K-fold cross-validation because the dataset contains only 62 rows.",
-      "Use 5 folds where sample size permits, with repeated random seeds.",
-      "Report MAE, RMSE, R-squared, and cross-validation confidence intervals.",
-      "Keep a final untouched holdout only if sufficient observations remain."
-    ],
-    "preprocessing_steps": [
-      "Replace textual missing markers with NaN.",
-      "Apply type-safe numeric imputation using median for highly skewed columns and mean otherwise.",
-      "Apply mode or Unknown imputation to categorical columns.",
-      "Use log1p transformation for heavily right-skewed positive variables.",
-      "Use RobustScaler for models sensitive to outliers.",
-      "Encode categorical variables using one-hot encoding."
+      "K-Fold Cross-Validation (5 folds)",
+      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
     ],
     "overfitting_risk_mitigation": [
-      "Avoid complex models without cross-validation because of the very small sample size.",
-      "Tune hyperparameters conservatively.",
-      "Use regularization and shallow tree depth.",
-      "Perform all imputation, transformation, and feature selection inside cross-validation pipelines.",
-      "Use bootstrap uncertainty intervals and inspect residual stability."
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "overall_executive_modeling_strategy": "Begin with a regularized linear regression baseline using log-transformed body and brain measurements plus ecological indices. Compare it with constrained tree ensembles using repeated cross-validation. Prefer the simplest model with stable out-of-sample error, interpretable feature effects, and robust performance under extreme-value sensitivity."
+    "executive_summary": "Target: total_sleep (Regression). Use robust cross-validation on 62 rows x 8 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 62 rows and 8 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "body_weight",
+      "brain_weight",
+      "max_life_span",
+      "gestation_time",
+      "predation_index",
+      "sleep_exposure_index",
+      "danger_index"
+    ]
   }
 }
