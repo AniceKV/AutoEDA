@@ -8,9 +8,11 @@ from profiler import run_and_save_profile
 import shutil
 
 load_dotenv(override=True)
-api_key = os.getenv("OPENROUTER_API_KEY", "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")
+api_key = os.getenv("OPENROUTER_API_KEY")
+if not api_key:
+    raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your .env file or environment variables.")
 
-# 1. Initialize the client with the fully sanitized key
+# 1. Initialize the client with the API key from environment
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=api_key,
