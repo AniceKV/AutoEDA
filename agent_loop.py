@@ -115,6 +115,8 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         "   - 'engineer_features': Pass custom high-signal domain transformations in 'feature_specs'.\n"
         "   - 'run_statistical_hypothesis_tests'\n"
         "   - 'plot_correlation_matrix'\n"
+        "   - 'plot_semantic_bivariate_relationships': Perform semantic domain reasoning to choose 2-4 key X vs Y feature pairs and pass in 'bivariate_pairs' (e.g. [{'x': 'Age', 'y': 'Fare', 'hue': 'Survived', 'rationale': '...'}, ...]).\n"
+        "   - 'plot_pairplot': Select a reasonable subset of 3-4 key numerical features in 'columns' and pass target in 'hue'.\n"
         "   - 'plot_target_interaction'\n"
         "   - 'generate_predictive_blueprint': Pass tailored predictive strategy parameters in args.\n"
         "4. Do NOT output conversational preambles."
@@ -179,6 +181,8 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             {"tool": "engineer_features", "args": {}},
             {"tool": "run_statistical_hypothesis_tests", "args": {}},
             {"tool": "plot_correlation_matrix", "args": {"save_path": "correlation_matrix.png"}},
+            {"tool": "plot_semantic_bivariate_relationships", "args": {}},
+            {"tool": "plot_pairplot", "args": {}},
             {"tool": "plot_target_interaction", "args": {"save_path": "target_interactions.png"}},
             {"tool": "generate_predictive_blueprint", "args": {}}
         ]
@@ -247,6 +251,16 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             elif tool_name == "plot_correlation_matrix":
                 args["output_dir"] = workspace_dir
                 corr_res = tools.plot_correlation_matrix(df, **args)
+
+            elif tool_name == "plot_semantic_bivariate_relationships":
+                args["output_dir"] = workspace_dir
+                tools.plot_semantic_bivariate_relationships(df, **args)
+
+            elif tool_name == "plot_pairplot":
+                args["output_dir"] = workspace_dir
+                if target_col and "hue" not in args:
+                    args["hue"] = target_col
+                tools.plot_pairplot(df, **args)
                 
             elif tool_name == "plot_target_interaction":
                 args["output_dir"] = workspace_dir

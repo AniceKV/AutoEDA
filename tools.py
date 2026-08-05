@@ -668,6 +668,167 @@ def plot_feature_distributions(
 
 
 # =====================================================================
+# SEMANTIC BIVARIATE (X VS Y) RELATIONSHIP PLOTTING TOOL
+# =====================================================================
+def plot_semantic_bivariate_relationships(
+    df: pd.DataFrame,
+    bivariate_pairs: Optional[List[Dict[str, Any]]] = None,
+    output_dir: str = "./sandbox_run",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Plots semantic X vs Y relationships selected by the LLM based on domain understanding.
+    Each pair in bivariate_pairs contains:
+    - 'x': X-axis column name
+    - 'y': Y-axis column name
+    - 'hue': Optional hue column name for segmentation
+    - 'rationale': Semantic domain rationale for comparing these two attributes
+    """
+    plt.close("all")
+    os.makedirs(output_dir, exist_ok=True)
+    
+    pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
+    
+    # Auto-generate top pairs if not provided by LLM
+    if not pairs:
+        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+        cat_cols = [c for c in df.columns if not pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() <= 10]
+        
+        if len(numeric_cols) >= 2:
+            pairs.append({"x": numeric_cols[0], "y": numeric_cols[1], "rationale": "Bivariate numerical comparison"})
+        if cat_cols and numeric_cols:
+            pairs.append({"x": cat_cols[0], "y": numeric_cols[0], "rationale": "Segmented numerical distribution across category"})
+
+    saved_files = []
+    
+    for pair in pairs:
+        if not isinstance(pair, dict):
+            continue
+            
+        x_col = pair.get("x") or pair.get("x_col") or pair.get("feature_1")
+        y_col = pair.get("y") or pair.get("y_col") or pair.get("feature_2")
+        hue_col = pair.get("hue") or pair.get("hue_col")
+        rationale = pair.get("rationale", "Semantic domain relationship")
+        
+        if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
+            continue
+            
+        if hue_col and hue_col not in df.columns:
+            hue_col = None
+            
+        x_clean = re.sub(r'\W+', '_', x_col).strip('_')
+        y_clean = re.sub(r'\W+', '_', y_col).strip('_')
+        file_name = f"bivariate_{x_clean}_vs_{y_clean}.png"
+        file_path = os.path.join(output_dir, file_name)
+        
+        try:
+            fig, ax = plt.subplots(figsize=(7, 5))
+            x_is_num = pd.api.types.is_numeric_dtype(df[x_col])
+            y_is_num = pd.api.types.is_numeric_dtype(df[y_col])
+            
+            if x_is_num and y_is_num:
+                sns.scatterplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set1" if hue_col else None, alpha=0.7, ax=ax)
+                sns.regplot(data=df, x=x_col, y=y_col, scatter=False, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
+                ax.set_title(f"Semantic Bivariate: {x_col} vs {y_col}", fontsize=12, pad=10)
+            elif not x_is_num and y_is_num:
+                sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
+                ax.set_title(f"Segmented Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+            elif x_is_num and not y_is_num:
+                sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
+                ax.set_title(f"Segmented Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+            else:
+                sns.countplot(data=df, x=x_col, hue=y_col, palette="Set1", ax=ax)
+                ax.set_title(f"Categorical Cross-Tabulation: {x_col} by {y_col}", fontsize=12, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+                
+            plt.tight_layout()
+            plt.savefig(file_path, dpi=150, bbox_inches="tight")
+            plt.close(fig)
+            saved_files.append({"x": x_col, "y": y_col, "saved_path": file_path, "rationale": rationale})
+            print(f"[tools] Saved semantic bivariate plot '{x_col}' vs '{y_col}' to: {file_path}")
+        except Exception as e:
+            print(f"[tools] Warning: Error plotting bivariate '{x_col}' vs '{y_col}': {e}")
+            plt.close("all")
+            
+    return {
+        "bivariate_plots_saved": saved_files,
+        "count": len(saved_files)
+    }
+
+
+# =====================================================================
+# CONCISE PAIRPLOT TOOL (CLAMPED FEATURE SUBSET)
+# =====================================================================
+def plot_pairplot(
+    df: pd.DataFrame,
+    columns: Optional[List[str]] = None,
+    hue: Optional[str] = None,
+    save_path: str = "pairplot.png",
+    output_dir: str = "./sandbox_run",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Generates a concise pairplot visualizing pairwise distributions and relationships
+    across a reasonable subset of key numerical features (clamped to max 4-5 features).
+    """
+    plt.close("all")
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Select reasonable subset of numerical columns (max 4 to 5)
+    raw_cols = columns or kwargs.get("feature_cols") or kwargs.get("cols") or kwargs.get("numeric_cols")
+    if not raw_cols:
+        raw_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 2]
+        
+    valid_cols = [c for c in raw_cols if c in df.columns and pd.api.types.is_numeric_dtype(df[c])]
+    
+    # Clamp number of features to maximum 4-5 for clean, uncluttered visual rendering
+    max_features = 4
+    if len(valid_cols) > max_features:
+        valid_cols = valid_cols[:max_features]
+        print(f"[tools] Parameter Clamping: Clamped pairplot features to top {max_features}: {valid_cols}")
+        
+    if len(valid_cols) < 2:
+        return {"error": "Insufficient numeric columns for pairplot rendering."}
+        
+    # Check hue column
+    hue_col = hue or kwargs.get("target_col")
+    if hue_col and hue_col not in df.columns:
+        hue_col = None
+        
+    cols_to_plot = list(valid_cols)
+    if hue_col and hue_col not in cols_to_plot:
+        cols_to_plot.append(hue_col)
+        
+    clean_df = df[cols_to_plot].dropna()
+    if len(clean_df) < 5:
+        clean_df = df[cols_to_plot]
+        
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    
+    try:
+        if hue_col:
+            grid = sns.pairplot(clean_df, vars=valid_cols, hue=hue_col, palette="Set1", corner=True, plot_kws={"alpha": 0.6, "s": 25})
+        else:
+            grid = sns.pairplot(clean_df, vars=valid_cols, color="teal", corner=True, plot_kws={"alpha": 0.6, "s": 25})
+            
+        grid.fig.suptitle("Pairwise Feature Relationships (Pairplot)", y=1.02, fontsize=14)
+        grid.savefig(full_save_path, dpi=150, bbox_inches="tight")
+        plt.close("all")
+        print(f"[tools] Pairplot successfully saved to: {full_save_path}")
+    except Exception as e:
+        print(f"[tools] Warning: Pairplot rendering error: {e}")
+        plt.close("all")
+        
+    return {
+        "pairplot_saved": full_save_path,
+        "features_plotted": valid_cols,
+        "hue": hue_col
+    }
+
+
+# =====================================================================
 # 7. PREDICTIVE MODELING BLUEPRINT GENERATOR TOOL
 # =====================================================================
 def generate_predictive_blueprint(
@@ -856,6 +1017,16 @@ TOOL_REGISTRY = {
         "function": plot_target_interaction,
         "description": "Generates segmented distribution / scatter visualization comparing key feature vs target.",
         "parameters": {"target_col": "Target column name", "feature_col": "Feature column name", "save_path": "'target_interactions.png'"}
+    },
+    "plot_semantic_bivariate_relationships": {
+        "function": plot_semantic_bivariate_relationships,
+        "description": "Plots custom X vs Y scatter/boxplot/countplot relationships dynamically selected by LLM based on semantic domain reasoning (passed via 'bivariate_pairs' list of dicts with 'x', 'y', and optional 'hue').",
+        "parameters": {"bivariate_pairs": "List of dicts [{'x': 'col1', 'y': 'col2', 'hue': 'target'}]"}
+    },
+    "plot_pairplot": {
+        "function": plot_pairplot,
+        "description": "Generates a concise Seaborn pairplot visualizing pairwise distributions and relationships across a reasonable subset of key numerical features (clamped to max 4-5 features).",
+        "parameters": {"columns": "List of 3-4 key numeric features", "hue": "Optional target/hue column"}
     },
     "generate_predictive_blueprint": {
         "function": generate_predictive_blueprint,
