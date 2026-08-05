@@ -1,327 +1,274 @@
-# Executive Summary Report: Automated Exploratory Data Analysis (EDA) Pipeline
+# Executive Summary Report: Automated Exploratory Data Analysis (EDA)
 
 **Dataset:** Titanic-Dataset.csv
 **Pipeline Output Directory:** Working Directory
-**Report Generated From:** Automated EDA Artifact Files
-**Excluded Artifact:** `generated_analysis.py` (script file, excluded per request)
+**Report Generated From:** Automated EDA Pipeline Artifacts
+**Excluded Artifacts:** generated_analysis.py (script file, excluded per request)
 
 ---
 
 ## 1. Dataset Overview
 
-| Property | Value |
-|---|---|
-| Dataset Name | Titanic-Dataset.csv |
-| Total Rows | 891 |
-| Total Columns | 12 |
-| Target Column | Survived |
-| Problem Type | Classification |
-| File Path | C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\Titanic-Dataset.csv |
+| Property              | Value          |
+|-----------------------|----------------|
+| Dataset Name          | Titanic-Dataset.csv |
+| Total Rows            | 891            |
+| Total Columns         | 12             |
+| Target Column         | Survived       |
+| Problem Type          | Classification |
+| File Path             | C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\Titanic-Dataset.csv |
 
-### 1.1 Column Schema
-
-| Column | Dtype | Missing Count | Missing % | Cardinality |
-|---|---|---|---|---|
-| PassengerId | int64 | 0 | 0.00% | 891 |
-| Survived | int64 | 0 | 0.00% | 2 |
-| Pclass | int64 | 0 | 0.00% | 3 |
-| Name | object | 0 | 0.00% | 891 |
-| Sex | object | 0 | 0.00% | 2 |
-| Age | float64 | 177 | 19.87% | 88 |
-| SibSp | int64 | 0 | 0.00% | 7 |
-| Parch | int64 | 0 | 0.00% | 7 |
-| Ticket | object | 0 | 0.00% | 681 |
-| Fare | float64 | 0 | 0.00% | 248 |
-| Cabin | object | 687 | 77.10% | 147 |
-| Embarked | object | 2 | 0.22% | 3 |
+The dataset contains passenger records from the Titanic disaster, with the binary target variable `Survived` (0 = Did Not Survive, 1 = Survived). The mean survival rate across the dataset is **0.38** (approximately 38%), indicating class imbalance favoring non-survivors.
 
 ---
 
-## 2. Missing Values Analysis
+## 2. Schema and Column Profiles
 
-Three columns contain missing values in the raw dataset:
-
-| Column | Missing Count | Missing Percentage | Severity |
-|---|---|---|---|
-| Cabin | 687 | 77.1% | Critical |
-| Age | 177 | 19.9% | Moderate |
-| Embarked | 2 | 0.2% | Low |
-
-**Note:** The `Ticket` column also exhibited missing values (230 entries) in the raw state prior to imputation, as confirmed by the imputation summary.
-
----
-
-## 3. Imputation Summary
-
-The pipeline applied the following imputation rules:
-
-| Rule | Description |
-|---|---|
-| Rule 1 | Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN |
-| Rule 2 | Numeric columns with skewness > 1.0 or < -1.0 use median imputation |
-| Rule 3 | Numeric columns with skewness between -1.0 and 1.0 use mean imputation |
-| Rule 4 | Categorical/String columns use mode imputation with 'Unknown' fallback |
-
-### 3.1 Imputation Details Per Column
-
-| Column | Dtype | Missing Before | Missing After | Method | Fill Value | Skewness |
-|---|---|---|---|---|---|---|
-| PassengerId | int64 | 0 | 0 | none | N/A | N/A |
-| Survived | int64 | 0 | 0 | none | N/A | N/A |
-| Pclass | int64 | 0 | 0 | none | N/A | N/A |
-| Name | object | 0 | 0 | none | N/A | N/A |
-| Sex | object | 0 | 0 | none | N/A | N/A |
-| Age | float64 | 177 | 0 | median | 28.0 | 0.39 |
-| SibSp | int64 | 0 | 0 | none | N/A | N/A |
-| Parch | int64 | 0 | 0 | none | N/A | N/A |
-| Ticket | float64 | 230 | 0 | median | 236171.0 | 5.27 |
-| Fare | float64 | 0 | 0 | none | N/A | N/A |
-| Cabin | object | 687 | 0 | mode | B96 B98 | N/A |
-| Embarked | object | 2 | 0 | mode | S | N/A |
+| Column       | Dtype    | Missing Count | Missing % | Cardinality | Key Metric                                      |
+|--------------|----------|---------------|-----------|-------------|-------------------------------------------------|
+| PassengerId  | int64    | 0             | 0.0%      | 891         | Range: [1, 891] | Mean: 446.00 | Median: 446.00 |
+| Survived     | int64    | 0             | 0.0%      | 2           | Range: [0, 1] | Mean: 0.38 | Median: 0.00 |
+| Pclass       | int64    | 0             | 0.0%      | 3           | Range: [1, 3] | Mean: 2.31 | Median: 3.00 |
+| Name         | object   | 0             | 0.0%      | 891         | All unique values (high cardinality)            |
+| Sex          | object   | 0             | 0.0%      | 2           | male: 577 (64.8%), female: 314 (35.2%)         |
+| Age          | float64  | 177             | 19.87%    | 88          | Range: [0.42, 80.00] | Mean: 29.70 | Median: 28.00 |
+| SibSp        | int64    | 0             | 0.0%      | 7           | Range: [0, 8] | Mean: 0.52 | Median: 0.00 | Skewed: 3.70 |
+| Parch        | int64    | 0             | 0.0%      | 7           | Range: [0, 6] | Mean: 0.38 | Median: 0.00 | Skewed: 2.75 |
+| Ticket       | object   | 0             | 0.0%      | 681         | Top: '347082' (7), '1601' (7), 'CA. 2343' (7) |
+| Fare         | float64  | 0             | 0.0%      | 248         | Range: [0.00, 512.33] | Mean: 32.20 | Median: 14.45 | Skewed: 4.79 |
+| Cabin        | object   | 687             | 77.1%     | 147         | Top: 'G6' (4), 'C23 C25 C27' (4), 'B96 B98' (4) |
+| Embarked     | object   | 2             | 0.22%     | 3           | Top: 'S' (644), 'C' (168), 'Q' (77)            |
 
 ---
 
-## 4. Statistical Distributions & Key Metrics
+## 3. Missing Values Analysis
 
-### 4.1 Numerical Feature Summaries
+Three columns contain missing values:
 
-| Feature | Range | Mean | Median | Skewness | Notes |
-|---|---|---|---|---|---|
-| PassengerId | [1.00, 891.00] | 446.00 | 446.00 | N/A | Unique identifier |
-| Age | [0.42, 80.00] | 29.70 | 28.00 | 0.39 | Moderate right skew |
-| SibSp | [0.00, 8.00] | 0.52 | 0.00 | 3.70 | Highly skewed |
-| Parch | [0.00, 6.00] | 0.38 | 0.00 | 2.75 | Highly skewed |
-| Fare | [0.00, 512.33] | 32.20 | 14.45 | 4.79 | Highly skewed |
-| Survived | [0.00, 1.00] | 0.38 | 0.00 | N/A | Binary target (38% survival rate) |
-| Pclass | [1.00, 3.00] | 2.31 | 3.00 | N/A | Categorical ordinal |
+| Column    | Missing Count | Missing Percentage | Severity   |
+|-----------|---------------|--------------------|------------|
+| Age       | 177           | 19.87%             | Moderate   |
+| Cabin     | 687           | 77.10%             | Critical   |
+| Embarked  | 2             | 0.22%              | Low        |
 
-### 4.2 Categorical Feature Summaries
+**Imputation Strategy Applied:**
 
-| Feature | Cardinality | Top Values |
-|---|---|---|
-| Sex | 2 | male: 577, female: 314 |
-| Embarked | 3 | S: 644, C: 168, Q: 77 |
-| Pclass | 3 | 1, 2, 3 (ordinal) |
-| Name | 891 | All unique (high cardinality) |
-| Ticket | 681 | '347082': 7, '1601': 7, 'CA. 2343': 7 |
-| Cabin | 147 | 'G6': 4, 'C23 C25 C27': 4, 'B96 B98': 4 |
+| Column    | Method   | Skewness | Fill Value   | Rationale                                      |
+|-----------|----------|----------|--------------|------------------------------------------------|
+| Age       | Median   | 0.39     | 28.0         | Numeric, low skewness; median is robust        |
+| Ticket    | Median   | 5.27     | 236171.0     | Numeric, high skewness; median is robust       |
+| Cabin     | Mode     | N/A      | B96 B98      | Categorical; mode imputation with fallback     |
+| Embarked  | Mode     | N/A      | S            | Categorical; mode imputation with fallback     |
+
+**Note:** The `metrics.json` column summary reports `missing_count: 0` for `Age`, `Ticket`, and `Cabin` after imputation, confirming all missing values were successfully filled. The `df_state_v0.csv` (pre-imputation) retains original missing values (empty fields), while `df_state_v1.csv` through `df_state_v3.csv` reflect the imputed state.
+
+---
+
+## 4. Statistical Hypothesis Testing Results
+
+The following features were tested for statistical significance against the target variable `Survived`:
+
+| Feature    | Test Name                     | Statistic    | P-Value           | Significant? |
+|------------|-------------------------------|--------------|-------------------|--------------|
+| Pclass     | Pearson Correlation Test      | -0.3385      | 2.5370e-25        | YES          |
+| Sex        | Two-Sample Welch T-Test       | 18.6718      | 2.2836e-61        | YES          |
+| Parch      | Pearson Correlation Test      | 0.0816       | 1.4799e-02        | YES          |
+| Ticket     | Pearson Correlation Test      | -0.1054      | 1.6253e-03        | YES          |
+| Fare       | Pearson Correlation Test      | 0.2573       | 6.1202e-15        | YES          |
+| Cabin      | One-Way ANOVA                 | 2.7851       | 1.2811e-08        | YES          |
+| Embarked   | One-Way ANOVA                 | 13.3269      | 1.9832e-06        | YES          |
+| PassengerId| Pearson Correlation Test      | -0.0050      | 8.8137e-01        | NO           |
+| Age        | Pearson Correlation Test      | -0.0649      | 5.2761e-02        | NO           |
+| SibSp      | Pearson Correlation Test      | -0.0353      | 2.9224e-01        | NO           |
+
+**Statistically Significant Predictors (7 of 10):** Pclass, Sex, Parch, Ticket, Fare, Cabin, Embarked.
 
 ---
 
 ## 5. Correlation Analysis
 
-### 5.1 Top Correlations (Absolute Magnitude)
+### Top Correlations (Absolute Value, Descending)
 
-| Rank | Feature 1 | Feature 2 | Correlation | Direction |
-|---|---|---|---|---|
-| 1 | Pclass | Fare | -0.5495 | Negative |
-| 2 | SibSp | Parch | 0.4148 | Positive |
-| 3 | Pclass | Age | -0.3399 | Negative |
-| 4 | Survived | Pclass | -0.3385 | Negative |
-| 5 | Survived | Fare | 0.2573 | Positive |
-| 6 | Pclass | Ticket | 0.2370 | Positive |
-| 7 | Age | SibSp | -0.2333 | Negative |
-| 8 | Parch | Fare | 0.2162 | Positive |
-| 9 | SibSp | Ticket | 0.1836 | Positive |
-| 10 | Age | Parch | -0.1725 | Negative |
+| Feature 1 | Feature 2 | Correlation | Strength       |
+|-----------|-----------|-------------|----------------|
+| Pclass    | Fare      | -0.5495     | Moderate       |
+| SibSp     | Parch     | 0.4148      | Moderate       |
+| Pclass    | Age       | -0.3399     | Moderate       |
+| Survived  | Pclass    | -0.3385     | Moderate       |
+| Survived  | Fare      | 0.2573      | Weak-Moderate  |
+| Pclass    | Ticket    | 0.2370      | Weak-Moderate  |
+| Age       | SibSp     | -0.2333     | Weak           |
+| Parch     | Fare      | 0.2162      | Weak           |
+| SibSp     | Ticket    | 0.1836      | Weak           |
+| Age       | Parch     | -0.1725     | Weak           |
 
-### 5.2 Correlation Matrix (Full)
+### Key Correlation Observations
 
-| | PassengerId | Survived | Pclass | Age | SibSp | Parch | Ticket | Fare |
-|---|---|---|---|---|---|---|---|---|
-| PassengerId | 1.000 | -0.005 | -0.035 | 0.034 | -0.058 | -0.002 | -0.064 | 0.013 |
-| Survived | -0.005 | 1.000 | -0.338 | -0.065 | -0.035 | 0.082 | -0.105 | 0.257 |
-| Pclass | -0.035 | -0.338 | 1.000 | -0.340 | 0.083 | 0.018 | 0.237 | -0.549 |
-| Age | 0.034 | -0.065 | -0.340 | 1.000 | -0.233 | -0.172 | -0.125 | 0.097 |
-| SibSp | -0.058 | -0.035 | 0.083 | -0.233 | 1.000 | 0.415 | 0.184 | 0.160 |
-| Parch | -0.002 | 0.082 | 0.018 | -0.172 | 0.415 | 1.000 | 0.074 | 0.216 |
-| Ticket | -0.064 | -0.105 | 0.237 | -0.125 | 0.184 | 0.074 | 1.000 | -0.091 |
-| Fare | 0.013 | 0.257 | -0.549 | 0.097 | 0.160 | 0.216 | -0.091 | 1.000 |
-
-### 5.3 Key Correlation Observations
-
-- **Pclass and Fare** exhibit the strongest linear relationship (r = -0.5495), indicating that higher passenger classes paid substantially higher fares.
-- **Survived and Pclass** show a moderate negative correlation (r = -0.3385), suggesting that lower-class passengers had lower survival rates.
-- **Survived and Fare** show a moderate positive correlation (r = 0.2573), indicating that passengers who paid higher fares had better survival outcomes.
+- **Pclass and Fare** exhibit the strongest linear relationship (r = -0.5495), confirming that higher passenger classes paid higher fares.
+- **Survived and Pclass** are moderately negatively correlated (r = -0.3385), indicating lower-class passengers had lower survival rates.
+- **Survived and Fare** show a weak positive correlation (r = 0.2573), suggesting wealthier passengers had a slight survival advantage.
 - **SibSp and Parch** are moderately positively correlated (r = 0.4148), reflecting family group travel patterns.
 - **PassengerId** shows negligible correlation with all other features, confirming it is a non-informative identifier.
 
 ---
 
-## 6. Hypothesis Testing Results
+## 6. Outlier Analysis
 
-Statistical tests were performed to assess the relationship between each feature and the target variable (`Survived`).
+| Feature  | Q1      | Q3      | IQR      | Lower Bound | Upper Bound | Outlier Count | Outlier % | Action  |
+|----------|---------|---------|----------|-------------|-------------|---------------|-----------|---------|
+| Age      | 22.0    | 35.0    | 13.0     | 2.5         | 54.5        | 66            | 7.41%     | Profile |
+| SibSp    | 0.0     | 1.0     | 1.0      | -1.5        | 2.5         | 46            | 5.16%     | Profile |
+| Parch    | 0.0     | 0.0     | 0.0      | 0.0         | 0.0         | 213           | 23.91%    | Profile |
+| Fare     | 7.9104  | 31.0    | 23.0896  | -26.724     | 65.6344     | 116           | 13.02%    | Profile |
 
-| Feature | Test Type | Statistic | P-Value | Significant? | Interpretation |
-|---|---|---|---|---|---|
-| Pclass | Pearson Correlation | -0.3385 | 2.537e-25 | YES | Statistically Significant |
-| Sex | Two-Sample Welch T-Test | 18.6718 | 2.284e-61 | YES | Statistically Significant |
-| Parch | Pearson Correlation | 0.0816 | 1.480e-02 | YES | Statistically Significant |
-| Ticket | Pearson Correlation | -0.1054 | 1.625e-03 | YES | Statistically Significant |
-| Fare | Pearson Correlation | 0.2573 | 6.120e-15 | YES | Statistically Significant |
-| Cabin | One-Way ANOVA | 1.8019 | 4.198e-07 | YES | Statistically Significant |
-| Embarked | One-Way ANOVA | 13.3269 | 1.983e-06 | YES | Statistically Significant |
-| Age | Pearson Correlation | -0.0649 | 5.276e-02 | NO | Not Significant |
-| SibSp | Pearson Correlation | -0.0353 | 2.922e-01 | NO | Not Significant |
-| Name | One-Way ANOVA | NaN | 1.0 | NO | Not Significant |
-| PassengerId | Pearson Correlation | -0.005 | 8.814e-01 | NO | Not Significant |
-
-### 6.1 Statistically Significant Predictors (p < 0.05)
-
-1. Pclass
-2. Sex
-3. Parch
-4. Ticket
-5. Fare
-6. Cabin
-7. Embarked
+**Interpretation:**
+- **Parch** has the highest outlier rate (23.91%), which is expected given its heavily zero-inflated distribution (median = 0).
+- **Fare** exhibits 13.02% outliers, consistent with its high skewness (4.79) and the presence of very high fare values (max: 512.33).
+- **Age** outliers (7.41%) are within acceptable bounds for a real-world demographic dataset.
+- All outliers were profiled (not removed), preserving the integrity of the dataset for modeling.
 
 ---
 
-## 7. Outlier Analysis
+## 7. Feature Engineering Highlights
 
-Outliers were identified using the Interquartile Range (IQR) method: Outlier if value < Q1 - 1.5*IQR or value > Q3 + 1.5*IQR.
+| Aspect                  | Status       | Details                                                        |
+|-------------------------|--------------|----------------------------------------------------------------|
+| Engineered Features     | None         | The `engineered_features` list in metrics.json is empty.       |
+| Missing Value Handling  | Completed    | 4 columns imputed using median/mode strategies.                |
+| String Standardization  | Completed    | Missing string placeholders ('?', 'NA', 'N/A', 'null') converted to NaN. |
+| Skewness-Based Imputation | Applied    | Numeric columns with |skew| > 1.0 use median; otherwise mean. |
 
-| Feature | Q1 | Q3 | IQR | Lower Bound | Upper Bound | Outlier Count | Outlier % | Action |
-|---|---|---|---|---|---|---|---|---|
-| Age | 22.0 | 35.0 | 13.0 | 2.5 | 54.5 | 66 | 7.41% | Profile |
-| Fare | 7.91 | 31.00 | 23.09 | -26.72 | 65.63 | 116 | 13.02% | Profile |
-| SibSp | 0.0 | 1.0 | 1.0 | -1.5 | 2.5 | 46 | 5.16% | Profile |
-| Parch | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 213 | 23.91% | Profile |
-
-**Key Observations:**
-- **Parch** has the highest outlier percentage (23.91%), driven by a zero IQR where all non-zero values are flagged as outliers.
-- **Fare** has 13.02% outliers, consistent with its high skewness (4.79) and the presence of very high fares (max: 512.33).
-- **Age** has 7.41% outliers, which is within an acceptable range for a real-world dataset.
-- **SibSp** has 5.16% outliers, with a relatively tight IQR of 1.0.
-
-All outlier actions were set to "profile" -- meaning outliers were documented but not removed or capped, preserving the integrity of the raw data distribution.
+**Recommendation:** Consider engineering features such as:
+- Family size (SibSp + Parch + 1)
+- IsAlone flag (binary)
+- Title extraction from Name (Mr., Mrs., Miss., etc.)
+- Fare per person (Fare / family size)
+- Cabin deck letter extraction
 
 ---
 
-## 8. Feature Engineering Highlights
+## 8. Image Artifacts Inventory
 
-The pipeline's `engineered_features` list is currently **empty**. No additional features were created during this EDA run. The following columns are candidates for future feature engineering:
+### 8.1 Distribution Plots (Univariate)
 
-| Candidate Feature | Source Column(s) | Rationale |
-|---|---|---|
-| FamilySize | SibSp + Parch | Combined family group size |
-| IsAlone | FamilySize | Binary flag for solo travelers |
-| Title | Name | Extract titles (Mr., Mrs., Miss., etc.) |
-| Deck | Cabin | Extract deck letter from cabin codes |
-| FarePerPerson | Fare / FamilySize | Normalized fare by group size |
-| AgeGroup | Age | Categorical binning of age |
+| File                  | Type                | Size (KB) | Description                                      |
+|-----------------------|---------------------|-----------|--------------------------------------------------|
+| dist_Age.png          | image_visualization | 41.31     | Age distribution histogram/kde                    |
+| dist_Embarked.png     | image_visualization | 23.47     | Embarked port distribution (S, C, Q)              |
+| dist_Fare.png         | image_visualization | 32.79     | Fare distribution (right-skewed)                  |
+| dist_Parch.png        | image_visualization | 37.55     | Parch (parents/children) count distribution       |
+| dist_Pclass.png       | image_visualization | 41.48     | Passenger class distribution (1, 2, 3)            |
+| dist_Sex.png          | image_visualization | 24.80     | Gender distribution (male vs. female)             |
+| dist_SibSp.png        | image_visualization | 32.97     | SibSp (siblings/spouses) count distribution       |
+| dist_Survived.png     | image_visualization | 36.18     | Target variable distribution (0 vs. 1)            |
+| feature_distributions.png | image_visualization | 187.86 | Multi-panel overview of all feature distributions |
 
----
+### 8.2 Bivariate Plots
 
-## 9. Image Artifact Descriptions
+| File                          | Type                | Size (KB) | Description                                          |
+|-------------------------------|---------------------|-----------|------------------------------------------------------|
+| bivariate_Age_vs_Fare.png     | image_visualization | 128.24    | Age vs. Fare scatter/bivariate plot                  |
+| bivariate_Age_vs_Survived.png | image_visualization | 81.53     | Age vs. Survived relationship                        |
+| bivariate_Fare_vs_Survived.png| image_visualization | 75.33     | Fare vs. Survived relationship                       |
+| bivariate_Pclass_vs_Fare.png  | image_visualization | 55.64     | Passenger class vs. Fare comparison                  |
+| bivariate_Sex_vs_Pclass.png   | image_visualization | 38.26     | Gender vs. passenger class cross-tabulation          |
+| bivariate_Sex_vs_Survived.png | image_visualization | 34.70     | Gender vs. survival rate comparison                  |
 
-The pipeline generated the following visual artifacts. All files are PNG image visualizations.
+### 8.3 Multivariate and Summary Visualizations
 
-### 9.1 Distribution Plots (Univariate)
-
-| File | Size (KB) | Description |
-|---|---|---|
-| dist_Age.png | 41.31 | Univariate distribution of passenger age |
-| dist_Embarked.png | 23.47 | Univariate distribution of embarkation port (S, C, Q) |
-| dist_Fare.png | 32.79 | Univariate distribution of ticket fare |
-| dist_Parch.png | 37.55 | Univariate distribution of number of parents/children aboard |
-| dist_Pclass.png | 41.48 | Univariate distribution of passenger class (1, 2, 3) |
-| dist_Sex.png | 24.80 | Univariate distribution of gender (male/female) |
-| dist_SibSp.png | 32.97 | Univariate distribution of number of siblings/spouses aboard |
-| dist_Survived.png | 36.18 | Univariate distribution of survival outcome (0/1) |
-| feature_distributions.png | 187.42 | Combined multi-feature distribution overview |
-
-### 9.2 Bivariate & Interaction Plots
-
-| File | Size (KB) | Description |
-|---|---|---|
-| bivariate_Age_vs_Fare.png | 128.24 | Scatter/relationship plot of Age vs Fare |
-| bivariate_Pclass_vs_Fare.png | 55.64 | Relationship between passenger class and fare |
-| bivariate_Sex_vs_Pclass.png | 38.26 | Cross-tabulation of gender and passenger class |
-| pairplot.png | 145.75 | Pairwise scatter plot matrix of all numerical features |
-| target_interactions.png | 68.90 | Interaction plots showing feature relationships with the Survived target |
-
-### 9.3 Correlation Visualization
-
-| File | Size (KB) | Description |
-|---|---|---|
-| correlation_matrix.png | 120.69 | Heatmap visualization of the full correlation matrix |
+| File                  | Type                | Size (KB) | Description                                      |
+|-----------------------|---------------------|-----------|--------------------------------------------------|
+| pairplot.png          | image_visualization | 156.96    | Pairwise scatter matrix of numeric features      |
+| correlation_matrix.png| image_visualization | 120.69    | Heatmap of feature correlation coefficients      |
+| target_interactions.png| image_visualization | 53.17    | Target variable interaction plots                |
 
 ---
 
-## 10. Predictive Modeling Blueprint
+## 9. Predictive Modeling Blueprint
 
-### 10.1 Problem Definition
+### 9.1 Problem Definition
 
-| Property | Value |
-|---|---|
-| Target Variable | Survived |
-| Problem Type | Classification |
-| Dataset Dimensions | 891 rows x 12 columns |
+| Property              | Value                          |
+|-----------------------|--------------------------------|
+| Target                | Survived                       |
+| Problem Type          | Classification (Binary)        |
+| Dataset Dimensions    | 891 rows x 12 columns          |
 
-### 10.2 Recommended Algorithms
+### 9.2 Recommended Algorithms
 
-1. **Regularized Logistic Regression** -- Baseline model; interpretable and robust for binary classification.
-2. **Random Forest Classifier** -- Ensemble method capturing non-linear feature interactions.
-3. **Gradient Boosting Classifier (XGBoost / LightGBM)** -- High-performance boosting approach for structured tabular data.
-4. **Support Vector Classifier (SVM)** -- Effective in high-dimensional spaces with clear margin separation.
+| Priority | Algorithm                              | Role           |
+|----------|----------------------------------------|----------------|
+| 1        | Regularized Logistic Regression        | Baseline       |
+| 2        | Random Forest Classifier               | Ensemble       |
+| 3        | Gradient Boosting (XGBoost / LightGBM) | Ensemble       |
+| 4        | Support Vector Classifier (SVM)        | Kernel-based   |
 
-### 10.3 Feature Selection Strategy
+### 9.3 Feature Selection Strategy
 
 1. Exclude high-cardinality ID or text name columns (e.g., PassengerId, Name).
 2. Rank features using cross-validated permutation importance and mutual information.
 3. Remove collinear features exceeding a correlation threshold of > 0.85.
 
-### 10.4 Validation Strategy
+### 9.4 Validation Strategy
 
-- **Stratified K-Fold Cross-Validation** with 5 folds to ensure class balance across folds.
-- **Evaluation Metrics:** Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix.
+- **Method:** Stratified K-Fold Cross-Validation (5 folds)
+- **Metrics:** Balanced Accuracy, Macro F1, Precision-Recall AUC, Confusion Matrix
 
-### 10.5 Overfitting Risk Mitigation
+### 9.5 Overfitting Risk Mitigation
 
-- Apply regularization penalties (L1/L2) to penalize model complexity.
-- Limit tree depth and enforce minimum samples per leaf in tree-based models.
-- Perform hyperparameter tuning strictly within cross-validation folds to avoid data leakage.
-
-### 10.6 Executive Summary
-
-> Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns. The dataset is moderately sized with 7 statistically significant predictors identified through hypothesis testing. Key features for modeling include Pclass, Sex, Fare, Cabin, Embarked, Parch, and Ticket.
+- Apply regularization penalties (L1 / L2)
+- Limit tree depth and enforce minimum samples per leaf
+- Perform hyperparameter tuning strictly within cross-validation folds
 
 ---
 
-## 11. Key Findings & Insights
+## 10. Key Findings and Executive Summary
 
-### 11.1 Summary of Key Findings
+### 10.1 Data Quality
 
-1. The dataset contains **891 rows and 12 columns**, representing passenger records from the Titanic disaster.
-2. **Missing values** were identified in three columns: Cabin (77.1%), Age (19.9%), and Embarked (0.2%). All were successfully imputed using the pipeline's rule-based strategy.
-3. The **survival rate** is approximately 38% (mean of Survived = 0.38), indicating class imbalance in the target variable.
-4. **Seven features** were found to be statistically significant predictors of survival (p < 0.05): Pclass, Sex, Parch, Ticket, Fare, Cabin, and Embarked.
-5. The strongest predictor of survival is **Sex** (Welch T-Test statistic = 18.67, p = 2.28e-61), followed by **Pclass** (Pearson r = -0.3385, p = 2.54e-25).
-6. **Fare** shows a moderate positive correlation with survival (r = 0.2573), while **Pclass** shows a moderate negative correlation (r = -0.3385), reflecting the "women and children first" protocol and class-based access to lifeboats.
-7. **Parch** (number of parents/children) has a weak but statistically significant positive correlation with survival (r = 0.0816, p = 0.015).
-8. **Age** was found to be NOT statistically significant (p = 0.053), despite its intuitive importance -- this may be due to the moderate missing rate and the imputation strategy employed.
+- The dataset is relatively clean with only 3 columns containing missing values.
+- **Cabin** has the most severe missingness (77.1%), making it a challenging feature to leverage without significant imputation or encoding strategy.
+- **Age** has moderate missingness (19.87%) and was imputed using the median (28.0).
+- **Embarked** has minimal missingness (2 records) and was imputed using the mode ('S').
 
-### 11.2 Data Quality Notes
+### 10.2 Statistical Significance
 
-- The `Ticket` column was originally stored as an object type but was converted to float64 during imputation (230 missing values imputed with median 236171.0). This conversion may warrant review, as Ticket is a categorical identifier rather than a numeric quantity.
-- The `Cabin` column has 77.1% missing values, making it a high-noise feature. The mode imputation fill value "B96 B98" represents the most common cabin code among passengers with recorded cabin data.
-- The `Name` column has 891 unique values (100% cardinality) and is not suitable for direct modeling without feature extraction (e.g., title extraction).
+- **7 out of 10** features show statistically significant associations with survival.
+- **Sex** is the strongest predictor (Welch T-test statistic = 18.67, p < 0.001).
+- **Pclass** is the second strongest predictor (Pearson r = -0.3385, p < 0.001).
+- **Age** and **SibSp** are not statistically significant at the conventional alpha = 0.05 level.
 
-### 11.3 Pipeline Artifacts Summary
+### 10.3 Correlation Insights
 
-| Artifact Type | Count | Files |
-|---|---|---|
-| CSV Data States | 4 | df_state_v0.csv (raw), df_state_v1.csv, df_state_v2.csv, df_state_v3.csv (imputed) |
-| Distribution Plots | 9 | dist_*.png, feature_distributions.png |
-| Bivariate Plots | 3 | bivariate_*.png |
-| Correlation Visualizations | 1 | correlation_matrix.png |
-| Pairwise/Interaction Plots | 2 | pairplot.png, target_interactions.png |
-| **Total Image Artifacts** | **15** | |
-| **Total CSV Artifacts** | **4** | |
-| **Total JSON Artifacts** | **2** | metadata_profile.json, metrics.json |
-| **Grand Total** | **21** | |
+- Passenger class and fare are moderately negatively correlated (r = -0.5495).
+- Survival and fare show a weak positive correlation (r = 0.2573).
+- PassengerId is uncorrelated with all other features, confirming its non-informative nature.
+
+### 10.4 Outlier Profile
+
+- **Parch** has the highest outlier rate (23.91%), driven by its zero-inflated distribution.
+- **Fare** has 13.02% outliers, consistent with its high skewness (4.79).
+- No outliers were removed; all were profiled for downstream consideration.
+
+### 10.5 Modeling Readiness
+
+- The dataset is ready for predictive modeling after imputation.
+- Recommended starting model: **Regularized Logistic Regression** as a baseline.
+- Suggested next steps: Feature engineering (family size, title extraction, fare per person), followed by ensemble methods (Random Forest, Gradient Boosting).
+- Validation should use **Stratified 5-Fold Cross-Validation** with metrics including Balanced Accuracy, Macro F1, and Precision-Recall AUC.
+
+---
+
+## 11. Data State Versions
+
+| File          | Description                          | State          |
+|---------------|--------------------------------------|----------------|
+| df_state_v0.csv | Raw data with original missing values | Pre-imputation |
+| df_state_v1.csv | Imputed data (Ticket, Cabin, Embarked) | Post-imputation v1 |
+| df_state_v2.csv | Imputed data (consistent with v1)    | Post-imputation v2 |
+| df_state_v3.csv | Imputed data (consistent with v1/v2) | Post-imputation v3 |
+
+All three imputed states (v1-v3) show consistent transformations: Ticket values standardized to numeric, Cabin values filled with mode 'B96 B98', and Embarked values filled with mode 'S'.
 
 ---
 

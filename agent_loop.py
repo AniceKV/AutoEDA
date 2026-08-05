@@ -327,11 +327,6 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         output_dir=workspace_dir
     )
 
-    # Write a generated_analysis.py header stub for backward-compatibility dataset name detection
-    script_stub_path = os.path.join(workspace_dir, "generated_analysis.py")
-    with open(script_stub_path, "w", encoding="utf-8") as f:
-        f.write(f"DATA_FILEPATH = r'{abs_data_path}'\n# Executed via Tool-Based AutoEDA Architecture\n")
-
     # 6. Generate Summary Report
     print("5. Invoking summary_generator...")
     dataset_name = extract_dataset_name(workspace_dir)
@@ -350,6 +345,9 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             shutil.copy2(src_file, dst_file)
             copied_files.append(entry)
             
+    # Purge intermediate DVC states to optimize sandbox storage
+    data_store.purge_intermediate_states()
+
     print(f"Successfully exported {len(copied_files)} assets to '{export_dir}'!")
     print(f"Assets: {copied_files}")
     print("\n==================================================")

@@ -178,16 +178,6 @@
       "outlier_percentage": 7.41,
       "action_taken": "profile"
     },
-    "Fare": {
-      "q1": 7.9104,
-      "q3": 31.0,
-      "iqr": 23.0896,
-      "lower_bound": -26.724,
-      "upper_bound": 65.6344,
-      "outlier_count": 116,
-      "outlier_percentage": 13.02,
-      "action_taken": "profile"
-    },
     "SibSp": {
       "q1": 0.0,
       "q3": 1.0,
@@ -206,6 +196,16 @@
       "upper_bound": 0.0,
       "outlier_count": 213,
       "outlier_percentage": 23.91,
+      "action_taken": "profile"
+    },
+    "Fare": {
+      "q1": 7.9104,
+      "q3": 31.0,
+      "iqr": 23.0896,
+      "lower_bound": -26.724,
+      "upper_bound": 65.6344,
+      "outlier_count": 116,
+      "outlier_percentage": 13.02,
       "action_taken": "profile"
     }
   },
@@ -362,13 +362,6 @@
       "is_statistically_significant": true,
       "interpretation": "Pearson r = -0.3385, p = 2.5370e-25. (Statistically Significant)"
     },
-    "Name": {
-      "test_name": "One-Way ANOVA",
-      "statistic": NaN,
-      "p_value": 1.0,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = nan, p = nan. (Not Significant)"
-    },
     "Sex": {
       "test_name": "Two-Sample Welch T-Test",
       "statistic": 18.6718,
@@ -413,10 +406,10 @@
     },
     "Cabin": {
       "test_name": "One-Way ANOVA",
-      "statistic": 1.8019,
-      "p_value": 4.197552424084053e-07,
+      "statistic": 2.7851,
+      "p_value": 1.2810870373968771e-08,
       "is_statistically_significant": true,
-      "interpretation": "F-statistic = 1.8019, p = 4.1976e-07. (Statistically Significant)"
+      "interpretation": "F-statistic = 2.7851, p = 1.2811e-08. (Statistically Significant)"
     },
     "Embarked": {
       "test_name": "One-Way ANOVA",

@@ -65,6 +65,26 @@ class StatefulDataStore:
         print(f"[DataStore] Successfully rolled back to state v{self.version} ({latest_state['action']}) from {latest_state['path']}")
         return restored_df, self.version
 
+    def purge_intermediate_states(self):
+        """
+        Deletes intermediate checkpoint CSV files to save disk space,
+        keeping only the initial load (v0) and the final active version.
+        """
+        if len(self.history) <= 2:
+            return
+            
+        final_state = self.history[-1]
+        for state in self.history[1:-1]:
+            path = state.get("path")
+            if path and os.path.exists(path):
+                try:
+                    os.remove(path)
+                except Exception as e:
+                    print(f"[DataStore] Warning: Could not purge file {path}: {e}")
+                    
+        self.history = [self.history[0], final_state]
+        print(f"[DataStore] Cleaned up intermediate states. Retained initial state (v0) and final state (v{self.version}).")
+
 
 # =====================================================================
 # 1. SMART TYPE-SAFE IMPUTATION TOOL (ROBUST PARAMETER CLAMPING)
@@ -408,33 +428,38 @@ def run_statistical_hypothesis_tests(
                 
             elif not target_is_num and col_is_num:
                 # Feature is Numerical, Target is Categorical
-                if target_cardinality == 2:
-                    cat_vals = clean_data[target_col].unique()
-                    g1 = clean_data[clean_data[target_col] == cat_vals[0]][col]
-                    g2 = clean_data[clean_data[target_col] == cat_vals[1]][col]
-                    t_stat, p_val = stats.ttest_ind(g1, g2, equal_var=False)
-                    test_name = "Two-Sample Welch T-Test"
-                    statistic = float(t_stat)
-                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
-                else:
-                    groups = [group[col].values for name, group in clean_data.groupby(target_col)]
-                    f_stat, p_val = stats.f_oneway(*groups)
-                    test_name = "One-Way ANOVA"
-                    statistic = float(f_stat)
-                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
-            else:
-                # Target is Numerical, Feature is Categorical
-                groups = [group[target_col].values for name, group in clean_data.groupby(col)]
+                groups = [group[col].dropna().values for name, group in clean_data.groupby(target_col)]
+                groups = [g for g in groups if len(g) >= 2]
+                
                 if len(groups) == 2:
                     t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
                     test_name = "Two-Sample Welch T-Test"
                     statistic = float(t_stat)
                     interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
-                else:
+                elif len(groups) > 2:
                     f_stat, p_val = stats.f_oneway(*groups)
                     test_name = "One-Way ANOVA"
                     statistic = float(f_stat)
                     interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+                else:
+                    continue
+            else:
+                # Target is Numerical, Feature is Categorical
+                groups = [group[target_col].dropna().values for name, group in clean_data.groupby(col)]
+                groups = [g for g in groups if len(g) >= 2]
+                
+                if len(groups) == 2:
+                    t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
+                    test_name = "Two-Sample Welch T-Test"
+                    statistic = float(t_stat)
+                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
+                elif len(groups) > 2:
+                    f_stat, p_val = stats.f_oneway(*groups)
+                    test_name = "One-Way ANOVA"
+                    statistic = float(f_stat)
+                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+                else:
+                    continue
                     
             p_val_float = float(p_val) if pd.notnull(p_val) else 1.0
             is_sig = p_val_float < alpha
@@ -552,9 +577,15 @@ def plot_target_interaction(
         elif not target_is_num and feat_is_num:
             sns.boxplot(data=df, x=target_col, y=feature_col, palette="Set2", ax=ax)
             ax.set_title(f"Boxplot Segmented by Target: {feature_col} vs {target_col}", fontsize=13)
-        else:
+        elif target_is_num and not feat_is_num:
+            # FIX: Plot Numerical Target vs Categorical Feature using boxplots
+            sns.boxplot(data=df, x=feature_col, y=target_col, palette="Set2", ax=ax)
+            ax.set_title(f"Boxplot Segmented by Feature: {target_col} vs {feature_col}", fontsize=13)
+            ax.tick_params(axis='x', rotation=30)
+        else: # Both are categorical
             sns.countplot(data=df, x=feature_col, hue=target_col, palette="Set1", ax=ax)
             ax.set_title(f"Categorical Interaction: {feature_col} by {target_col}", fontsize=13)
+            ax.tick_params(axis='x', rotation=30)
             
         plt.tight_layout()
         plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
