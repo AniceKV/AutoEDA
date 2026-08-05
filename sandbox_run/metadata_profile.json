@@ -1,160 +1,216 @@
 {
-    "dataset_name": "Titanic-Dataset.csv",
+    "dataset_name": "zoo_data-1.csv",
     "dimensions": {
-        "rows": 891,
-        "columns": 12
+        "rows": 101,
+        "columns": 17
     },
-    "missing_values_summary": {
-        "Age": "177 (19.9%)",
-        "Cabin": "687 (77.1%)",
-        "Embarked": "2 (0.2%)"
-    },
+    "missing_values_summary": {},
     "schema": {
-        "PassengerId": {
-            "type": "int64",
-            "cardinality": 891,
-            "key_metric": "Range: [1.00 to 891.00] | Mean: 446.00 | Median: 446.00"
+        "animal_name": {
+            "type": "object",
+            "cardinality": 100,
+            "key_metric": "Top Values: 'frog': 2, 'aardvark': 1, 'bass': 1"
         },
-        "Survived": {
+        "hair": {
             "type": "int64",
             "cardinality": 2,
-            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.38 | Median: 0.00"
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.43 | Median: 0.00"
         },
-        "Pclass": {
+        "feathers": {
             "type": "int64",
-            "cardinality": 3,
-            "key_metric": "Range: [1.00 to 3.00] | Mean: 2.31 | Median: 3.00"
-        },
-        "Name": {
-            "type": "object",
-            "cardinality": 891,
-            "key_metric": "Top Values: 'Dooley, Mr. Patrick': 1, 'Braund, Mr. Owen Harris': 1, 'Cumings, Mrs. John Bradley (Florence Briggs Thayer)': 1"
-        },
-        "Sex": {
-            "type": "object",
             "cardinality": 2,
-            "key_metric": "Top Values: 'male': 577, 'female': 314"
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.20 | Median: 0.00 | Highly Skewed (1.54)"
         },
-        "Age": {
-            "type": "float64",
-            "cardinality": 88,
-            "key_metric": "Range: [0.42 to 80.00] | Mean: 29.70 | Median: 28.00"
-        },
-        "SibSp": {
+        "eggs": {
             "type": "int64",
-            "cardinality": 7,
-            "key_metric": "Range: [0.00 to 8.00] | Mean: 0.52 | Median: 0.00 | Highly Skewed (3.70)"
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.58 | Median: 1.00"
         },
-        "Parch": {
+        "milk": {
             "type": "int64",
-            "cardinality": 7,
-            "key_metric": "Range: [0.00 to 6.00] | Mean: 0.38 | Median: 0.00 | Highly Skewed (2.75)"
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.41 | Median: 0.00"
         },
-        "Ticket": {
-            "type": "object",
-            "cardinality": 681,
-            "key_metric": "Top Values: '347082': 7, '1601': 7, 'CA. 2343': 7"
+        "airborne": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.24 | Median: 0.00 | Highly Skewed (1.25)"
         },
-        "Fare": {
-            "type": "float64",
-            "cardinality": 248,
-            "key_metric": "Range: [0.00 to 512.33] | Mean: 32.20 | Median: 14.45 | Highly Skewed (4.79)"
+        "aquatic": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.36 | Median: 0.00"
         },
-        "Cabin": {
-            "type": "object",
-            "cardinality": 147,
-            "key_metric": "Top Values: 'G6': 4, 'C23 C25 C27': 4, 'B96 B98': 4"
+        "predator": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.55 | Median: 1.00"
         },
-        "Embarked": {
-            "type": "object",
-            "cardinality": 3,
-            "key_metric": "Top Values: 'S': 644, 'C': 168, 'Q': 77"
+        "toothed": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.60 | Median: 1.00"
+        },
+        "backbone": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.82 | Median: 1.00 | Highly Skewed (-1.71)"
+        },
+        "breathes": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.79 | Median: 1.00 | Highly Skewed (-1.46)"
+        },
+        "venomous": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.08 | Median: 0.00 | Highly Skewed (3.16)"
+        },
+        "fins": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.17 | Median: 0.00 | Highly Skewed (1.80)"
+        },
+        "legs": {
+            "type": "int64",
+            "cardinality": 6,
+            "key_metric": "Range: [0.00 to 8.00] | Mean: 2.84 | Median: 4.00"
+        },
+        "tail": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.74 | Median: 1.00 | Highly Skewed (-1.13)"
+        },
+        "domestic": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.13 | Median: 0.00 | Highly Skewed (2.25)"
+        },
+        "catsize": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.44 | Median: 0.00"
         }
     },
     "columns": [
         {
-            "column": "PassengerId",
-            "dtype": "int64",
+            "column": "animal_name",
+            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 891
+            "cardinality": 100
         },
         {
-            "column": "Survived",
+            "column": "hair",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 2
         },
         {
-            "column": "Pclass",
+            "column": "feathers",
             "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 3
-        },
-        {
-            "column": "Name",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 891
-        },
-        {
-            "column": "Sex",
-            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 2
         },
         {
-            "column": "Age",
-            "dtype": "float64",
-            "missing_count": 177,
-            "missing_pct": 19.87,
-            "cardinality": 88
-        },
-        {
-            "column": "SibSp",
+            "column": "eggs",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 7
+            "cardinality": 2
         },
         {
-            "column": "Parch",
+            "column": "milk",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 7
+            "cardinality": 2
         },
         {
-            "column": "Ticket",
-            "dtype": "object",
+            "column": "airborne",
+            "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 681
+            "cardinality": 2
         },
         {
-            "column": "Fare",
-            "dtype": "float64",
+            "column": "aquatic",
+            "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 248
+            "cardinality": 2
         },
         {
-            "column": "Cabin",
-            "dtype": "object",
-            "missing_count": 687,
-            "missing_pct": 77.1,
-            "cardinality": 147
+            "column": "predator",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
         },
         {
-            "column": "Embarked",
-            "dtype": "object",
-            "missing_count": 2,
-            "missing_pct": 0.22,
-            "cardinality": 3
+            "column": "toothed",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "backbone",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "breathes",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "venomous",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "fins",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "legs",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 6
+        },
+        {
+            "column": "tail",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "domestic",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "catsize",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
         }
     ]
 }

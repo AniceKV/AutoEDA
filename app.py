@@ -13,7 +13,6 @@ from profiler import calculate_column_stats
 # Page Configuration
 st.set_page_config(
     page_title="AutoEDA - YData-Style Interactive Data Science Dashboard",
-    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -135,14 +134,14 @@ def main():
     # Brand Top Banner
     st.markdown("""
     <div class="brand-header">
-        <div class="brand-title">⚡ AutoEDA Pro Dashboard</div>
+        <div class="brand-title">AutoEDA Pro Dashboard</div>
         <div class="brand-subtitle">Autonomous Tool-Based Data Science Agent | YData-Style Variable Profiling & Statistical Insights</div>
     </div>
     """, unsafe_allow_html=True)
 
     # Sidebar Controls
-    st.sidebar.header("⚙️ Execution Setup")
-    data_source = st.sidebar.radio("Data Input Mode", ["Upload Custom CSV", "Sample Datasets"])
+    st.sidebar.header("Execution Setup")
+    data_source = st.sidebar.radio("Data Input Mode", ["Sample Datasets", "Upload Custom CSV"])
     
     selected_csv_path = None
     
@@ -160,7 +159,7 @@ def main():
             chosen_sample = st.sidebar.selectbox("Select Sample Dataset", sample_files, format_func=lambda x: os.path.basename(x))
             selected_csv_path = chosen_sample
         else:
-            st.sidebar.warning("No sample datasets in `./test_data/`.")
+            st.sidebar.warning("No sample datasets found in `./test_data/`.")
 
     user_task_request = st.sidebar.text_area(
         "Analysis Request / LLM Prompt",
@@ -168,17 +167,17 @@ def main():
         height=100
     )
 
-    run_btn = st.sidebar.button("🚀 Run AutoEDA Pipeline", type="primary", use_container_width=True)
+    run_btn = st.sidebar.button("Run AutoEDA Pipeline", type="primary", use_container_width=True)
 
     if run_btn and selected_csv_path:
-        with st.spinner("🤖 AutoEDA Agent executing tool plan & stateful versioning..."):
+        with st.spinner("AutoEDA Agent executing tool plan & stateful versioning..."):
             res = run_tool_based_eda(
                 data_path=selected_csv_path,
                 user_request=user_task_request,
                 workspace_dir="./sandbox_run"
             )
             st.session_state["pipeline_ran"] = True
-            st.toast("Pipeline run completed successfully!", icon="🎉")
+            st.toast("Pipeline run completed successfully!")
 
     # Resolve active dataset artifacts
     dataset_name = extract_dataset_name("./sandbox_run") if os.path.exists("./sandbox_run") else None
@@ -208,20 +207,20 @@ def main():
 
         # Primary Tabs: YData-Profiling Experience
         t_vars, t_plots, t_summary, t_metrics, t_script, t_dvc = st.tabs([
-            "🔍 Variable Profiling",
-            "🖼️ Visual Gallery & Bivariate",
-            "📄 Executive Summary Report",
-            "📊 Metrics & Modeling Blueprint",
-            "🐍 Production Code (generated_analysis.py)",
-            "💾 Stateful Data Version Control"
+            "Variable Profiling",
+            "Visual Gallery & Bivariate",
+            "Executive Summary Report",
+            "Metrics & Modeling Blueprint",
+            "Production Code (generated_analysis.py)",
+            "Stateful Data Version Control"
         ])
 
         # -------------------------------------------------------------
         # TAB 1: VARIABLE PROFILING (YData Profiling Style Per-Column Cards)
         # -------------------------------------------------------------
         with t_vars:
-            st.subheader("📌 Individual Variable Deep-Dive")
-            search_col = st.text_input("🔍 Search Variable Name", "")
+            st.subheader("Individual Variable Deep-Dive")
+            search_col = st.text_input("Search Variable Name", "")
             
             filtered_stats = [s for s in stats_list if search_col.lower() in s["column"].lower()] if search_col else stats_list
             
@@ -277,12 +276,12 @@ def main():
         # TAB 2: VISUAL GALLERY & BIVARIATE RELATIONSHIPS
         # -------------------------------------------------------------
         with t_plots:
-            st.subheader("🖼️ Generated Visualization Assets")
+            st.subheader("Generated Visualization Assets")
             if os.path.exists(eda_dir):
                 all_pngs = sorted(glob.glob(os.path.join(eda_dir, "*.png")))
                 
                 if all_pngs:
-                    sub_tab1, sub_tab2, sub_tab3 = st.tabs(["🔀 Semantic Bivariate (X vs Y)", "🎯 Pairplot & Correlation Heatmap", "📈 All Distribution PNGs"])
+                    sub_tab1, sub_tab2, sub_tab3 = st.tabs(["Semantic Bivariate (X vs Y)", "Pairplot & Correlation Heatmap", "All Distribution PNGs"])
                     
                     with sub_tab1:
                         biv_pngs = [p for p in all_pngs if "bivariate_" in os.path.basename(p)]
@@ -349,7 +348,7 @@ def main():
                 with open(metrics_file, "r", encoding="utf-8") as f:
                     metrics_json = json.load(f)
                 
-                m_sub1, m_sub2, m_sub3 = st.tabs(["🎯 Predictive Blueprint Strategy", "🧪 Statistical Significance Tests", "📋 Full Canonical metrics.json"])
+                m_sub1, m_sub2, m_sub3 = st.tabs(["Predictive Blueprint Strategy", "Statistical Significance Tests", "Full Canonical metrics.json"])
                 
                 with m_sub1:
                     bp = metrics_json.get("predictive_modeling_blueprint", {})
@@ -361,19 +360,19 @@ def main():
                     with b_c1:
                         st.markdown("#### Recommended Machine Learning Algorithms")
                         for algo in bp.get("recommended_algorithms", []):
-                            st.markdown(f"- 🤖 `{algo}`")
+                            st.markdown(f"- `{algo}`")
                             
                         st.markdown("#### Cross-Validation & Validation Strategy")
                         for v in bp.get("validation_strategy", []):
-                            st.markdown(f"- 🛡️ {v}")
+                            st.markdown(f"- {v}")
                     with b_c2:
                         st.markdown("#### Feature Selection & Dimensionality Strategy")
                         for fs in bp.get("feature_selection_strategy", []):
-                            st.markdown(f"- 🎯 {fs}")
+                            st.markdown(f"- {fs}")
                             
                         st.markdown("#### Overfitting Risk Mitigation")
                         for om in bp.get("overfitting_risk_mitigation", []):
-                            st.markdown(f"- ⚠️ {om}")
+                            st.markdown(f"- {om}")
 
                 with m_sub2:
                     st.subheader("Hypothesis Testing & Statistically Significant Predictors")
@@ -392,7 +391,7 @@ def main():
                             "Statistical Test": details.get("test_name", "N/A"),
                             "Statistic": details.get("statistic", "N/A"),
                             "p-value": details.get("p_value", "N/A"),
-                            "Significant": "✅ Yes" if details.get("is_statistically_significant") else "❌ No",
+                            "Significant": "Yes" if details.get("is_statistically_significant") else "No",
                             "Interpretation": details.get("interpretation", "N/A")
                         })
                     if ht_rows:
@@ -409,12 +408,12 @@ def main():
         with t_script:
             script_path = os.path.join(eda_dir, "generated_analysis.py")
             if os.path.exists(script_path):
-                st.subheader("🐍 LLM-Coded Production Feature Engineering & Predictive Blueprint Script")
+                st.subheader("LLM-Coded Production Feature Engineering & Predictive Blueprint Script")
                 with open(script_path, "r", encoding="utf-8") as f:
                     code_text = f.read()
                 st.code(code_text, language="python")
                 st.download_button(
-                    label="📥 Download generated_analysis.py",
+                    label="Download generated_analysis.py",
                     data=code_text,
                     file_name="generated_analysis.py",
                     mime="text/x-python"
@@ -426,7 +425,7 @@ def main():
         # TAB 6: STATEFUL DATA VERSION CONTROL (DVC)
         # -------------------------------------------------------------
         with t_dvc:
-            st.subheader("💾 DVC Stateful Execution Memory Checkpoints")
+            st.subheader("DVC Stateful Execution Memory Checkpoints")
             dvc_files = sorted(glob.glob(os.path.join(eda_dir, "df_state_*.csv")))
             
             if dvc_files:
@@ -439,7 +438,7 @@ def main():
             else:
                 st.info("DVC state files will appear here.")
     else:
-        st.info("👈 Upload a dataset or choose a sample in the sidebar to view YData-style profiling.")
+        st.info("Upload a dataset or choose a sample in the sidebar to view YData-style profiling.")
 
 
 if __name__ == "__main__":

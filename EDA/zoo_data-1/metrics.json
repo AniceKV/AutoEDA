@@ -5,699 +5,738 @@
       "rows": 101,
       "columns": 17
     },
-    "target_column": null,
-    "profile_dimensions": {
-      "rows": 101,
-      "columns": 17
-    },
+    "target_column": "catsize",
     "column_summary": {
       "animal_name": {
-        "dtype": "str",
+        "dtype": "object",
         "missing_count": 0,
-        "cardinality": 100,
-        "profile_type": "str",
-        "profile_key_metric": "Top Values: 'frog': 2, 'aardvark': 1, 'antelope': 1"
+        "cardinality": 100
       },
       "hair": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.43 | Median: 0.00"
+        "cardinality": 2
       },
       "feathers": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.20 | Median: 0.00 | Highly Skewed (1.54)"
+        "cardinality": 2
       },
       "eggs": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.58 | Median: 1.00"
+        "cardinality": 2
       },
       "milk": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.41 | Median: 0.00"
+        "cardinality": 2
       },
       "airborne": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.24 | Median: 0.00 | Highly Skewed (1.25)"
+        "cardinality": 2
       },
       "aquatic": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.36 | Median: 0.00"
+        "cardinality": 2
       },
       "predator": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.55 | Median: 1.00"
+        "cardinality": 2
       },
       "toothed": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.60 | Median: 1.00"
+        "cardinality": 2
       },
       "backbone": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.82 | Median: 1.00 | Highly Skewed (-1.71)"
+        "cardinality": 2
       },
       "breathes": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.79 | Median: 1.00 | Highly Skewed (-1.46)"
+        "cardinality": 2
       },
       "venomous": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.08 | Median: 0.00 | Highly Skewed (3.16)"
+        "cardinality": 2
       },
       "fins": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.17 | Median: 0.00 | Highly Skewed (1.80)"
+        "cardinality": 2
       },
       "legs": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 6,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 8.00] | Mean: 2.84 | Median: 4.00"
+        "cardinality": 6
       },
       "tail": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.74 | Median: 1.00 | Highly Skewed (-1.13)"
+        "cardinality": 2
       },
       "domestic": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.13 | Median: 0.00 | Highly Skewed (2.25)"
+        "cardinality": 2
       },
       "catsize": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2,
-        "profile_type": "int64",
-        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.44 | Median: 0.00"
-      },
-      "terrestrial_mammalian_score": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 5,
-        "profile_type": "",
-        "profile_key_metric": null
-      },
-      "environmental_adaptation_score": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 3,
-        "profile_type": "",
-        "profile_key_metric": null
-      },
-      "locomotion_structure_score": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 10,
-        "profile_type": "",
-        "profile_key_metric": null
+        "cardinality": 2
       }
     }
   },
   "imputation_summary": {
-    "rules": [
-      "Numeric columns with absolute profile skewness greater than 1 use median imputation.",
-      "Numeric columns with absolute profile skewness less than or equal to 1 use mean imputation.",
-      "Categorical or string columns use mode imputation, with Unknown as a fallback.",
-      "No imputation is performed when a column has no missing values."
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
     ],
     "columns": {
       "animal_name": {
-        "dtype": "str",
+        "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "hair": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "feathers": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": 1.54
+        "fill_value": null
       },
       "eggs": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "milk": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "airborne": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": 1.25
+        "fill_value": null
       },
       "aquatic": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "predator": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "toothed": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "backbone": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": -1.71
+        "fill_value": null
       },
       "breathes": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": -1.46
+        "fill_value": null
       },
       "venomous": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": 3.16
+        "fill_value": null
       },
       "fins": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": 1.8
+        "fill_value": null
       },
       "legs": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       },
       "tail": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": -1.13
+        "fill_value": null
       },
       "domestic": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": 2.25
+        "fill_value": null
       },
       "catsize": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
-        "filled_value_or_statistic": null,
-        "filled_count": 0,
-        "profile_skewness": null
+        "fill_value": null
       }
     }
   },
   "outlier_analysis": {
-    "hair": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "feathers": {
-      "Q1": 0.0,
-      "Q3": 0.0,
-      "IQR": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 20,
-      "outlier_percentage": 19.801980198019802
-    },
-    "eggs": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "milk": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "airborne": {
-      "Q1": 0.0,
-      "Q3": 0.0,
-      "IQR": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 24,
-      "outlier_percentage": 23.762376237623762
-    },
-    "aquatic": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "predator": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "toothed": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "backbone": {
-      "Q1": 1.0,
-      "Q3": 1.0,
-      "IQR": 0.0,
-      "lower_bound": 1.0,
-      "upper_bound": 1.0,
-      "outlier_count": 18,
-      "outlier_percentage": 17.82178217821782
-    },
-    "breathes": {
-      "Q1": 1.0,
-      "Q3": 1.0,
-      "IQR": 0.0,
-      "lower_bound": 1.0,
-      "upper_bound": 1.0,
-      "outlier_count": 21,
-      "outlier_percentage": 20.792079207920793
-    },
-    "venomous": {
-      "Q1": 0.0,
-      "Q3": 0.0,
-      "IQR": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 8,
-      "outlier_percentage": 7.920792079207921
-    },
-    "fins": {
-      "Q1": 0.0,
-      "Q3": 0.0,
-      "IQR": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 17,
-      "outlier_percentage": 16.831683168316832
-    },
     "legs": {
-      "Q1": 2.0,
-      "Q3": 4.0,
-      "IQR": 2.0,
+      "q1": 2.0,
+      "q3": 4.0,
+      "iqr": 2.0,
       "lower_bound": -1.0,
       "upper_bound": 7.0,
       "outlier_count": 2,
-      "outlier_percentage": 1.9801980198019802
-    },
-    "tail": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "domestic": {
-      "Q1": 0.0,
-      "Q3": 0.0,
-      "IQR": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 13,
-      "outlier_percentage": 12.871287128712872
-    },
-    "catsize": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "terrestrial_mammalian_score": {
-      "Q1": 1.0,
-      "Q3": 4.0,
-      "IQR": 3.0,
-      "lower_bound": -3.5,
-      "upper_bound": 8.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "environmental_adaptation_score": {
-      "Q1": 0.0,
-      "Q3": 1.0,
-      "IQR": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
-    },
-    "locomotion_structure_score": {
-      "Q1": 1.5,
-      "Q3": 2.5,
-      "IQR": 1.0,
-      "lower_bound": 0.0,
-      "upper_bound": 4.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0
+      "outlier_percentage": 1.98,
+      "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "terrestrial_mammalian_score",
-      "formula_or_method": "hair + milk + backbone + breathes",
-      "data_type": "int64",
-      "rationale_purpose": "Summarizes traits associated with mammalian and terrestrial biological structure.",
-      "correlation_with_target": null
-    },
-    {
-      "feature_name": "environmental_adaptation_score",
-      "formula_or_method": "aquatic + fins + airborne",
-      "data_type": "int64",
-      "rationale_purpose": "Captures adaptation to aquatic and aerial environments.",
-      "correlation_with_target": null
-    },
-    {
-      "feature_name": "locomotion_structure_score",
-      "formula_or_method": "normalized legs + tail + backbone",
-      "data_type": "float64",
-      "rationale_purpose": "Represents structural traits related to movement and body support.",
-      "correlation_with_target": null
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
-    "top_positive_correlations": [
+    "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
+    "top_correlations": [
       {
-        "feature_1": "milk",
-        "feature_2": "terrestrial_mammalian_score",
-        "correlation": 0.9148394994817326
-      },
-      {
-        "feature_1": "locomotion_structure_score",
-        "feature_2": "tail",
-        "correlation": 0.9028419001945999
+        "feature_1": "eggs",
+        "feature_2": "milk",
+        "correlation": -0.9388
       },
       {
         "feature_1": "hair",
         "feature_2": "milk",
-        "correlation": 0.8785027248895131
+        "correlation": 0.8785
       },
       {
         "feature_1": "hair",
-        "feature_2": "terrestrial_mammalian_score",
-        "correlation": 0.866031141504355
-      },
-      {
-        "feature_1": "backbone",
-        "feature_2": "locomotion_structure_score",
-        "correlation": 0.8511672983823441
-      },
-      {
-        "feature_1": "aquatic",
-        "feature_2": "environmental_adaptation_score",
-        "correlation": 0.8042547527464281
+        "feature_2": "eggs",
+        "correlation": -0.8174
       },
       {
         "feature_1": "backbone",
         "feature_2": "tail",
-        "correlation": 0.7317619678035817
+        "correlation": 0.7318
       },
       {
-        "feature_1": "environmental_adaptation_score",
-        "feature_2": "fins",
-        "correlation": 0.7089252967969988
-      },
-      {
-        "feature_1": "breathes",
-        "feature_2": "terrestrial_mammalian_score",
-        "correlation": 0.6698972079211295
-      },
-      {
-        "feature_1": "airborne",
-        "feature_2": "feathers",
-        "correlation": 0.6565530764325558
-      }
-    ],
-    "top_negative_correlations": [
-      {
-        "feature_1": "eggs",
-        "feature_2": "milk",
-        "correlation": -0.9388478737749794
-      },
-      {
-        "feature_1": "eggs",
-        "feature_2": "terrestrial_mammalian_score",
-        "correlation": -0.8458703102494302
-      },
-      {
-        "feature_1": "eggs",
-        "feature_2": "hair",
-        "correlation": -0.8173815452256148
+        "feature_1": "feathers",
+        "feature_2": "airborne",
+        "correlation": 0.6566
       },
       {
         "feature_1": "eggs",
         "feature_2": "toothed",
-        "correlation": -0.6421501167047026
+        "correlation": -0.6422
       },
       {
         "feature_1": "aquatic",
         "feature_2": "breathes",
-        "correlation": -0.6375063344111384
+        "correlation": -0.6375
+      },
+      {
+        "feature_1": "milk",
+        "feature_2": "toothed",
+        "correlation": 0.6282
       },
       {
         "feature_1": "breathes",
         "feature_2": "fins",
-        "correlation": -0.6172188026030814
+        "correlation": -0.6172
       },
       {
         "feature_1": "feathers",
         "feature_2": "toothed",
-        "correlation": -0.6136311676215142
-      },
-      {
-        "feature_1": "fins",
-        "feature_2": "legs",
-        "correlation": -0.6056518124207464
-      },
-      {
-        "feature_1": "airborne",
-        "feature_2": "toothed",
-        "correlation": -0.5943105753453786
-      },
-      {
-        "feature_1": "environmental_adaptation_score",
-        "feature_2": "hair",
-        "correlation": -0.5298706412242612
+        "correlation": -0.6136
       }
     ],
-    "target_correlations": {
-      "top_positive": [],
-      "top_negative": [],
-      "all_target_correlations": {}
-    },
-    "correlation_matrix_plain_text": "                                  hair  feathers    eggs    milk  airborne  aquatic  predator  toothed  backbone  breathes  venomous    fins    legs    tail  domestic  catsize  terrestrial_mammalian_score  environmental_adaptation_score  locomotion_structure_score\nhair                            1.0000   -0.4279 -0.8174  0.8785   -0.1984  -0.4736   -0.1548   0.4925    0.1917    0.4411   -0.1042 -0.2803  0.3940  0.0490    0.2072   0.4550                       0.8660                         -0.5299                      0.2790\nfeathers                       -0.4279    1.0000  0.4192 -0.4108    0.6566  -0.0586   -0.1044  -0.6136    0.2314    0.2546   -0.1457 -0.2235 -0.2067  0.2926    0.0316  -0.1359                      -0.1627                          0.2136                      0.2356\neggs                           -0.8174    0.4192  1.0000 -0.9388    0.3766   0.3762    0.0116  -0.6422   -0.3404   -0.3828    0.0987  0.1648 -0.2249 -0.2211   -0.1556  -0.5147                      -0.8459                          0.5121                     -0.4073\nmilk                            0.8785   -0.4108 -0.9388  1.0000   -0.3668  -0.3626   -0.0297   0.6282    0.3850    0.4235   -0.2424 -0.1563  0.2142  0.2100    0.1639   0.5749                       0.9148                         -0.4944                      0.4209\nairborne                       -0.1984    0.6566  0.3766 -0.3668    1.0000  -0.1726   -0.2952  -0.5943   -0.1047    0.2860    0.0085 -0.2512  0.0437  0.0095    0.0633  -0.3498                      -0.1486                          0.3170                     -0.0357\naquatic                        -0.4736   -0.0586  0.3762 -0.3626   -0.1726   1.0000    0.3760   0.0531    0.0225   -0.6375    0.0879  0.6045 -0.3606 -0.0346   -0.2243  -0.1119                      -0.4868                          0.8043                     -0.1403\npredator                       -0.1548   -0.1044  0.0116 -0.0297   -0.2952   0.3760    1.0000   0.1295    0.0510   -0.2629    0.1154  0.1903 -0.0997  0.0189   -0.3098   0.1448                      -0.1311                          0.1600                      0.0037\ntoothed                         0.4925   -0.6136 -0.6422  0.6282   -0.5943   0.0531    0.1295   1.0000    0.5751   -0.0657   -0.0623  0.3643 -0.1935  0.3104    0.0694   0.3440                       0.5479                         -0.1161                      0.4403\nbackbone                        0.1917    0.2314 -0.3404  0.3850   -0.1047   0.0225    0.0510   0.5751    1.0000    0.2077   -0.2466  0.2095 -0.4329  0.7318    0.1017   0.3570                       0.5518                          0.0568                      0.8512\nbreathes                        0.4411    0.2546 -0.3828  0.4235    0.2860  -0.6375   -0.2629  -0.0657    0.2077    1.0000   -0.1208 -0.6172  0.3699  0.0890    0.1241   0.2041                       0.6699                         -0.5278                      0.3041\nvenomous                       -0.1042   -0.1457  0.0987 -0.2424    0.0085   0.0879    0.1154  -0.0623   -0.2466   -0.1208    1.0000 -0.0340  0.0230 -0.1627   -0.0033  -0.1837                      -0.2308                          0.0421                     -0.2292\nfins                           -0.2803   -0.2235  0.1648 -0.1563   -0.2512   0.6045    0.1903   0.3643    0.2095   -0.6172   -0.0340  1.0000 -0.6057  0.2043   -0.0939   0.0317                      -0.2835                          0.7089                      0.0235\nlegs                            0.3940   -0.2067 -0.2249  0.2142    0.0437  -0.3606   -0.0997  -0.1935   -0.4329    0.3699    0.0230 -0.6057  1.0000 -0.3483    0.0739   0.0688                       0.2091                         -0.4848                     -0.0933\ntail                            0.0490    0.2926 -0.2211  0.2100    0.0095  -0.0346    0.0189   0.3104    0.7318    0.0890   -0.1627  0.2043 -0.3483  1.0000    0.0234   0.2433                       0.3260                          0.0814                      0.9028\ndomestic                        0.2072    0.0316 -0.1556  0.1639    0.0633  -0.2243   -0.3098   0.0694    0.1017    0.1241   -0.0033 -0.0939  0.0739  0.0234    1.0000   0.0201                       0.2001                         -0.1472                      0.0974\ncatsize                         0.4550   -0.1359 -0.5147  0.5749   -0.3498  -0.1119    0.1448   0.3440    0.3570    0.2041   -0.1837  0.0317  0.0688  0.2433    0.0201   1.0000                       0.5342                         -0.2427                      0.3736\nterrestrial_mammalian_score     0.8660   -0.1627 -0.8459  0.9148   -0.1486  -0.4868   -0.1311   0.5479    0.5518    0.6699   -0.2308 -0.2835  0.2091  0.3260    0.2001   0.5342                       1.0000                         -0.5125                      0.5834\nenvironmental_adaptation_score -0.5299    0.2136  0.5121 -0.4944    0.3170   0.8043    0.1600  -0.1161    0.0568   -0.5278    0.0421  0.7089 -0.4848  0.0814   -0.1472  -0.2427                      -0.5125                          1.0000                     -0.0937\nlocomotion_structure_score      0.2790    0.2356 -0.4073  0.4209   -0.0357  -0.1403    0.0037   0.4403    0.8512    0.3041   -0.2292  0.0235 -0.0933  0.9028    0.0974   0.3736                       0.5834                         -0.0937                      1.0000"
+    "correlation_matrix_text": {
+      "hair": {
+        "hair": 1.0,
+        "feathers": -0.428,
+        "eggs": -0.817,
+        "milk": 0.879,
+        "airborne": -0.198,
+        "aquatic": -0.474,
+        "predator": -0.155,
+        "toothed": 0.493,
+        "backbone": 0.192,
+        "breathes": 0.441,
+        "venomous": -0.104,
+        "fins": -0.28,
+        "legs": 0.394,
+        "tail": 0.049,
+        "domestic": 0.207,
+        "catsize": 0.455
+      },
+      "feathers": {
+        "hair": -0.428,
+        "feathers": 1.0,
+        "eggs": 0.419,
+        "milk": -0.411,
+        "airborne": 0.657,
+        "aquatic": -0.059,
+        "predator": -0.104,
+        "toothed": -0.614,
+        "backbone": 0.231,
+        "breathes": 0.255,
+        "venomous": -0.146,
+        "fins": -0.224,
+        "legs": -0.207,
+        "tail": 0.293,
+        "domestic": 0.032,
+        "catsize": -0.136
+      },
+      "eggs": {
+        "hair": -0.817,
+        "feathers": 0.419,
+        "eggs": 1.0,
+        "milk": -0.939,
+        "airborne": 0.377,
+        "aquatic": 0.376,
+        "predator": 0.012,
+        "toothed": -0.642,
+        "backbone": -0.34,
+        "breathes": -0.383,
+        "venomous": 0.099,
+        "fins": 0.165,
+        "legs": -0.225,
+        "tail": -0.221,
+        "domestic": -0.156,
+        "catsize": -0.515
+      },
+      "milk": {
+        "hair": 0.879,
+        "feathers": -0.411,
+        "eggs": -0.939,
+        "milk": 1.0,
+        "airborne": -0.367,
+        "aquatic": -0.363,
+        "predator": -0.03,
+        "toothed": 0.628,
+        "backbone": 0.385,
+        "breathes": 0.424,
+        "venomous": -0.242,
+        "fins": -0.156,
+        "legs": 0.214,
+        "tail": 0.21,
+        "domestic": 0.164,
+        "catsize": 0.575
+      },
+      "airborne": {
+        "hair": -0.198,
+        "feathers": 0.657,
+        "eggs": 0.377,
+        "milk": -0.367,
+        "airborne": 1.0,
+        "aquatic": -0.173,
+        "predator": -0.295,
+        "toothed": -0.594,
+        "backbone": -0.105,
+        "breathes": 0.286,
+        "venomous": 0.009,
+        "fins": -0.251,
+        "legs": 0.044,
+        "tail": 0.009,
+        "domestic": 0.063,
+        "catsize": -0.35
+      },
+      "aquatic": {
+        "hair": -0.474,
+        "feathers": -0.059,
+        "eggs": 0.376,
+        "milk": -0.363,
+        "airborne": -0.173,
+        "aquatic": 1.0,
+        "predator": 0.376,
+        "toothed": 0.053,
+        "backbone": 0.022,
+        "breathes": -0.638,
+        "venomous": 0.088,
+        "fins": 0.604,
+        "legs": -0.361,
+        "tail": -0.035,
+        "domestic": -0.224,
+        "catsize": -0.112
+      },
+      "predator": {
+        "hair": -0.155,
+        "feathers": -0.104,
+        "eggs": 0.012,
+        "milk": -0.03,
+        "airborne": -0.295,
+        "aquatic": 0.376,
+        "predator": 1.0,
+        "toothed": 0.129,
+        "backbone": 0.051,
+        "breathes": -0.263,
+        "venomous": 0.115,
+        "fins": 0.19,
+        "legs": -0.1,
+        "tail": 0.019,
+        "domestic": -0.31,
+        "catsize": 0.145
+      },
+      "toothed": {
+        "hair": 0.493,
+        "feathers": -0.614,
+        "eggs": -0.642,
+        "milk": 0.628,
+        "airborne": -0.594,
+        "aquatic": 0.053,
+        "predator": 0.129,
+        "toothed": 1.0,
+        "backbone": 0.575,
+        "breathes": -0.066,
+        "venomous": -0.062,
+        "fins": 0.364,
+        "legs": -0.193,
+        "tail": 0.31,
+        "domestic": 0.069,
+        "catsize": 0.344
+      },
+      "backbone": {
+        "hair": 0.192,
+        "feathers": 0.231,
+        "eggs": -0.34,
+        "milk": 0.385,
+        "airborne": -0.105,
+        "aquatic": 0.022,
+        "predator": 0.051,
+        "toothed": 0.575,
+        "backbone": 1.0,
+        "breathes": 0.208,
+        "venomous": -0.247,
+        "fins": 0.209,
+        "legs": -0.433,
+        "tail": 0.732,
+        "domestic": 0.102,
+        "catsize": 0.357
+      },
+      "breathes": {
+        "hair": 0.441,
+        "feathers": 0.255,
+        "eggs": -0.383,
+        "milk": 0.424,
+        "airborne": 0.286,
+        "aquatic": -0.638,
+        "predator": -0.263,
+        "toothed": -0.066,
+        "backbone": 0.208,
+        "breathes": 1.0,
+        "venomous": -0.121,
+        "fins": -0.617,
+        "legs": 0.37,
+        "tail": 0.089,
+        "domestic": 0.124,
+        "catsize": 0.204
+      },
+      "venomous": {
+        "hair": -0.104,
+        "feathers": -0.146,
+        "eggs": 0.099,
+        "milk": -0.242,
+        "airborne": 0.009,
+        "aquatic": 0.088,
+        "predator": 0.115,
+        "toothed": -0.062,
+        "backbone": -0.247,
+        "breathes": -0.121,
+        "venomous": 1.0,
+        "fins": -0.034,
+        "legs": 0.023,
+        "tail": -0.163,
+        "domestic": -0.003,
+        "catsize": -0.184
+      },
+      "fins": {
+        "hair": -0.28,
+        "feathers": -0.224,
+        "eggs": 0.165,
+        "milk": -0.156,
+        "airborne": -0.251,
+        "aquatic": 0.604,
+        "predator": 0.19,
+        "toothed": 0.364,
+        "backbone": 0.209,
+        "breathes": -0.617,
+        "venomous": -0.034,
+        "fins": 1.0,
+        "legs": -0.606,
+        "tail": 0.204,
+        "domestic": -0.094,
+        "catsize": 0.032
+      },
+      "legs": {
+        "hair": 0.394,
+        "feathers": -0.207,
+        "eggs": -0.225,
+        "milk": 0.214,
+        "airborne": 0.044,
+        "aquatic": -0.361,
+        "predator": -0.1,
+        "toothed": -0.193,
+        "backbone": -0.433,
+        "breathes": 0.37,
+        "venomous": 0.023,
+        "fins": -0.606,
+        "legs": 1.0,
+        "tail": -0.348,
+        "domestic": 0.074,
+        "catsize": 0.069
+      },
+      "tail": {
+        "hair": 0.049,
+        "feathers": 0.293,
+        "eggs": -0.221,
+        "milk": 0.21,
+        "airborne": 0.009,
+        "aquatic": -0.035,
+        "predator": 0.019,
+        "toothed": 0.31,
+        "backbone": 0.732,
+        "breathes": 0.089,
+        "venomous": -0.163,
+        "fins": 0.204,
+        "legs": -0.348,
+        "tail": 1.0,
+        "domestic": 0.023,
+        "catsize": 0.243
+      },
+      "domestic": {
+        "hair": 0.207,
+        "feathers": 0.032,
+        "eggs": -0.156,
+        "milk": 0.164,
+        "airborne": 0.063,
+        "aquatic": -0.224,
+        "predator": -0.31,
+        "toothed": 0.069,
+        "backbone": 0.102,
+        "breathes": 0.124,
+        "venomous": -0.003,
+        "fins": -0.094,
+        "legs": 0.074,
+        "tail": 0.023,
+        "domestic": 1.0,
+        "catsize": 0.02
+      },
+      "catsize": {
+        "hair": 0.455,
+        "feathers": -0.136,
+        "eggs": -0.515,
+        "milk": 0.575,
+        "airborne": -0.35,
+        "aquatic": -0.112,
+        "predator": 0.145,
+        "toothed": 0.344,
+        "backbone": 0.357,
+        "breathes": 0.204,
+        "venomous": -0.184,
+        "fins": 0.032,
+        "legs": 0.069,
+        "tail": 0.243,
+        "domestic": 0.02,
+        "catsize": 1.0
+      }
+    }
   },
   "statistical_hypothesis_tests": {
-    "tests_by_feature": {
-      "dataset_level_note": {
-        "test_name": "Not applicable",
-        "statistic_value": null,
-        "p_value": null,
-        "degrees_of_freedom": null,
-        "is_statistically_significant": false,
-        "interpretation_summary": "No explicit target column was detected. The dataset appears to contain animal attributes without a supervised outcome column."
-      }
+    "hair": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.455,
+      "p_value": 1.7485944142318718e-06,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.4550, p = 1.7486e-06. (Statistically Significant)"
     },
-    "significant_predictors": [],
-    "significance_threshold": 0.05
-  },
-  "extracted_insights": {
-    "key_findings": [
-      "No explicit supervised target was detected; statistical target-based inference is unavailable.",
-      "The feature space is dominated by binary biological attributes, making tree-based classifiers and interpretable rule-based models appropriate.",
-      "Highly skewed binary traits are expected because several biological characteristics are uncommon in the animal population."
-    ],
-    "data_quality_issues": [
-      "The dataset contains animal attributes but no clear outcome or class label column.",
-      "Observed dimensions differ from the supplied metadata profile.",
-      "animal_name is not fully unique and should not automatically be treated as a primary key."
-    ],
-    "key_feature_drivers": [
-      "milk and terrestrial_mammalian_score",
-      "locomotion_structure_score and tail",
-      "hair and milk",
-      "hair and terrestrial_mammalian_score",
-      "backbone and locomotion_structure_score"
+    "feathers": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.1359,
+      "p_value": 0.17528389468358252,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.1359, p = 1.7528e-01. (Not Significant)"
+    },
+    "eggs": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.5147,
+      "p_value": 3.6767545490409676e-08,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.5147, p = 3.6768e-08. (Statistically Significant)"
+    },
+    "milk": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.5749,
+      "p_value": 3.230118074009839e-10,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.5749, p = 3.2301e-10. (Statistically Significant)"
+    },
+    "airborne": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.3498,
+      "p_value": 0.00033667266547309784,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.3498, p = 3.3667e-04. (Statistically Significant)"
+    },
+    "aquatic": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.1119,
+      "p_value": 0.2653889025027848,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.1119, p = 2.6539e-01. (Not Significant)"
+    },
+    "predator": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.1448,
+      "p_value": 0.14856197931027176,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.1448, p = 1.4856e-01. (Not Significant)"
+    },
+    "toothed": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.344,
+      "p_value": 0.0004277076756118534,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.3440, p = 4.2771e-04. (Statistically Significant)"
+    },
+    "backbone": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.357,
+      "p_value": 0.00024790599383218704,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.3570, p = 2.4791e-04. (Statistically Significant)"
+    },
+    "breathes": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2041,
+      "p_value": 0.04060854651021092,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2041, p = 4.0609e-02. (Statistically Significant)"
+    },
+    "venomous": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.1837,
+      "p_value": 0.06586270179863142,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.1837, p = 6.5863e-02. (Not Significant)"
+    },
+    "fins": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0317,
+      "p_value": 0.7529581752471036,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0317, p = 7.5296e-01. (Not Significant)"
+    },
+    "legs": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0688,
+      "p_value": 0.49426482496697216,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0688, p = 4.9426e-01. (Not Significant)"
+    },
+    "tail": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2433,
+      "p_value": 0.014229355157286802,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2433, p = 1.4229e-02. (Statistically Significant)"
+    },
+    "domestic": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0201,
+      "p_value": 0.8420784891523104,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0201, p = 8.4208e-01. (Not Significant)"
+    },
+    "significant_predictors": [
+      "hair",
+      "eggs",
+      "milk",
+      "airborne",
+      "toothed",
+      "backbone",
+      "breathes",
+      "tail"
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "No explicit target detected; provide a target such as class_type.",
-    "problem_type": "Undefined until a target label is supplied",
+    "target_definition": "catsize",
+    "problem_type": "Classification",
     "recommended_algorithms": [
-      "Regularized logistic regression as an interpretable baseline",
-      "Decision tree with constrained depth",
-      "Random forest with class weighting where appropriate",
-      "Gradient boosting or XGBoost-style boosting for nonlinear interactions",
-      "Linear or kernel SVM for small-sample comparison"
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
     ],
     "feature_selection_strategy": [
-      "Exclude animal_name unless entity identity is explicitly meaningful.",
-      "Use domain-engineered scores alongside original attributes.",
-      "Rank features using cross-validated permutation importance and mutual information.",
-      "Remove redundant features only after checking model stability and domain interpretability.",
-      "Do not select features using the full dataset before cross-validation."
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Use stratified k-fold cross-validation for classification.",
-      "Use repeated stratified cross-validation because the sample size is small.",
-      "Report balanced accuracy, macro F1, per-class recall, ROC-AUC where applicable, and a confusion matrix.",
-      "Reserve a final holdout set only if enough observations remain after training."
-    ],
-    "preprocessing_steps": [
-      "Apply type-safe imputation inside each training fold.",
-      "Treat binary biological indicators as numeric or categorical consistently.",
-      "Scale continuous engineered scores for linear models and SVMs.",
-      "Avoid scaling requirements for tree-based models.",
-      "Encode categorical variables with one-hot encoding if additional categorical predictors are added."
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
     ],
     "overfitting_risk_mitigation": [
-      "Use shallow trees, minimum leaf sizes, regularization, and early stopping.",
-      "Avoid high-cardinality animal_name encoding.",
-      "Use nested or repeated cross-validation for hyperparameter selection.",
-      "Prefer simple models when performance is statistically indistinguishable.",
-      "Monitor train-validation performance gaps and feature-importance instability."
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "overall_executive_modeling_strategy_summary": "Establish a regularized interpretable baseline, then compare constrained tree ensembles using leakage-safe cross-validation. Emphasize biological interpretability, robust metrics, and uncertainty because the dataset is small and largely binary. A supervised target must be confirmed before production modeling."
+    "executive_summary": "Target: catsize (Classification). Use robust cross-validation on 101 rows x 17 columns."
   },
-  "generated_visualizations": [
-    "correlation_matrix.png",
-    "target_interactions.png"
-  ]
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 101 rows and 17 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "hair",
+      "eggs",
+      "milk",
+      "airborne",
+      "toothed",
+      "backbone",
+      "breathes",
+      "tail"
+    ]
+  }
 }

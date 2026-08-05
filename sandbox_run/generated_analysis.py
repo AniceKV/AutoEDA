@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\Titanic-Dataset.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\zoo_data-1.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "Survived",
+  "target_definition": "catsize",
   "problem_type": "Classification",
   "recommended_algorithms": [
     "Regularized Logistic Regression (baseline)",
@@ -33,7 +33,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+  "executive_summary": "Target: catsize (Classification). Use robust cross-validation on 101 rows x 17 columns."
 }
 
 if __name__ == '__main__':

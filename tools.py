@@ -797,7 +797,7 @@ def plot_pairplot(
         if hue_col:
             grid = sns.pairplot(clean_df, vars=valid_cols, hue=hue_col, palette="Set1", corner=True, plot_kws={"alpha": 0.6, "s": 25})
         else:
-            grid = sns.pairplot(clean_df, vars=valid_cols, color="teal", corner=True, plot_kws={"alpha": 0.6, "s": 25})
+            grid = sns.pairplot(clean_df, vars=valid_cols, corner=True, plot_kws={"alpha": 0.6, "s": 25})
             
         grid.fig.suptitle("Pairwise Feature Relationships (Pairplot)", y=1.02, fontsize=14)
         grid.savefig(full_save_path, dpi=150, bbox_inches="tight")

@@ -81,7 +81,10 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     4. Compiles metrics.json and executes summary_generator.py
     5. Exports all assets to EDA/{dataset_name}/
     """
-    os.makedirs(workspace_dir, exist_ok=True)
+    # Wipe previous sandbox artifacts before starting a fresh run
+    if os.path.exists(workspace_dir):
+        shutil.rmtree(workspace_dir)
+    os.makedirs(workspace_dir)
     abs_data_path = os.path.abspath(data_path)
     
     print("\n==================================================")
@@ -362,5 +365,5 @@ if __name__ == "__main__":
     if os.path.exists(test_csv):
         run_tool_based_eda(
             data_path=test_csv,
-            user_request="Perform full exploratory data analysis, imputation, outlier profiling, statistical hypothesis testing, and predictive blueprinting on dataset_2191_sleep.csv."
+            user_request="Perform full exploratory data analysis, type-safe imputation, outlier profiling, statistical hypothesis testing, and predictive blueprinting on Titanic-Dataset.csv."
         )

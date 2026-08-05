@@ -7,9 +7,9 @@
     "missing_values_summary": {},
     "schema": {
         "animal_name": {
-            "type": "str",
+            "type": "object",
             "cardinality": 100,
-            "key_metric": "Top Values: 'frog': 2, 'aardvark': 1, 'antelope': 1"
+            "key_metric": "Top Values: 'frog': 2, 'aardvark': 1, 'bass': 1"
         },
         "hair": {
             "type": "int64",
@@ -95,7 +95,7 @@
     "columns": [
         {
             "column": "animal_name",
-            "dtype": "str",
+            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 100
