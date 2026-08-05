@@ -1,0 +1,642 @@
+import os
+import json
+import math
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+import matplotlib
+matplotlib.use("Agg")  # Non-interactive backend
+import matplotlib.pyplot as plt
+import seaborn as sns
+from typing import Dict, Any, List, Optional, Tuple
+
+sns.set_theme(style="whitegrid")
+
+
+# =====================================================================
+# 1. SMART TYPE-SAFE IMPUTATION TOOL
+# =====================================================================
+def impute_missing_data(
+    df: pd.DataFrame,
+    strategy_map: Optional[Dict[str, str]] = None,
+    numeric_skew_threshold: float = 1.0
+) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+    """
+    Programmatically applies type-safe missing value imputation.
+    - Highly skewed numeric columns (abs(skew) > threshold) -> Median imputation
+    - Symmetric numeric columns -> Mean imputation
+    - Categorical/String columns -> Mode imputation or placeholder 'Unknown'
+    - Replaces dirty text missing tokens ('?', 'NA', 'N/A', 'null', 'None')
+    """
+    df_imputed = df.copy()
+    
+    # 1. Standardize string missing value representations
+    missing_tokens = ["?", "NA", "N/A", "null", "None", "nan", "NaN", ""]
+    df_imputed = df_imputed.replace(missing_tokens, np.nan)
+    
+    rules_applied = [
+        "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+        f"Numeric columns with skewness > {numeric_skew_threshold} or < -{numeric_skew_threshold} use median imputation.",
+        f"Numeric columns with skewness between -{numeric_skew_threshold} and {numeric_skew_threshold} use mean imputation.",
+        "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ]
+    
+    col_summary = {}
+    
+    for col in df_imputed.columns:
+        # Convert numeric-like object columns if possible
+        if df_imputed[col].dtype == object:
+            try:
+                converted = pd.to_numeric(df_imputed[col], errors="coerce")
+                if converted.notnull().sum() > 0.5 * len(df_imputed):
+                    df_imputed[col] = converted
+            except Exception:
+                pass
+                
+        missing_before = int(df_imputed[col].isnull().sum())
+        dtype_str = str(df_imputed[col].dtype)
+        
+        if missing_before == 0:
+            col_summary[col] = {
+                "dtype": dtype_str,
+                "missing_before": 0,
+                "missing_after": 0,
+                "method": "none",
+                "fill_value": None
+            }
+            continue
+            
+        strategy = (strategy_map or {}).get(col, "auto")
+        
+        if pd.api.types.is_numeric_dtype(df_imputed[col]):
+            skew_val = float(df_imputed[col].skew()) if df_imputed[col].notnull().sum() > 2 else 0.0
+            
+            if strategy == "median" or (strategy == "auto" and abs(skew_val) > numeric_skew_threshold):
+                fill_val = float(df_imputed[col].median()) if df_imputed[col].notnull().any() else 0.0
+                method = "median"
+            else:
+                fill_val = float(df_imputed[col].mean()) if df_imputed[col].notnull().any() else 0.0
+                method = "mean"
+                
+            df_imputed[col] = df_imputed[col].fillna(fill_val)
+        else:
+            skew_val = None
+            if strategy in ["mode", "auto"]:
+                mode_res = df_imputed[col].mode()
+                fill_val = str(mode_res.iloc[0]) if not mode_res.empty else "Unknown"
+                method = "mode"
+            else:
+                fill_val = "Unknown"
+                method = "constant"
+                
+            df_imputed[col] = df_imputed[col].fillna(fill_val)
+            
+        col_summary[col] = {
+            "dtype": dtype_str,
+            "missing_before": missing_before,
+            "missing_after": int(df_imputed[col].isnull().sum()),
+            "method": method,
+            "skewness": round(skew_val, 2) if skew_val is not None else None,
+            "fill_value": fill_val
+        }
+
+    imputation_report = {
+        "rules_applied": rules_applied,
+        "columns": col_summary
+    }
+    
+    return df_imputed, imputation_report
+
+
+# =====================================================================
+# 2. OUTLIER PROFILING & CAPPING TOOL
+# =====================================================================
+def detect_and_handle_outliers(
+    df: pd.DataFrame,
+    columns: Optional[List[str]] = None,
+    method: str = "iqr",
+    action: str = "profile"
+) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+    """
+    Detects outliers using IQR (Interquartile Range) method.
+    - action='profile': Calculates IQR bounds, outlier counts, and percentages.
+    - action='cap': Caps extreme values at calculated lower and upper bounds.
+    """
+    df_out = df.copy()
+    target_cols = columns or [c for c in df_out.columns if pd.api.types.is_numeric_dtype(df_out[c])]
+    
+    outlier_report = {}
+    
+    for col in target_cols:
+        if not pd.api.types.is_numeric_dtype(df_out[col]) or df_out[col].nunique() <= 2:
+            continue
+            
+        q1 = float(df_out[col].quantile(0.25))
+        q3 = float(df_out[col].quantile(0.75))
+        iqr = q3 - q1
+        
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        
+        is_outlier = (df_out[col] < lower_bound) | (df_out[col] > upper_bound)
+        outlier_count = int(is_outlier.sum())
+        outlier_pct = round((outlier_count / len(df_out)) * 100, 2) if len(df_out) > 0 else 0.0
+        
+        if action == "cap" and outlier_count > 0:
+            df_out[col] = df_out[col].clip(lower=lower_bound, upper=upper_bound)
+            
+        outlier_report[col] = {
+            "q1": round(q1, 4),
+            "q3": round(q3, 4),
+            "iqr": round(iqr, 4),
+            "lower_bound": round(lower_bound, 4),
+            "upper_bound": round(upper_bound, 4),
+            "outlier_count": outlier_count,
+            "outlier_percentage": outlier_pct,
+            "action_taken": action
+        }
+        
+    return df_out, outlier_report
+
+
+# =====================================================================
+# 3. HIGH-SIGNAL FEATURE ENGINEERING TOOL
+# =====================================================================
+def engineer_features(
+    df: pd.DataFrame,
+    feature_specs: Optional[List[Dict[str, Any]]] = None,
+    target_col: Optional[str] = None
+) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
+    """
+    Creates high-signal domain features safely.
+    Auto-detects common transformations if feature_specs is empty:
+    - Log transforms for right-skewed variables (skew > 1.5)
+    - Interaction features for strongly correlated pairs
+    - Ratio features
+    """
+    df_feat = df.copy()
+    engineered_summary = []
+    
+    specs = feature_specs or []
+    
+    # Auto-generate features if specs not provided
+    if not specs:
+        numeric_cols = [c for c in df_feat.columns if pd.api.types.is_numeric_dtype(df_feat[c]) and c != target_col and df_feat[c].nunique() > 2]
+        
+        # 1. Log transform skewed features
+        for col in numeric_cols:
+            skew_val = df_feat[col].skew()
+            if skew_val > 1.5 and (df_feat[col] >= 0).all():
+                specs.append({
+                    "name": f"log_{col}",
+                    "type": "log1p",
+                    "source_col": col,
+                    "rationale": f"Log transform to normalize highly right-skewed variable ({round(skew_val, 2)})"
+                })
+                
+        # 2. Pairwise interaction between top 2 numeric features if available
+        if len(numeric_cols) >= 2:
+            c1, c2 = numeric_cols[0], numeric_cols[1]
+            specs.append({
+                "name": f"{c1}_{c2}_interaction",
+                "type": "product",
+                "source_cols": [c1, c2],
+                "rationale": f"Multiplicative interaction feature between key numerical attributes {c1} and {c2}"
+            })
+
+    for spec in specs:
+        fname = spec.get("name", "engineered_feature")
+        ftype = spec.get("type", "custom")
+        rationale = spec.get("rationale", "High-signal feature engineering transformation")
+        
+        try:
+            if ftype == "log1p":
+                scol = spec["source_col"]
+                df_feat[fname] = np.log1p(np.maximum(0, df_feat[scol]))
+                formula = f"np.log1p({scol})"
+                
+            elif ftype == "ratio":
+                scols = spec.get("source_cols", [])
+                if len(scols) >= 2:
+                    df_feat[fname] = df_feat[scols[0]] / (df_feat[scols[1]] + 1e-5)
+                    formula = f"{scols[0]} / ({scols[1]} + eps)"
+                else:
+                    continue
+                    
+            elif ftype == "product":
+                scols = spec.get("source_cols", [])
+                if len(scols) >= 2:
+                    df_feat[fname] = df_feat[scols[0]] * df_feat[scols[1]]
+                    formula = f"{scols[0]} * {scols[1]}"
+                else:
+                    continue
+                    
+            elif ftype == "sum":
+                scols = spec.get("source_cols", [])
+                df_feat[fname] = df_feat[scols].sum(axis=1)
+                formula = f"sum({', '.join(scols)})"
+                
+            else:
+                continue
+                
+            corr_with_target = None
+            if target_col and target_col in df_feat.columns and pd.api.types.is_numeric_dtype(df_feat[target_col]):
+                corr_val = df_feat[fname].corr(df_feat[target_col])
+                corr_with_target = round(float(corr_val), 4) if pd.notnull(corr_val) else None
+                
+            engineered_summary.append({
+                "feature_name": fname,
+                "formula": formula,
+                "data_type": str(df_feat[fname].dtype),
+                "rationale": rationale,
+                "correlation_with_target": corr_with_target
+            })
+        except Exception as e:
+            print(f"[tools] Error engineering feature '{fname}': {e}")
+            
+    return df_feat, engineered_summary
+
+
+# =====================================================================
+# 4. HYPOTHESIS TESTING & STATISTICAL SIGNIFICANCE TOOL
+# =====================================================================
+def run_statistical_hypothesis_tests(
+    df: pd.DataFrame,
+    target_col: Optional[str] = None,
+    feature_cols: Optional[List[str]] = None,
+    alpha: float = 0.05
+) -> Dict[str, Any]:
+    """
+    Automates statistical significance testing against target_col:
+    - Numerical Target + Numerical Feature: Pearson Correlation test
+    - Categorical Target + Categorical Feature: Chi-Square Test
+    - Binary Target + Numerical Feature: Two-Sample T-test / Mann-Whitney U
+    - Multiclass Target + Numerical Feature: One-way ANOVA
+    """
+    if not target_col or target_col not in df.columns:
+        # If no target specified, select the last non-trivial column
+        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+        target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
+
+    targets_to_test = feature_cols or [c for c in df.columns if c != target_col]
+    
+    test_results = {}
+    significant_predictors = []
+    
+    target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
+    target_cardinality = df[target_col].nunique()
+    
+    for col in targets_to_test:
+        if col not in df.columns or col == target_col:
+            continue
+            
+        col_is_num = pd.api.types.is_numeric_dtype(df[col])
+        clean_data = df[[target_col, col]].dropna()
+        if len(clean_data) < 5:
+            continue
+            
+        try:
+            if target_is_num and col_is_num:
+                # Pearson Correlation Test
+                r_val, p_val = stats.pearsonr(clean_data[target_col], clean_data[col])
+                test_name = "Pearson Correlation Test"
+                statistic = float(r_val)
+                interpretation = f"Pearson r = {r_val:.4f}, p = {p_val:.4e}."
+                
+            elif not target_is_num and not col_is_num:
+                # Chi-Square Test of Independence
+                contingency = pd.crosstab(clean_data[target_col], clean_data[col])
+                chi2, p_val, dof, ex = stats.chi2_contingency(contingency)
+                test_name = "Chi-Square Test of Independence"
+                statistic = float(chi2)
+                interpretation = f"Chi2 = {chi2:.4f}, dof = {dof}, p = {p_val:.4e}."
+                
+            elif not target_is_num and col_is_num:
+                # Feature is Numerical, Target is Categorical
+                if target_cardinality == 2:
+                    cat_vals = clean_data[target_col].unique()
+                    g1 = clean_data[clean_data[target_col] == cat_vals[0]][col]
+                    g2 = clean_data[clean_data[target_col] == cat_vals[1]][col]
+                    t_stat, p_val = stats.ttest_ind(g1, g2, equal_var=False)
+                    test_name = "Two-Sample Welch T-Test"
+                    statistic = float(t_stat)
+                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
+                else:
+                    groups = [group[col].values for name, group in clean_data.groupby(target_col)]
+                    f_stat, p_val = stats.f_oneway(*groups)
+                    test_name = "One-Way ANOVA"
+                    statistic = float(f_stat)
+                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+            else:
+                # Target is Numerical, Feature is Categorical
+                groups = [group[target_col].values for name, group in clean_data.groupby(col)]
+                if len(groups) == 2:
+                    t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
+                    test_name = "Two-Sample Welch T-Test"
+                    statistic = float(t_stat)
+                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
+                else:
+                    f_stat, p_val = stats.f_oneway(*groups)
+                    test_name = "One-Way ANOVA"
+                    statistic = float(f_stat)
+                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+                    
+            p_val_float = float(p_val) if pd.notnull(p_val) else 1.0
+            is_sig = p_val_float < alpha
+            
+            if is_sig:
+                significant_predictors.append(col)
+                
+            test_results[col] = {
+                "test_name": test_name,
+                "statistic": round(statistic, 4),
+                "p_value": p_val_float,
+                "is_statistically_significant": is_sig,
+                "interpretation": interpretation + (" (Statistically Significant)" if is_sig else " (Not Significant)")
+            }
+        except Exception as e:
+            test_results[col] = {
+                "test_name": "Hypothesis Test",
+                "error": str(e),
+                "p_value": 1.0,
+                "is_statistically_significant": False,
+                "interpretation": f"Could not perform test: {e}"
+            }
+
+    test_results["significant_predictors"] = significant_predictors
+    return test_results
+
+
+# =====================================================================
+# 5. VISUALIZATION: CORRELATION MATRIX TOOL
+# =====================================================================
+def plot_correlation_matrix(
+    df: pd.DataFrame,
+    numeric_cols: Optional[List[str]] = None,
+    save_path: str = "correlation_matrix.png",
+    output_dir: str = "./sandbox_run"
+) -> Dict[str, Any]:
+    """
+    Computes Pearson correlation matrix, saves styled heatmap asset,
+    and extracts top positive/negative correlations.
+    """
+    target_cols = numeric_cols or [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 1]
+    
+    if len(target_cols) < 2:
+        return {"error": "Insufficient numeric columns for correlation analysis."}
+        
+    corr_matrix = df[target_cols].corr()
+    
+    plt.figure(figsize=(max(8, len(target_cols) * 0.8), max(6, len(target_cols) * 0.7)))
+    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", center=0, square=True, linewidths=0.5)
+    plt.title("Pearson Correlation Matrix", fontsize=14, pad=12)
+    plt.tight_layout()
+    
+    os.makedirs(output_dir, exist_ok=True)
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    plt.savefig(full_save_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    
+    # Extract top positive & negative correlation pairs
+    pairs = []
+    for i in range(len(target_cols)):
+        for j in range(i + 1, len(target_cols)):
+            c1, c2 = target_cols[i], target_cols[j]
+            val = corr_matrix.loc[c1, c2]
+            if pd.notnull(val):
+                pairs.append({"feature_1": c1, "feature_2": c2, "correlation": round(float(val), 4)})
+                
+    pairs_sorted = sorted(pairs, key=lambda x: abs(x["correlation"]), reverse=True)
+    
+    return {
+        "heatmap_saved": full_save_path,
+        "top_correlations": pairs_sorted[:10],
+        "correlation_matrix_text": corr_matrix.round(3).to_dict()
+    }
+
+
+# =====================================================================
+# 6. VISUALIZATION: TARGET INTERACTION TOOL
+# =====================================================================
+def plot_target_interaction(
+    df: pd.DataFrame,
+    target_col: Optional[str] = None,
+    feature_col: Optional[str] = None,
+    save_path: str = "target_interactions.png",
+    output_dir: str = "./sandbox_run"
+) -> Dict[str, Any]:
+    """
+    Generates and saves a segmented visual plot (boxplot/violinplot/scatter)
+    comparing key feature distribution against target variable.
+    """
+    if not target_col or target_col not in df.columns:
+        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+        target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
+
+    if not feature_col or feature_col not in df.columns or feature_col == target_col:
+        candidates = [c for c in df.columns if c != target_col]
+        feature_col = candidates[0] if candidates else df.columns[0]
+        
+    plt.figure(figsize=(9, 6))
+    
+    target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
+    feat_is_num = pd.api.types.is_numeric_dtype(df[feature_col])
+    
+    if target_is_num and feat_is_num:
+        sns.regplot(data=df, x=feature_col, y=target_col, scatter_kws={"alpha": 0.6}, line_kws={"color": "red"})
+        plt.title(f"Scatter Interaction: {feature_col} vs {target_col}", fontsize=13)
+    elif not target_is_num and feat_is_num:
+        sns.boxplot(data=df, x=target_col, y=feature_col, palette="Set2")
+        plt.title(f"Boxplot Segmented by Target: {feature_col} vs {target_col}", fontsize=13)
+    else:
+        sns.countplot(data=df, x=feature_col, hue=target_col, palette="Set1")
+        plt.title(f"Categorical Interaction: {feature_col} by {target_col}", fontsize=13)
+        
+    plt.tight_layout()
+    
+    os.makedirs(output_dir, exist_ok=True)
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    plt.savefig(full_save_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    
+    return {
+        "plot_saved": full_save_path,
+        "target_col": target_col,
+        "feature_col": feature_col
+    }
+
+
+# =====================================================================
+# 7. PREDICTIVE MODELING BLUEPRINT GENERATOR TOOL
+# =====================================================================
+def generate_predictive_blueprint(
+    df: pd.DataFrame,
+    target_col: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Generates a recommended machine learning strategy blueprint based on data characteristics.
+    """
+    num_rows, num_cols = df.shape
+    
+    if target_col and target_col in df.columns:
+        if pd.api.types.is_numeric_dtype(df[target_col]) and df[target_col].nunique() > 10:
+            problem_type = "Regression"
+        else:
+            problem_type = "Classification"
+    else:
+        target_col = "Undefined (Unsupervised)"
+        problem_type = "Unsupervised / Exploratory"
+
+    if problem_type == "Classification":
+        recommended_algos = [
+            "Regularized Logistic Regression (baseline)",
+            "Random Forest Classifier",
+            "Gradient Boosting Classifier (XGBoost / LightGBM)",
+            "Support Vector Classifier (SVM)"
+        ]
+        val_strat = [
+            f"Stratified K-Fold Cross-Validation ({'5' if num_rows > 50 else 'Repeated 5'} folds)",
+            "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+        ]
+    elif problem_type == "Regression":
+        recommended_algos = [
+            "Regularized Linear Regression (Ridge / Lasso)",
+            "Random Forest Regressor",
+            "Gradient Boosting Regressor",
+            "Support Vector Regressor (SVR)"
+        ]
+        val_strat = [
+            f"K-Fold Cross-Validation ({'5' if num_rows > 50 else 'Repeated 5'} folds)",
+            "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
+        ]
+    else:
+        recommended_algos = [
+            "K-Means Clustering",
+            "Hierarchical Agglomerative Clustering",
+            "Principal Component Analysis (PCA) for Dimensionality Reduction"
+        ]
+        val_strat = ["Evaluate Silhouette Score and Inertia elbow curve"]
+
+    feature_selection = [
+        "Exclude high-cardinality ID or text name columns",
+        "Rank features using cross-validated permutation importance and mutual information",
+        "Remove collinear features exceeding correlation threshold > 0.85"
+    ]
+    
+    overfitting_mitigation = [
+        "Apply regularization penalties (L1/L2)",
+        "Limit tree depth and enforce minimum samples per leaf",
+        "Perform hyperparameter tuning strictly within cross-validation folds"
+    ]
+    
+    return {
+        "target_definition": target_col,
+        "problem_type": problem_type,
+        "recommended_algorithms": recommended_algos,
+        "feature_selection_strategy": feature_selection,
+        "validation_strategy": val_strat,
+        "overfitting_risk_mitigation": overfitting_mitigation,
+        "executive_summary": f"Target: {target_col} ({problem_type}). Use robust cross-validation on {num_rows} rows x {num_cols} columns."
+    }
+
+
+# =====================================================================
+# 8. METRICS JSON COMPILATION TOOL
+# =====================================================================
+def compile_and_save_metrics(
+    df: pd.DataFrame,
+    dataset_path: str,
+    target_col: Optional[str] = None,
+    imputation_res: Optional[Dict[str, Any]] = None,
+    outlier_res: Optional[Dict[str, Any]] = None,
+    engineered_res: Optional[List[Dict[str, Any]]] = None,
+    corr_res: Optional[Dict[str, Any]] = None,
+    hypothesis_res: Optional[Dict[str, Any]] = None,
+    blueprint_res: Optional[Dict[str, Any]] = None,
+    output_dir: str = "./sandbox_run"
+) -> str:
+    """
+    Compiles all analysis outputs into the canonical metrics.json format.
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    
+    num_rows, num_cols = df.shape
+    
+    column_summary = {}
+    for col in df.columns:
+        column_summary[col] = {
+            "dtype": str(df[col].dtype),
+            "missing_count": int(df[col].isnull().sum()),
+            "cardinality": int(df[col].nunique())
+        }
+        
+    metrics_dict = {
+        "dataset_overview": {
+            "dataset_path": os.path.abspath(dataset_path),
+            "shape": {"rows": num_rows, "columns": num_cols},
+            "target_column": target_col,
+            "column_summary": column_summary
+        },
+        "imputation_summary": imputation_res or {"status": "Imputation completed"},
+        "outlier_analysis": outlier_res or {},
+        "engineered_features": engineered_res or [],
+        "correlation_analysis": corr_res or {},
+        "statistical_hypothesis_tests": hypothesis_res or {},
+        "predictive_modeling_blueprint": blueprint_res or generate_predictive_blueprint(df, target_col),
+        "extracted_insights": {
+            "key_findings": [
+                f"Dataset contains {num_rows} rows and {num_cols} columns.",
+                f"Processed missing values and computed statistical distributions."
+            ],
+            "statistically_significant_predictors": (hypothesis_res or {}).get("significant_predictors", [])
+        }
+    }
+    
+    metrics_path = os.path.join(output_dir, "metrics.json")
+    with open(metrics_path, "w", encoding="utf-8") as f:
+        json.dump(metrics_dict, f, indent=2)
+        
+    print(f"[tools] Canonical metrics.json successfully saved to: {os.path.abspath(metrics_path)}")
+    return metrics_path
+
+
+# =====================================================================
+# 9. TOOL REGISTRY CATALOG FOR LLM PROMPTING
+# =====================================================================
+TOOL_REGISTRY = {
+    "impute_missing_data": {
+        "function": impute_missing_data,
+        "description": "Imputes missing values using type-safe strategy (median for skewed numeric, mean for symmetric, mode for categorical).",
+        "parameters": {"strategy_map": "Optional dict of {col: strategy}"}
+    },
+    "detect_and_handle_outliers": {
+        "function": detect_and_handle_outliers,
+        "description": "Detects outliers via IQR method and optionally caps extreme values.",
+        "parameters": {"columns": "List of numeric cols", "action": "'profile' or 'cap'"}
+    },
+    "engineer_features": {
+        "function": engineer_features,
+        "description": "Creates high-signal feature transformations (log1p, ratios, interactions).",
+        "parameters": {"feature_specs": "List of dicts defining features"}
+    },
+    "run_statistical_hypothesis_tests": {
+        "function": run_statistical_hypothesis_tests,
+        "description": "Calculates statistical significance against target variable (T-Test, ANOVA, Chi-Square, Pearson).",
+        "parameters": {"target_col": "Name of target column", "alpha": "Significance threshold (0.05)"}
+    },
+    "plot_correlation_matrix": {
+        "function": plot_correlation_matrix,
+        "description": "Generates Pearson correlation matrix heatmap PNG image asset.",
+        "parameters": {"save_path": "'correlation_matrix.png'"}
+    },
+    "plot_target_interaction": {
+        "function": plot_target_interaction,
+        "description": "Generates segmented distribution / scatter visualization comparing key feature vs target.",
+        "parameters": {"target_col": "Target column name", "feature_col": "Feature column name", "save_path": "'target_interactions.png'"}
+    },
+    "generate_predictive_blueprint": {
+        "function": generate_predictive_blueprint,
+        "description": "Compiles machine learning modeling blueprint and cross-validation strategy.",
+        "parameters": {"target_col": "Target column name"}
+    }
+}
