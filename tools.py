@@ -1,6 +1,7 @@
 import os
 import json
 import math
+import re
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
@@ -600,14 +601,44 @@ def plot_feature_distributions(
     nrows = math.ceil(num_plots / ncols)
 
     os.makedirs(output_dir, exist_ok=True)
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    saved_files = []
 
+    for col in valid_cols:
+        col_clean = re.sub(r'\W+', '_', col).strip('_')
+        file_name = f"dist_{col_clean}.png"
+        file_path = os.path.join(output_dir, file_name)
+
+        try:
+            fig, ax = plt.subplots(figsize=(6, 4))
+            if pd.api.types.is_numeric_dtype(df[col]):
+                sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
+                ax.set_title(f"Distribution: {col}", fontsize=12, pad=10)
+                ax.set_xlabel(col)
+                ax.set_ylabel("Density / Frequency")
+            else:
+                sns.countplot(x=df[col].dropna(), hue=df[col].dropna(), ax=ax, palette="Set2", legend=False)
+                ax.set_title(f"Distribution / Counts: {col}", fontsize=12, pad=10)
+                ax.set_xlabel(col)
+                ax.set_ylabel("Count")
+                ax.tick_params(axis='x', rotation=30)
+
+            plt.tight_layout()
+            plt.savefig(file_path, dpi=150, bbox_inches="tight")
+            plt.close(fig)
+            saved_files.append(file_path)
+            print(f"[tools] Saved separate distribution PNG for '{col}' to: {file_path}")
+        except Exception as e:
+            print(f"[tools] Warning: Error saving distribution plot for '{col}': {e}")
+            plt.close("all")
+
+    # Also maintain a combined grid plot for backward-compatibility if save_path requested
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
     try:
+        num_plots = len(valid_cols)
+        ncols = min(3, num_plots)
+        nrows = math.ceil(num_plots / ncols)
         fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4.5 * ncols, 3.5 * nrows))
-        if num_plots == 1:
-            axes_list = [axes]
-        else:
-            axes_list = axes.flatten()
+        axes_list = [axes] if num_plots == 1 else axes.flatten()
 
         for idx, col in enumerate(valid_cols):
             ax = axes_list[idx]
@@ -615,7 +646,7 @@ def plot_feature_distributions(
                 sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
                 ax.set_title(f"Distribution: {col}", fontsize=10)
             else:
-                sns.countplot(x=df[col].dropna(), ax=ax, palette="Set2")
+                sns.countplot(x=df[col].dropna(), hue=df[col].dropna(), ax=ax, palette="Set2", legend=False)
                 ax.set_title(f"Counts: {col}", fontsize=10)
                 ax.tick_params(axis='x', rotation=30)
 
@@ -625,13 +656,13 @@ def plot_feature_distributions(
         plt.tight_layout()
         plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
-        print(f"[tools] Distribution plot saved for important columns {valid_cols} to: {full_save_path}")
     except Exception as e:
-        print(f"[tools] Warning: Distribution plot error: {e}")
+        print(f"[tools] Warning: Error rendering combined distribution grid plot: {e}")
         plt.close("all")
 
     return {
         "plot_saved": full_save_path,
+        "individual_plots": saved_files,
         "plotted_columns": valid_cols
     }
 
