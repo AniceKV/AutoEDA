@@ -1,789 +1,781 @@
 DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\dataset_2191_sleep.csv'
 
-import json
 import os
+import re
+import json
 import warnings
-
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+from scipy import stats
+from scipy.stats import f_oneway, pearsonr, chi2_contingency
 
 warnings.filterwarnings("ignore")
-sns.set_theme(style="whitegrid")
 
+# DATA_FILEPATH must be defined globally by the execution environment.
 if "DATA_FILEPATH" not in globals():
-    raise NameError("DATA_FILEPATH must be defined before running this script.")
+    raise NameError("DATA_FILEPATH must be defined as a global variable.")
 
 PROFILE_FILEPATH = "metadata_profile.json"
 METRICS_FILEPATH = "metrics.json"
 TARGET_COLUMN = "total_sleep"
-ALPHA = 0.05
 
-if not os.path.exists(DATA_FILEPATH):
-    raise FileNotFoundError(f"Dataset not found: {DATA_FILEPATH}")
+# ---------------------------------------------------------------------
+# Utility functions
+# ---------------------------------------------------------------------
 
-if not os.path.exists(PROFILE_FILEPATH):
-    raise FileNotFoundError(f"Metadata profile not found: {PROFILE_FILEPATH}")
-
-with open(PROFILE_FILEPATH, "r", encoding="utf-8") as profile_file:
-    profile = json.load(profile_file)
-
-df_raw = pd.read_csv(DATA_FILEPATH)
-df = df_raw.copy()
-
-missing_tokens = ["?", "", "NA", "N/A", "null", "None", "nan"]
-profile_schema = profile.get("schema", {})
-profile_missing_summary = profile.get("missing_values_summary", {})
-
-
-def json_safe(value):
+def make_json_safe(value):
+    """Convert numpy/pandas/scipy values into JSON-serializable values."""
     if isinstance(value, dict):
-        return {str(key): json_safe(val) for key, val in value.items()}
+        return {str(k): make_json_safe(v) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
-        return [json_safe(item) for item in value]
+        return [make_json_safe(v) for v in value]
     if isinstance(value, (np.integer,)):
         return int(value)
     if isinstance(value, (np.floating,)):
-        return None if not np.isfinite(value) else float(value)
-    if isinstance(value, (np.bool_,)):
-        return bool(value)
-    if isinstance(value, float):
-        return None if not np.isfinite(value) else value
-    if value is None:
-        return None
-    try:
-        if pd.isna(value):
+        if np.isnan(value) or np.isinf(value):
             return None
-    except (TypeError, ValueError):
-        pass
+        return float(value)
+    if isinstance(value, float):
+        if np.isnan(value) or np.isinf(value):
+            return None
+        return value
+    if isinstance(value, pd.Timestamp):
+        return value.isoformat()
+    if pd.isna(value):
+        return None
     return value
 
 
-def force_numeric_series(series):
+def safe_float(value):
+    try:
+        value = float(value)
+        return None if not np.isfinite(value) else value
+    except Exception:
+        return None
+
+
+def infer_numeric_columns(dataframe, threshold=0.80):
     """
-    Convert a column to a regular float64 pandas Series.
-    This explicitly avoids Arrow large_string arithmetic errors.
+    Convert object columns to numeric when at least threshold of nonmissing
+    values can be parsed numerically.
     """
-    converted_values = pd.to_numeric(
-        series.astype("string"),
-        errors="coerce"
-    ).to_numpy(dtype="float64")
+    converted_columns = []
+    for column in dataframe.columns:
+        if dataframe[column].dtype == "object":
+            cleaned = dataframe[column].replace(
+                ["?", "NA", "N/A", "na", "null", "None", ""],
+                np.nan
+            )
+            numeric_version = pd.to_numeric(cleaned, errors="coerce")
+            nonmissing_count = cleaned.notna().sum()
 
-    return pd.Series(
-        converted_values,
-        index=series.index,
-        name=series.name,
-        dtype="float64"
-    )
+            if nonmissing_count > 0:
+                conversion_rate = numeric_version.notna().sum() / nonmissing_count
+                if conversion_rate >= threshold:
+                    dataframe[column] = numeric_version
+                    converted_columns.append(column)
+                else:
+                    dataframe[column] = cleaned.astype("object")
+    return converted_columns
 
 
-# Replace common textual missing-value markers before type conversion.
-df = df.replace(missing_tokens, np.nan)
+def column_summary(dataframe):
+    summary = {}
+    for column in dataframe.columns:
+        summary[column] = {
+            "dtype": str(dataframe[column].dtype),
+            "missing_count": int(dataframe[column].isna().sum()),
+            "missing_percentage": float(dataframe[column].isna().mean() * 100),
+            "cardinality": int(dataframe[column].nunique(dropna=True))
+        }
+    return summary
 
-# Convert numeric-looking string and Arrow string columns to float64.
-# The explicit conversion handles pandas Arrow large_string columns safely.
-for column in df.columns:
-    if not pd.api.types.is_numeric_dtype(df[column]):
-        numeric_candidate = force_numeric_series(df[column])
-        non_missing_count = int(df[column].notna().sum())
-        convertible_count = int(numeric_candidate.notna().sum())
 
-        if (
-            non_missing_count > 0
-            and convertible_count / non_missing_count >= 0.80
-        ):
-            df[column] = numeric_candidate
+def select_target(dataframe):
+    if TARGET_COLUMN in dataframe.columns:
+        return TARGET_COLUMN
 
-# The target is expected to be numeric after parsing.
-if TARGET_COLUMN not in df.columns:
-    raise ValueError(f"Required target column '{TARGET_COLUMN}' was not found.")
+    candidate_names = [
+        "target", "label", "y", "outcome", "response",
+        "survived", "price", "sale_price"
+    ]
+    for candidate in candidate_names:
+        if candidate in dataframe.columns:
+            return candidate
 
-if not pd.api.types.is_numeric_dtype(df[TARGET_COLUMN]):
-    df[TARGET_COLUMN] = force_numeric_series(df[TARGET_COLUMN])
+    numeric_columns = dataframe.select_dtypes(include=np.number).columns.tolist()
+    if numeric_columns:
+        return numeric_columns[-1]
 
-if df[TARGET_COLUMN].notna().sum() == 0:
-    raise ValueError(f"Target column '{TARGET_COLUMN}' contains no numeric values.")
+    return dataframe.columns[-1]
+
+
+def interpret_p_value(p_value, alpha=0.05):
+    if p_value is None:
+        return "Test could not be completed."
+    if p_value < alpha:
+        return "Evidence suggests a statistically significant association with the target."
+    return "Insufficient evidence of a statistically significant association with the target."
+
+
+def calculate_correlation_records(correlation_matrix, target_column):
+    if target_column not in correlation_matrix.columns:
+        return [], [], []
+
+    target_correlations = correlation_matrix[target_column].drop(labels=[target_column])
+    target_correlations = target_correlations.dropna().sort_values(ascending=False)
+
+    positive = [
+        {
+            "feature": str(feature),
+            "correlation": safe_float(value)
+        }
+        for feature, value in target_correlations.head(10).items()
+        if value > 0
+    ]
+
+    negative = [
+        {
+            "feature": str(feature),
+            "correlation": safe_float(value)
+        }
+        for feature, value in target_correlations.sort_values().head(10).items()
+        if value < 0
+    ]
+
+    target_records = [
+        {
+            "feature": str(feature),
+            "correlation": safe_float(value)
+        }
+        for feature, value in target_correlations.items()
+    ]
+
+    return positive, negative, target_records
+
 
 # ---------------------------------------------------------------------
-# Smart, type-safe imputation
+# Load data and metadata profile
 # ---------------------------------------------------------------------
+
+with open(PROFILE_FILEPATH, "r", encoding="utf-8") as profile_file:
+    metadata_profile = json.load(profile_file)
+
+dataframe = pd.read_csv(DATA_FILEPATH)
+raw_dataframe = dataframe.copy()
+
+profile_schema = metadata_profile.get("schema", {})
+original_missing_counts = dataframe.isna().sum().to_dict()
+
+# Treat common textual missing-value markers as missing.
+missing_markers = ["?", "NA", "N/A", "na", "null", "None", ""]
+dataframe = dataframe.replace(missing_markers, np.nan)
+
+converted_numeric_columns = infer_numeric_columns(dataframe)
+target_column = select_target(dataframe)
+
+# ---------------------------------------------------------------------
+# Smart type-safe imputation
+# ---------------------------------------------------------------------
+
 imputation_summary = {
-    "rules_applied": {
-        "numeric_skewed": "Median imputation when skewness > 1 or skewness < -1.",
-        "numeric_symmetric": "Mean imputation when -1 <= skewness <= 1.",
-        "categorical": "Mode imputation, or Unknown if no mode exists.",
-        "missing_tokens_replaced": missing_tokens
+    "rules": {
+        "numeric_highly_skewed": "Median imputation when absolute skewness is greater than 1.",
+        "numeric_symmetric": "Mean imputation when absolute skewness is less than or equal to 1.",
+        "categorical": "Mode imputation, or Unknown when no mode exists.",
+        "target": "Target values are not imputed for statistical testing or modeling."
     },
     "columns": {}
 }
 
-for column in df.columns:
-    missing_before = int(df[column].isna().sum())
-    dtype_before = str(df[column].dtype)
+for column in dataframe.columns:
+    missing_before = int(dataframe[column].isna().sum())
+    dtype_before = str(dataframe[column].dtype)
 
-    if pd.api.types.is_numeric_dtype(df[column]):
-        column_skewness = df[column].skew()
-
-        if not np.isfinite(column_skewness):
-            column_skewness = 0.0
-
-        if column_skewness > 1 or column_skewness < -1:
-            method = "median"
-            fill_value = df[column].median()
-        else:
-            method = "mean"
-            fill_value = df[column].mean()
-
-        if pd.isna(fill_value):
-            fill_value = 0.0
-
-        df[column] = df[column].fillna(float(fill_value))
-
+    if missing_before == 0:
         imputation_summary["columns"][column] = {
-            "dtype_before": dtype_before,
-            "dtype_after": str(df[column].dtype),
-            "missing_count_before": missing_before,
-            "missing_count_after": int(df[column].isna().sum()),
-            "skewness": float(column_skewness),
-            "method": method,
-            "fill_value": float(fill_value)
+            "dtype": dtype_before,
+            "missing_before": 0,
+            "filled_count": 0,
+            "method": "none",
+            "replacement_value": None,
+            "skewness": safe_float(dataframe[column].skew())
         }
-    else:
-        mode_values = df[column].mode(dropna=True)
+        continue
 
+    if column == target_column:
+        imputation_summary["columns"][column] = {
+            "dtype": dtype_before,
+            "missing_before": missing_before,
+            "filled_count": 0,
+            "method": "not_imputed_target",
+            "replacement_value": None,
+            "skewness": safe_float(
+                dataframe[column].dropna().skew()
+                if pd.api.types.is_numeric_dtype(dataframe[column])
+                else np.nan
+            )
+        }
+        continue
+
+    if pd.api.types.is_numeric_dtype(dataframe[column]):
+        skewness = dataframe[column].dropna().skew()
+        if pd.isna(skewness):
+            skewness = 0.0
+
+        if abs(skewness) > 1:
+            replacement_value = dataframe[column].median()
+            method = "median"
+        else:
+            replacement_value = dataframe[column].mean()
+            method = "mean"
+
+        if pd.isna(replacement_value):
+            replacement_value = 0.0
+
+        dataframe[column] = dataframe[column].fillna(replacement_value)
+    else:
+        mode_values = dataframe[column].mode(dropna=True)
         if len(mode_values) > 0:
-            fill_value = mode_values.iloc[0]
+            replacement_value = mode_values.iloc[0]
             method = "mode"
         else:
-            fill_value = "Unknown"
-            method = "placeholder"
+            replacement_value = "Unknown"
+            method = "placeholder_unknown"
 
-        df[column] = df[column].fillna(fill_value)
+        dataframe[column] = dataframe[column].fillna(replacement_value)
+        skewness = None
 
-        imputation_summary["columns"][column] = {
-            "dtype_before": dtype_before,
-            "dtype_after": str(df[column].dtype),
-            "missing_count_before": missing_before,
-            "missing_count_after": int(df[column].isna().sum()),
-            "method": method,
-            "fill_value": str(fill_value)
-        }
+    filled_count = missing_before - int(dataframe[column].isna().sum())
+
+    imputation_summary["columns"][column] = {
+        "dtype": dtype_before,
+        "missing_before": missing_before,
+        "filled_count": int(filled_count),
+        "method": method,
+        "replacement_value": make_json_safe(replacement_value),
+        "skewness": safe_float(skewness)
+    }
+
+# ---------------------------------------------------------------------
+# Target preparation
+# ---------------------------------------------------------------------
+
+target_numeric = pd.to_numeric(dataframe[target_column], errors="coerce")
+valid_target_mask = target_numeric.notna()
+dataframe[target_column] = target_numeric
+
+analysis_dataframe = dataframe.loc[valid_target_mask].copy()
 
 # ---------------------------------------------------------------------
 # Domain-specific feature engineering
 # ---------------------------------------------------------------------
-engineered_features = []
 
-if {"body_weight", "brain_weight"}.issubset(df.columns):
-    body_values = pd.to_numeric(
-        df["body_weight"], errors="coerce"
-    ).to_numpy(dtype="float64")
-    brain_values = pd.to_numeric(
-        df["brain_weight"], errors="coerce"
-    ).to_numpy(dtype="float64")
+engineered_feature_records = []
 
-    body_denominator = np.where(body_values == 0, np.nan, body_values)
-    ratio_values = np.divide(
-        brain_values,
-        body_denominator,
-        out=np.zeros_like(brain_values, dtype="float64"),
-        where=np.isfinite(body_denominator)
+if {"brain_weight", "body_weight"}.issubset(analysis_dataframe.columns):
+    denominator = analysis_dataframe["body_weight"].replace(0, np.nan)
+    analysis_dataframe["brain_body_ratio"] = (
+        analysis_dataframe["brain_weight"] / denominator
+    )
+    analysis_dataframe["brain_body_ratio"] = (
+        analysis_dataframe["brain_body_ratio"].replace([np.inf, -np.inf], np.nan)
+    )
+    ratio_fill = analysis_dataframe["brain_body_ratio"].median()
+    analysis_dataframe["brain_body_ratio"] = (
+        analysis_dataframe["brain_body_ratio"].fillna(ratio_fill)
     )
 
-    df["brain_body_ratio"] = pd.Series(
-        ratio_values,
-        index=df.index,
-        dtype="float64"
-    ).replace([np.inf, -np.inf], np.nan).fillna(0.0)
-
-    engineered_features.append({
+    engineered_feature_records.append({
         "feature_name": "brain_body_ratio",
-        "formula_method": "brain_weight / body_weight, with zero denominators safely handled",
-        "data_type": str(df["brain_body_ratio"].dtype),
-        "rationale_purpose": "Measures relative brain investment independently of absolute body size."
+        "formula_method": "brain_weight / body_weight",
+        "data_type": str(analysis_dataframe["brain_body_ratio"].dtype),
+        "rationale_purpose": "Approximates relative brain investment while reducing raw body-size scale effects.",
+        "correlation_with_target": None
     })
 
-if "body_weight" in df.columns:
-    body_values = pd.to_numeric(
-        df["body_weight"], errors="coerce"
-    ).to_numpy(dtype="float64")
+if "body_weight" in analysis_dataframe.columns:
+    body_values = analysis_dataframe["body_weight"].clip(lower=0)
+    analysis_dataframe["log_body_weight"] = np.log1p(body_values)
 
-    df["log_body_weight"] = pd.Series(
-        np.log1p(np.clip(body_values, 0, None)),
-        index=df.index,
-        dtype="float64"
-    )
-
-    engineered_features.append({
+    engineered_feature_records.append({
         "feature_name": "log_body_weight",
         "formula_method": "log1p(body_weight)",
-        "data_type": str(df["log_body_weight"].dtype),
-        "rationale_purpose": "Reduces extreme right skew and limits the influence of very large species."
+        "data_type": str(analysis_dataframe["log_body_weight"].dtype),
+        "rationale_purpose": "Compresses extreme body-weight values and improves linear-model stability under severe right skew.",
+        "correlation_with_target": None
     })
 
-if "brain_weight" in df.columns:
-    brain_values = pd.to_numeric(
-        df["brain_weight"], errors="coerce"
-    ).to_numpy(dtype="float64")
-
-    df["log_brain_weight"] = pd.Series(
-        np.log1p(np.clip(brain_values, 0, None)),
-        index=df.index,
-        dtype="float64"
+if {"predation_index", "danger_index"}.issubset(analysis_dataframe.columns):
+    analysis_dataframe["predation_danger_interaction"] = (
+        analysis_dataframe["predation_index"] *
+        analysis_dataframe["danger_index"]
     )
 
-    engineered_features.append({
-        "feature_name": "log_brain_weight",
-        "formula_method": "log1p(brain_weight)",
-        "data_type": str(df["log_brain_weight"].dtype),
-        "rationale_purpose": "Stabilizes the heavily skewed brain-weight distribution."
+    engineered_feature_records.append({
+        "feature_name": "predation_danger_interaction",
+        "formula_method": "predation_index * danger_index",
+        "data_type": str(analysis_dataframe["predation_danger_interaction"].dtype),
+        "rationale_purpose": "Captures combined ecological risk that may not be represented by either index independently.",
+        "correlation_with_target": None
     })
 
-if {"gestation_time", "total_sleep"}.issubset(df.columns):
-    # Explicit numeric arrays prevent division of Arrow large_string values.
-    gestation_values = pd.to_numeric(
-        df["gestation_time"], errors="coerce"
-    ).to_numpy(dtype="float64")
-    sleep_values = pd.to_numeric(
-        df["total_sleep"], errors="coerce"
-    ).to_numpy(dtype="float64")
-
-    sleep_denominator = np.where(sleep_values == 0, np.nan, sleep_values)
-    ratio_values = np.divide(
-        gestation_values,
-        sleep_denominator,
-        out=np.zeros_like(gestation_values, dtype="float64"),
-        where=np.isfinite(sleep_denominator)
-    )
-
-    df["gestation_sleep_ratio"] = pd.Series(
-        ratio_values,
-        index=df.index,
-        dtype="float64"
-    ).replace([np.inf, -np.inf], np.nan).fillna(0.0)
-
-    engineered_features.append({
-        "feature_name": "gestation_sleep_ratio",
-        "formula_method": "gestation_time / total_sleep using explicitly parsed float64 arrays",
-        "data_type": str(df["gestation_sleep_ratio"].dtype),
-        "rationale_purpose": "Captures the relative relationship between gestation and sleep duration."
-    })
-
-# Impute any missing values created during feature engineering.
-for feature_record in engineered_features:
-    feature_name = feature_record["feature_name"]
-    if df[feature_name].isna().any():
-        df[feature_name] = df[feature_name].fillna(df[feature_name].median())
+# Impute engineered numeric features safely.
+for column in analysis_dataframe.columns:
+    if column not in imputation_summary["columns"] and analysis_dataframe[column].isna().any():
+        if pd.api.types.is_numeric_dtype(analysis_dataframe[column]):
+            replacement = analysis_dataframe[column].median()
+            analysis_dataframe[column] = analysis_dataframe[column].fillna(replacement)
+            imputation_summary["columns"][column] = {
+                "dtype": str(analysis_dataframe[column].dtype),
+                "missing_before": int(analysis_dataframe[column].isna().sum()),
+                "filled_count": int(analysis_dataframe[column].isna().sum()),
+                "method": "median_engineered_feature",
+                "replacement_value": safe_float(replacement),
+                "skewness": safe_float(analysis_dataframe[column].skew())
+            }
 
 # ---------------------------------------------------------------------
-# IQR outlier analysis
+# Outlier profiling using IQR
 # ---------------------------------------------------------------------
-numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
 
-outlier_analysis = {
-    "method": "IQR rule: below Q1 - 1.5*IQR or above Q3 + 1.5*IQR",
-    "numeric_columns": {}
-}
+outlier_analysis = {}
+numeric_predictors = analysis_dataframe.select_dtypes(include=np.number).columns.tolist()
+numeric_predictors = [
+    column for column in numeric_predictors if column != target_column
+]
 
-for column in numeric_columns:
-    q1 = float(df[column].quantile(0.25))
-    q3 = float(df[column].quantile(0.75))
+for column in numeric_predictors:
+    series = analysis_dataframe[column].dropna()
+
+    if len(series) == 0:
+        continue
+
+    q1 = series.quantile(0.25)
+    q3 = series.quantile(0.75)
     iqr = q3 - q1
     lower_bound = q1 - 1.5 * iqr
     upper_bound = q3 + 1.5 * iqr
-
-    outlier_mask = (
-        (df[column] < lower_bound)
-        | (df[column] > upper_bound)
-    )
-
+    outlier_mask = (series < lower_bound) | (series > upper_bound)
     outlier_count = int(outlier_mask.sum())
-    outlier_percentage = float(outlier_count / len(df) * 100)
 
-    outlier_analysis["numeric_columns"][column] = {
-        "Q1": q1,
-        "Q3": q3,
-        "IQR": float(iqr),
-        "lower_bound": float(lower_bound),
-        "upper_bound": float(upper_bound),
+    outlier_analysis[column] = {
+        "Q1": safe_float(q1),
+        "Q3": safe_float(q3),
+        "IQR": safe_float(iqr),
+        "lower_bound": safe_float(lower_bound),
+        "upper_bound": safe_float(upper_bound),
         "outlier_count": outlier_count,
-        "outlier_percentage": outlier_percentage
+        "outlier_percentage": safe_float(outlier_count / len(series) * 100)
     }
 
     print(
-        f"Outliers in {column}: "
-        f"{outlier_count}/{len(df)} ({outlier_percentage:.2f}%)"
+        "Outliers in {}: {} of {} ({:.2f}%)".format(
+            column,
+            outlier_count,
+            len(series),
+            outlier_count / len(series) * 100
+        )
     )
 
 # ---------------------------------------------------------------------
-# Pearson correlation analysis and heatmap
+# Correlation analysis
 # ---------------------------------------------------------------------
-numeric_df = df.select_dtypes(include=[np.number]).copy()
 
-correlation_analysis = {
-    "top_positive_correlations": [],
-    "top_negative_correlations": [],
-    "target_correlations": {},
-    "correlation_matrix_text": ""
-}
+numeric_analysis_dataframe = analysis_dataframe.select_dtypes(
+    include=np.number
+)
 
-if numeric_df.shape[1] >= 2:
-    correlation_matrix = numeric_df.corr(method="pearson")
+correlation_matrix = numeric_analysis_dataframe.corr(method="pearson")
+positive_correlations, negative_correlations, target_correlations = (
+    calculate_correlation_records(correlation_matrix, target_column)
+)
 
-    correlation_analysis["correlation_matrix_text"] = correlation_matrix.to_string(
-        float_format=lambda value: f"{value:.6f}"
-    )
-
-    upper_triangle = correlation_matrix.where(
-        np.triu(np.ones(correlation_matrix.shape), k=1).astype(bool)
-    )
-
-    correlation_pairs = (
-        upper_triangle
-        .stack()
-        .reset_index()
-    )
-    correlation_pairs.columns = [
-        "feature_1",
-        "feature_2",
-        "correlation"
-    ]
-
-    positive_pairs = correlation_pairs.sort_values(
-        "correlation",
-        ascending=False
-    ).head(10)
-
-    negative_pairs = correlation_pairs.sort_values(
-        "correlation",
-        ascending=True
-    ).head(10)
-
-    correlation_analysis["top_positive_correlations"] = [
-        {
-            "feature_1": row["feature_1"],
-            "feature_2": row["feature_2"],
-            "correlation": float(row["correlation"])
-        }
-        for _, row in positive_pairs.iterrows()
-    ]
-
-    correlation_analysis["top_negative_correlations"] = [
-        {
-            "feature_1": row["feature_1"],
-            "feature_2": row["feature_2"],
-            "correlation": float(row["correlation"])
-        }
-        for _, row in negative_pairs.iterrows()
-    ]
-
-    if TARGET_COLUMN in correlation_matrix.columns:
-        target_correlations = correlation_matrix[TARGET_COLUMN].drop(
-            labels=[TARGET_COLUMN],
-            errors="ignore"
-        ).sort_values(
-            key=lambda values: values.abs(),
-            ascending=False
+for record in engineered_feature_records:
+    feature_name = record["feature_name"]
+    if feature_name in correlation_matrix.columns:
+        record["correlation_with_target"] = safe_float(
+            correlation_matrix.loc[feature_name, target_column]
         )
 
-        correlation_analysis["target_correlations"] = {
-            str(feature): float(value)
-            for feature, value in target_correlations.items()
-        }
-
-    plt.figure(figsize=(12, 9))
-    sns.heatmap(
-        correlation_matrix,
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        center=0,
-        square=True,
-        linewidths=0.5
-    )
-    plt.title("Pearson Correlation Heatmap")
-    plt.tight_layout()
-    plt.savefig(
-        "correlation_matrix.png",
-        dpi=200,
-        bbox_inches="tight"
-    )
-    plt.close()
-else:
-    correlation_analysis["correlation_matrix_text"] = (
-        "Insufficient numeric columns for correlation analysis."
-    )
-
-# Add target correlation to engineered feature metadata.
-for feature_record in engineered_features:
-    feature_name = feature_record["feature_name"]
-
-    if (
-        feature_name in df.columns
-        and TARGET_COLUMN in df.columns
-        and df[feature_name].nunique() > 1
-        and df[TARGET_COLUMN].nunique() > 1
-    ):
-        feature_record["correlation_with_target"] = float(
-            df[feature_name].corr(df[TARGET_COLUMN])
-        )
-    else:
-        feature_record["correlation_with_target"] = None
-
-# ---------------------------------------------------------------------
-# Hypothesis testing
-# ---------------------------------------------------------------------
-statistical_tests = {}
-significant_predictors = []
-
-target_series = df[TARGET_COLUMN]
-
-for column in df.columns:
-    if column == TARGET_COLUMN:
-        continue
-
-    predictor = df[column]
-
-    if pd.api.types.is_numeric_dtype(predictor):
-        if (
-            predictor.nunique() > 1
-            and target_series.nunique() > 1
-            and len(df) >= 3
-        ):
-            valid_mask = predictor.notna() & target_series.notna()
-
-            test_result = stats.pearsonr(
-                predictor.loc[valid_mask],
-                target_series.loc[valid_mask]
-            )
-
-            statistic_value = float(test_result.statistic)
-            p_value = float(test_result.pvalue)
-
-            interpretation = (
-                "A statistically significant linear association was detected."
-                if p_value < ALPHA
-                else "No statistically significant linear association was detected."
-            )
-
-            statistical_tests[column] = {
-                "test_name": "Pearson correlation test",
-                "statistic_value": statistic_value,
-                "p_value": p_value,
-                "degrees_of_freedom": None,
-                "is_statistically_significant": bool(p_value < ALPHA),
-                "interpretation_summary": interpretation
-            }
-
-            if p_value < ALPHA:
-                significant_predictors.append(column)
-
-    else:
-        grouped_values = [
-            group[TARGET_COLUMN].dropna()
-            for _, group in df.groupby(column, dropna=False)
-        ]
-        grouped_values = [
-            group for group in grouped_values if len(group) >= 2
-        ]
-
-        if len(grouped_values) == 2:
-            test_result = stats.ttest_ind(
-                grouped_values[0],
-                grouped_values[1],
-                equal_var=False,
-                nan_policy="omit"
-            )
-            test_name = "Welch independent-samples t-test"
-            degrees_of_freedom = None
-        elif len(grouped_values) > 2:
-            test_result = stats.f_oneway(*grouped_values)
-            test_name = "One-way ANOVA"
-            degrees_of_freedom = None
-        else:
-            continue
-
-        statistic_value = float(test_result.statistic)
-        p_value = float(test_result.pvalue)
-
-        interpretation = (
-            "Target means differ significantly across predictor groups."
-            if p_value < ALPHA
-            else "No statistically significant difference in target means was detected across groups."
-        )
-
-        statistical_tests[column] = {
-            "test_name": test_name,
-            "statistic_value": statistic_value,
-            "p_value": p_value,
-            "degrees_of_freedom": degrees_of_freedom,
-            "is_statistically_significant": bool(p_value < ALPHA),
-            "interpretation_summary": interpretation
-        }
-
-        if p_value < ALPHA:
-            significant_predictors.append(column)
-
-print("Statistical hypothesis test results:")
-for feature_name, test_details in statistical_tests.items():
-    print(
-        f"{feature_name}: "
-        f"{test_details['test_name']}, "
-        f"p-value={test_details['p_value']:.12g}"
-    )
+# Save Pearson heatmap.
+plt.figure(figsize=(12, 9))
+sns.heatmap(
+    correlation_matrix,
+    annot=True,
+    fmt=".2f",
+    cmap="coolwarm",
+    center=0,
+    linewidths=0.5,
+    square=False
+)
+plt.title("Pearson Correlation Matrix")
+plt.tight_layout()
+plt.savefig("correlation_matrix.png", dpi=200, bbox_inches="tight")
+plt.close()
 
 # ---------------------------------------------------------------------
 # Target interaction visualization
 # ---------------------------------------------------------------------
-interaction_feature = None
 
-for candidate in [
+interaction_feature = None
+for preferred_feature in [
     "body_weight",
     "brain_weight",
     "log_body_weight",
-    "log_brain_weight"
+    "brain_body_ratio"
 ]:
-    if candidate in df.columns:
-        interaction_feature = candidate
+    if preferred_feature in analysis_dataframe.columns:
+        interaction_feature = preferred_feature
         break
 
-if interaction_feature is not None:
-    target_median = df[TARGET_COLUMN].median()
+if interaction_feature is not None and target_column in analysis_dataframe.columns:
+    interaction_dataframe = analysis_dataframe[
+        [interaction_feature, target_column]
+    ].dropna()
 
-    interaction_data = pd.DataFrame({
-        "feature": df[interaction_feature].astype("float64"),
-        "target_segment": np.where(
-            df[TARGET_COLUMN] <= target_median,
-            "Lower target",
-            "Higher target"
+    if len(interaction_dataframe) > 0:
+        target_unique_count = interaction_dataframe[target_column].nunique()
+
+        if target_unique_count >= 2:
+            try:
+                interaction_dataframe["target_segment"] = pd.qcut(
+                    interaction_dataframe[target_column],
+                    q=min(4, target_unique_count),
+                    duplicates="drop"
+                )
+            except Exception:
+                interaction_dataframe["target_segment"] = pd.cut(
+                    interaction_dataframe[target_column],
+                    bins=3,
+                    duplicates="drop"
+                )
+
+            plt.figure(figsize=(11, 7))
+            sns.boxplot(
+                data=interaction_dataframe,
+                x="target_segment",
+                y=interaction_feature,
+                color="#6baed6"
+            )
+            plt.xticks(rotation=30, ha="right")
+            plt.title(
+                "{} distribution segmented by {}".format(
+                    interaction_feature,
+                    target_column
+                )
+            )
+            plt.xlabel("Target segment")
+            plt.ylabel(interaction_feature)
+            plt.tight_layout()
+            plt.savefig("target_interactions.png", dpi=200, bbox_inches="tight")
+            plt.close()
+
+# ---------------------------------------------------------------------
+# Statistical hypothesis testing
+# ---------------------------------------------------------------------
+
+statistical_hypothesis_tests = {}
+significant_predictors = []
+alpha = 0.05
+
+feature_columns = [
+    column for column in analysis_dataframe.columns
+    if column != target_column
+]
+
+for feature in feature_columns:
+    test_dataframe = analysis_dataframe[[feature, target_column]].dropna()
+
+    if len(test_dataframe) < 3:
+        statistical_hypothesis_tests[feature] = {
+            "test_name": "not_run_insufficient_data",
+            "statistic_value": None,
+            "p_value": None,
+            "degrees_of_freedom": None,
+            "is_statistically_significant": False,
+            "interpretation_summary": "Insufficient valid observations."
+        }
+        continue
+
+    feature_series = test_dataframe[feature]
+    target_series = test_dataframe[target_column]
+
+    if pd.api.types.is_numeric_dtype(feature_series):
+        if feature_series.nunique() >= 3 and target_series.nunique() >= 3:
+            statistic_value, p_value = pearsonr(
+                feature_series.astype(float),
+                target_series.astype(float)
+            )
+
+            test_name = "Pearson correlation significance test"
+            degrees_of_freedom = len(test_dataframe) - 2
+            interpretation = interpret_p_value(p_value)
+
+        else:
+            grouped_values = [
+                group[target_column].values
+                for _, group in test_dataframe.groupby(feature)
+                if len(group) >= 2
+            ]
+
+            if len(grouped_values) >= 2:
+                statistic_value, p_value = f_oneway(*grouped_values)
+                test_name = "One-way ANOVA across feature levels"
+                degrees_of_freedom = [len(grouped_values) - 1, len(test_dataframe) - len(grouped_values)]
+                interpretation = interpret_p_value(p_value)
+            else:
+                statistic_value = None
+                p_value = None
+                test_name = "not_run_insufficient_groups"
+                degrees_of_freedom = None
+                interpretation = "Insufficient groups for testing."
+    else:
+        target_bins = pd.qcut(
+            target_series,
+            q=min(3, target_series.nunique()),
+            duplicates="drop"
         )
-    })
+        contingency_table = pd.crosstab(feature_series, target_bins)
 
-    plt.figure(figsize=(10, 6))
-    sns.boxplot(
-        data=interaction_data,
-        x="target_segment",
-        y="feature",
-        color="#6baed6"
-    )
-    plt.yscale("symlog", linthresh=1)
-    plt.title(f"{interaction_feature} Distribution by Target Segment")
-    plt.xlabel("Target segment based on median total sleep")
-    plt.ylabel(interaction_feature)
-    plt.tight_layout()
-    plt.savefig(
-        "target_interactions.png",
-        dpi=200,
-        bbox_inches="tight"
-    )
-    plt.close()
-else:
-    plt.figure(figsize=(8, 5))
-    plt.text(
-        0.5,
-        0.5,
-        "Target interaction visualization unavailable",
-        ha="center",
-        va="center"
-    )
-    plt.axis("off")
-    plt.tight_layout()
-    plt.savefig(
-        "target_interactions.png",
-        dpi=200,
-        bbox_inches="tight"
-    )
-    plt.close()
+        if contingency_table.shape[0] >= 2 and contingency_table.shape[1] >= 2:
+            chi2, p_value, dof, expected = chi2_contingency(
+                contingency_table
+            )
+            statistic_value = chi2
+            test_name = "Chi-square independence test"
+            degrees_of_freedom = dof
+            interpretation = interpret_p_value(p_value)
+        else:
+            statistic_value = None
+            p_value = None
+            test_name = "not_run_insufficient_contingency_table"
+            degrees_of_freedom = None
+            interpretation = "Insufficient category variation for testing."
 
-# ---------------------------------------------------------------------
-# Dataset overview
-# ---------------------------------------------------------------------
-column_summary = {}
+    is_significant = p_value is not None and p_value < alpha
 
-for column in df_raw.columns:
-    raw_missing_tokens = df_raw[column].astype("string").isin(missing_tokens).sum()
-
-    column_summary[column] = {
-        "dtype_raw": str(df_raw[column].dtype),
-        "dtype_processed": str(df[column].dtype),
-        "missing_count_raw": int(
-            df_raw[column].isna().sum() + raw_missing_tokens
-        ),
-        "missing_count_after_processing": int(df[column].isna().sum()),
-        "cardinality_raw": int(df_raw[column].nunique(dropna=True)),
-        "cardinality_processed": int(df[column].nunique(dropna=True)),
-        "profile_metadata": profile_schema.get(column, {})
+    statistical_hypothesis_tests[feature] = {
+        "test_name": test_name,
+        "statistic_value": safe_float(statistic_value),
+        "p_value": safe_float(p_value),
+        "degrees_of_freedom": make_json_safe(degrees_of_freedom),
+        "is_statistically_significant": bool(is_significant),
+        "interpretation_summary": interpretation
     }
 
-dataset_overview = {
-    "shape": {
-        "rows": int(df.shape[0]),
-        "columns": int(df.shape[1])
-    },
-    "target_column": TARGET_COLUMN,
-    "target_definition": "Continuous total sleep duration parsed from total_sleep.",
-    "column_summary": column_summary,
-    "profile_dimensions": profile.get("dimensions"),
-    "profile_missing_values_summary": profile_missing_summary
-}
+    print(
+        "Hypothesis test for {}: {} | p-value = {}".format(
+            feature,
+            test_name,
+            "None" if p_value is None else "{:.8g}".format(p_value)
+        )
+    )
+
+    if is_significant:
+        significant_predictors.append(feature)
 
 # ---------------------------------------------------------------------
-# Extracted insights
+# Insights and modeling blueprint
 # ---------------------------------------------------------------------
-target_correlations = correlation_analysis["target_correlations"]
 
-ranked_target_drivers = sorted(
-    target_correlations.items(),
-    key=lambda item: abs(item[1]),
-    reverse=True
-)
-
-key_findings = []
 data_quality_issues = []
 
-for column in ["body_weight", "brain_weight"]:
-    if column in df.columns and abs(df[column].skew()) > 1:
-        key_findings.append(
-            f"{column} is highly skewed; logarithmic transformation is recommended."
+for column, details in imputation_summary["columns"].items():
+    if details["missing_before"] > 0:
+        data_quality_issues.append(
+            "{} contained {} missing values and was handled using {}.".format(
+                column,
+                details["missing_before"],
+                details["method"]
+            )
         )
 
-if ranked_target_drivers:
-    strongest_feature, strongest_correlation = ranked_target_drivers[0]
-    key_findings.append(
-        f"The strongest absolute target correlation is {strongest_feature} "
-        f"with correlation {strongest_correlation:.4f}."
+for column, details in outlier_analysis.items():
+    if details["outlier_percentage"] is not None and details["outlier_percentage"] > 5:
+        data_quality_issues.append(
+            "{} has {:.2f}% IQR-defined outliers; robust scaling or log transformation should be considered.".format(
+                column,
+                details["outlier_percentage"]
+            )
+        )
+
+for column in raw_dataframe.columns:
+    if raw_dataframe[column].dtype == "object":
+        marker_count = int(raw_dataframe[column].isin(missing_markers).sum())
+        if marker_count > 0:
+            data_quality_issues.append(
+                "{} uses textual missing-value markers in {} records.".format(
+                    column,
+                    marker_count
+                )
+            )
+
+key_findings = []
+
+if target_column in correlation_matrix.columns:
+    absolute_target_correlations = (
+        correlation_matrix[target_column]
+        .drop(labels=[target_column])
+        .abs()
+        .sort_values(ascending=False)
     )
+
+    if len(absolute_target_correlations) > 0:
+        strongest_feature = absolute_target_correlations.index[0]
+        strongest_value = correlation_matrix.loc[strongest_feature, target_column]
+        key_findings.append(
+            "{} has the strongest linear association with {}: r = {:.3f}.".format(
+                strongest_feature,
+                target_column,
+                strongest_value
+            )
+        )
 
 if significant_predictors:
     key_findings.append(
-        "Statistically significant predictors: "
-        + ", ".join(sorted(set(significant_predictors)))
-        + "."
+        "Statistically significant predictors at alpha = 0.05 include: {}.".format(
+            ", ".join(significant_predictors)
+        )
     )
 else:
     key_findings.append(
-        "No predictors met the unadjusted 0.05 significance threshold."
+        "No predictors met the alpha = 0.05 significance threshold under the selected tests."
     )
 
-for column, details in outlier_analysis["numeric_columns"].items():
-    if details["outlier_percentage"] >= 10:
-        data_quality_issues.append(
-            f"{column} contains {details['outlier_percentage']:.2f}% IQR-defined outliers."
+if "body_weight" in analysis_dataframe.columns:
+    body_skewness = analysis_dataframe["body_weight"].skew()
+    if abs(body_skewness) > 1:
+        key_findings.append(
+            "body_weight is strongly skewed; logarithmic transformation is recommended."
         )
-
-for column, details in imputation_summary["columns"].items():
-    if details["missing_count_before"] > 0:
-        data_quality_issues.append(
-            f"{column} required {details['missing_count_before']} missing-value replacements "
-            f"using {details['method']} imputation."
-        )
-
-data_quality_issues.extend([
-    "The sample size is small, so statistical tests and validation estimates may be unstable.",
-    "Several columns contain placeholder strings or numeric-looking string values.",
-    "Extreme body-weight and brain-weight values may strongly influence correlations and models.",
-    "Univariate statistical significance does not establish causation.",
-    "Multiple hypothesis tests should be adjusted using an FDR procedure for formal inference."
-])
 
 top_key_feature_drivers = [
-    {
-        "feature": feature,
-        "target_correlation": float(correlation),
-        "absolute_target_correlation": float(abs(correlation))
-    }
-    for feature, correlation in ranked_target_drivers[:10]
+    record["feature"]
+    for record in target_correlations[:10]
+    if record["correlation"] is not None
 ]
+
+if not top_key_feature_drivers:
+    top_key_feature_drivers = significant_predictors[:10]
+
+predictive_modeling_blueprint = {
+    "target_definition": {
+        "target_column": target_column,
+        "target_type": str(analysis_dataframe[target_column].dtype),
+        "target_missing_values_excluded": int(dataframe[target_column].isna().sum())
+    },
+    "problem_type": "Regression",
+    "recommended_algorithms": [
+        "Regularized linear regression with log-transformed skewed predictors",
+        "Random Forest Regressor",
+        "Gradient Boosting Regressor",
+        "HistGradientBoostingRegressor",
+        "Elastic Net regression"
+    ],
+    "feature_selection_strategy": [
+        "Use domain-informed features including brain_body_ratio and log_body_weight.",
+        "Rank features using cross-validated permutation importance and mutual information.",
+        "Inspect pairwise correlation and remove redundant raw/derived variables when appropriate.",
+        "Retain statistically significant predictors as candidates, but validate selection within each training fold."
+    ],
+    "validation_strategy": [
+        "Use repeated K-fold cross-validation because the dataset contains only 62 rows.",
+        "Use 5 folds where sample size permits, with repeated random seeds.",
+        "Report MAE, RMSE, R-squared, and cross-validation confidence intervals.",
+        "Keep a final untouched holdout only if sufficient observations remain."
+    ],
+    "preprocessing_steps": [
+        "Replace textual missing markers with NaN.",
+        "Apply type-safe numeric imputation using median for highly skewed columns and mean otherwise.",
+        "Apply mode or Unknown imputation to categorical columns.",
+        "Use log1p transformation for heavily right-skewed positive variables.",
+        "Use RobustScaler for models sensitive to outliers.",
+        "Encode categorical variables using one-hot encoding."
+    ],
+    "overfitting_risk_mitigation": [
+        "Avoid complex models without cross-validation because of the very small sample size.",
+        "Tune hyperparameters conservatively.",
+        "Use regularization and shallow tree depth.",
+        "Perform all imputation, transformation, and feature selection inside cross-validation pipelines.",
+        "Use bootstrap uncertainty intervals and inspect residual stability."
+    ],
+    "overall_executive_modeling_strategy": (
+        "Begin with a regularized linear regression baseline using log-transformed body and brain "
+        "measurements plus ecological indices. Compare it with constrained tree ensembles using "
+        "repeated cross-validation. Prefer the simplest model with stable out-of-sample error, "
+        "interpretable feature effects, and robust performance under extreme-value sensitivity."
+    )
+}
+
+# ---------------------------------------------------------------------
+# Dataset overview and final metrics dictionary
+# ---------------------------------------------------------------------
+
+dataset_overview = {
+    "shape": {
+        "rows": int(raw_dataframe.shape[0]),
+        "columns": int(raw_dataframe.shape[1])
+    },
+    "target_column": target_column,
+    "profile_dimensions": metadata_profile.get("dimensions"),
+    "profile_schema": profile_schema,
+    "column_summary": column_summary(dataframe),
+    "numeric_columns_inferred_from_text": converted_numeric_columns,
+    "original_missing_counts": {
+        str(column): int(count)
+        for column, count in original_missing_counts.items()
+    }
+}
+
+correlation_text_lines = [
+    "Pearson correlation matrix:",
+    correlation_matrix.round(4).to_string()
+]
+correlation_text = "\n".join(correlation_text_lines)
+
+correlation_analysis = {
+    "top_positive_correlations": positive_correlations,
+    "top_negative_correlations": negative_correlations,
+    "target_correlations": target_correlations,
+    "correlation_matrix_plain_text": correlation_text
+}
 
 extracted_insights = {
     "key_findings": key_findings,
     "data_quality_issues": data_quality_issues,
-    "key_feature_drivers": top_key_feature_drivers
+    "data_quality_issues_caveats": [
+        "The dataset is small, so p-values and model estimates may be unstable.",
+        "IQR outlier flags indicate unusual observations, not necessarily data errors.",
+        "Correlation does not establish causation.",
+        "Feature selection and preprocessing must occur inside cross-validation to avoid leakage."
+    ],
+    "top_key_feature_drivers": top_key_feature_drivers
 }
 
-# ---------------------------------------------------------------------
-# Predictive modeling blueprint
-# ---------------------------------------------------------------------
-predictive_modeling_blueprint = {
-    "target_definition": {
-        "column": TARGET_COLUMN,
-        "problem_type": "Supervised regression",
-        "description": "Predict continuous total sleep duration."
-    },
-    "recommended_algorithms": [
-        "Median baseline regressor",
-        "Regularized linear regression",
-        "Random Forest Regressor",
-        "Gradient Boosting Regressor",
-        "HistGradientBoostingRegressor"
-    ],
-    "feature_selection_strategy": [
-        "Use domain features such as brain_body_ratio and logarithmic weight features.",
-        "Remove identifiers and leakage-prone fields if present.",
-        "Inspect redundancy using the correlation matrix.",
-        "Use repeated cross-validated permutation importance.",
-        "Prefer compact feature sets because of the small sample size."
-    ],
-    "validation_strategy": [
-        "Use repeated 5-fold cross-validation.",
-        "Place imputation, transformations, scaling, and encoding inside a Pipeline.",
-        "Report MAE, RMSE, and R-squared with variability estimates.",
-        "Compare all models against the median-target baseline."
-    ],
-    "preprocessing_steps": [
-        "Replace '?' and other placeholder strings with missing values.",
-        "Parse numeric-looking strings explicitly to float64.",
-        "Use median imputation for skewed numeric fields.",
-        "Use mean imputation for symmetric numeric fields.",
-        "Use mode or Unknown for categorical fields.",
-        "Apply log1p transformations to heavily skewed positive variables.",
-        "Standardize predictors for regularized linear models.",
-        "One-hot encode remaining categorical predictors."
-    ],
-    "overfitting_risk_mitigation": [
-        "Use regularization and constrained tree depth.",
-        "Use minimum leaf-size constraints for tree ensembles.",
-        "Avoid repeated tuning against final evaluation data.",
-        "Use repeated cross-validation because there are only 62 rows.",
-        "Investigate influential observations and robust alternatives.",
-        "Prefer stable performance over marginal improvements."
-    ],
-    "overall_executive_modeling_strategy_summary": (
-        "Start with a transparent median baseline and regularized regression using "
-        "log-transformed size variables and biologically motivated ratios. Compare "
-        "against constrained tree ensembles using repeated cross-validation. Prioritize "
-        "MAE and stability because the dataset is small and contains extreme values."
-    )
-}
-
-# ---------------------------------------------------------------------
-# Save complete metrics JSON
-# ---------------------------------------------------------------------
 metrics_dict = {
     "dataset_overview": dataset_overview,
     "imputation_summary": imputation_summary,
     "outlier_analysis": outlier_analysis,
-    "engineered_features": engineered_features,
+    "engineered_features": engineered_feature_records,
     "correlation_analysis": correlation_analysis,
     "statistical_hypothesis_tests": {
-        "tests_by_feature": statistical_tests,
-        "significance_level": ALPHA,
-        "significant_predictors": sorted(set(significant_predictors))
+        "tests_by_feature": statistical_hypothesis_tests,
+        "significant_predictors": significant_predictors,
+        "alpha": alpha
     },
     "extracted_insights": extracted_insights,
     "predictive_modeling_blueprint": predictive_modeling_blueprint
 }
 
 with open(METRICS_FILEPATH, "w", encoding="utf-8") as metrics_file:
-    json.dump(
-        json_safe(metrics_dict),
-        metrics_file,
-        indent=2
-    )
+    json.dump(make_json_safe(metrics_dict), metrics_file, indent=2)
 
 print("EDA completed successfully.")
-print("Saved visualization: correlation_matrix.png")
-print("Saved visualization: target_interactions.png")
-print("Saved metrics: metrics.json")
+print("Target column: {}".format(target_column))
+print("Correlation heatmap saved to correlation_matrix.png")
+print("Target interaction plot saved to target_interactions.png")
+print("Comprehensive metrics saved to metrics.json")

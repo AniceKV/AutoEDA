@@ -17,12 +17,12 @@
             "key_metric": "Range: [0.14 to 5712.00] | Mean: 283.13 | Median: 17.25 | Highly Skewed (5.07)"
         },
         "max_life_span": {
-            "type": "str",
+            "type": "object",
             "cardinality": 48,
-            "key_metric": "Top Values: '?': 4, '7': 3, '4.5': 2"
+            "key_metric": "Top Values: '?': 4, '7': 3, '27': 2"
         },
         "gestation_time": {
-            "type": "str",
+            "type": "object",
             "cardinality": 50,
             "key_metric": "Top Values: '?': 4, '42': 3, '63': 3"
         },
@@ -42,9 +42,9 @@
             "key_metric": "Range: [1.00 to 5.00] | Mean: 2.61 | Median: 2.00"
         },
         "total_sleep": {
-            "type": "str",
+            "type": "object",
             "cardinality": 45,
-            "key_metric": "Top Values: '?': 4, '12.5': 3, '10.3': 3"
+            "key_metric": "Top Values: '?': 4, '10.3': 3, '8.4': 3"
         }
     },
     "columns": [
@@ -64,14 +64,14 @@
         },
         {
             "column": "max_life_span",
-            "dtype": "str",
+            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 48
         },
         {
             "column": "gestation_time",
-            "dtype": "str",
+            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 50
@@ -99,7 +99,7 @@
         },
         {
             "column": "total_sleep",
-            "dtype": "str",
+            "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 45
