@@ -1,0 +1,108 @@
+{
+    "dataset_name": "dataset_2191_sleep.csv",
+    "dimensions": {
+        "rows": 62,
+        "columns": 8
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "body_weight": {
+            "type": "float64",
+            "cardinality": 60,
+            "key_metric": "Range: [0.01 to 6654.00] | Mean: 198.79 | Median: 3.34 | Highly Skewed (6.56)"
+        },
+        "brain_weight": {
+            "type": "float64",
+            "cardinality": 59,
+            "key_metric": "Range: [0.14 to 5712.00] | Mean: 283.13 | Median: 17.25 | Highly Skewed (5.07)"
+        },
+        "max_life_span": {
+            "type": "str",
+            "cardinality": 48,
+            "key_metric": "Top Values: '?': 4, '7': 3, '4.5': 2"
+        },
+        "gestation_time": {
+            "type": "str",
+            "cardinality": 50,
+            "key_metric": "Top Values: '?': 4, '42': 3, '63': 3"
+        },
+        "predation_index": {
+            "type": "int64",
+            "cardinality": 5,
+            "key_metric": "Range: [1.00 to 5.00] | Mean: 2.87 | Median: 3.00"
+        },
+        "sleep_exposure_index": {
+            "type": "int64",
+            "cardinality": 5,
+            "key_metric": "Range: [1.00 to 5.00] | Mean: 2.42 | Median: 2.00"
+        },
+        "danger_index": {
+            "type": "int64",
+            "cardinality": 5,
+            "key_metric": "Range: [1.00 to 5.00] | Mean: 2.61 | Median: 2.00"
+        },
+        "total_sleep": {
+            "type": "str",
+            "cardinality": 45,
+            "key_metric": "Top Values: '?': 4, '12.5': 3, '10.3': 3"
+        }
+    },
+    "columns": [
+        {
+            "column": "body_weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 60
+        },
+        {
+            "column": "brain_weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 59
+        },
+        {
+            "column": "max_life_span",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 48
+        },
+        {
+            "column": "gestation_time",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 50
+        },
+        {
+            "column": "predation_index",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5
+        },
+        {
+            "column": "sleep_exposure_index",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5
+        },
+        {
+            "column": "danger_index",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5
+        },
+        {
+            "column": "total_sleep",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 45
+        }
+    ]
+}

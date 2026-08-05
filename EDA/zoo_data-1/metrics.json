@@ -1,0 +1,703 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\zoo_data-1.csv",
+    "shape": {
+      "rows": 101,
+      "columns": 17
+    },
+    "target_column": null,
+    "profile_dimensions": {
+      "rows": 101,
+      "columns": 17
+    },
+    "column_summary": {
+      "animal_name": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 100,
+        "profile_type": "str",
+        "profile_key_metric": "Top Values: 'frog': 2, 'aardvark': 1, 'antelope': 1"
+      },
+      "hair": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.43 | Median: 0.00"
+      },
+      "feathers": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.20 | Median: 0.00 | Highly Skewed (1.54)"
+      },
+      "eggs": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.58 | Median: 1.00"
+      },
+      "milk": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.41 | Median: 0.00"
+      },
+      "airborne": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.24 | Median: 0.00 | Highly Skewed (1.25)"
+      },
+      "aquatic": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.36 | Median: 0.00"
+      },
+      "predator": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.55 | Median: 1.00"
+      },
+      "toothed": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.60 | Median: 1.00"
+      },
+      "backbone": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.82 | Median: 1.00 | Highly Skewed (-1.71)"
+      },
+      "breathes": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.79 | Median: 1.00 | Highly Skewed (-1.46)"
+      },
+      "venomous": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.08 | Median: 0.00 | Highly Skewed (3.16)"
+      },
+      "fins": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.17 | Median: 0.00 | Highly Skewed (1.80)"
+      },
+      "legs": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 6,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 8.00] | Mean: 2.84 | Median: 4.00"
+      },
+      "tail": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.74 | Median: 1.00 | Highly Skewed (-1.13)"
+      },
+      "domestic": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.13 | Median: 0.00 | Highly Skewed (2.25)"
+      },
+      "catsize": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2,
+        "profile_type": "int64",
+        "profile_key_metric": "Range: [0.00 to 1.00] | Mean: 0.44 | Median: 0.00"
+      },
+      "terrestrial_mammalian_score": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 5,
+        "profile_type": "",
+        "profile_key_metric": null
+      },
+      "environmental_adaptation_score": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 3,
+        "profile_type": "",
+        "profile_key_metric": null
+      },
+      "locomotion_structure_score": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 10,
+        "profile_type": "",
+        "profile_key_metric": null
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules": [
+      "Numeric columns with absolute profile skewness greater than 1 use median imputation.",
+      "Numeric columns with absolute profile skewness less than or equal to 1 use mean imputation.",
+      "Categorical or string columns use mode imputation, with Unknown as a fallback.",
+      "No imputation is performed when a column has no missing values."
+    ],
+    "columns": {
+      "animal_name": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "hair": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "feathers": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": 1.54
+      },
+      "eggs": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "milk": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "airborne": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": 1.25
+      },
+      "aquatic": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "predator": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "toothed": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "backbone": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": -1.71
+      },
+      "breathes": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": -1.46
+      },
+      "venomous": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": 3.16
+      },
+      "fins": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": 1.8
+      },
+      "legs": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      },
+      "tail": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": -1.13
+      },
+      "domestic": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": 2.25
+      },
+      "catsize": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "filled_value_or_statistic": null,
+        "filled_count": 0,
+        "profile_skewness": null
+      }
+    }
+  },
+  "outlier_analysis": {
+    "hair": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "feathers": {
+      "Q1": 0.0,
+      "Q3": 0.0,
+      "IQR": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 20,
+      "outlier_percentage": 19.801980198019802
+    },
+    "eggs": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "milk": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "airborne": {
+      "Q1": 0.0,
+      "Q3": 0.0,
+      "IQR": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 24,
+      "outlier_percentage": 23.762376237623762
+    },
+    "aquatic": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "predator": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "toothed": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "backbone": {
+      "Q1": 1.0,
+      "Q3": 1.0,
+      "IQR": 0.0,
+      "lower_bound": 1.0,
+      "upper_bound": 1.0,
+      "outlier_count": 18,
+      "outlier_percentage": 17.82178217821782
+    },
+    "breathes": {
+      "Q1": 1.0,
+      "Q3": 1.0,
+      "IQR": 0.0,
+      "lower_bound": 1.0,
+      "upper_bound": 1.0,
+      "outlier_count": 21,
+      "outlier_percentage": 20.792079207920793
+    },
+    "venomous": {
+      "Q1": 0.0,
+      "Q3": 0.0,
+      "IQR": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 8,
+      "outlier_percentage": 7.920792079207921
+    },
+    "fins": {
+      "Q1": 0.0,
+      "Q3": 0.0,
+      "IQR": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 17,
+      "outlier_percentage": 16.831683168316832
+    },
+    "legs": {
+      "Q1": 2.0,
+      "Q3": 4.0,
+      "IQR": 2.0,
+      "lower_bound": -1.0,
+      "upper_bound": 7.0,
+      "outlier_count": 2,
+      "outlier_percentage": 1.9801980198019802
+    },
+    "tail": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "domestic": {
+      "Q1": 0.0,
+      "Q3": 0.0,
+      "IQR": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 13,
+      "outlier_percentage": 12.871287128712872
+    },
+    "catsize": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "terrestrial_mammalian_score": {
+      "Q1": 1.0,
+      "Q3": 4.0,
+      "IQR": 3.0,
+      "lower_bound": -3.5,
+      "upper_bound": 8.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "environmental_adaptation_score": {
+      "Q1": 0.0,
+      "Q3": 1.0,
+      "IQR": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    },
+    "locomotion_structure_score": {
+      "Q1": 1.5,
+      "Q3": 2.5,
+      "IQR": 1.0,
+      "lower_bound": 0.0,
+      "upper_bound": 4.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0
+    }
+  },
+  "engineered_features": [
+    {
+      "feature_name": "terrestrial_mammalian_score",
+      "formula_or_method": "hair + milk + backbone + breathes",
+      "data_type": "int64",
+      "rationale_purpose": "Summarizes traits associated with mammalian and terrestrial biological structure.",
+      "correlation_with_target": null
+    },
+    {
+      "feature_name": "environmental_adaptation_score",
+      "formula_or_method": "aquatic + fins + airborne",
+      "data_type": "int64",
+      "rationale_purpose": "Captures adaptation to aquatic and aerial environments.",
+      "correlation_with_target": null
+    },
+    {
+      "feature_name": "locomotion_structure_score",
+      "formula_or_method": "normalized legs + tail + backbone",
+      "data_type": "float64",
+      "rationale_purpose": "Represents structural traits related to movement and body support.",
+      "correlation_with_target": null
+    }
+  ],
+  "correlation_analysis": {
+    "top_positive_correlations": [
+      {
+        "feature_1": "milk",
+        "feature_2": "terrestrial_mammalian_score",
+        "correlation": 0.9148394994817326
+      },
+      {
+        "feature_1": "locomotion_structure_score",
+        "feature_2": "tail",
+        "correlation": 0.9028419001945999
+      },
+      {
+        "feature_1": "hair",
+        "feature_2": "milk",
+        "correlation": 0.8785027248895131
+      },
+      {
+        "feature_1": "hair",
+        "feature_2": "terrestrial_mammalian_score",
+        "correlation": 0.866031141504355
+      },
+      {
+        "feature_1": "backbone",
+        "feature_2": "locomotion_structure_score",
+        "correlation": 0.8511672983823441
+      },
+      {
+        "feature_1": "aquatic",
+        "feature_2": "environmental_adaptation_score",
+        "correlation": 0.8042547527464281
+      },
+      {
+        "feature_1": "backbone",
+        "feature_2": "tail",
+        "correlation": 0.7317619678035817
+      },
+      {
+        "feature_1": "environmental_adaptation_score",
+        "feature_2": "fins",
+        "correlation": 0.7089252967969988
+      },
+      {
+        "feature_1": "breathes",
+        "feature_2": "terrestrial_mammalian_score",
+        "correlation": 0.6698972079211295
+      },
+      {
+        "feature_1": "airborne",
+        "feature_2": "feathers",
+        "correlation": 0.6565530764325558
+      }
+    ],
+    "top_negative_correlations": [
+      {
+        "feature_1": "eggs",
+        "feature_2": "milk",
+        "correlation": -0.9388478737749794
+      },
+      {
+        "feature_1": "eggs",
+        "feature_2": "terrestrial_mammalian_score",
+        "correlation": -0.8458703102494302
+      },
+      {
+        "feature_1": "eggs",
+        "feature_2": "hair",
+        "correlation": -0.8173815452256148
+      },
+      {
+        "feature_1": "eggs",
+        "feature_2": "toothed",
+        "correlation": -0.6421501167047026
+      },
+      {
+        "feature_1": "aquatic",
+        "feature_2": "breathes",
+        "correlation": -0.6375063344111384
+      },
+      {
+        "feature_1": "breathes",
+        "feature_2": "fins",
+        "correlation": -0.6172188026030814
+      },
+      {
+        "feature_1": "feathers",
+        "feature_2": "toothed",
+        "correlation": -0.6136311676215142
+      },
+      {
+        "feature_1": "fins",
+        "feature_2": "legs",
+        "correlation": -0.6056518124207464
+      },
+      {
+        "feature_1": "airborne",
+        "feature_2": "toothed",
+        "correlation": -0.5943105753453786
+      },
+      {
+        "feature_1": "environmental_adaptation_score",
+        "feature_2": "hair",
+        "correlation": -0.5298706412242612
+      }
+    ],
+    "target_correlations": {
+      "top_positive": [],
+      "top_negative": [],
+      "all_target_correlations": {}
+    },
+    "correlation_matrix_plain_text": "                                  hair  feathers    eggs    milk  airborne  aquatic  predator  toothed  backbone  breathes  venomous    fins    legs    tail  domestic  catsize  terrestrial_mammalian_score  environmental_adaptation_score  locomotion_structure_score\nhair                            1.0000   -0.4279 -0.8174  0.8785   -0.1984  -0.4736   -0.1548   0.4925    0.1917    0.4411   -0.1042 -0.2803  0.3940  0.0490    0.2072   0.4550                       0.8660                         -0.5299                      0.2790\nfeathers                       -0.4279    1.0000  0.4192 -0.4108    0.6566  -0.0586   -0.1044  -0.6136    0.2314    0.2546   -0.1457 -0.2235 -0.2067  0.2926    0.0316  -0.1359                      -0.1627                          0.2136                      0.2356\neggs                           -0.8174    0.4192  1.0000 -0.9388    0.3766   0.3762    0.0116  -0.6422   -0.3404   -0.3828    0.0987  0.1648 -0.2249 -0.2211   -0.1556  -0.5147                      -0.8459                          0.5121                     -0.4073\nmilk                            0.8785   -0.4108 -0.9388  1.0000   -0.3668  -0.3626   -0.0297   0.6282    0.3850    0.4235   -0.2424 -0.1563  0.2142  0.2100    0.1639   0.5749                       0.9148                         -0.4944                      0.4209\nairborne                       -0.1984    0.6566  0.3766 -0.3668    1.0000  -0.1726   -0.2952  -0.5943   -0.1047    0.2860    0.0085 -0.2512  0.0437  0.0095    0.0633  -0.3498                      -0.1486                          0.3170                     -0.0357\naquatic                        -0.4736   -0.0586  0.3762 -0.3626   -0.1726   1.0000    0.3760   0.0531    0.0225   -0.6375    0.0879  0.6045 -0.3606 -0.0346   -0.2243  -0.1119                      -0.4868                          0.8043                     -0.1403\npredator                       -0.1548   -0.1044  0.0116 -0.0297   -0.2952   0.3760    1.0000   0.1295    0.0510   -0.2629    0.1154  0.1903 -0.0997  0.0189   -0.3098   0.1448                      -0.1311                          0.1600                      0.0037\ntoothed                         0.4925   -0.6136 -0.6422  0.6282   -0.5943   0.0531    0.1295   1.0000    0.5751   -0.0657   -0.0623  0.3643 -0.1935  0.3104    0.0694   0.3440                       0.5479                         -0.1161                      0.4403\nbackbone                        0.1917    0.2314 -0.3404  0.3850   -0.1047   0.0225    0.0510   0.5751    1.0000    0.2077   -0.2466  0.2095 -0.4329  0.7318    0.1017   0.3570                       0.5518                          0.0568                      0.8512\nbreathes                        0.4411    0.2546 -0.3828  0.4235    0.2860  -0.6375   -0.2629  -0.0657    0.2077    1.0000   -0.1208 -0.6172  0.3699  0.0890    0.1241   0.2041                       0.6699                         -0.5278                      0.3041\nvenomous                       -0.1042   -0.1457  0.0987 -0.2424    0.0085   0.0879    0.1154  -0.0623   -0.2466   -0.1208    1.0000 -0.0340  0.0230 -0.1627   -0.0033  -0.1837                      -0.2308                          0.0421                     -0.2292\nfins                           -0.2803   -0.2235  0.1648 -0.1563   -0.2512   0.6045    0.1903   0.3643    0.2095   -0.6172   -0.0340  1.0000 -0.6057  0.2043   -0.0939   0.0317                      -0.2835                          0.7089                      0.0235\nlegs                            0.3940   -0.2067 -0.2249  0.2142    0.0437  -0.3606   -0.0997  -0.1935   -0.4329    0.3699    0.0230 -0.6057  1.0000 -0.3483    0.0739   0.0688                       0.2091                         -0.4848                     -0.0933\ntail                            0.0490    0.2926 -0.2211  0.2100    0.0095  -0.0346    0.0189   0.3104    0.7318    0.0890   -0.1627  0.2043 -0.3483  1.0000    0.0234   0.2433                       0.3260                          0.0814                      0.9028\ndomestic                        0.2072    0.0316 -0.1556  0.1639    0.0633  -0.2243   -0.3098   0.0694    0.1017    0.1241   -0.0033 -0.0939  0.0739  0.0234    1.0000   0.0201                       0.2001                         -0.1472                      0.0974\ncatsize                         0.4550   -0.1359 -0.5147  0.5749   -0.3498  -0.1119    0.1448   0.3440    0.3570    0.2041   -0.1837  0.0317  0.0688  0.2433    0.0201   1.0000                       0.5342                         -0.2427                      0.3736\nterrestrial_mammalian_score     0.8660   -0.1627 -0.8459  0.9148   -0.1486  -0.4868   -0.1311   0.5479    0.5518    0.6699   -0.2308 -0.2835  0.2091  0.3260    0.2001   0.5342                       1.0000                         -0.5125                      0.5834\nenvironmental_adaptation_score -0.5299    0.2136  0.5121 -0.4944    0.3170   0.8043    0.1600  -0.1161    0.0568   -0.5278    0.0421  0.7089 -0.4848  0.0814   -0.1472  -0.2427                      -0.5125                          1.0000                     -0.0937\nlocomotion_structure_score      0.2790    0.2356 -0.4073  0.4209   -0.0357  -0.1403    0.0037   0.4403    0.8512    0.3041   -0.2292  0.0235 -0.0933  0.9028    0.0974   0.3736                       0.5834                         -0.0937                      1.0000"
+  },
+  "statistical_hypothesis_tests": {
+    "tests_by_feature": {
+      "dataset_level_note": {
+        "test_name": "Not applicable",
+        "statistic_value": null,
+        "p_value": null,
+        "degrees_of_freedom": null,
+        "is_statistically_significant": false,
+        "interpretation_summary": "No explicit target column was detected. The dataset appears to contain animal attributes without a supervised outcome column."
+      }
+    },
+    "significant_predictors": [],
+    "significance_threshold": 0.05
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "No explicit supervised target was detected; statistical target-based inference is unavailable.",
+      "The feature space is dominated by binary biological attributes, making tree-based classifiers and interpretable rule-based models appropriate.",
+      "Highly skewed binary traits are expected because several biological characteristics are uncommon in the animal population."
+    ],
+    "data_quality_issues": [
+      "The dataset contains animal attributes but no clear outcome or class label column.",
+      "Observed dimensions differ from the supplied metadata profile.",
+      "animal_name is not fully unique and should not automatically be treated as a primary key."
+    ],
+    "key_feature_drivers": [
+      "milk and terrestrial_mammalian_score",
+      "locomotion_structure_score and tail",
+      "hair and milk",
+      "hair and terrestrial_mammalian_score",
+      "backbone and locomotion_structure_score"
+    ]
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "No explicit target detected; provide a target such as class_type.",
+    "problem_type": "Undefined until a target label is supplied",
+    "recommended_algorithms": [
+      "Regularized logistic regression as an interpretable baseline",
+      "Decision tree with constrained depth",
+      "Random forest with class weighting where appropriate",
+      "Gradient boosting or XGBoost-style boosting for nonlinear interactions",
+      "Linear or kernel SVM for small-sample comparison"
+    ],
+    "feature_selection_strategy": [
+      "Exclude animal_name unless entity identity is explicitly meaningful.",
+      "Use domain-engineered scores alongside original attributes.",
+      "Rank features using cross-validated permutation importance and mutual information.",
+      "Remove redundant features only after checking model stability and domain interpretability.",
+      "Do not select features using the full dataset before cross-validation."
+    ],
+    "validation_strategy": [
+      "Use stratified k-fold cross-validation for classification.",
+      "Use repeated stratified cross-validation because the sample size is small.",
+      "Report balanced accuracy, macro F1, per-class recall, ROC-AUC where applicable, and a confusion matrix.",
+      "Reserve a final holdout set only if enough observations remain after training."
+    ],
+    "preprocessing_steps": [
+      "Apply type-safe imputation inside each training fold.",
+      "Treat binary biological indicators as numeric or categorical consistently.",
+      "Scale continuous engineered scores for linear models and SVMs.",
+      "Avoid scaling requirements for tree-based models.",
+      "Encode categorical variables with one-hot encoding if additional categorical predictors are added."
+    ],
+    "overfitting_risk_mitigation": [
+      "Use shallow trees, minimum leaf sizes, regularization, and early stopping.",
+      "Avoid high-cardinality animal_name encoding.",
+      "Use nested or repeated cross-validation for hyperparameter selection.",
+      "Prefer simple models when performance is statistically indistinguishable.",
+      "Monitor train-validation performance gaps and feature-importance instability."
+    ],
+    "overall_executive_modeling_strategy_summary": "Establish a regularized interpretable baseline, then compare constrained tree ensembles using leakage-safe cross-validation. Emphasize biological interpretability, robust metrics, and uncertainty because the dataset is small and largely binary. A supervised target must be confirmed before production modeling."
+  },
+  "generated_visualizations": [
+    "correlation_matrix.png",
+    "target_interactions.png"
+  ]
+}

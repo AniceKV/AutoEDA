@@ -1,0 +1,72 @@
+{
+  "engineered_features": [
+    {
+      "name": "FamilySize",
+      "description": "Total number of family members aboard (SibSp + Parch + 1)",
+      "type": "int64"
+    },
+    {
+      "name": "Title",
+      "description": "Extracted title from passenger name (Mr, Mrs, Miss, Master, Rare)",
+      "type": "str"
+    },
+    {
+      "name": "IsAlone",
+      "description": "Binary indicator for passengers traveling alone (FamilySize == 1)",
+      "type": "int64"
+    }
+  ],
+  "outlier_rates": {
+    "Pclass": 0.0,
+    "Age": 7.41,
+    "SibSp": 5.16,
+    "Parch": 23.91,
+    "Fare": 13.02
+  },
+  "significant_predictors": [
+    "Sex",
+    "Embarked",
+    "Pclass",
+    "Title",
+    "Age",
+    "Fare"
+  ],
+  "statistical_tests": {
+    "Sex": {
+      "test": "Chi-Square",
+      "statistic": 260.717,
+      "p_value": 0.0
+    },
+    "Embarked": {
+      "test": "Chi-Square",
+      "statistic": 25.9645,
+      "p_value": 2e-06
+    },
+    "Pclass": {
+      "test": "Chi-Square",
+      "statistic": 102.889,
+      "p_value": 0.0
+    },
+    "Title": {
+      "test": "Chi-Square",
+      "statistic": 283.3115,
+      "p_value": 0.0
+    },
+    "Age": {
+      "test": "Independent T-test (Welch)",
+      "statistic": 2.0385,
+      "p_value": 0.041891
+    },
+    "Fare": {
+      "test": "Independent T-test (Welch)",
+      "statistic": -6.8391,
+      "p_value": 0.0
+    },
+    "FamilySize": {
+      "test": "Independent T-test (Welch)",
+      "statistic": -0.5458,
+      "p_value": 0.585335
+    }
+  },
+  "modeling_strategy": "Given the dataset size (891 samples) and binary target (Survived), a regularized logistic regression or gradient boosting classifier (e.g., XGBoost / LightGBM) is recommended. Key features to include are Sex, Title, Pclass, FamilySize, Age (imputed), Fare (log-transformed due to skewness), and IsAlone. Perform 5-fold stratified cross-validation. Use class weighting or SMOTE to handle class imbalance (survival rate ~38%). Evaluate with ROC-AUC and accuracy. Feature importance from tree-based models can provide further insights. The statistical tests indicate Sex, Pclass, Title, and Fare are significant predictors; Age and FamilySize may also contribute."
+}
