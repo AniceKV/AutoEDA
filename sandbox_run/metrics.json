@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\Titanic-Dataset.csv",
     "shape": {
       "rows": 891,
-      "columns": 15
+      "columns": 12
     },
     "target_column": "Survived",
     "column_summary": {
@@ -66,21 +66,6 @@
         "dtype": "object",
         "missing_count": 0,
         "cardinality": 3
-      },
-      "FamilySize": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 9
-      },
-      "FarePerPerson": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 316
-      },
-      "AgeClassInteraction": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 128
       }
     }
   },
@@ -224,71 +209,19 @@
       "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "FamilySize",
-      "formula": "sum(SibSp, Parch)",
-      "data_type": "int64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": null
-    },
-    {
-      "feature_name": "FarePerPerson",
-      "formula": "Fare / (FamilySize + eps)",
-      "data_type": "float64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": null
-    },
-    {
-      "feature_name": "AgeClassInteraction",
-      "formula": "Age * Pclass",
-      "data_type": "float64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": null
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
-      {
-        "feature_1": "SibSp",
-        "feature_2": "FamilySize",
-        "correlation": 0.8907
-      },
-      {
-        "feature_1": "Parch",
-        "feature_2": "FamilySize",
-        "correlation": 0.7831
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "AgeClassInteraction",
-        "correlation": 0.5621
-      },
       {
         "feature_1": "Pclass",
         "feature_2": "Fare",
         "correlation": -0.5495
       },
       {
-        "feature_1": "Fare",
-        "feature_2": "FarePerPerson",
-        "correlation": 0.5463
-      },
-      {
-        "feature_1": "Pclass",
-        "feature_2": "AgeClassInteraction",
-        "correlation": 0.522
-      },
-      {
         "feature_1": "SibSp",
         "feature_2": "Parch",
         "correlation": 0.4148
-      },
-      {
-        "feature_1": "Fare",
-        "feature_2": "AgeClassInteraction",
-        "correlation": -0.3532
       },
       {
         "feature_1": "Pclass",
@@ -299,6 +232,36 @@
         "feature_1": "Survived",
         "feature_2": "Pclass",
         "correlation": -0.3385
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Fare",
+        "correlation": 0.2573
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Ticket",
+        "correlation": 0.237
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "SibSp",
+        "correlation": -0.2333
+      },
+      {
+        "feature_1": "Parch",
+        "feature_2": "Fare",
+        "correlation": 0.2162
+      },
+      {
+        "feature_1": "SibSp",
+        "feature_2": "Ticket",
+        "correlation": 0.1836
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Parch",
+        "correlation": -0.1725
       }
     ],
     "correlation_matrix_text": {
@@ -310,10 +273,7 @@
         "SibSp": -0.058,
         "Parch": -0.002,
         "Ticket": -0.064,
-        "Fare": 0.013,
-        "FamilySize": -0.04,
-        "FarePerPerson": 0.031,
-        "AgeClassInteraction": 0.004
+        "Fare": 0.013
       },
       "Survived": {
         "PassengerId": -0.005,
@@ -323,10 +283,7 @@
         "SibSp": -0.035,
         "Parch": 0.082,
         "Ticket": -0.105,
-        "Fare": 0.257,
-        "FamilySize": 0.017,
-        "FarePerPerson": 0.117,
-        "AgeClassInteraction": -0.325
+        "Fare": 0.257
       },
       "Pclass": {
         "PassengerId": -0.035,
@@ -336,10 +293,7 @@
         "SibSp": 0.083,
         "Parch": 0.018,
         "Ticket": 0.237,
-        "Fare": -0.549,
-        "FamilySize": 0.066,
-        "FarePerPerson": -0.292,
-        "AgeClassInteraction": 0.522
+        "Fare": -0.549
       },
       "Age": {
         "PassengerId": 0.034,
@@ -349,10 +303,7 @@
         "SibSp": -0.233,
         "Parch": -0.172,
         "Ticket": -0.125,
-        "Fare": 0.097,
-        "FamilySize": -0.246,
-        "FarePerPerson": 0.113,
-        "AgeClassInteraction": 0.562
+        "Fare": 0.097
       },
       "SibSp": {
         "PassengerId": -0.058,
@@ -362,10 +313,7 @@
         "SibSp": 1.0,
         "Parch": 0.415,
         "Ticket": 0.184,
-        "Fare": 0.16,
-        "FamilySize": 0.891,
-        "FarePerPerson": -0.177,
-        "AgeClassInteraction": -0.188
+        "Fare": 0.16
       },
       "Parch": {
         "PassengerId": -0.002,
@@ -375,10 +323,7 @@
         "SibSp": 0.415,
         "Parch": 1.0,
         "Ticket": 0.074,
-        "Fare": 0.216,
-        "FamilySize": 0.783,
-        "FarePerPerson": -0.176,
-        "AgeClassInteraction": -0.135
+        "Fare": 0.216
       },
       "Ticket": {
         "PassengerId": -0.064,
@@ -388,10 +333,7 @@
         "SibSp": 0.184,
         "Parch": 0.074,
         "Ticket": 1.0,
-        "Fare": -0.091,
-        "FamilySize": 0.163,
-        "FarePerPerson": -0.063,
-        "AgeClassInteraction": 0.071
+        "Fare": -0.091
       },
       "Fare": {
         "PassengerId": 0.013,
@@ -401,49 +343,7 @@
         "SibSp": 0.16,
         "Parch": 0.216,
         "Ticket": -0.091,
-        "Fare": 1.0,
-        "FamilySize": 0.217,
-        "FarePerPerson": 0.546,
-        "AgeClassInteraction": -0.353
-      },
-      "FamilySize": {
-        "PassengerId": -0.04,
-        "Survived": 0.017,
-        "Pclass": 0.066,
-        "Age": -0.246,
-        "SibSp": 0.891,
-        "Parch": 0.783,
-        "Ticket": 0.163,
-        "Fare": 0.217,
-        "FamilySize": 1.0,
-        "FarePerPerson": -0.209,
-        "AgeClassInteraction": -0.196
-      },
-      "FarePerPerson": {
-        "PassengerId": 0.031,
-        "Survived": 0.117,
-        "Pclass": -0.292,
-        "Age": 0.113,
-        "SibSp": -0.177,
-        "Parch": -0.176,
-        "Ticket": -0.063,
-        "Fare": 0.546,
-        "FamilySize": -0.209,
-        "FarePerPerson": 1.0,
-        "AgeClassInteraction": -0.136
-      },
-      "AgeClassInteraction": {
-        "PassengerId": 0.004,
-        "Survived": -0.325,
-        "Pclass": 0.522,
-        "Age": 0.562,
-        "SibSp": -0.188,
-        "Parch": -0.135,
-        "Ticket": 0.071,
-        "Fare": -0.353,
-        "FamilySize": -0.196,
-        "FarePerPerson": -0.136,
-        "AgeClassInteraction": 1.0
+        "Fare": 1.0
       }
     }
   },
@@ -525,27 +425,6 @@
       "is_statistically_significant": true,
       "interpretation": "F-statistic = 13.3269, p = 1.9832e-06. (Statistically Significant)"
     },
-    "FamilySize": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.0166,
-      "p_value": 0.6198911221343022,
-      "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0166, p = 6.1989e-01. (Not Significant)"
-    },
-    "FarePerPerson": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.1172,
-      "p_value": 0.00045462189203845346,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1172, p = 4.5462e-04. (Statistically Significant)"
-    },
-    "AgeClassInteraction": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": -0.3246,
-      "p_value": 2.6564053593497905e-23,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.3246, p = 2.6564e-23. (Statistically Significant)"
-    },
     "significant_predictors": [
       "Pclass",
       "Sex",
@@ -553,9 +432,7 @@
       "Ticket",
       "Fare",
       "Cabin",
-      "Embarked",
-      "FarePerPerson",
-      "AgeClassInteraction"
+      "Embarked"
     ]
   },
   "predictive_modeling_blueprint": {
@@ -581,11 +458,11 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 15 columns."
+    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 891 rows and 15 columns.",
+      "Dataset contains 891 rows and 12 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
@@ -595,9 +472,7 @@
       "Ticket",
       "Fare",
       "Cabin",
-      "Embarked",
-      "FarePerPerson",
-      "AgeClassInteraction"
+      "Embarked"
     ]
   }
 }

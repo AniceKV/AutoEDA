@@ -14,23 +14,82 @@ sns.set_theme(style="whitegrid")
 
 
 # =====================================================================
-# 1. SMART TYPE-SAFE IMPUTATION TOOL
+# STATEFUL EXECUTION MEMORY & DATA VERSION CONTROL (DVC PATTERN)
+# =====================================================================
+class StatefulDataStore:
+    """
+    Manages stateful execution memory and DataFrame version control (DVC pattern).
+    Maintains checkpoints (df_state_v0.csv, df_state_v1.csv, ...) inside workspace_dir.
+    Allows automatic rollback if a tool step corrupts or invalidates the dataset.
+    """
+    def __init__(self, workspace_dir: str = "./sandbox_run"):
+        self.workspace_dir = workspace_dir
+        self.version = 0
+        self.history: List[Dict[str, Any]] = []
+        os.makedirs(self.workspace_dir, exist_ok=True)
+
+    def set_initial_state(self, df: pd.DataFrame) -> str:
+        self.version = 0
+        self.history = []
+        filename = f"df_state_v{self.version}.csv"
+        path = os.path.join(self.workspace_dir, filename)
+        df.to_csv(path, index=False)
+        self.history.append({"version": 0, "path": path, "rows": len(df), "cols": len(df.columns), "action": "initial_load"})
+        print(f"[DataStore] Initialized state v0 ({len(df)} rows, {len(df.columns)} cols) -> {path}")
+        return path
+
+    def save_checkpoint(self, df: pd.DataFrame, step_name: str) -> str:
+        if df is None or len(df) == 0 or len(df.columns) == 0:
+            raise ValueError(f"Cannot checkpoint invalid or empty DataFrame after step '{step_name}'.")
+        self.version += 1
+        filename = f"df_state_v{self.version}.csv"
+        path = os.path.join(self.workspace_dir, filename)
+        df.to_csv(path, index=False)
+        self.history.append({"version": self.version, "path": path, "rows": len(df), "cols": len(df.columns), "action": step_name})
+        print(f"[DataStore] Saved checkpoint v{self.version} after '{step_name}' ({len(df)} rows, {len(df.columns)} cols) -> {path}")
+        return path
+
+    def rollback(self) -> Tuple[pd.DataFrame, int]:
+        if len(self.history) <= 1:
+            print("[DataStore] Cannot rollback further. At initial state v0.")
+            v0_path = self.history[0]["path"]
+            return pd.read_csv(v0_path), 0
+        
+        bad_state = self.history.pop()
+        print(f"[DataStore] Rolling back from corrupted state v{bad_state['version']} ({bad_state['action']})...")
+        
+        latest_state = self.history[-1]
+        self.version = latest_state["version"]
+        restored_df = pd.read_csv(latest_state["path"])
+        print(f"[DataStore] Successfully rolled back to state v{self.version} ({latest_state['action']}) from {latest_state['path']}")
+        return restored_df, self.version
+
+
+# =====================================================================
+# 1. SMART TYPE-SAFE IMPUTATION TOOL (ROBUST PARAMETER CLAMPING)
 # =====================================================================
 def impute_missing_data(
     df: pd.DataFrame,
     strategy_map: Optional[Dict[str, str]] = None,
-    numeric_skew_threshold: float = 1.0
+    numeric_skew_threshold: float = 1.0,
+    **kwargs
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Programmatically applies type-safe missing value imputation.
-    - Highly skewed numeric columns (abs(skew) > threshold) -> Median imputation
-    - Symmetric numeric columns -> Mean imputation
-    - Categorical/String columns -> Mode imputation or placeholder 'Unknown'
-    - Replaces dirty text missing tokens ('?', 'NA', 'N/A', 'null', 'None')
+    - Parameter Clamping: Clamps skew threshold, validates column existence,
+      and automatically clamps strategy from mean/median to mode/constant for non-numeric columns.
     """
     df_imputed = df.copy()
     
-    # 1. Standardize string missing value representations
+    # 1. Clamp parameters defensively
+    try:
+        numeric_skew_threshold = abs(float(numeric_skew_threshold))
+    except (ValueError, TypeError):
+        numeric_skew_threshold = 1.0
+        
+    strategy_map = strategy_map if isinstance(strategy_map, dict) else {}
+    
+    # Standardize string missing value representations
     missing_tokens = ["?", "NA", "N/A", "null", "None", "nan", "NaN", ""]
     df_imputed = df_imputed.replace(missing_tokens, np.nan)
     
@@ -66,8 +125,9 @@ def impute_missing_data(
             }
             continue
             
-        strategy = (strategy_map or {}).get(col, "auto")
+        strategy = strategy_map.get(col, "auto").lower()
         
+        # PARAMETER CLAMPING: Enforce type constraints programmatically
         if pd.api.types.is_numeric_dtype(df_imputed[col]):
             skew_val = float(df_imputed[col].skew()) if df_imputed[col].notnull().sum() > 2 else 0.0
             
@@ -81,6 +141,11 @@ def impute_missing_data(
             df_imputed[col] = df_imputed[col].fillna(fill_val)
         else:
             skew_val = None
+            # If LLM mistakenly passed mean or median for categorical column, clamp strategy to mode
+            if strategy in ["mean", "median"]:
+                print(f"[tools] Parameter Clamping: Clamped invalid strategy '{strategy}' to 'mode' for non-numeric column '{col}'.")
+                strategy = "mode"
+                
             if strategy in ["mode", "auto"]:
                 mode_res = df_imputed[col].mode()
                 fill_val = str(mode_res.iloc[0]) if not mode_res.empty else "Unknown"
@@ -109,34 +174,45 @@ def impute_missing_data(
 
 
 # =====================================================================
-# 2. OUTLIER PROFILING & CAPPING TOOL
+# 2. OUTLIER PROFILING & CAPPING TOOL (ROBUST PARAMETER CLAMPING)
 # =====================================================================
 def detect_and_handle_outliers(
     df: pd.DataFrame,
     columns: Optional[List[str]] = None,
     method: str = "iqr",
-    action: str = "profile"
+    action: str = "profile",
+    iqr_multiplier: float = 1.5,
+    **kwargs
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
-    Detects outliers using IQR (Interquartile Range) method.
+    Detects outliers using IQR (Interquartile Range) method with parameter clamping.
     - action='profile': Calculates IQR bounds, outlier counts, and percentages.
     - action='cap': Caps extreme values at calculated lower and upper bounds.
     """
     df_out = df.copy()
-    target_cols = columns or [c for c in df_out.columns if pd.api.types.is_numeric_dtype(df_out[c])]
+    
+    # Defensive parameter clamping
+    action = str(action).lower() if action in ["profile", "cap"] else "profile"
+    try:
+        iqr_mult = max(0.5, min(5.0, float(iqr_multiplier)))
+    except (ValueError, TypeError):
+        iqr_mult = 1.5
+
+    raw_cols = columns or [c for c in df_out.columns if pd.api.types.is_numeric_dtype(df_out[c])]
+    target_cols = [c for c in raw_cols if c in df_out.columns and pd.api.types.is_numeric_dtype(df_out[c])]
     
     outlier_report = {}
     
     for col in target_cols:
-        if not pd.api.types.is_numeric_dtype(df_out[col]) or df_out[col].nunique() <= 2:
+        if df_out[col].nunique() <= 2:
             continue
             
         q1 = float(df_out[col].quantile(0.25))
         q3 = float(df_out[col].quantile(0.75))
         iqr = q3 - q1
         
-        lower_bound = q1 - 1.5 * iqr
-        upper_bound = q3 + 1.5 * iqr
+        lower_bound = q1 - iqr_mult * iqr
+        upper_bound = q3 + iqr_mult * iqr
         
         is_outlier = (df_out[col] < lower_bound) | (df_out[col] > upper_bound)
         outlier_count = int(is_outlier.sum())
@@ -165,7 +241,8 @@ def detect_and_handle_outliers(
 def engineer_features(
     df: pd.DataFrame,
     feature_specs: Optional[List[Dict[str, Any]]] = None,
-    target_col: Optional[str] = None
+    target_col: Optional[str] = None,
+    **kwargs
 ) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
     """
     Creates high-signal domain features safely.
@@ -216,7 +293,7 @@ def engineer_features(
         try:
             if ftype in ["log1p", "log"]:
                 if scol and scol in df_feat.columns:
-                    df_feat[fname] = np.log1p(np.maximum(0, df_feat[scol]))
+                    df_feat[fname] = np.log1p(np.maximum(0, pd.to_numeric(df_feat[scol], errors="coerce").fillna(0)))
                     formula = f"np.log1p({scol})"
                 else:
                     continue
@@ -225,14 +302,18 @@ def engineer_features(
                 num = spec.get("numerator") or (cols[0] if len(cols) >= 1 else None)
                 den = spec.get("denominator") or (cols[1] if len(cols) >= 2 else None)
                 if num and den and num in df_feat.columns and den in df_feat.columns:
-                    df_feat[fname] = df_feat[num] / (df_feat[den] + 1e-5)
+                    den_series = pd.to_numeric(df_feat[den], errors="coerce").fillna(0)
+                    num_series = pd.to_numeric(df_feat[num], errors="coerce").fillna(0)
+                    df_feat[fname] = num_series / (den_series.abs() + 1e-5)
                     formula = f"{num} / ({den} + eps)"
                 else:
                     continue
                     
             elif ftype in ["product", "interaction", "multiply"]:
                 if len(cols) >= 2 and all(c in df_feat.columns for c in cols[:2]):
-                    df_feat[fname] = df_feat[cols[0]] * df_feat[cols[1]]
+                    c1_series = pd.to_numeric(df_feat[cols[0]], errors="coerce").fillna(0)
+                    c2_series = pd.to_numeric(df_feat[cols[1]], errors="coerce").fillna(0)
+                    df_feat[fname] = c1_series * c2_series
                     formula = f"{cols[0]} * {cols[1]}"
                 else:
                     continue
@@ -240,7 +321,7 @@ def engineer_features(
             elif ftype == "sum":
                 valid_cols = [c for c in cols if c in df_feat.columns]
                 if valid_cols:
-                    df_feat[fname] = df_feat[valid_cols].sum(axis=1)
+                    df_feat[fname] = df_feat[valid_cols].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
                     formula = f"sum({', '.join(valid_cols)})"
                 else:
                     continue
@@ -267,27 +348,34 @@ def engineer_features(
 
 
 # =====================================================================
-# 4. HYPOTHESIS TESTING & STATISTICAL SIGNIFICANCE TOOL
+# 4. HYPOTHESIS TESTING & STATISTICAL SIGNIFICANCE TOOL (ROBUST)
 # =====================================================================
 def run_statistical_hypothesis_tests(
     df: pd.DataFrame,
     target_col: Optional[str] = None,
     feature_cols: Optional[List[str]] = None,
-    alpha: float = 0.05
+    alpha: float = 0.05,
+    **kwargs
 ) -> Dict[str, Any]:
     """
-    Automates statistical significance testing against target_col:
+    Automates statistical significance testing against target_col with defensive parameter clamping.
     - Numerical Target + Numerical Feature: Pearson Correlation test
     - Categorical Target + Categorical Feature: Chi-Square Test
     - Binary Target + Numerical Feature: Two-Sample T-test / Mann-Whitney U
     - Multiclass Target + Numerical Feature: One-way ANOVA
     """
+    # Parameter Clamping for alpha
+    try:
+        alpha = max(0.0001, min(0.5, float(alpha)))
+    except (ValueError, TypeError):
+        alpha = 0.05
+
     if not target_col or target_col not in df.columns:
-        # If no target specified, select the last non-trivial column
         numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
         target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
 
-    targets_to_test = feature_cols or [c for c in df.columns if c != target_col]
+    raw_targets = feature_cols or [c for c in df.columns if c != target_col]
+    targets_to_test = [c for c in raw_targets if c in df.columns and c != target_col]
     
     test_results = {}
     significant_predictors = []
@@ -296,9 +384,6 @@ def run_statistical_hypothesis_tests(
     target_cardinality = df[target_col].nunique()
     
     for col in targets_to_test:
-        if col not in df.columns or col == target_col:
-            continue
-            
         col_is_num = pd.api.types.is_numeric_dtype(df[col])
         clean_data = df[[target_col, col]].dropna()
         if len(clean_data) < 5:

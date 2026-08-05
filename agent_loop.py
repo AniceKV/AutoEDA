@@ -3,7 +3,7 @@ import json
 import re
 import shutil
 import pandas as pd
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -46,19 +46,38 @@ def parse_llm_json_plan(raw_text: str) -> List[Dict[str, Any]]:
             return [plan]
     except Exception as e:
         print(f"[agent_loop] Warning: Error parsing JSON tool plan ({e}). Attempting regex recovery...")
-        # Fallback to extracting JSON array using bracket search
         arr_match = re.search(r"\[.*\]", cleaned, re.DOTALL)
         if arr_match:
             return json.loads(arr_match.group(0))
-        raise ValueError(f"Failed to parse valid JSON tool plan from response: {raw_text[:200]}")
+        raise ValueError(f"Failed to parse valid JSON tool plan from response: {str(e)}")
+
+
+def validate_tool_plan(plan: Any) -> Tuple[bool, Optional[str]]:
+    """
+    Validates that the JSON tool plan is a non-empty list of valid registered tool calls.
+    Returns (is_valid, error_description).
+    """
+    if not isinstance(plan, list) or len(plan) == 0:
+        return False, "Tool plan must be a non-empty JSON list of tool call objects."
+    for idx, item in enumerate(plan):
+        if not isinstance(item, dict):
+            return False, f"Item at index {idx} is not a valid JSON dictionary."
+        if "tool" not in item:
+            return False, f"Item at index {idx} is missing required 'tool' field."
+        tool_name = item["tool"]
+        if tool_name not in tools.TOOL_REGISTRY:
+            return False, f"Item at index {idx} references unknown tool '{tool_name}'. Available tools: {list(tools.TOOL_REGISTRY.keys())}"
+        if "args" in item and not isinstance(item["args"], dict):
+            return False, f"Item at index {idx} field 'args' must be a dictionary."
+    return True, None
 
 
 def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "./sandbox_run") -> Dict[str, Any]:
     """
     Tool-Based Orchestrator for AutoEDA:
     1. Runs pre-profiler to produce metadata_profile.json
-    2. Prompts LLM for a structured JSON Tool Plan
-    3. Executes tools deterministically in tools.py
+    2. Prompts LLM for a structured JSON Tool Plan with direct error feedback routing
+    3. Executes tools deterministically with Stateful Data Version Control & rollback protection
     4. Compiles metrics.json and executes summary_generator.py
     5. Exports all assets to EDA/{dataset_name}/
     """
@@ -109,24 +128,50 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         "Generate the JSON Tool Plan now."
     )
     
-    # 3. Query LLM for Tool Plan
-    print("2. Querying LLM for Tool Plan...")
-    response = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        temperature=0.1
-    )
-    
-    llm_output = response.choices[0].message.content
-    print("Received raw LLM response. Parsing tool plan...")
-    
-    try:
-        tool_plan = parse_llm_json_plan(llm_output)
-    except Exception as e:
-        print(f"Tool plan parsing failed ({e}). Using robust default fallback plan.")
+    # 3. Query LLM for Tool Plan with Direct Error Feedback Routing
+    print("2. Querying LLM for Tool Plan (with self-correction loop)...")
+    max_retries = 3
+    retry_count = 0
+    tool_plan = None
+    feedback_error = ""
+
+    while retry_count < max_retries:
+        current_user_prompt = user_prompt
+        if feedback_error:
+            current_user_prompt += (
+                f"\n\n[DIRECT ERROR FEEDBACK FROM PREVIOUS ATTEMPT]:\n"
+                f"Your previous tool plan failed validation with error:\n{feedback_error}\n"
+                f"Please fix your JSON structure, adhere strictly to the schema, and output a valid JSON Tool Plan."
+            )
+            
+        try:
+            response = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": current_user_prompt}
+                ],
+                temperature=0.1
+            )
+            llm_output = response.choices[0].message.content
+            raw_plan = parse_llm_json_plan(llm_output)
+            is_valid, validation_err = validate_tool_plan(raw_plan)
+            
+            if is_valid:
+                tool_plan = raw_plan
+                print(f"[agent_loop] Validated tool plan successfully on attempt {retry_count + 1}!")
+                break
+            else:
+                feedback_error = validation_err
+                print(f"[agent_loop] Tool plan validation failed (Attempt {retry_count + 1}): {validation_err}")
+        except Exception as e:
+            feedback_error = f"Failed to parse JSON tool plan: {str(e)}"
+            print(f"[agent_loop] Tool plan parsing error (Attempt {retry_count + 1}): {e}")
+            
+        retry_count += 1
+
+    if not tool_plan:
+        print("[agent_loop] Self-correction retries exhausted. Falling back to default execution plan.")
         tool_plan = [
             {"tool": "impute_missing_data", "args": {}},
             {"tool": "detect_and_handle_outliers", "args": {"action": "profile"}},
@@ -138,13 +183,16 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             {"tool": "generate_predictive_blueprint", "args": {}}
         ]
 
-    print(f"Successfully loaded plan with {len(tool_plan)} tool steps!")
+    print(f"Loaded plan with {len(tool_plan)} tool steps!")
 
-    # 4. Execute tool plan against dataset
-    print("\n3. Executing Tool Plan...")
+    # 4. Execute tool plan against dataset with Stateful Data Version Control Memory
+    print("\n3. Executing Tool Plan with Data Version Control...")
     df = pd.read_csv(abs_data_path)
     
-    # Execution state holders
+    # Initialize DVC Stateful Execution Memory
+    data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
+    data_store.set_initial_state(df)
+    
     target_col = None
     imputation_res = None
     outlier_res = None
@@ -166,10 +214,16 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         
         try:
             if tool_name == "impute_missing_data":
-                df, imputation_res = tools.impute_missing_data(df, **args)
+                df_new, imputation_res = tools.impute_missing_data(df, **args)
+                if df_new is not None and len(df_new) > 0:
+                    df = df_new
+                    data_store.save_checkpoint(df, "impute_missing_data")
                 
             elif tool_name == "detect_and_handle_outliers":
-                df, outlier_res = tools.detect_and_handle_outliers(df, **args)
+                df_new, outlier_res = tools.detect_and_handle_outliers(df, **args)
+                if df_new is not None and len(df_new) > 0:
+                    df = df_new
+                    data_store.save_checkpoint(df, "detect_and_handle_outliers")
 
             elif tool_name == "plot_feature_distributions":
                 args["output_dir"] = workspace_dir
@@ -178,7 +232,10 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             elif tool_name == "engineer_features":
                 if "target_col" not in args and target_col:
                     args["target_col"] = target_col
-                df, engineered_res = tools.engineer_features(df, **args)
+                df_new, engineered_res = tools.engineer_features(df, **args)
+                if df_new is not None and len(df_new) > 0:
+                    df = df_new
+                    data_store.save_checkpoint(df, "engineer_features")
                 
             elif tool_name == "run_statistical_hypothesis_tests":
                 if args.get("target_col"):
@@ -204,7 +261,9 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
                 blueprint_res = tools.generate_predictive_blueprint(df, **args)
                 
         except Exception as e:
-            print(f"Error executing step {idx} ({tool_name}): {e}")
+            print(f"[agent_loop] Error executing step {idx} ({tool_name}): {e}")
+            print(f"[agent_loop] Triggering automatic DVC state rollback...")
+            df, _ = data_store.rollback()
 
     # 5. Generate LLM-coded generated_analysis.py script containing domain feature engineering & predictive modeling blueprint
     print("\n4. Generating LLM-coded generated_analysis.py script...")
