@@ -206,35 +206,44 @@ def engineer_features(
 
     for spec in specs:
         fname = spec.get("name", "engineered_feature")
-        ftype = spec.get("type", "custom")
+        ftype = spec.get("type", "custom").lower()
         rationale = spec.get("rationale", "High-signal feature engineering transformation")
         
+        # Extract column references gracefully regardless of key names used by LLM
+        cols = spec.get("columns") or spec.get("source_cols") or []
+        scol = spec.get("source_col") or spec.get("column") or (cols[0] if cols else None)
+        
         try:
-            if ftype == "log1p":
-                scol = spec["source_col"]
-                df_feat[fname] = np.log1p(np.maximum(0, df_feat[scol]))
-                formula = f"np.log1p({scol})"
+            if ftype in ["log1p", "log"]:
+                if scol and scol in df_feat.columns:
+                    df_feat[fname] = np.log1p(np.maximum(0, df_feat[scol]))
+                    formula = f"np.log1p({scol})"
+                else:
+                    continue
                 
             elif ftype == "ratio":
-                scols = spec.get("source_cols", [])
-                if len(scols) >= 2:
-                    df_feat[fname] = df_feat[scols[0]] / (df_feat[scols[1]] + 1e-5)
-                    formula = f"{scols[0]} / ({scols[1]} + eps)"
+                num = spec.get("numerator") or (cols[0] if len(cols) >= 1 else None)
+                den = spec.get("denominator") or (cols[1] if len(cols) >= 2 else None)
+                if num and den and num in df_feat.columns and den in df_feat.columns:
+                    df_feat[fname] = df_feat[num] / (df_feat[den] + 1e-5)
+                    formula = f"{num} / ({den} + eps)"
                 else:
                     continue
                     
-            elif ftype == "product":
-                scols = spec.get("source_cols", [])
-                if len(scols) >= 2:
-                    df_feat[fname] = df_feat[scols[0]] * df_feat[scols[1]]
-                    formula = f"{scols[0]} * {scols[1]}"
+            elif ftype in ["product", "interaction", "multiply"]:
+                if len(cols) >= 2 and all(c in df_feat.columns for c in cols[:2]):
+                    df_feat[fname] = df_feat[cols[0]] * df_feat[cols[1]]
+                    formula = f"{cols[0]} * {cols[1]}"
                 else:
                     continue
                     
             elif ftype == "sum":
-                scols = spec.get("source_cols", [])
-                df_feat[fname] = df_feat[scols].sum(axis=1)
-                formula = f"sum({', '.join(scols)})"
+                valid_cols = [c for c in cols if c in df_feat.columns]
+                if valid_cols:
+                    df_feat[fname] = df_feat[valid_cols].sum(axis=1)
+                    formula = f"sum({', '.join(valid_cols)})"
+                else:
+                    continue
                 
             else:
                 continue
