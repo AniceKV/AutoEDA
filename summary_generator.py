@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import re
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from dotenv import load_dotenv
 
 # Try importing OpenAI for optional LLM synthesis
@@ -286,15 +286,14 @@ def extract_dataset_name(target_dir: str) -> str:
     if os.path.exists(script_path):
         try:
             with open(script_path, "r", encoding="utf-8", errors="ignore") as f:
-                first_lines = [f.readline() for _ in range(15)]
-            for line in first_lines:
-                match = re.search(r"DATA_FILEPATH\s*=\s*r?['\"]([^'\"]+)['\"]", line)
-                if match:
-                    filepath = match.group(1)
-                    filename = os.path.basename(filepath)
-                    dataset_name, _ = os.path.splitext(filename)
-                    if dataset_name:
-                        return dataset_name
+                for i, line in enumerate(f):
+                    if i >= 15:
+                        break
+                    match = re.search(r"DATA_FILEPATH\s*=\s*r?['\"]([^'\"]+)['\"]", line)
+                    if match:
+                        name, _ = os.path.splitext(os.path.basename(match.group(1)))
+                        if name:
+                            return name
         except Exception as e:
             print(f"[summary_generator] Error parsing dataset name from script: {e}")
 
@@ -314,10 +313,16 @@ def extract_dataset_name(target_dir: str) -> str:
     return os.path.basename(os.path.abspath(target_dir))
 
 
-def create_summary(directory_path: str = "./sandbox_run", output_filename: str = "summary_report.md", use_llm: bool = True) -> str:
+def create_summary(
+    directory_path: str = "./sandbox_run",
+    output_filename: str = "summary_report.md",
+    use_llm: bool = True,
+    dataset_name: Optional[str] = None
+) -> str:
     """
     Main function to scan directory files (excluding generated_analysis.py),
-    generate executive summary report, and write it to EDA/{dataset_name}/summary_report.md.
+    generate executive summary report, and write it to {directory_path}/summary_report.md.
+    The caller (agent_loop.py) is responsible for copying it to EDA/{dataset_name}/.
     """
     print(f"\n==================================================")
     print(f"Summary Generator: Scanning directory '{directory_path}'...")
@@ -335,21 +340,22 @@ def create_summary(directory_path: str = "./sandbox_run", output_filename: str =
         print("Generating summary using structured template engine...")
         report_md = generate_template_summary(data)
 
-    # Determine dataset_name from DATA_FILEPATH in generated_analysis.py
-    dataset_name = extract_dataset_name(directory_path)
+    # Resolve dataset_name only if caller didn't provide it
+    if not dataset_name:
+        dataset_name = extract_dataset_name(directory_path)
+
+    # Write report into EDA/{dataset_name}/ for primary consumption
     output_dir = os.path.join("EDA", dataset_name)
     os.makedirs(output_dir, exist_ok=True)
-
-    # Primary export location: EDA/{dataset_name}/summary_report.md
     out_path = os.path.join(output_dir, output_filename)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(report_md)
     print(f"Summary report successfully written to: {os.path.abspath(out_path)}")
 
-    # Secondary location (if directory_path is sandbox_run or different folder)
-    if os.path.abspath(directory_path) != os.path.abspath(output_dir):
-        alt_path = os.path.join(directory_path, output_filename)
-        with open(alt_path, "w", encoding="utf-8") as f:
+    # Also write into sandbox_run so the asset-copy step picks it up
+    sandbox_path = os.path.join(directory_path, output_filename)
+    if os.path.abspath(sandbox_path) != os.path.abspath(out_path):
+        with open(sandbox_path, "w", encoding="utf-8") as f:
             f.write(report_md)
 
     return report_md

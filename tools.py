@@ -1,6 +1,5 @@
 import os
 import json
-import math
 import re
 import numpy as np
 import pandas as pd
@@ -12,6 +11,11 @@ import seaborn as sns
 from typing import Dict, Any, List, Optional, Tuple
 
 sns.set_theme(style="whitegrid")
+
+
+def _sanitize_col_name(col: str) -> str:
+    """Sanitize a column name into a filesystem-safe string."""
+    return re.sub(r'\W+', '_', col).strip('_')
 
 
 # =====================================================================
@@ -29,13 +33,16 @@ class StatefulDataStore:
         self.history: List[Dict[str, Any]] = []
         os.makedirs(self.workspace_dir, exist_ok=True)
 
+    def _make_entry(self, version: int, path: str, df: pd.DataFrame, action: str) -> dict:
+        """Build a standardized history entry dict."""
+        return {"version": version, "path": path, "rows": len(df), "cols": len(df.columns), "action": action}
+
     def set_initial_state(self, df: pd.DataFrame) -> str:
         self.version = 0
         self.history = []
-        filename = f"df_state_v{self.version}.csv"
-        path = os.path.join(self.workspace_dir, filename)
+        path = os.path.join(self.workspace_dir, "df_state_v0.csv")
         df.to_csv(path, index=False)
-        self.history.append({"version": 0, "path": path, "rows": len(df), "cols": len(df.columns), "action": "initial_load"})
+        self.history.append(self._make_entry(0, path, df, "initial_load"))
         print(f"[DataStore] Initialized state v0 ({len(df)} rows, {len(df.columns)} cols) -> {path}")
         return path
 
@@ -43,10 +50,9 @@ class StatefulDataStore:
         if df is None or len(df) == 0 or len(df.columns) == 0:
             raise ValueError(f"Cannot checkpoint invalid or empty DataFrame after step '{step_name}'.")
         self.version += 1
-        filename = f"df_state_v{self.version}.csv"
-        path = os.path.join(self.workspace_dir, filename)
+        path = os.path.join(self.workspace_dir, f"df_state_v{self.version}.csv")
         df.to_csv(path, index=False)
-        self.history.append({"version": self.version, "path": path, "rows": len(df), "cols": len(df.columns), "action": step_name})
+        self.history.append(self._make_entry(self.version, path, df, step_name))
         print(f"[DataStore] Saved checkpoint v{self.version} after '{step_name}' ({len(df)} rows, {len(df.columns)} cols) -> {path}")
         return path
 
@@ -371,6 +377,22 @@ def engineer_features(
 # =====================================================================
 # 4. HYPOTHESIS TESTING & STATISTICAL SIGNIFICANCE TOOL (ROBUST)
 # =====================================================================
+def _run_group_test(groups: list) -> Optional[Tuple[str, float, float, str]]:
+    """
+    Shared helper: filters groups with < 2 samples, then dispatches to
+    Welch T-Test (2 groups) or One-Way ANOVA (3+ groups).
+    Returns (test_name, statistic, p_value, interpretation) or None if insufficient groups.
+    """
+    groups = [g for g in groups if len(g) >= 2]
+    if len(groups) < 2:
+        return None
+    if len(groups) == 2:
+        t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
+        return "Two-Sample Welch T-Test", float(t_stat), p_val, f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
+    f_stat, p_val = stats.f_oneway(*groups)
+    return "One-Way ANOVA", float(f_stat), p_val, f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+
+
 def run_statistical_hypothesis_tests(
     df: pd.DataFrame,
     target_col: Optional[str] = None,
@@ -429,37 +451,17 @@ def run_statistical_hypothesis_tests(
             elif not target_is_num and col_is_num:
                 # Feature is Numerical, Target is Categorical
                 groups = [group[col].dropna().values for name, group in clean_data.groupby(target_col)]
-                groups = [g for g in groups if len(g) >= 2]
-                
-                if len(groups) == 2:
-                    t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
-                    test_name = "Two-Sample Welch T-Test"
-                    statistic = float(t_stat)
-                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
-                elif len(groups) > 2:
-                    f_stat, p_val = stats.f_oneway(*groups)
-                    test_name = "One-Way ANOVA"
-                    statistic = float(f_stat)
-                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
-                else:
+                result = _run_group_test(groups)
+                if result is None:
                     continue
+                test_name, statistic, p_val, interpretation = result
             else:
                 # Target is Numerical, Feature is Categorical
                 groups = [group[target_col].dropna().values for name, group in clean_data.groupby(col)]
-                groups = [g for g in groups if len(g) >= 2]
-                
-                if len(groups) == 2:
-                    t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
-                    test_name = "Two-Sample Welch T-Test"
-                    statistic = float(t_stat)
-                    interpretation = f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
-                elif len(groups) > 2:
-                    f_stat, p_val = stats.f_oneway(*groups)
-                    test_name = "One-Way ANOVA"
-                    statistic = float(f_stat)
-                    interpretation = f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
-                else:
+                result = _run_group_test(groups)
+                if result is None:
                     continue
+                test_name, statistic, p_val, interpretation = result
                     
             p_val_float = float(p_val) if pd.notnull(p_val) else 1.0
             is_sig = p_val_float < alpha
@@ -541,8 +543,38 @@ def plot_correlation_matrix(
 
 
 # =====================================================================
-# 6. VISUALIZATION: TARGET INTERACTION TOOL
+# 6. VISUALIZATION: SHARED BIVARIATE PLOT DISPATCH
 # =====================================================================
+def _render_bivariate_axes(
+    ax, df: pd.DataFrame, x_col: str, y_col: str, hue_col: Optional[str] = None
+) -> None:
+    """
+    Shared rendering logic for bivariate plots.
+    Dispatches to regplot, boxplot, or countplot based on column dtypes.
+    """
+    x_is_num = pd.api.types.is_numeric_dtype(df[x_col])
+    y_is_num = pd.api.types.is_numeric_dtype(df[y_col])
+
+    if x_is_num and y_is_num:
+        if hue_col:
+            sns.scatterplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set1", alpha=0.7, ax=ax)
+        sns.regplot(data=df, x=x_col, y=y_col, scatter=(hue_col is None),
+                    scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
+        ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
+    elif not x_is_num and y_is_num:
+        sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
+        ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
+        ax.tick_params(axis='x', rotation=30)
+    elif x_is_num and not y_is_num:
+        sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
+        ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
+        ax.tick_params(axis='x', rotation=30)
+    else:
+        sns.countplot(data=df, x=x_col, hue=y_col, palette="Set1", ax=ax)
+        ax.set_title(f"Categorical: {x_col} by {y_col}", fontsize=12, pad=10)
+        ax.tick_params(axis='x', rotation=30)
+
+
 def plot_target_interaction(
     df: pd.DataFrame,
     target_col: Optional[str] = None,
@@ -562,38 +594,20 @@ def plot_target_interaction(
     if not feature_col or feature_col not in df.columns or feature_col == target_col:
         candidates = [c for c in df.columns if c != target_col]
         feature_col = candidates[0] if candidates else df.columns[0]
-        
+
     os.makedirs(output_dir, exist_ok=True)
     full_save_path = os.path.join(output_dir, os.path.basename(save_path))
 
     try:
         fig, ax = plt.subplots(figsize=(9, 6))
-        target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
-        feat_is_num = pd.api.types.is_numeric_dtype(df[feature_col])
-        
-        if target_is_num and feat_is_num:
-            sns.regplot(data=df, x=feature_col, y=target_col, scatter_kws={"alpha": 0.6}, line_kws={"color": "red"}, ax=ax)
-            ax.set_title(f"Scatter Interaction: {feature_col} vs {target_col}", fontsize=13)
-        elif not target_is_num and feat_is_num:
-            sns.boxplot(data=df, x=target_col, y=feature_col, palette="Set2", ax=ax)
-            ax.set_title(f"Boxplot Segmented by Target: {feature_col} vs {target_col}", fontsize=13)
-        elif target_is_num and not feat_is_num:
-            # FIX: Plot Numerical Target vs Categorical Feature using boxplots
-            sns.boxplot(data=df, x=feature_col, y=target_col, palette="Set2", ax=ax)
-            ax.set_title(f"Boxplot Segmented by Feature: {target_col} vs {feature_col}", fontsize=13)
-            ax.tick_params(axis='x', rotation=30)
-        else: # Both are categorical
-            sns.countplot(data=df, x=feature_col, hue=target_col, palette="Set1", ax=ax)
-            ax.set_title(f"Categorical Interaction: {feature_col} by {target_col}", fontsize=13)
-            ax.tick_params(axis='x', rotation=30)
-            
+        _render_bivariate_axes(ax, df, feature_col, target_col)
         plt.tight_layout()
         plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
     except Exception as e:
         print(f"[tools] Warning: Target interaction plot error: {e}")
         plt.close("all")
-    
+
     return {
         "plot_saved": full_save_path,
         "target_col": target_col,
@@ -613,7 +627,7 @@ def plot_feature_distributions(
 ) -> Dict[str, Any]:
     """
     Plots probability distributions / KDE histograms or countplots for key important columns.
-    The list of important columns is decided dynamically by the LLM and sent via kwargs/columns.
+    Saves each column as a separate dist_{col}.png file.
     """
     plt.close("all")
     target_cols = columns or kwargs.get("important_columns") or kwargs.get("cols") or kwargs.get("feature_cols")
@@ -627,17 +641,11 @@ def plot_feature_distributions(
     if not valid_cols:
         valid_cols = list(df.columns[:min(6, len(df.columns))])
 
-    num_plots = len(valid_cols)
-    ncols = min(3, num_plots)
-    nrows = math.ceil(num_plots / ncols)
-
     os.makedirs(output_dir, exist_ok=True)
     saved_files = []
 
     for col in valid_cols:
-        col_clean = re.sub(r'\W+', '_', col).strip('_')
-        file_name = f"dist_{col_clean}.png"
-        file_path = os.path.join(output_dir, file_name)
+        file_path = os.path.join(output_dir, f"dist_{_sanitize_col_name(col)}.png")
 
         try:
             fig, ax = plt.subplots(figsize=(6, 4))
@@ -657,42 +665,12 @@ def plot_feature_distributions(
             plt.savefig(file_path, dpi=150, bbox_inches="tight")
             plt.close(fig)
             saved_files.append(file_path)
-            print(f"[tools] Saved separate distribution PNG for '{col}' to: {file_path}")
+            print(f"[tools] Saved distribution PNG for '{col}' to: {file_path}")
         except Exception as e:
             print(f"[tools] Warning: Error saving distribution plot for '{col}': {e}")
             plt.close("all")
 
-    # Also maintain a combined grid plot for backward-compatibility if save_path requested
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
-    try:
-        num_plots = len(valid_cols)
-        ncols = min(3, num_plots)
-        nrows = math.ceil(num_plots / ncols)
-        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4.5 * ncols, 3.5 * nrows))
-        axes_list = [axes] if num_plots == 1 else axes.flatten()
-
-        for idx, col in enumerate(valid_cols):
-            ax = axes_list[idx]
-            if pd.api.types.is_numeric_dtype(df[col]):
-                sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
-                ax.set_title(f"Distribution: {col}", fontsize=10)
-            else:
-                sns.countplot(x=df[col].dropna(), hue=df[col].dropna(), ax=ax, palette="Set2", legend=False)
-                ax.set_title(f"Counts: {col}", fontsize=10)
-                ax.tick_params(axis='x', rotation=30)
-
-        for idx in range(num_plots, len(axes_list)):
-            fig.delaxes(axes_list[idx])
-
-        plt.tight_layout()
-        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
-        plt.close(fig)
-    except Exception as e:
-        print(f"[tools] Warning: Error rendering combined distribution grid plot: {e}")
-        plt.close("all")
-
     return {
-        "plot_saved": full_save_path,
         "individual_plots": saved_files,
         "plotted_columns": valid_cols
     }
@@ -735,45 +713,22 @@ def plot_semantic_bivariate_relationships(
     for pair in pairs:
         if not isinstance(pair, dict):
             continue
-            
+
         x_col = pair.get("x") or pair.get("x_col") or pair.get("feature_1")
         y_col = pair.get("y") or pair.get("y_col") or pair.get("feature_2")
         hue_col = pair.get("hue") or pair.get("hue_col")
         rationale = pair.get("rationale", "Semantic domain relationship")
-        
+
         if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
             continue
-            
         if hue_col and hue_col not in df.columns:
             hue_col = None
-            
-        x_clean = re.sub(r'\W+', '_', x_col).strip('_')
-        y_clean = re.sub(r'\W+', '_', y_col).strip('_')
-        file_name = f"bivariate_{x_clean}_vs_{y_clean}.png"
-        file_path = os.path.join(output_dir, file_name)
-        
+
+        file_path = os.path.join(output_dir, f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png")
+
         try:
             fig, ax = plt.subplots(figsize=(7, 5))
-            x_is_num = pd.api.types.is_numeric_dtype(df[x_col])
-            y_is_num = pd.api.types.is_numeric_dtype(df[y_col])
-            
-            if x_is_num and y_is_num:
-                sns.scatterplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set1" if hue_col else None, alpha=0.7, ax=ax)
-                sns.regplot(data=df, x=x_col, y=y_col, scatter=False, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
-                ax.set_title(f"Semantic Bivariate: {x_col} vs {y_col}", fontsize=12, pad=10)
-            elif not x_is_num and y_is_num:
-                sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
-                ax.set_title(f"Segmented Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
-                ax.tick_params(axis='x', rotation=30)
-            elif x_is_num and not y_is_num:
-                sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
-                ax.set_title(f"Segmented Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
-                ax.tick_params(axis='x', rotation=30)
-            else:
-                sns.countplot(data=df, x=x_col, hue=y_col, palette="Set1", ax=ax)
-                ax.set_title(f"Categorical Cross-Tabulation: {x_col} by {y_col}", fontsize=12, pad=10)
-                ax.tick_params(axis='x', rotation=30)
-                
+            _render_bivariate_axes(ax, df, x_col, y_col, hue_col)
             plt.tight_layout()
             plt.savefig(file_path, dpi=150, bbox_inches="tight")
             plt.close(fig)
@@ -782,7 +737,7 @@ def plot_semantic_bivariate_relationships(
         except Exception as e:
             print(f"[tools] Warning: Error plotting bivariate '{x_col}' vs '{y_col}': {e}")
             plt.close("all")
-            
+
     return {
         "bivariate_plots_saved": saved_files,
         "count": len(saved_files)

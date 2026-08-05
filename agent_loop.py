@@ -206,6 +206,10 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     hypothesis_res = None
     blueprint_res = None
     
+    # Tools that accept output_dir
+    _vis_tools = {"plot_feature_distributions", "plot_correlation_matrix",
+                  "plot_semantic_bivariate_relationships", "plot_pairplot", "plot_target_interaction"}
+
     for idx, step in enumerate(tool_plan, start=1):
         tool_name = step.get("tool")
         args = step.get("args", {})
@@ -213,57 +217,48 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         if tool_name not in tools.TOOL_REGISTRY:
             print(f"Step {idx}: Skipping unknown tool '{tool_name}'")
             continue
-            
+
+        # Centralized output_dir injection for all visualization tools
+        if tool_name in _vis_tools:
+            args["output_dir"] = workspace_dir
+
         print(f"Step {idx}/{len(tool_plan)}: Executing tool '{tool_name}' with args {args}...")
         
         try:
             if tool_name == "impute_missing_data":
-                df_new, imputation_res = tools.impute_missing_data(df, **args)
-                if df_new is not None and len(df_new) > 0:
-                    df = df_new
-                    data_store.save_checkpoint(df, "impute_missing_data")
+                df, imputation_res = tools.impute_missing_data(df, **args)
+                data_store.save_checkpoint(df, "impute_missing_data")
                 
             elif tool_name == "detect_and_handle_outliers":
-                df_new, outlier_res = tools.detect_and_handle_outliers(df, **args)
-                if df_new is not None and len(df_new) > 0:
-                    df = df_new
-                    data_store.save_checkpoint(df, "detect_and_handle_outliers")
+                df, outlier_res = tools.detect_and_handle_outliers(df, **args)
+                data_store.save_checkpoint(df, "detect_and_handle_outliers")
 
             elif tool_name == "plot_feature_distributions":
-                args["output_dir"] = workspace_dir
                 dist_res = tools.plot_feature_distributions(df, **args)
                 
             elif tool_name == "engineer_features":
                 if "target_col" not in args and target_col:
                     args["target_col"] = target_col
-                df_new, engineered_res = tools.engineer_features(df, **args)
-                if df_new is not None and len(df_new) > 0:
-                    df = df_new
-                    data_store.save_checkpoint(df, "engineer_features")
+                df, engineered_res = tools.engineer_features(df, **args)
+                data_store.save_checkpoint(df, "engineer_features")
                 
             elif tool_name == "run_statistical_hypothesis_tests":
                 if args.get("target_col"):
                     target_col = args["target_col"]
                 hypothesis_res = tools.run_statistical_hypothesis_tests(df, **args)
-                if not target_col and "target_col" in args:
-                    target_col = args["target_col"]
                     
             elif tool_name == "plot_correlation_matrix":
-                args["output_dir"] = workspace_dir
                 corr_res = tools.plot_correlation_matrix(df, **args)
 
             elif tool_name == "plot_semantic_bivariate_relationships":
-                args["output_dir"] = workspace_dir
                 tools.plot_semantic_bivariate_relationships(df, **args)
 
             elif tool_name == "plot_pairplot":
-                args["output_dir"] = workspace_dir
                 if target_col and "hue" not in args:
                     args["hue"] = target_col
                 tools.plot_pairplot(df, **args)
                 
             elif tool_name == "plot_target_interaction":
-                args["output_dir"] = workspace_dir
                 if target_col and "target_col" not in args:
                     args["target_col"] = target_col
                 plot_res = tools.plot_target_interaction(df, **args)
@@ -312,8 +307,8 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     with open(script_path, "w", encoding="utf-8") as f:
         f.write("\n".join(script_content))
 
-    # 6. Save canonical metrics.json
-    print("5. Compiling and saving canonical metrics.json...")
+    # 5. Save canonical metrics.json
+    print("\n5. Compiling and saving canonical metrics.json...")
     metrics_path = tools.compile_and_save_metrics(
         df=df,
         dataset_path=abs_data_path,
@@ -328,15 +323,15 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     )
 
     # 6. Generate Summary Report
-    print("5. Invoking summary_generator...")
+    print("6. Invoking summary_generator...")
     dataset_name = extract_dataset_name(workspace_dir)
     export_dir = os.path.join("EDA", dataset_name)
     os.makedirs(export_dir, exist_ok=True)
-    
-    summary_text = create_summary(directory_path=workspace_dir, use_llm=True)
+
+    summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
     
     # 7. Copy all assets from sandbox_run to EDA/{dataset_name}/
-    print(f"6. Exporting sandbox assets to: {export_dir}...")
+    print(f"7. Exporting sandbox assets to: {export_dir}...")
     copied_files = []
     for entry in os.listdir(workspace_dir):
         src_file = os.path.join(workspace_dir, entry)
