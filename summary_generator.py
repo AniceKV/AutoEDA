@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import re
 from typing import Dict, Any, List
 from dotenv import load_dotenv
 
@@ -276,10 +277,47 @@ def generate_llm_summary(data: Dict[str, Any]) -> str:
         return generate_template_summary(data)
 
 
+def extract_dataset_name(target_dir: str) -> str:
+    """
+    Extracts dataset_name from the first lines of generated_analysis.py if present:
+    e.g. DATA_FILEPATH = r'C:\...\test_data\dataset_2191_sleep.csv' -> 'dataset_2191_sleep'
+    """
+    script_path = os.path.join(target_dir, "generated_analysis.py")
+    if os.path.exists(script_path):
+        try:
+            with open(script_path, "r", encoding="utf-8", errors="ignore") as f:
+                first_lines = [f.readline() for _ in range(15)]
+            for line in first_lines:
+                match = re.search(r"DATA_FILEPATH\s*=\s*r?['\"]([^'\"]+)['\"]", line)
+                if match:
+                    filepath = match.group(1)
+                    filename = os.path.basename(filepath)
+                    dataset_name, _ = os.path.splitext(filename)
+                    if dataset_name:
+                        return dataset_name
+        except Exception as e:
+            print(f"[summary_generator] Error parsing dataset name from script: {e}")
+
+    # Fallback 1: check metadata_profile.json
+    profile_path = os.path.join(target_dir, "metadata_profile.json")
+    if os.path.exists(profile_path):
+        try:
+            with open(profile_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                ds_name = data.get("dataset_name")
+                if ds_name:
+                    return os.path.splitext(os.path.basename(ds_name))[0]
+        except Exception:
+            pass
+
+    # Fallback 2: folder name
+    return os.path.basename(os.path.abspath(target_dir))
+
+
 def create_summary(directory_path: str = "./sandbox_run", output_filename: str = "summary_report.md", use_llm: bool = True) -> str:
     """
     Main function to scan directory files (excluding generated_analysis.py),
-    generate executive summary report, write it to file, and return report text.
+    generate executive summary report, and write it to EDA/{dataset_name}/summary_report.md.
     """
     print(f"\n==================================================")
     print(f"Summary Generator: Scanning directory '{directory_path}'...")
@@ -297,11 +335,23 @@ def create_summary(directory_path: str = "./sandbox_run", output_filename: str =
         print("Generating summary using structured template engine...")
         report_md = generate_template_summary(data)
 
-    out_path = os.path.join(directory_path, output_filename)
+    # Determine dataset_name from DATA_FILEPATH in generated_analysis.py
+    dataset_name = extract_dataset_name(directory_path)
+    output_dir = os.path.join("EDA", dataset_name)
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Primary export location: EDA/{dataset_name}/summary_report.md
+    out_path = os.path.join(output_dir, output_filename)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(report_md)
-
     print(f"Summary report successfully written to: {os.path.abspath(out_path)}")
+
+    # Secondary location (if directory_path is sandbox_run or different folder)
+    if os.path.abspath(directory_path) != os.path.abspath(output_dir):
+        alt_path = os.path.join(directory_path, output_filename)
+        with open(alt_path, "w", encoding="utf-8") as f:
+            f.write(report_md)
+
     return report_md
 
 
