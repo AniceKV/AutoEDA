@@ -263,9 +263,10 @@ def main():
 
                     with v_col2:
                         st.markdown("#### Distribution Asset")
-                        dist_img = os.path.join(eda_dir, f"dist_{re.sub(r'\\W+', '_', col_name).strip('_')}.png")
+                        clean_col = re.sub(r'\W+', '_', col_name).strip('_')
+                        dist_img = os.path.join(eda_dir, f"dist_{clean_col}.png")
                         if not os.path.exists(dist_img):
-                            dist_img = os.path.join("./sandbox_run", f"dist_{re.sub(r'\\W+', '_', col_name).strip('_')}.png")
+                            dist_img = os.path.join("./sandbox_run", f"dist_{clean_col}.png")
                             
                         if os.path.exists(dist_img):
                             st.image(dist_img, caption=f"Distribution of {col_name}", use_container_width=True)
