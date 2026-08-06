@@ -1,188 +1,196 @@
-# Executive Summary – Spotify “Most‑Streamed 2025” Dataset  
+# Executive Summary – Most‑Streamed Spotify Tracks (2025)
 
 **Prepared by:** Senior Lead Data Scientist  
-**Date:** 2026‑08‑06  
+**Date:** 6 August 2026  
 
----  
+---
 
-## 1. Dataset Overview  
+## 1. Project Context  
 
-| Item | Value |
-|------|-------|
-| **Source file** | `most_streamed_spotify_2025.csv` |
-| **Rows / Columns** | 730 × 10 |
-| **Target column** | `wrapped_global_top10_rank` (numeric, 3 distinct values) |
-| **Primary key** | `rank` (1 – 730, unique) |
-| **Cardinality (unique values)** | `track`: 726  ·  `artist`: 401  ·  `billed_artist_count`: 2  ·  `is_collaboration`: 2 |
-| **Missing values (overall)** | 727 missing in `wrapped_global_top10_rank` (99.6 %); all other columns complete |
-| **Skewness (selected numeric vars)** | `spotify_streams_total`: 4.05 (high)  ·  `daily_streams`: 3.16 (high)  ·  `daily_stream_share_pct`: 2.20 (high) |
+The dataset **`most_streamed_spotify_2025.csv`** contains the 730 most‑streamed Spotify tracks for the year 2025.  
+The target variable is **`wrapped_global_top10_rank`**, a numeric score (1 = best) that has been treated as a **classification** problem (top‑10 vs. non‑top‑10).  
 
-*The dataset records the 730 most‑streamed Spotify tracks for 2025, together with daily streaming metrics and whether the track appeared in the global “Wrapped” top‑10.*  
+The automated EDA pipeline generated a set of visual artefacts, statistical tables, and a modeling blueprint that are summarised below.
 
----  
+---
 
-## 2. Data Quality & Imputation  
+## 2. Data Overview  
 
-| Column | Missing before | Missing after | Imputation method | Fill value |
-|--------|----------------|---------------|-------------------|------------|
-| rank | 0 | 0 | – | – |
-| track | 0 | 0 | – | – |
-| artist | 0 | 0 | – | – |
-| billed_artist_count | 0 | 0 | – | – |
-| is_collaboration | 0 | 0 | – | – |
-| spotify_streams_total | 0 | 0 | – | – |
-| daily_streams | 0 | 0 | – | – |
-| daily_streams_rank | 0 | 0 | – | – |
-| daily_stream_share_pct | 0 | 0 | – | – |
-| **wrapped_global_top10_rank** | 727 | 0 | Median imputation (skewness = 0.94) | **5.0** |
+| Property                              | Value |
+|--------------------------------------|-------|
+| Rows                                 | 730 |
+| Columns (including engineered)       | 11 |
+| Target column                         | `wrapped_global_top10_rank` |
+| Primary key (implicit)                | `rank` (1 – 730) |
+| Cardinality (unique values)          | See column‑wise table |
+| Missing values (overall)              | 727 rows (99.6 %) in target column only – imputed with mean (5.33) |
+| Data types                           | 5 numeric, 2 boolean, 2 categorical, 2 engineered (float) |
 
-*All missing target values were replaced with the median (5.0) because the column is effectively categorical (values 4‑7) and the distribution is tightly centred.*  
+### 2.1 Column‑wise Summary  
 
----  
+| Column                     | dtype   | Cardinality | Missing % | Key Statistics (where applicable) |
+|----------------------------|---------|-------------|----------|-----------------------------------|
+| `rank`                     | int64   | 730         | 0.0      | Range 1‑730, Mean 365.5 |
+| `track`                    | object  | 726         | 0.0      | Top values: “Show Me Love”, “NO BATIDÃO”, “MONTAGEM TOMADA” (2 each) |
+| `artist`                   | object  | 401         | 0.0      | Top artists: Bad Bunny (15), Sabrina Carpenter (14), Taylor Swift (12) |
+| `billed_artist_count`     | int64   | 2           | 0.0      | Range 1‑2, Mean 1.03, Skew 5.37 |
+| `is_collaboration`        | bool    | 2           | 0.0      | False 707, True 23 |
+| `spotify_streams_total`   | int64   | 730         | 0.0      | Mean 2.34 × 10⁸, Median 1.67 × 10⁸, Skew 4.05 |
+| `daily_streams`           | int64   | 730         | 0.0      | Mean 3.68 × 10⁵, Median 2.23 × 10⁵, Skew 3.16 |
+| `daily_streams_rank`      | int64   | 730         | 0.0      | Mirrors `rank` (range 1‑730) |
+| `daily_stream_share_pct`  | float64 | 646         | 0.0      | Mean 0.15, Median 0.12, Skew 2.20 |
+| `wrapped_global_top10_rank`| float64 | 3 (after imputation) | 0.0 (imputed) | Mean 5.33, Median 5.00 |
+| `engineered_feature`       | float64 | 730         | 0.0      | Defined as `daily_streams / (spotify_streams_total + eps)` |
 
-## 3. Descriptive Statistics & Distributions  
+---
 
-| Variable | Type | Range | Mean | Median | Skewness |
-|----------|------|-------|------|--------|----------|
-| `spotify_streams_total` | int64 | 100 284 982 – 1 948 570 210 | 233 700 631 | 167 033 880 | **4.05** |
-| `daily_streams` | int64 | 9 432 – 3 075 070 | 368 485 | 222 966 | **3.16** |
-| `daily_stream_share_pct` | float64 | 0.01 – 0.98 | 0.15 | 0.12 | **2.20** |
-| `rank` | int64 | 1 – 730 | 365.5 | 365.5 | 0.00 |
-| `daily_streams_rank` | int64 | 1 – 730 | 365.5 | 365.5 | 0.00 |
-| `billed_artist_count` | int64 | 1 – 2 | 1.03 | 1.0 | 5.37 (high) |
-| `is_collaboration` | bool | – | – | – | – |
-| `wrapped_global_top10_rank` | float64 | 4 – 7 | 5.33 | 5.0 | 0.00 |
+## 3. Missing‑Value Handling  
 
-**Distribution visualisations** (file name – size)  
+* Only the target column contained missing entries (727/730).  
+* Imputation rule: **Mean imputation** (skewness ≈ 0.94, within the “median” band).  
+* All other columns were complete; no further imputation required.
 
-| Image | Description |
-|-------|-------------|
-| `dist_spotify_streams_total.png` (43.5 KB) | Heavy right‑skew; a few tracks dominate total streams. |
-| `dist_daily_streams.png` (43.8 KB) | Similar right‑skew; daily streams follow the same pattern. |
-| `dist_daily_stream_share_pct.png` (43.9 KB) | Concentrated around 0.10‑0.30 with a long tail toward 0.90+. |
-| `dist_billed_artist_count.png` (36.9 KB) | Almost all records have a single billed artist (≈97 %). |
-| `dist_is_collaboration.png` (28.5 KB) | 96 % non‑collaborations, 4 % collaborations. |
-| `dist_rank.png` (38.6 KB) | Uniform distribution of rank positions (1‑730). |
-| `dist_daily_streams_rank.png` (42.8 KB) | Uniform distribution of daily‑stream rank. |
-| `dist_wrapped_global_top10_rank.png` (42.3 KB) | Majority of tracks have rank 5 (the imputed median). |
-| `dist_artist.png` (76.6 KB) | Long tail of artists; top three: Bad Bunny (15), Sabrina Carpenter (14), Taylor Swift (12). |
-| `dist_track.png` (96.0 KB) | Near‑unique track titles (726 distinct). |
+---
 
----  
+## 4. Distribution Visualisations  
 
-## 4. Outlier Analysis  
+| Image File | Description |
+|------------|-------------|
+| `dist_artist.png` | Bar chart of artist frequencies – heavy tail with Bad Bunny, Sabrina Carpenter, Taylor Swift leading. |
+| `dist_track.png` | Histogram of track titles – 726 unique tracks, indicating near‑unique identifiers. |
+| `dist_billed_artist_count.png` | Very narrow distribution (mostly 1 billed artist). |
+| `dist_is_collaboration.png` | Pie chart: 96 % non‑collaborations, 4 % collaborations. |
+| `dist_spotify_streams_total.png` | Right‑skewed distribution of total streams (log‑scale recommended). |
+| `dist_daily_streams.png` | Right‑skewed distribution of daily streams, similar shape to total streams but lower magnitude. |
+| `dist_daily_stream_share_pct.png` | Distribution of daily share percentage – most values < 0.2, long tail up to 0.98. |
+| `dist_daily_streams_rank.png` | Uniform distribution mirroring `rank`. |
+| `dist_rank.png` | Uniform rank distribution (1‑730). |
+| `dist_wrapped_global_top10_rank.png` | After imputation, three distinct values (4, 5, 7) with the majority at 5. |
+| `bivariate_daily_streams_vs_spotify_streams_total.png` | Scatter plot showing strong positive relationship (Pearson r ≈ 0.78). |
+| `bivariate_daily_stream_share_pct_vs_billed_artist_count.png` | Bivariate plot – negligible association (correlation ≈ ‑0.06). |
+| `bivariate_rank_vs_wrapped_global_top10_rank.png` | No observable pattern; rank does not predict target. |
+| `target_interactions.png` | Interaction matrix of target vs. key features – confirms weak linear links. |
+| `correlation_matrix.png` | Heatmap of Pearson correlations among all numeric variables (see Section 5). |
 
-| Variable | Q1 | Q3 | IQR | Lower bound | Upper bound | Outliers (count) | Outlier % |
-|----------|----|----|-----|-------------|-------------|------------------|----------|
-| `spotify_streams_total` | 126 638 224 | 245 628 560 | 118 990 336 | –51 847 280 | 424 114 065 | **69** | **9.45 %** |
-| `daily_streams` | 110 628 | 433 710 | 323 083 | –373 996 | 918 334 | **56** | **7.67 %** |
-| `daily_stream_share_pct` | 0.0729 | 0.1823 | 0.1095 | –0.0913 | 0.3465 | **39** | **5.34 %** |
-| `rank` | 183.25 | 547.75 | 364.5 | –363.5 | 1 094.5 | 0 | 0 % |
-| `daily_streams_rank` | 183.25 | 547.75 | 364.5 | –363.5 | 1 094.5 | 0 | 0 % |
-| `wrapped_global_top10_rank` | 5.0 | 5.0 | 0.0 | 5.0 | 5.0 | 2 | 0.27 % |
+*All images are stored in the working directory; file sizes range from 28 KB to 157 KB.*
 
-*Outliers were **profiled only** (no removal) to preserve the full streaming landscape.*  
+---
 
----  
+## 5. Correlation & Multicollinearity  
 
-## 5. Correlation Analysis  
-
-**Top 10 absolute correlations (|r| > 0.12)**  
+### 5.1 Top Correlations (absolute value)
 
 | Feature 1 | Feature 2 | Pearson r |
-|-----------|-----------|----------|
-| `spotify_streams_total` | `daily_streams` | **0.7796** |
-| `daily_streams` | `daily_streams_rank` | **‑0.7338** |
-| `daily_streams_rank` | `daily_stream_share_pct` | **‑0.7254** |
-| `rank` | `daily_streams_rank` | **0.7081** |
-| `rank` | `spotify_streams_total` | **‑0.6800** |
-| `daily_streams` | `daily_stream_share_pct` | **0.6221** |
-| `rank` | `daily_streams` | **‑0.5854** |
-| `spotify_streams_total` | `daily_streams_rank` | **‑0.5632** |
-| `rank` | `daily_stream_share_pct` | **‑0.2206** |
-| `spotify_streams_total` | `daily_stream_share_pct` | **0.1212** |
+|-----------|-----------|-----------|
+| `daily_stream_share_pct` | `engineered_feature` | **1.00** |
+| `spotify_streams_total` | `daily_streams` | **0.78** |
+| `daily_streams` | `daily_streams_rank` | **‑0.73** |
+| `daily_streams_rank` | `daily_stream_share_pct` | **‑0.73** |
+| `rank` | `daily_streams_rank` | **0.71** |
+| `rank` | `spotify_streams_total` | **‑0.68** |
+| `daily_streams` | `daily_stream_share_pct` | **0.62** |
+| `daily_streams` | `engineered_feature` | **0.62** |
+| `rank` | `daily_streams` | **‑0.59** |
+| `billed_artist_count` | `rank` | **0.09** |
 
-The full correlation matrix is saved as `correlation_matrix.png` (135.8 KB).  
+*The engineered feature is perfectly collinear with `daily_stream_share_pct` (by construction).*
 
----  
+### 5.2 Multicollinearity Assessment  
 
-## 6. Statistical Hypothesis Tests  
+* No pair exceeds the 0.85 threshold, so **no mandatory removal** is required.  
+* However, the perfect correlation between `engineered_feature` and `daily_stream_share_pct` suggests retaining only one of them for parsimonious models.
 
-| Variable | Test | Statistic | p‑value | Significant? | Interpretation |
-|----------|------|-----------|---------|--------------|----------------|
-| `rank` | Pearson correlation (vs. target) | –0.0283 | 0.445 | **No** | No linear relationship with Wrapped rank. |
-| `artist` | One‑Way ANOVA (target across artists) | 0.771 | 0.962 | **No** | Artist identity does not explain target variance. |
-| `billed_artist_count` | Pearson | –0.0030 | 0.936 | **No** | No effect. |
-| `is_collaboration` | Welch t‑test (binary) | 0.447 | 0.655 | **No** | Collaboration status not predictive. |
-| `spotify_streams_total` | Pearson | **0.1068** | **0.0039** | **Yes** | Small but statistically significant positive association with Wrapped rank. |
-| `daily_streams` | Pearson | 0.0668 | 0.071 | No | Trend not significant at α = 0.05. |
-| `daily_streams_rank` | Pearson | –0.0274 | 0.460 | No | |
-| `daily_stream_share_pct` | Pearson | –0.0009 | 0.982 | No | |
-| `wrapped_global_top10_rank` | (self) – | – | – | – | – |
+---
 
-**Only `spotify_streams_total` emerged as a statistically significant predictor of the target.**  
+## 6. Outlier Analysis  
 
----  
+| Feature | Outlier % | Action |
+|---------|-----------|--------|
+| `spotify_streams_total` | 9.45 % (69 rows) | Profiled only – no removal |
+| `daily_streams` | 7.67 % (56 rows) | Profiled only – no removal |
+| `daily_stream_share_pct` | 5.34 % (39 rows) | Profiled only – no removal |
+| `wrapped_global_top10_rank` | 0.41 % (3 rows) | Profiled only – no removal |
+| `rank`, `daily_streams_rank` | 0 % | No action needed |
+
+*Outliers were retained for downstream modelling, given the modest dataset size.*
+
+---
 
 ## 7. Feature Engineering  
 
-*No engineered features were added by the automated pipeline.*  
-**Potential next‑step ideas**  
+| Engineered Feature | Formula | Rationale | Observed Correlation with Target |
+|--------------------|---------|-----------|----------------------------------|
+| `engineered_feature` | `daily_streams / (spotify_streams_total + eps)` | Captures the proportion of a track’s daily activity relative to its overall popularity. | 0.001 (practically zero) – not predictive of `wrapped_global_top10_rank`. |
 
-| Idea | Rationale |
-|------|-----------|
-| Log‑transform `spotify_streams_total` and `daily_streams` | Reduces heavy right‑skew, may improve linear models. |
-| Ratio `daily_streams / spotify_streams_total` | Captures “current popularity” relative to lifetime streams. |
-| Binary flag for “top‑5 artist” (e.g., Bad Bunny, Taylor Swift) | May capture brand effects. |
-| Interaction term `is_collaboration × daily_stream_share_pct` | Tests whether collaborations boost share. |
+*Because the engineered feature is mathematically identical to `daily_stream_share_pct`, it inherits the same distribution and correlation pattern.*
 
----  
+---
 
-## 8. Predictive Modeling Blueprint  
+## 8. Statistical Hypothesis Testing  
+
+All tests evaluated the linear (or mean) relationship between each predictor and the target (`wrapped_global_top10_rank`).  
+
+| Feature | Test | Statistic | p‑value | Significant? | Interpretation |
+|---------|------|-----------|---------|--------------|----------------|
+| `rank` | Pearson | 0.0002 | 0.995 | No | No linear association. |
+| `artist` | One‑Way ANOVA | 0.7544 | 0.973 | No | Artist groups do not differ in target rank. |
+| `billed_artist_count` | Pearson | –0.0000 | 1.000 | No | No effect. |
+| `is_collaboration` | Welch t‑test | 0.0 | 1.000 | No | Collaboration status irrelevant. |
+| `spotify_streams_total` | Pearson | –0.025 | 0.500 | No | Weak, non‑significant negative trend. |
+| `daily_streams` | Pearson | –0.0113 | 0.761 | No | Weak, non‑significant negative trend. |
+| `daily_streams_rank` | Pearson | 0.0006 | 0.987 | No | No trend. |
+| `daily_stream_share_pct` | Pearson | 0.0006 | 0.986 | No | No trend. |
+| `engineered_feature` | Pearson | 0.0007 | 0.986 | No | No trend. |
+
+**Result:** *No predictor reached statistical significance at conventional α = 0.05.* Consequently, the `significant_predictors` list is empty.
+
+---
+
+## 9. Predictive Modeling Blueprint  
 
 | Aspect | Recommendation |
 |--------|----------------|
-| **Problem type** | Multi‑class classification (`wrapped_global_top10_rank` ∈ {4,5,6,7}) |
-| **Baseline algorithm** | Regularized Logistic Regression (L2) |
-| **Strong learners** | Random Forest, Gradient Boosting (XGBoost / LightGBM), Support Vector Classifier |
-| **Feature selection** | <ul><li>Drop high‑cardinality identifiers (`track`, `artist`) or encode with target‑guided embeddings.</li><li>Use permutation importance + mutual information to rank remaining features.</li><li>Remove collinear predictors with |r| > 0.85 (none exceed this threshold after dropping IDs).</li></ul> |
-| **Validation strategy** | Stratified 5‑fold cross‑validation (preserves class distribution). |
-| **Evaluation metrics** | Balanced Accuracy, Macro F1, Precision‑Recall AUC, Confusion Matrix (to monitor class imbalance). |
-| **Over‑fitting mitigation** | <ul><li>L1/L2 regularization for linear models.</li><li>Limit tree depth (≤ 6) and set `min_samples_leaf` (≥ 20) for ensembles.</li><li>Perform hyper‑parameter search *inside* CV folds (e.g., GridSearchCV). </li></ul> |
-| **Implementation notes** | • Encode `billed_artist_count` as numeric (already). <br>• Encode `is_collaboration` as 0/1. <br>• Consider log‑scale of `spotify_streams_total` and `daily_streams`. |
+| **Problem type** | **Classification** (predicting whether a track belongs to the Wrapped Global Top‑10). |
+| **Target definition** | `wrapped_global_top10_rank` (treated as categorical with three levels after imputation). |
+| **Baseline algorithm** | Regularized Logistic Regression (L1/L2). |
+| **Advanced algorithms** | Random Forest, Gradient Boosting (XGBoost / LightGBM), Support Vector Classifier. |
+| **Feature selection** | <ul><li>Drop high‑cardinality identifiers (`track`, `artist`).</li><li>Use permutation importance + mutual information (cross‑validated) to rank remaining features.</li><li>Remove collinear features with |r| > 0.85 (none required, but keep only one of `daily_stream_share_pct` / `engineered_feature`).</li></ul> |
+| **Validation strategy** | Stratified 5‑fold cross‑validation. |
+| **Evaluation metrics** | Balanced Accuracy, Macro F1, Precision‑Recall AUC, Confusion Matrix. |
+| **Overfitting mitigation** | <ul><li>Regularization (L1/L2) for linear models.</li><li>Tree depth limits, minimum samples per leaf for ensemble models.</li><li>Hyper‑parameter tuning confined to inner CV loops.</li></ul> |
+| **Data split** | No explicit hold‑out set defined; recommend reserving 10‑15 % of rows for final test if additional data becomes available. |
 
----  
+**Executive Summary (from pipeline):**  
+> “Target: `wrapped_global_top10_rank` (Classification). Use robust cross‑validation on 730 rows × 11 columns.”
 
-## 9. Visual Artifact Inventory  
-
-| File | Size (KB) | Brief description |
-|------|-----------|-------------------|
-| `bivariate_billed_artist_count_vs_spotify_streams_total.png` | 66.3 | Scatter of total streams vs. billed‑artist count (mostly 1). |
-| `bivariate_daily_stream_share_pct_vs_spotify_streams_total.png` | 1368.7 | Dense cloud showing weak positive trend; highlights outliers with high share. |
-| `bivariate_daily_streams_vs_spotify_streams_total.png` | 130.1 | Strong positive relationship (r ≈ 0.78). |
-| `bivariate_rank_vs_wrapped_global_top10_rank.png` | 2643.9 | Rank vs. Wrapped rank – essentially flat, confirming non‑significance. |
-| `correlation_matrix.png` | 135.8 | Full Pearson correlation heatmap (numeric columns). |
-| `dist_*` (9 files) | 28 – 96 | Univariate histograms / bar charts for each variable (see Section 3). |
-| `pairplot.png` | 235.2 | Pairwise scatter/ KDE matrix for all numeric features. |
-| `target_interactions.png` | 63.3 | Visual of target (`wrapped_global_top10_rank`) against key predictors (e.g., `spotify_streams_total`). |
-
----  
+---
 
 ## 10. Key Insights & Recommendations  
 
-1. **Data quality is high** apart from the target column, which required median imputation.  
-2. **Streaming volume dominates** the variance: `spotify_streams_total` is highly skewed, strongly correlated with `daily_streams`, and the **only statistically significant predictor** of Wrapped rank.  
-3. **Rank position (`rank`) is not predictive** of Wrapped rank; the ordering in the source file is unrelated to the Wrapped outcome.  
-4. **Collaboration status and billed‑artist count have negligible impact** on the target.  
-5. **Modeling focus** should be on transformed streaming metrics (log‑scale) and possibly engineered ratios; categorical identifiers (`track`, `artist`) can be excluded or encoded with careful regularization.  
-6. **Next steps**:  
-   - Apply log‑transformations to heavy‑tailed numeric features.  
-   - Build a baseline logistic regression; benchmark against tree‑based ensembles.  
-   - Use stratified CV and macro‑averaged metrics to guard against class imbalance (most rows now have the imputed class 5).  
-   - Explore feature importance to confirm that `spotify_streams_total` (or its log) remains the dominant driver.  
+1. **Target Imbalance & Low Variability** – After imputation the target collapses to three discrete values (4, 5, 7) with the majority at 5. This limited variance explains the lack of statistically significant predictors.  
+2. **Strong Internal Correlations** – `daily_streams` and `spotify_streams_total` are highly correlated (r ≈ 0.78). Either can serve as a proxy for overall popularity; the daily‑share percentage adds little new information beyond the engineered feature.  
+3. **Sparse Predictive Signal** – None of the examined features (including the engineered one) shows a meaningful linear relationship with the target. Non‑linear models (RF, GBM) may still capture subtle patterns, but expectations should be modest.  
+4. **Feature Reduction** – Remove `track` and `artist` (high cardinality, no predictive power) before modelling. Retain one of `daily_stream_share_pct` or `engineered_feature`.  
+5. **Modeling Strategy** – Begin with a regularized logistic regression baseline; if performance is inadequate, explore tree‑based ensembles with careful depth control.  
+6. **Future Data Enrichment** – Incorporating additional contextual variables (e.g., genre, release date, playlist placements) could increase signal strength for the top‑10 classification task.
 
-*Overall, the dataset offers a clear, single‑signal predictive landscape: total streaming volume is the primary lever for explaining a track’s Wrapped global top‑10 rank.*  
+---
 
----  
+## 11. Limitations  
 
-*Prepared for internal analytics review. All visual assets referenced are available in the working directory.*
+* **Target Quality:** 99 % missingness required mean imputation, which may have obscured true class distinctions.  
+* **Sample Size:** 730 observations limit the complexity of models that can be reliably trained.  
+* **Feature Scope:** Only streaming metrics are present; external factors (marketing, social media trends) are absent.  
+
+---
+
+## 12. Next Steps  
+
+1. **Data Augmentation** – Gather auxiliary metadata (genre, release year, country) to enrich the feature set.  
+2. **Re‑evaluate Target** – Consider redefining the target (e.g., binary top‑10 vs. others) after obtaining a more complete label set.  
+3. **Model Development** – Implement the recommended baseline and advanced models, report cross‑validated metrics, and compare against a simple majority‑class baseline.  
+4. **Interpretability** – Use SHAP or permutation importance to explain any learned patterns, especially if non‑linear models outperform the baseline.  
+
+---
+
+*All visual artefacts referenced above are available in the working directory and can be incorporated into a full report or presentation as needed.*

@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -7,7 +7,16 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# Engineered Features Specs: [
+  {
+    "feature_name": "engineered_feature",
+    "formula": "Daily_Commute_km / (Number_of_Cars_Owned + eps)",
+    "data_type": "float64",
+    "rationale": "High-signal feature engineering transformation",
+    "correlation_with_target": null
+  }
+]
+# Feature 'engineered_feature': Daily_Commute_km / (Number_of_Cars_Owned + eps)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -33,7 +42,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Current_Car_Type (Classification). Use robust cross-validation on 10000 rows x 10 columns."
+  "executive_summary": "Target: Current_Car_Type (Classification). Use robust cross-validation on 10000 rows x 11 columns."
 }
 
 if __name__ == '__main__':

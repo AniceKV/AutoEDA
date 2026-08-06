@@ -1,0 +1,314 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\netflix_titles.csv",
+    "shape": {
+      "rows": 8807,
+      "columns": 12
+    },
+    "target_column": "type",
+    "column_summary": {
+      "show_id": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 8807
+      },
+      "type": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "title": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 8807
+      },
+      "director": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 4528
+      },
+      "cast": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 7692
+      },
+      "country": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 748
+      },
+      "date_added": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 1767
+      },
+      "release_year": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 74
+      },
+      "rating": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 17
+      },
+      "duration": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 220
+      },
+      "listed_in": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 514
+      },
+      "description": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 8775
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
+    "columns": {
+      "show_id": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "type": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "title": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "director": {
+        "dtype": "object",
+        "missing_before": 2634,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "Rajiv Chilaka"
+      },
+      "cast": {
+        "dtype": "object",
+        "missing_before": 825,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "David Attenborough"
+      },
+      "country": {
+        "dtype": "object",
+        "missing_before": 831,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "United States"
+      },
+      "date_added": {
+        "dtype": "object",
+        "missing_before": 10,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "January 1, 2020"
+      },
+      "release_year": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "rating": {
+        "dtype": "object",
+        "missing_before": 4,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "TV-MA"
+      },
+      "duration": {
+        "dtype": "object",
+        "missing_before": 3,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "1 Season"
+      },
+      "listed_in": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "description": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      }
+    }
+  },
+  "outlier_analysis": {
+    "release_year": {
+      "q1": 2013.0,
+      "q3": 2019.0,
+      "iqr": 6.0,
+      "lower_bound": 2004.0,
+      "upper_bound": 2028.0,
+      "outlier_count": 719,
+      "outlier_percentage": 8.16,
+      "action_taken": "profile"
+    }
+  },
+  "engineered_features": [],
+  "correlation_analysis": {},
+  "statistical_hypothesis_tests": {
+    "show_id": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 8807.0,
+      "p_value": 0.4949900602351153,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 8807.0000, dof = 8806, p = 4.9499e-01. (Not Significant)"
+    },
+    "title": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 8807.0,
+      "p_value": 0.4949900602351153,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 8807.0000, dof = 8806, p = 4.9499e-01. (Not Significant)"
+    },
+    "director": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 7767.8644,
+      "p_value": 1.241500423070994e-175,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 7767.8644, dof = 4527, p = 1.2415e-175. (Statistically Significant)"
+    },
+    "cast": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 7728.2011,
+      "p_value": 0.3802434485084686,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 7728.2011, dof = 7691, p = 3.8024e-01. (Not Significant)"
+    },
+    "country": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 1720.8346,
+      "p_value": 1.2467112411204041e-78,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 1720.8346, dof = 747, p = 1.2467e-78. (Statistically Significant)"
+    },
+    "date_added": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 2748.1936,
+      "p_value": 4.848477686544127e-46,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 2748.1936, dof = 1766, p = 4.8485e-46. (Statistically Significant)"
+    },
+    "release_year": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": -20.9763,
+      "p_value": 3.711540080449863e-95,
+      "is_statistically_significant": true,
+      "interpretation": "T-statistic = -20.9763, p = 3.7115e-95. (Statistically Significant)"
+    },
+    "rating": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 1047.8628,
+      "p_value": 6.277819254424652e-213,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 1047.8628, dof = 16, p = 6.2778e-213. (Statistically Significant)"
+    },
+    "duration": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 8792.841,
+      "p_value": 0.0,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 8792.8410, dof = 219, p = 0.0000e+00. (Statistically Significant)"
+    },
+    "listed_in": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 8807.0,
+      "p_value": 0.0,
+      "is_statistically_significant": true,
+      "interpretation": "Chi2 = 8807.0000, dof = 513, p = 0.0000e+00. (Statistically Significant)"
+    },
+    "description": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 8801.4845,
+      "p_value": 0.4159388396446614,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 8801.4845, dof = 8774, p = 4.1594e-01. (Not Significant)"
+    },
+    "significant_predictors": [
+      "director",
+      "country",
+      "date_added",
+      "release_year",
+      "rating",
+      "duration",
+      "listed_in"
+    ]
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "type",
+    "problem_type": "Classification",
+    "recommended_algorithms": [
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: type (Classification). Use robust cross-validation on 8807 rows x 12 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 8807 rows and 12 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "director",
+      "country",
+      "date_added",
+      "release_year",
+      "rating",
+      "duration",
+      "listed_in"
+    ]
+  }
+}

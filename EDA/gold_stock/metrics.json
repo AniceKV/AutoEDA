@@ -1,0 +1,557 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\gold_stock.csv",
+    "shape": {
+      "rows": 100,
+      "columns": 10
+    },
+    "target_column": "Diagnosis",
+    "column_summary": {
+      "Season": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 4
+      },
+      "Age": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 10
+      },
+      "Childish diseases": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Accident or serious trauma": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Surgical intervention": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "High fevers in the last year": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Frequency of alcohol consumption": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 5
+      },
+      "Smoking habit": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Number of hours spent sitting per day": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 12
+      },
+      "Diagnosis": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
+    "columns": {
+      "Season": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Age": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Childish diseases": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Accident or serious trauma": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Surgical intervention": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "High fevers in the last year": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Frequency of alcohol consumption": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Smoking habit": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Number of hours spent sitting per day": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Diagnosis": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      }
+    }
+  },
+  "outlier_analysis": {
+    "Age": {
+      "q1": 28.0,
+      "q3": 32.0,
+      "iqr": 4.0,
+      "lower_bound": 22.0,
+      "upper_bound": 38.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "cap"
+    },
+    "Number of hours spent sitting per day": {
+      "q1": 5.0,
+      "q3": 9.0,
+      "iqr": 4.0,
+      "lower_bound": -1.0,
+      "upper_bound": 15.0,
+      "outlier_count": 5,
+      "outlier_percentage": 5.0,
+      "action_taken": "cap"
+    }
+  },
+  "engineered_features": [],
+  "correlation_analysis": {
+    "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "Age",
+        "feature_2": "Number of hours spent sitting per day",
+        "correlation": -0.0466
+      }
+    ],
+    "correlation_matrix_text": {
+      "Age": {
+        "Age": 1.0,
+        "Number of hours spent sitting per day": -0.047
+      },
+      "Number of hours spent sitting per day": {
+        "Age": -0.047,
+        "Number of hours spent sitting per day": 1.0
+      }
+    },
+    "categorical_associations": {
+      "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+      "top_correlations": [
+        {
+          "feature_1": "Surgical intervention",
+          "feature_2": "High fevers in the last year",
+          "cramers_v": 0.2437
+        },
+        {
+          "feature_1": "Season",
+          "feature_2": "Accident or serious trauma",
+          "cramers_v": 0.2253
+        },
+        {
+          "feature_1": "Frequency of alcohol consumption",
+          "feature_2": "Smoking habit",
+          "cramers_v": 0.2102
+        },
+        {
+          "feature_1": "Season",
+          "feature_2": "High fevers in the last year",
+          "cramers_v": 0.2027
+        },
+        {
+          "feature_1": "Accident or serious trauma",
+          "feature_2": "Frequency of alcohol consumption",
+          "cramers_v": 0.177
+        },
+        {
+          "feature_1": "Childish diseases",
+          "feature_2": "Accident or serious trauma",
+          "cramers_v": 0.1289
+        },
+        {
+          "feature_1": "Season",
+          "feature_2": "Diagnosis",
+          "cramers_v": 0.1069
+        },
+        {
+          "feature_1": "Season",
+          "feature_2": "Childish diseases",
+          "cramers_v": 0.1049
+        },
+        {
+          "feature_1": "Accident or serious trauma",
+          "feature_2": "Diagnosis",
+          "cramers_v": 0.0999
+        },
+        {
+          "feature_1": "Childish diseases",
+          "feature_2": "Surgical intervention",
+          "cramers_v": 0.0994
+        }
+      ],
+      "association_matrix_text": {
+        "Season": {
+          "Season": 1.0,
+          "Childish diseases": 0.105,
+          "Accident or serious trauma": 0.225,
+          "Surgical intervention": 0.0,
+          "High fevers in the last year": 0.203,
+          "Frequency of alcohol consumption": 0.0,
+          "Smoking habit": 0.0,
+          "Diagnosis": 0.107
+        },
+        "Childish diseases": {
+          "Season": 0.105,
+          "Childish diseases": 1.0,
+          "Accident or serious trauma": 0.129,
+          "Surgical intervention": 0.099,
+          "High fevers in the last year": 0.0,
+          "Frequency of alcohol consumption": 0.0,
+          "Smoking habit": 0.0,
+          "Diagnosis": 0.0
+        },
+        "Accident or serious trauma": {
+          "Season": 0.225,
+          "Childish diseases": 0.129,
+          "Accident or serious trauma": 1.0,
+          "Surgical intervention": 0.023,
+          "High fevers in the last year": 0.0,
+          "Frequency of alcohol consumption": 0.177,
+          "Smoking habit": 0.0,
+          "Diagnosis": 0.1
+        },
+        "Surgical intervention": {
+          "Season": 0.0,
+          "Childish diseases": 0.099,
+          "Accident or serious trauma": 0.023,
+          "Surgical intervention": 1.0,
+          "High fevers in the last year": 0.244,
+          "Frequency of alcohol consumption": 0.0,
+          "Smoking habit": 0.0,
+          "Diagnosis": 0.0
+        },
+        "High fevers in the last year": {
+          "Season": 0.203,
+          "Childish diseases": 0.0,
+          "Accident or serious trauma": 0.0,
+          "Surgical intervention": 0.244,
+          "High fevers in the last year": 1.0,
+          "Frequency of alcohol consumption": 0.0,
+          "Smoking habit": 0.022,
+          "Diagnosis": 0.0
+        },
+        "Frequency of alcohol consumption": {
+          "Season": 0.0,
+          "Childish diseases": 0.0,
+          "Accident or serious trauma": 0.177,
+          "Surgical intervention": 0.0,
+          "High fevers in the last year": 0.0,
+          "Frequency of alcohol consumption": 1.0,
+          "Smoking habit": 0.21,
+          "Diagnosis": 0.0
+        },
+        "Smoking habit": {
+          "Season": 0.0,
+          "Childish diseases": 0.0,
+          "Accident or serious trauma": 0.0,
+          "Surgical intervention": 0.0,
+          "High fevers in the last year": 0.022,
+          "Frequency of alcohol consumption": 0.21,
+          "Smoking habit": 1.0,
+          "Diagnosis": 0.0
+        },
+        "Diagnosis": {
+          "Season": 0.107,
+          "Childish diseases": 0.0,
+          "Accident or serious trauma": 0.1,
+          "Surgical intervention": 0.0,
+          "High fevers in the last year": 0.0,
+          "Frequency of alcohol consumption": 0.0,
+          "Smoking habit": 0.0,
+          "Diagnosis": 1.0
+        }
+      }
+    }
+  },
+  "categorical_associations": {
+    "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2437
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.2253
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.2102
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2027
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.177
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.1289
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.1069
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Childish diseases",
+        "cramers_v": 0.1049
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0999
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0994
+      }
+    ],
+    "association_matrix_text": {
+      "Season": {
+        "Season": 1.0,
+        "Childish diseases": 0.105,
+        "Accident or serious trauma": 0.225,
+        "Surgical intervention": 0.0,
+        "High fevers in the last year": 0.203,
+        "Frequency of alcohol consumption": 0.0,
+        "Smoking habit": 0.0,
+        "Diagnosis": 0.107
+      },
+      "Childish diseases": {
+        "Season": 0.105,
+        "Childish diseases": 1.0,
+        "Accident or serious trauma": 0.129,
+        "Surgical intervention": 0.099,
+        "High fevers in the last year": 0.0,
+        "Frequency of alcohol consumption": 0.0,
+        "Smoking habit": 0.0,
+        "Diagnosis": 0.0
+      },
+      "Accident or serious trauma": {
+        "Season": 0.225,
+        "Childish diseases": 0.129,
+        "Accident or serious trauma": 1.0,
+        "Surgical intervention": 0.023,
+        "High fevers in the last year": 0.0,
+        "Frequency of alcohol consumption": 0.177,
+        "Smoking habit": 0.0,
+        "Diagnosis": 0.1
+      },
+      "Surgical intervention": {
+        "Season": 0.0,
+        "Childish diseases": 0.099,
+        "Accident or serious trauma": 0.023,
+        "Surgical intervention": 1.0,
+        "High fevers in the last year": 0.244,
+        "Frequency of alcohol consumption": 0.0,
+        "Smoking habit": 0.0,
+        "Diagnosis": 0.0
+      },
+      "High fevers in the last year": {
+        "Season": 0.203,
+        "Childish diseases": 0.0,
+        "Accident or serious trauma": 0.0,
+        "Surgical intervention": 0.244,
+        "High fevers in the last year": 1.0,
+        "Frequency of alcohol consumption": 0.0,
+        "Smoking habit": 0.022,
+        "Diagnosis": 0.0
+      },
+      "Frequency of alcohol consumption": {
+        "Season": 0.0,
+        "Childish diseases": 0.0,
+        "Accident or serious trauma": 0.177,
+        "Surgical intervention": 0.0,
+        "High fevers in the last year": 0.0,
+        "Frequency of alcohol consumption": 1.0,
+        "Smoking habit": 0.21,
+        "Diagnosis": 0.0
+      },
+      "Smoking habit": {
+        "Season": 0.0,
+        "Childish diseases": 0.0,
+        "Accident or serious trauma": 0.0,
+        "Surgical intervention": 0.0,
+        "High fevers in the last year": 0.022,
+        "Frequency of alcohol consumption": 0.21,
+        "Smoking habit": 1.0,
+        "Diagnosis": 0.0
+      },
+      "Diagnosis": {
+        "Season": 0.107,
+        "Childish diseases": 0.0,
+        "Accident or serious trauma": 0.1,
+        "Surgical intervention": 0.0,
+        "High fevers in the last year": 0.0,
+        "Frequency of alcohol consumption": 0.0,
+        "Smoking habit": 0.0,
+        "Diagnosis": 1.0
+      }
+    }
+  },
+  "statistical_hypothesis_tests": {
+    "Season": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 4.1613,
+      "p_value": 0.24456154469665597,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 4.1613, dof = 3, p = 2.4456e-01. (Not Significant)"
+    },
+    "Age": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": 1.0435,
+      "p_value": 0.3126477136950639,
+      "is_statistically_significant": false,
+      "interpretation": "T-statistic = 1.0435, p = 3.1265e-01. (Not Significant)"
+    },
+    "Childish diseases": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 0.0,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 0.0000, dof = 1, p = 1.0000e+00. (Not Significant)"
+    },
+    "Accident or serious trauma": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 1.2177,
+      "p_value": 0.2698152153045356,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 1.2177, dof = 1, p = 2.6982e-01. (Not Significant)"
+    },
+    "Surgical intervention": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 0.0547,
+      "p_value": 0.8150466035263968,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 0.0547, dof = 1, p = 8.1505e-01. (Not Significant)"
+    },
+    "High fevers in the last year": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 1.5452,
+      "p_value": 0.4618075548579861,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 1.5452, dof = 2, p = 4.6181e-01. (Not Significant)"
+    },
+    "Frequency of alcohol consumption": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 4.0263,
+      "p_value": 0.40245198647540337,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 4.0263, dof = 4, p = 4.0245e-01. (Not Significant)"
+    },
+    "Smoking habit": {
+      "test_name": "Chi-Square Test of Independence",
+      "statistic": 0.2153,
+      "p_value": 0.8979535587878946,
+      "is_statistically_significant": false,
+      "interpretation": "Chi2 = 0.2153, dof = 2, p = 8.9795e-01. (Not Significant)"
+    },
+    "Number of hours spent sitting per day": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": -0.9024,
+      "p_value": 0.3691112769940803,
+      "is_statistically_significant": false,
+      "interpretation": "T-statistic = -0.9024, p = 3.6911e-01. (Not Significant)"
+    },
+    "significant_predictors": []
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "Diagnosis",
+    "problem_type": "Classification",
+    "recommended_algorithms": [
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 10 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 100 rows and 10 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": []
+  }
+}

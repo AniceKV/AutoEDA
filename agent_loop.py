@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import tools
 from profiler import run_and_save_profile
 from summary_generator import create_summary, extract_dataset_name
+from html_report_generator import generate_html_report
 
 load_dotenv(override=True)
 
@@ -72,30 +73,89 @@ def validate_tool_plan(plan: Any) -> Tuple[bool, Optional[str]]:
     return True, None
 
 
-def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "./sandbox_run", generate_summary: bool = True) -> Dict[str, Any]:
+def run_tool_based_eda(
+    data_path: str, 
+    user_request: str, 
+    workspace_dir: str = "./sandbox_run", 
+    generate_summary: bool = True,
+    conversation_history: Optional[List[Dict[str, Any]]] = None
+) -> Dict[str, Any]:
     """
-    Tool-Based Orchestrator for AutoEDA:
-    1. Runs pre-profiler to produce metadata_profile.json
-    2. Prompts LLM for a structured JSON Tool Plan with direct error feedback routing
-    3. Executes tools deterministically with Stateful Data Version Control & rollback protection
-    4. Compiles metrics.json and executes summary_generator.py
-    5. Exports all assets to EDA/{dataset_name}/
+    Agentic Tool-Based Orchestrator for AutoEDA with Multi-Turn Memory and Refinement Loop.
     """
-    # Wipe previous sandbox artifacts before starting a fresh run
-    if os.path.exists(workspace_dir):
-        shutil.rmtree(workspace_dir)
-    os.makedirs(workspace_dir)
+    if conversation_history is None:
+        conversation_history = []
+        
+    resume = len(conversation_history) > 0
+    state_file = os.path.join(workspace_dir, "agent_state.json")
+    df_file = os.path.join(workspace_dir, "current_df.csv")
     abs_data_path = os.path.abspath(data_path)
     
     print("\n==================================================")
     print(f"Tool-Based AutoEDA: Starting analysis on '{abs_data_path}'...")
     print("==================================================")
     
-    # 1. Run algorithmic pre-profiler
-    print("1. Running pre-profiler...")
-    profile_summary = run_and_save_profile(data_path=abs_data_path, output_dir=workspace_dir)
-    
-    # 2. Build system prompt with tool registry schemas
+    if not resume:
+        # Wipe previous sandbox artifacts before starting a fresh run
+        if os.path.exists(workspace_dir):
+            shutil.rmtree(workspace_dir)
+        os.makedirs(workspace_dir)
+        
+        print("1. Running pre-profiler...")
+        profile_summary = run_and_save_profile(data_path=abs_data_path, output_dir=workspace_dir)
+        
+        df = pd.read_csv(abs_data_path)
+        data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
+        data_store.set_initial_state(df)
+        
+        agent_state = {
+            "target_col": None,
+            "imputation_res": None,
+            "outlier_res": None,
+            "engineered_res": None,
+            "dist_res": None,
+            "corr_res": None,
+            "hypothesis_res": None,
+            "blueprint_res": None
+        }
+        
+        user_prompt = (
+            f"### PRE-COMPUTED DATASET METADATA:\n"
+            f"{json.dumps(profile_summary, indent=2)}\n\n"
+            f"### USER TASK:\n"
+            f"{user_request}\n\n"
+            "Analyze the dataset based on the request. Use tools to plot distributions, relationships, engineer features, etc. "
+            "If the request is ambiguous, use 'ask_clarifying_question'. When finished, call 'finish_analysis'."
+        )
+        conversation_history.append({"role": "user", "content": user_prompt})
+    else:
+        print("1. Resuming existing agent session...")
+        try:
+            with open(state_file, "r") as f:
+                agent_state = json.load(f)
+        except Exception:
+            agent_state = {
+                "target_col": None,
+                "imputation_res": None,
+                "outlier_res": None,
+                "engineered_res": None,
+                "dist_res": None,
+                "corr_res": None,
+                "hypothesis_res": None,
+                "blueprint_res": None
+            }
+            
+        if os.path.exists(df_file):
+            df = pd.read_csv(df_file)
+        else:
+            df = pd.read_csv(abs_data_path)
+            
+        data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
+        data_store.set_initial_state(df)
+        
+        if user_request:
+            conversation_history.append({"role": "user", "content": user_request})
+
     tools_catalog_str = json.dumps({
         tool_name: {
             "description": details["description"],
@@ -104,197 +164,197 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     }, indent=2)
 
     system_prompt = (
-        "You are a Lead AI Data Scientist and Tool Planner.\n"
-        "Your task is to generate a structured, executable JSON Tool Plan to perform EDA on the user's dataset.\n\n"
+        "You are an Autonomous AI Data Scientist.\n"
+        "Your task is to analyze datasets by executing a sequence of tools.\n\n"
         "AVAILABLE TOOLS IN REGISTRY:\n"
         f"{tools_catalog_str}\n\n"
         "CRITICAL PLAN RULES:\n"
         "1. Output ONLY a valid JSON array of tool call objects wrapped in ```json ... ```.\n"
         "2. Each object in the array MUST contain 'tool' (string tool name) and 'args' (dictionary of parameters).\n"
-        "3. Include the following EDA sequence:\n"
-        "   - 'impute_missing_data'\n"
-        "   - 'detect_and_handle_outliers'\n"
-        "   - 'plot_feature_distributions': Pass all dataset columns in 'columns' (or omit 'columns' to plot distributions for ALL columns in the dataset).\n"
-        "   - 'engineer_features': Pass custom high-signal domain transformations in 'feature_specs'.\n"
-        "   - 'run_statistical_hypothesis_tests'\n"
-        "   - 'plot_correlation_matrix'\n"
-        "   - 'plot_semantic_bivariate_relationships': Perform semantic domain reasoning to choose 2-4 key X vs Y feature pairs and pass in 'bivariate_pairs' (e.g. [{'x': 'Age', 'y': 'Fare', 'hue': 'Survived', 'rationale': '...'}, ...]).\n"
-        "   - 'plot_pairplot': Select a reasonable subset of 3-4 key numerical features in 'columns' and pass target in 'hue'.\n"
-        "   - 'plot_target_interaction'\n"
-        "   - 'generate_predictive_blueprint': Pass tailored predictive strategy parameters in args.\n"
-        "4. Do NOT output conversational preambles."
+        "3. You can use 'ask_clarifying_question' if the task is ambiguous or you need user input (e.g. asking for the target column).\n"
+        "4. You can execute multiple tools in a single plan.\n"
+        "5. After executing tools, you will receive feedback with the results. If you need to explore further, output another tool plan.\n"
+        "6. If you have completed the analysis or the user's request, you MUST call 'finish_analysis' to conclude the loop.\n"
+        "7. Do NOT output conversational preambles."
     )
     
-    user_prompt = (
-        f"### PRE-COMPUTED DATASET METADATA:\n"
-        f"{json.dumps(profile_summary, indent=2)}\n\n"
-        f"### USER TASK:\n"
-        f"{user_request}\n\n"
-        "Generate the JSON Tool Plan now."
-    )
+    # 2. Agentic Refinement Loop
+    print("\n2. Starting Agent Refinement Loop...")
+    max_loops = 5
+    loop_count = 0
+    finished = False
+    agent_plan_log = []
     
-    # 3. Query LLM for Tool Plan with Direct Error Feedback Routing
-    print("2. Querying LLM for Tool Plan (with self-correction loop)...")
-    MAX_RETRIES = 3
-    retry_count = 0
-    feedback_error = None
-    tool_plan = None
-    total_tokens_used = 0
-
-    while retry_count < MAX_RETRIES:
-        current_user_prompt = user_prompt
-        if feedback_error:
-            current_user_prompt += (
-                f"\n\n[DIRECT ERROR FEEDBACK FROM PREVIOUS ATTEMPT]:\n"
-                f"Your previous tool plan failed validation with error:\n{feedback_error}\n"
-                f"Please fix your JSON structure, adhere strictly to the schema, and output a valid JSON Tool Plan."
-            )
-            
-        try:
-            response = client.chat.completions.create(
-                model=MODEL_NAME,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": current_user_prompt}
-                ],
-                temperature=0.1
-            )
-            
-            if hasattr(response, "usage") and response.usage:
-                total_tokens_used += response.usage.total_tokens
-                print(f"[agent_loop] Tokens used: {response.usage.total_tokens} (Total: {total_tokens_used})")
-                if total_tokens_used > 100000:
-                    print("[agent_loop] Token limit (100k) exceeded! Aborting to prevent runaway cost.")
-                    return {"success": False, "error": "Token limit exceeded"}
-
-            llm_output = response.choices[0].message.content
-            raw_plan = parse_llm_json_plan(llm_output)
-            is_valid, validation_err = validate_tool_plan(raw_plan)
-            
-            if is_valid:
-                tool_plan = raw_plan
-                print(f"[agent_loop] Validated tool plan successfully on attempt {retry_count + 1}!")
-                break
-            else:
-                feedback_error = validation_err
-                print(f"[agent_loop] Tool plan validation failed (Attempt {retry_count + 1}): {validation_err}")
-        except Exception as e:
-            feedback_error = f"Failed to parse JSON tool plan: {str(e)}"
-            print(f"[agent_loop] Tool plan parsing error (Attempt {retry_count + 1}): {e}")
-            
-        retry_count += 1
-
-    if not tool_plan:
-        print("[agent_loop] Self-correction retries exhausted. Falling back to default execution plan.")
-        tool_plan = [
-            {"tool": "impute_missing_data", "args": {}},
-            {"tool": "detect_and_handle_outliers", "args": {"action": "profile"}},
-            {"tool": "plot_feature_distributions", "args": {"save_path": "feature_distributions.png"}},
-            {"tool": "engineer_features", "args": {}},
-            {"tool": "run_statistical_hypothesis_tests", "args": {}},
-            {"tool": "plot_correlation_matrix", "args": {"save_path": "correlation_matrix.png"}},
-            {"tool": "plot_semantic_bivariate_relationships", "args": {}},
-            {"tool": "plot_pairplot", "args": {}},
-            {"tool": "plot_target_interaction", "args": {"save_path": "target_interactions.png"}},
-            {"tool": "generate_predictive_blueprint", "args": {}}
-        ]
-
-    print(f"Loaded plan with {len(tool_plan)} tool steps!")
-
-    # 4. Execute tool plan against dataset with Stateful Data Version Control Memory
-    print("\n3. Executing Tool Plan with Data Version Control...")
-    df = pd.read_csv(abs_data_path)
-    
-    # Initialize DVC Stateful Execution Memory
-    data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
-    data_store.set_initial_state(df)
-    
-    target_col = None
-    imputation_res = None
-    outlier_res = None
-    engineered_res = None
-    dist_res = None
-    corr_res = None
-    hypothesis_res = None
-    blueprint_res = None
-    
-    # Tools that accept output_dir
     _vis_tools = {"plot_feature_distributions", "plot_correlation_matrix",
                   "plot_semantic_bivariate_relationships", "plot_pairplot", "plot_target_interaction"}
-
-    for idx, step in enumerate(tool_plan, start=1):
-        tool_name = step.get("tool")
-        args = step.get("args", {})
+                  
+    while loop_count < max_loops and not finished:
+        print(f"\n--- Agent Loop {loop_count + 1} ---")
         
-        if tool_name not in tools.TOOL_REGISTRY:
-            print(f"Step {idx}: Skipping unknown tool '{tool_name}'")
-            continue
-
-        # Centralized output_dir injection for all visualization tools
-        if tool_name in _vis_tools:
-            args["output_dir"] = workspace_dir
-
-        # Validate with Pydantic model to clamp arguments robustly
-        try:
-            model_class = tools.TOOL_REGISTRY[tool_name]["model"]
-            validated_args = model_class(**{k: v for k, v in args.items() if k != "output_dir"})
-            args.update(validated_args.model_dump(exclude_unset=True))
-        except Exception as e:
-            print(f"Step {idx}: Pydantic validation failed for {tool_name}, falling back to raw args. Error: {e}")
-
-        print(f"Step {idx}/{len(tool_plan)}: Executing tool '{tool_name}' with args {args}...")
+        MAX_RETRIES = 3
+        retry_count = 0
+        feedback_error = None
+        tool_plan = None
         
-        try:
-            if tool_name == "impute_missing_data":
-                df, imputation_res = tools.impute_missing_data(df, **args)
-                data_store.save_checkpoint(df, "impute_missing_data")
+        while retry_count < MAX_RETRIES:
+            messages = [{"role": "system", "content": system_prompt}] + conversation_history
+            if feedback_error:
+                messages.append({"role": "user", "content": f"[DIRECT ERROR FEEDBACK]:\nYour previous tool plan failed validation with error:\n{feedback_error}\nPlease fix your JSON structure."})
+            
+            try:
+                response = client.chat.completions.create(
+                    model=MODEL_NAME,
+                    messages=messages,
+                    temperature=0.1
+                )
+                llm_output = response.choices[0].message.content
+                raw_plan = parse_llm_json_plan(llm_output)
+                is_valid, validation_err = validate_tool_plan(raw_plan)
                 
-            elif tool_name == "detect_and_handle_outliers":
-                df, outlier_res = tools.detect_and_handle_outliers(df, **args)
-                data_store.save_checkpoint(df, "detect_and_handle_outliers")
+                if is_valid:
+                    tool_plan = raw_plan
+                    conversation_history.append({"role": "assistant", "content": llm_output})
+                    break
+                else:
+                    feedback_error = validation_err
+            except Exception as e:
+                feedback_error = f"Failed to parse JSON tool plan: {str(e)}"
+            
+            retry_count += 1
+            
+        if not tool_plan:
+            print("[agent_loop] Self-correction retries exhausted. Breaking loop.")
+            break
+            
+        print(f"Loaded plan with {len(tool_plan)} tool steps!")
+        
+        # 3. Execute tool plan
+        step_results = []
+        for idx, step in enumerate(tool_plan, start=1):
+            tool_name = step.get("tool")
+            args = step.get("args", {})
+            
+            if tool_name == "finish_analysis":
+                finished = True
+                step_results.append("Agent called finish_analysis. Terminating loop.")
+                break
                 
-            elif tool_name == "engineer_features":
-                if "target_col" not in args and target_col:
-                    args["target_col"] = target_col
-                df, engineered_res = tools.engineer_features(df, **args)
-                data_store.save_checkpoint(df, "engineer_features")
+            if tool_name == "ask_clarifying_question":
+                question = args.get("question", "I need some clarification to proceed.")
+                print(f"[agent_loop] Agent asked a question: {question}")
                 
-            elif tool_name == "run_statistical_hypothesis_tests":
-                if args.get("target_col"):
-                    target_col = args["target_col"]
-                hypothesis_res = tools.run_statistical_hypothesis_tests(df, **args)
+                # Save state and return
+                with open(state_file, "w") as f:
+                    json.dump(agent_state, f)
+                df.to_csv(df_file, index=False)
                 
-            elif tool_name == "plot_feature_distributions":
-                dist_res = tools.plot_feature_distributions(df, **args)
+                return {
+                    "success": True,
+                    "status": "question",
+                    "question": question,
+                    "conversation_history": conversation_history
+                }
+                
+            # Centralized output_dir injection for all visualization tools
+            if tool_name in _vis_tools:
+                args["output_dir"] = workspace_dir
 
-            elif tool_name == "plot_correlation_matrix":
-                corr_res = tools.plot_correlation_matrix(df, **args)
+            # Validate with Pydantic model
+            try:
+                model_class = tools.TOOL_REGISTRY[tool_name]["model"]
+                validated_args = model_class(**{k: v for k, v in args.items() if k != "output_dir"})
+                args.update(validated_args.model_dump(exclude_unset=True))
+            except Exception as e:
+                print(f"Step {idx}: Pydantic validation failed for {tool_name}. Error: {e}")
 
-            elif tool_name == "plot_semantic_bivariate_relationships":
-                tools.plot_semantic_bivariate_relationships(df, **args)
+            print(f"Executing '{tool_name}' with args {args}...")
+            
+            try:
+                if tool_name == "impute_missing_data":
+                    df, agent_state["imputation_res"] = tools.impute_missing_data(df, **args)
+                    data_store.save_checkpoint(df, "impute_missing_data")
+                    step_results.append(f"impute_missing_data successful. Summary: {agent_state['imputation_res']}")
+                    
+                elif tool_name == "detect_and_handle_outliers":
+                    df, agent_state["outlier_res"] = tools.detect_and_handle_outliers(df, **args)
+                    data_store.save_checkpoint(df, "detect_and_handle_outliers")
+                    step_results.append(f"detect_and_handle_outliers successful. Outlier stats collected.")
+                    
+                elif tool_name == "engineer_features":
+                    if "target_col" not in args and agent_state["target_col"]:
+                        args["target_col"] = agent_state["target_col"]
+                    df, engineered = tools.engineer_features(df, **args)
+                    if not agent_state["engineered_res"]:
+                        agent_state["engineered_res"] = []
+                    agent_state["engineered_res"].extend(engineered)
+                    data_store.save_checkpoint(df, "engineer_features")
+                    step_results.append(f"engineer_features successful. Generated {len(engineered)} features.")
+                    
+                elif tool_name == "run_statistical_hypothesis_tests":
+                    if args.get("target_col"):
+                        agent_state["target_col"] = args["target_col"]
+                    agent_state["hypothesis_res"] = tools.run_statistical_hypothesis_tests(df, **args)
+                    step_results.append(f"run_statistical_hypothesis_tests successful. Significant predictors: {agent_state['hypothesis_res'].get('significant_predictors', [])}")
+                    
+                elif tool_name == "plot_feature_distributions":
+                    agent_state["dist_res"] = tools.plot_feature_distributions(df, **args)
+                    step_results.append(f"plot_feature_distributions successful.")
 
-            elif tool_name == "plot_pairplot":
-                if target_col and "hue" not in args:
-                    args["hue"] = target_col
-                tools.plot_pairplot(df, **args)
-                
-            elif tool_name == "plot_target_interaction":
-                if target_col and "target_col" not in args:
-                    args["target_col"] = target_col
-                plot_res = tools.plot_target_interaction(df, **args)
-                target_col = plot_res.get("target_col") or target_col
-                
-            elif tool_name == "generate_predictive_blueprint":
-                if target_col and "target_col" not in args:
-                    args["target_col"] = target_col
-                blueprint_res = tools.generate_predictive_blueprint(df, **args)
-                
-        except Exception as e:
-            print(f"[agent_loop] Error executing step {idx} ({tool_name}): {e}")
-            print(f"[agent_loop] Triggering automatic DVC state rollback...")
-            df, _ = data_store.rollback()
+                elif tool_name == "plot_correlation_matrix":
+                    agent_state["corr_res"] = tools.plot_correlation_matrix(df, **args)
+                    step_results.append(f"plot_correlation_matrix successful.")
 
-    # 5. Generate LLM-coded generated_analysis.py script containing domain feature engineering & predictive blueprint
+                elif tool_name == "plot_semantic_bivariate_relationships":
+                    res = tools.plot_semantic_bivariate_relationships(df, **args)
+                    step_results.append(f"plot_semantic_bivariate_relationships successful. Count: {res.get('count', 0)}")
+
+                elif tool_name == "plot_pairplot":
+                    if agent_state["target_col"] and "hue" not in args:
+                        args["hue"] = agent_state["target_col"]
+                    res = tools.plot_pairplot(df, **args)
+                    step_results.append(f"plot_pairplot successful.")
+                    
+                elif tool_name == "plot_target_interaction":
+                    if agent_state["target_col"] and "target_col" not in args:
+                        args["target_col"] = agent_state["target_col"]
+                    plot_res = tools.plot_target_interaction(df, **args)
+                    agent_state["target_col"] = plot_res.get("target_col") or agent_state["target_col"]
+                    step_results.append(f"plot_target_interaction successful.")
+                    
+                elif tool_name == "generate_predictive_blueprint":
+                    if agent_state["target_col"] and "target_col" not in args:
+                        args["target_col"] = agent_state["target_col"]
+                    agent_state["blueprint_res"] = tools.generate_predictive_blueprint(df, **args)
+                    step_results.append(f"generate_predictive_blueprint successful.")
+                    
+            except Exception as e:
+                print(f"[agent_loop] Error executing step {idx} ({tool_name}): {e}")
+                df, _ = data_store.rollback()
+                step_results.append(f"Error in {tool_name}: {e}. State rolled back.")
+                
+        agent_plan_log.append({
+            "loop": loop_count + 1,
+            "llm_output": llm_output,
+            "plan": tool_plan,
+            "step_results": step_results
+        })
+
+        if not finished:
+            feedback_msg = "Tool Execution Results:\n" + "\n".join(step_results) + "\n\nAnalyze the results. If you need to run more tools, output a new tool plan. If you are completely finished, output `finish_analysis`."
+            conversation_history.append({"role": "user", "content": feedback_msg})
+            
+        loop_count += 1
+
+    # Save agent plan log
+    plan_log_path = os.path.join(workspace_dir, "agent_plan_log.json")
+    with open(plan_log_path, "w", encoding="utf-8") as f:
+        json.dump(agent_plan_log, f, indent=2)
+
+    # End of agent loop, finalize
+    with open(state_file, "w") as f:
+        json.dump(agent_state, f)
+    df.to_csv(df_file, index=False)
+
     print("\n4. Generating LLM-coded generated_analysis.py script...")
     script_content = [
         f"DATA_FILEPATH = r'{abs_data_path}'",
@@ -306,9 +366,9 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         "df = pd.read_csv(DATA_FILEPATH)",
         "",
         "# --- 1. LLM-Coded Feature Engineering ---",
-        f"# Engineered Features Specs: {json.dumps(engineered_res or [], indent=2)}"
+        f"# Engineered Features Specs: {json.dumps(agent_state['engineered_res'] or [], indent=2)}"
     ]
-    for feat in (engineered_res or []):
+    for feat in (agent_state['engineered_res'] or []):
         name = feat.get("feature_name", "feat")
         formula = feat.get("formula", "custom")
         script_content.append(f"# Feature '{name}': {formula}")
@@ -316,7 +376,7 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     script_content.extend([
         "",
         "# --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---",
-        f"predictive_blueprint = {json.dumps(blueprint_res or {}, indent=2)}",
+        f"predictive_blueprint = {json.dumps(agent_state['blueprint_res'] or {}, indent=2)}",
         "",
         "if __name__ == '__main__':",
         "    print('Generated analysis script executed successfully.')",
@@ -327,59 +387,56 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     with open(script_path, "w", encoding="utf-8") as f:
         f.write("\n".join(script_content))
 
-    # 5. Save canonical metrics.json
     print("\n5. Compiling and saving canonical metrics.json...")
     metrics_path = tools.compile_and_save_metrics(
         df=df,
         dataset_path=abs_data_path,
-        target_col=target_col,
-        imputation_res=imputation_res,
-        outlier_res=outlier_res,
-        engineered_res=engineered_res,
-        corr_res=corr_res,
-        hypothesis_res=hypothesis_res,
-        blueprint_res=blueprint_res,
+        target_col=agent_state["target_col"],
+        imputation_res=agent_state["imputation_res"],
+        outlier_res=agent_state["outlier_res"],
+        engineered_res=agent_state["engineered_res"],
+        corr_res=agent_state["corr_res"],
+        hypothesis_res=agent_state["hypothesis_res"],
+        blueprint_res=agent_state["blueprint_res"],
         output_dir=workspace_dir
     )
 
-    # 6. Clean export target directory first to prevent stale artifact persistence
     dataset_name = extract_dataset_name(workspace_dir)
     export_dir = os.path.join("EDA", dataset_name)
     if os.path.exists(export_dir):
         shutil.rmtree(export_dir)
     os.makedirs(export_dir, exist_ok=True)
 
-    # Generate Summary Report (Optional based on toggle)
+    print("\n6. Generating interactive HTML profile report (eda_report.html)...")
+    generate_html_report(workspace_dir=workspace_dir)
+
     if generate_summary:
-        print("6. Invoking summary_generator...")
+        print("7. Invoking summary_generator...")
         summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
-    else:
-        print("6. Skipping summary_generator (generate_summary toggle is OFF)...")
     
-    # 7. Copy all assets from sandbox_run to EDA/{dataset_name}/
-    print(f"7. Exporting sandbox assets to: {export_dir}...")
+    print(f"8. Exporting sandbox assets to: {export_dir}...")
     copied_files = []
     for entry in os.listdir(workspace_dir):
         src_file = os.path.join(workspace_dir, entry)
-        if os.path.isfile(src_file):
+        if os.path.isfile(src_file) and not entry.endswith(".csv"):
             dst_file = os.path.join(export_dir, entry)
-            shutil.copy2(src_file, dst_file)
+            with open(src_file, "rb") as fsrc, open(dst_file, "wb") as fdst:
+                shutil.copyfileobj(fsrc, fdst, length=64 * 1024)
             copied_files.append(entry)
             
-    # Purge intermediate DVC states to optimize sandbox storage
     data_store.purge_intermediate_states()
 
-    print(f"Successfully exported {len(copied_files)} assets to '{export_dir}'!")
-    print(f"Assets: {copied_files}")
     print("\n==================================================")
-    print("Tool-Based AutoEDA Pipeline Completed Successfully!")
+    print("Agentic AutoEDA Pipeline Completed Successfully!")
     print("==================================================")
     
     return {
         "success": True,
+        "status": "finished",
         "dataset_name": dataset_name,
         "export_dir": export_dir,
-        "copied_files": copied_files
+        "copied_files": copied_files,
+        "conversation_history": conversation_history
     }
 
 

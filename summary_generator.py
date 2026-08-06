@@ -121,11 +121,38 @@ def generate_template_summary(data: Dict[str, Any]) -> str:
     if missing_summary:
         lines.append(f"- **Missing Value Columns:** {len(missing_summary)}")
         for col, details in missing_summary.items():
-            lines.append(f"  - `{col}`: {details.get('missing_count', 0)} missing ({details.get('missing_pct', 0)}%)")
+            if isinstance(details, dict):
+                lines.append(f"  - `{col}`: {details.get('missing_count', 0)} missing ({details.get('missing_pct', 0)}%)")
+            else:
+                lines.append(f"  - `{col}`: {details}")
     else:
         lines.append("- **Data Quality:** No missing values detected in raw profile.")
 
     lines.append("\n---\n")
+    
+    # 1.5 Full Column Statistics
+    columns_profile = profile.get("columns", [])
+    if columns_profile:
+        lines.append("## 1.5 Full Column Statistics")
+        lines.append("| Column | Type | Missing % | Unique % | Mean | Median | Std | Skew | Kurtosis |")
+        lines.append("|---|---|---|---|---|---|---|---|---|")
+        for col in columns_profile:
+            c_name = col.get("column", "N/A")
+            c_type = col.get("dtype", "N/A")
+            c_miss = col.get("missing_pct", "N/A")
+            c_uniq = col.get("unique_pct", "N/A")
+            
+            def _fmt(val):
+                return round(val, 2) if isinstance(val, (int, float)) else "N/A"
+            
+            c_mean = _fmt(col.get("mean"))
+            c_med = _fmt(col.get("median"))
+            c_std = _fmt(col.get("std"))
+            c_skew = _fmt(col.get("skew"))
+            c_kurt = _fmt(col.get("kurtosis"))
+            lines.append(f"| `{c_name}` | `{c_type}` | {c_miss}% | {c_uniq}% | {c_mean} | {c_med} | {c_std} | {c_skew} | {c_kurt} |")
+
+        lines.append("\n---\n")
 
     # 2. Imputation Strategy & Preprocessing
     imputation_summary = metrics.get("imputation_summary", {})
@@ -206,6 +233,23 @@ def generate_template_summary(data: Dict[str, Any]) -> str:
         lines.append("No PNG/SVG image assets found in directory.")
 
     lines.append("\n---\n")
+
+    # Categorical Associations
+    cat_assoc = metrics.get("categorical_associations", {})
+    if cat_assoc:
+        lines.append("## Categorical Associations (Cramér's V)")
+        top_cat = cat_assoc.get("top_correlations", [])
+        if top_cat:
+            lines.append("| Feature 1 | Feature 2 | Cramér's V |")
+            lines.append("|---|---|---|")
+            for pair in top_cat:
+                f1 = pair.get("feature_1", "N/A")
+                f2 = pair.get("feature_2", "N/A")
+                v = pair.get("cramers_v", "N/A")
+                lines.append(f"| `{f1}` | `{f2}` | {v} |")
+        else:
+            lines.append("No categorical associations available.")
+        lines.append("\n---\n")
 
     # 7. Predictive Modeling Blueprint
     blueprint = metrics.get("predictive_modeling_blueprint", {})

@@ -13,7 +13,6 @@ from profiler import calculate_column_stats
 # Page Configuration
 st.set_page_config(
     page_title="AutoEDA Pro - Autonomous Data Science Agent",
-    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -233,6 +232,11 @@ st.markdown("""
 
 
 def main():
+    if "conversation_history" not in st.session_state:
+        st.session_state.conversation_history = []
+    if "agent_question" not in st.session_state:
+        st.session_state.agent_question = None
+
     # Top Branding Header
     st.markdown("""
     <div class="openrouter-header">
@@ -270,19 +274,55 @@ def main():
     )
 
     generate_summary_toggle = st.sidebar.toggle("Generate Executive Summary Report", value=True, help="Enable to generate the LLM executive summary report after pipeline completion.")
+    
+    if st.sidebar.button("Reset Session State", help="Clear conversation history and start fresh."):
+        st.session_state.conversation_history = []
+        st.session_state.agent_question = None
+        st.rerun()
 
-    run_btn = st.sidebar.button("Run AutoEDA Pipeline", type="primary", use_container_width=True)
+    run_btn = st.sidebar.button("Execute Analysis Pipeline", type="primary", use_container_width=True)
 
-    if run_btn and selected_csv_path:
+    if st.session_state.agent_question:
+        st.warning(f"**Agent Query:** {st.session_state.agent_question}")
+        user_answer = st.text_input("Your Answer (or follow-up request):")
+        if st.button("Submit Response"):
+            st.session_state.agent_question = None
+            with st.spinner("Agent resuming..."):
+                res = run_tool_based_eda(
+                    data_path=selected_csv_path,
+                    user_request=user_answer,
+                    workspace_dir="./sandbox_run",
+                    generate_summary=generate_summary_toggle,
+                    conversation_history=st.session_state.conversation_history
+                )
+                if res.get("status") == "question":
+                    st.session_state.agent_question = res.get("question")
+                    st.session_state.conversation_history = res.get("conversation_history", [])
+                    st.rerun()
+                elif res.get("success", True):
+                    st.session_state["pipeline_ran"] = True
+                    st.session_state.conversation_history = res.get("conversation_history", [])
+                    st.toast("Pipeline run completed successfully!")
+                    st.rerun()
+                else:
+                    st.error(f"Pipeline failed: {res.get('error')}")
+
+    elif run_btn and selected_csv_path:
         with st.spinner("AutoEDA Agent executing tool plan & stateful versioning..."):
             res = run_tool_based_eda(
                 data_path=selected_csv_path,
                 user_request=user_task_request,
                 workspace_dir="./sandbox_run",
-                generate_summary=generate_summary_toggle
+                generate_summary=generate_summary_toggle,
+                conversation_history=st.session_state.conversation_history
             )
-            if res.get("success", True):
+            if res.get("status") == "question":
+                st.session_state.agent_question = res.get("question")
+                st.session_state.conversation_history = res.get("conversation_history", [])
+                st.rerun()
+            elif res.get("success", True):
                 st.session_state["pipeline_ran"] = True
+                st.session_state.conversation_history = res.get("conversation_history", [])
                 st.toast("Pipeline run completed successfully!")
             else:
                 st.error(f"Pipeline failed: {res.get('error')}")
@@ -323,12 +363,36 @@ def main():
         st.write("") # spacing
 
         # Clean Concise Primary Tabs Bar
-        t_vars, t_plots, t_summary, t_metrics= st.tabs([
-            "Variable Profiling",
+        t_html, t_vars, t_plots, t_summary, t_metrics = st.tabs([
+            "Interactive Report",
+            "Variable Profiles",
             "Visual Gallery",
             "Executive Summary",
-            "Metrics & Blueprint",
+            "Metrics & Strategy Blueprint",
         ])
+
+        # -------------------------------------------------------------
+        # TAB 0: INTERACTIVE HTML PROFILE REPORT
+        # -------------------------------------------------------------
+        with t_html:
+            html_report_file = os.path.join(eda_dir, "eda_report.html") if eda_dir else ""
+            if not html_report_file or not os.path.exists(html_report_file):
+                html_report_file = os.path.join("./sandbox_run", "eda_report.html")
+            
+            if html_report_file and os.path.exists(html_report_file):
+                with open(html_report_file, "r", encoding="utf-8") as f:
+                    html_content = f.read()
+                
+                st.download_button(
+                    label="Download Single-Page HTML Report",
+                    data=html_content,
+                    file_name=f"eda_report_{current_dataset_name}.html",
+                    mime="text/html",
+                    type="primary"
+                )
+                st.components.v1.html(html_content, height=920, scrolling=True)
+            else:
+                st.info("Interactive HTML Profile Report not found. Execute the Analysis Pipeline to generate the interactive report.")
 
         # -------------------------------------------------------------
         # TAB 1: VARIABLE PROFILING

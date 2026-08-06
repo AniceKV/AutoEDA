@@ -7,7 +7,16 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# Engineered Features Specs: [
+  {
+    "feature_name": "engineered_feature",
+    "formula": "daily_streams / (spotify_streams_total + eps)",
+    "data_type": "float64",
+    "rationale": "Captures proportion of daily activity relative to overall popularity",
+    "correlation_with_target": null
+  }
+]
+# Feature 'engineered_feature': daily_streams / (spotify_streams_total + eps)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -33,7 +42,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: wrapped_global_top10_rank (Classification). Use robust cross-validation on 730 rows x 10 columns."
+  "executive_summary": "Target: wrapped_global_top10_rank (Classification). Use robust cross-validation on 730 rows x 11 columns."
 }
 
 if __name__ == '__main__':

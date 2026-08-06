@@ -17,6 +17,7 @@ def calculate_column_stats(df: pd.DataFrame) -> list:
         missing_count = int(df[col].isnull().sum())
         missing_pct = (missing_count / num_rows) * 100 if num_rows > 0 else 0.0
         cardinality = df[col].nunique()
+        unique_pct = (cardinality / num_rows) * 100 if num_rows > 0 else 0.0
         
         properties = []
         # Exclude boolean types as pandas considers bool numeric, but numpy quantile fails on boolean subtract
@@ -33,6 +34,7 @@ def calculate_column_stats(df: pd.DataFrame) -> list:
                 col_q3 = df[col].quantile(0.75)
                 col_iqr = col_q3 - col_q1 if pd.notnull(col_q3) and pd.notnull(col_q1) else None
                 col_skew = df[col].skew()
+                col_kurt = df[col].kurtosis()
                 
                 # Format outputs gracefully checking for null values
                 min_str = f"{col_min:.2f}" if pd.notnull(col_min) and isinstance(col_min, (int, float, np.number)) else str(col_min)
@@ -49,7 +51,7 @@ def calculate_column_stats(df: pd.DataFrame) -> list:
                 is_num = False
 
         if not is_num:
-            col_min = col_max = col_mean = col_std = col_median = col_q1 = col_q3 = col_iqr = col_skew = None
+            col_min = col_max = col_mean = col_std = col_median = col_q1 = col_q3 = col_iqr = col_skew = col_kurt = None
             # Categorical/Object/Boolean column metrics
             top_values = df[col].value_counts().head(3).to_dict()
             val_strs = [f"'{k}': {v}" for k, v in top_values.items()]
@@ -73,7 +75,9 @@ def calculate_column_stats(df: pd.DataFrame) -> list:
             "q1": float(col_q1) if pd.notnull(col_q1) else None,
             "q3": float(col_q3) if pd.notnull(col_q3) else None,
             "iqr": float(col_iqr) if pd.notnull(col_iqr) else None,
-            "skew": float(col_skew) if pd.notnull(col_skew) else None
+            "skew": float(col_skew) if pd.notnull(col_skew) else None,
+            "kurtosis": float(col_kurt) if pd.notnull(col_kurt) else None,
+            "unique_pct": round(unique_pct, 2)
         })
         
     return stats_list
@@ -141,7 +145,18 @@ def run_and_save_profile(data_path: str, output_dir: str) -> dict:
                 "dtype": col["dtype"],
                 "missing_count": col["missing_count"],
                 "missing_pct": col["missing_pct"],
-                "cardinality": col["cardinality"]
+                "cardinality": col["cardinality"],
+                "unique_pct": col["unique_pct"],
+                "mean": col["mean"],
+                "median": col["median"],
+                "std": col["std"],
+                "min": col["min"],
+                "max": col["max"],
+                "q1": col["q1"],
+                "q3": col["q3"],
+                "iqr": col["iqr"],
+                "skew": col["skew"],
+                "kurtosis": col["kurtosis"]
             }
             for col in stats_list
         ]

@@ -496,6 +496,27 @@ def run_statistical_hypothesis_tests(
 # =====================================================================
 # 5. VISUALIZATION: CORRELATION MATRIX TOOL
 # =====================================================================
+def _cramers_v(x, y):
+    confusion_matrix = pd.crosstab(x, y)
+    if confusion_matrix.empty:
+        return 0.0
+    chi2 = stats.chi2_contingency(confusion_matrix, correction=False)[0]
+    n = confusion_matrix.sum().sum()
+    if n == 0:
+        return 0.0
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    
+    phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1))
+    rcorr = r - ((r-1)**2)/(n-1)
+    kcorr = k - ((k-1)**2)/(n-1)
+    
+    if min((kcorr-1), (rcorr-1)) == 0:
+        return 0.0
+    
+    return np.sqrt(phi2corr / min((kcorr-1), (rcorr-1)))
+
+
 def plot_correlation_matrix(
     df: pd.DataFrame,
     numeric_cols: Optional[List[str]] = None,
@@ -539,10 +560,55 @@ def plot_correlation_matrix(
                 
     pairs_sorted = sorted(pairs, key=lambda x: abs(x["correlation"]), reverse=True)
     
+    cat_cols = [c for c in df.columns if not _is_numeric_col(df[c]) and df[c].nunique() > 1 and df[c].nunique() <= 50]
+    categorical_associations = {}
+    
+    if len(cat_cols) >= 2:
+        cat_corr_matrix = pd.DataFrame(index=cat_cols, columns=cat_cols)
+        for i in range(len(cat_cols)):
+            for j in range(len(cat_cols)):
+                if i == j:
+                    cat_corr_matrix.loc[cat_cols[i], cat_cols[j]] = 1.0
+                elif i < j:
+                    v = _cramers_v(df[cat_cols[i]].dropna(), df[cat_cols[j]].dropna())
+                    cat_corr_matrix.loc[cat_cols[i], cat_cols[j]] = v
+                    cat_corr_matrix.loc[cat_cols[j], cat_cols[i]] = v
+                    
+        cat_corr_matrix = cat_corr_matrix.astype(float)
+        
+        cat_save_path = os.path.join(output_dir, "categorical_association_matrix.png")
+        try:
+            fig, ax = plt.subplots(figsize=(max(8, len(cat_cols) * 0.8), max(6, len(cat_cols) * 0.7)))
+            sns.heatmap(cat_corr_matrix, annot=True, fmt=".2f", cmap="Blues", vmin=0, vmax=1, square=True, linewidths=0.5, ax=ax)
+            ax.set_title("Categorical Association Matrix (Cramér's V)", fontsize=14, pad=12)
+            plt.tight_layout()
+            plt.savefig(cat_save_path, dpi=150, bbox_inches="tight")
+            plt.close(fig)
+        except Exception as e:
+            print(f"[tools] Warning: Categorical Heatmap rendering error: {e}")
+            plt.close()
+            
+        cat_pairs = []
+        for i in range(len(cat_cols)):
+            for j in range(i + 1, len(cat_cols)):
+                c1, c2 = cat_cols[i], cat_cols[j]
+                val = cat_corr_matrix.loc[c1, c2]
+                if pd.notnull(val):
+                    cat_pairs.append({"feature_1": c1, "feature_2": c2, "cramers_v": round(float(val), 4)})
+                    
+        cat_pairs_sorted = sorted(cat_pairs, key=lambda x: x["cramers_v"], reverse=True)
+        
+        categorical_associations = {
+            "heatmap_saved": cat_save_path,
+            "top_correlations": cat_pairs_sorted[:10],
+            "association_matrix_text": cat_corr_matrix.round(3).to_dict()
+        }
+    
     return {
         "heatmap_saved": full_save_path,
         "top_correlations": pairs_sorted[:10],
-        "correlation_matrix_text": corr_matrix.round(3).to_dict()
+        "correlation_matrix_text": corr_matrix.round(3).to_dict(),
+        "categorical_associations": categorical_associations
     }
 
 
@@ -972,6 +1038,7 @@ def compile_and_save_metrics(
         "outlier_analysis": outlier_res or {},
         "engineered_features": engineered_res or [],
         "correlation_analysis": corr_res or {},
+        "categorical_associations": (corr_res or {}).get("categorical_associations", {}),
         "statistical_hypothesis_tests": hypothesis_res or {},
         "predictive_modeling_blueprint": blueprint_res or generate_predictive_blueprint(df, target_col),
         "extracted_insights": {
@@ -1033,6 +1100,18 @@ class PlotPairplotArgs(BaseModel):
 class GeneratePredictiveBlueprintArgs(BaseModel):
     target_col: str = Field(description="Target column name")
 
+class AskClarifyingQuestionArgs(BaseModel):
+    question: str = Field(description="The question to ask the user to clarify ambiguity.")
+
+class FinishAnalysisArgs(BaseModel):
+    pass
+
+def ask_clarifying_question(df: pd.DataFrame, question: str, **kwargs) -> Dict[str, Any]:
+    return {"question": question, "status": "paused_for_user_input"}
+
+def finish_analysis(df: pd.DataFrame, **kwargs) -> Dict[str, Any]:
+    return {"status": "finished"}
+
 TOOL_REGISTRY = {
     "impute_missing_data": {
         "function": impute_missing_data,
@@ -1083,5 +1162,15 @@ TOOL_REGISTRY = {
         "function": generate_predictive_blueprint,
         "description": "Compiles machine learning modeling blueprint and cross-validation strategy.",
         "model": GeneratePredictiveBlueprintArgs
+    },
+    "ask_clarifying_question": {
+        "function": ask_clarifying_question,
+        "description": "Ask the user a clarifying question when requirements or target columns are ambiguous.",
+        "model": AskClarifyingQuestionArgs
+    },
+    "finish_analysis": {
+        "function": finish_analysis,
+        "description": "Call this tool when you have finished all necessary exploratory data analysis and don't need to run any more tools.",
+        "model": FinishAnalysisArgs
     }
 }

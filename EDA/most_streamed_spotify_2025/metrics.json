@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\most_streamed_spotify_2025.csv",
     "shape": {
       "rows": 730,
-      "columns": 10
+      "columns": 11
     },
     "target_column": "wrapped_global_top10_rank",
     "column_summary": {
@@ -55,7 +55,12 @@
       "wrapped_global_top10_rank": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 3
+        "cardinality": 4
+      },
+      "engineered_feature": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 730
       }
     }
   },
@@ -134,9 +139,9 @@
         "dtype": "float64",
         "missing_before": 727,
         "missing_after": 0,
-        "method": "median",
+        "method": "mean",
         "skewness": 0.94,
-        "fill_value": 5.0
+        "fill_value": 5.333333333333333
       }
     }
   },
@@ -192,20 +197,33 @@
       "action_taken": "profile"
     },
     "wrapped_global_top10_rank": {
-      "q1": 5.0,
-      "q3": 5.0,
+      "q1": 5.3333,
+      "q3": 5.3333,
       "iqr": 0.0,
-      "lower_bound": 5.0,
-      "upper_bound": 5.0,
-      "outlier_count": 2,
-      "outlier_percentage": 0.27,
+      "lower_bound": 5.3333,
+      "upper_bound": 5.3333,
+      "outlier_count": 3,
+      "outlier_percentage": 0.41,
       "action_taken": "profile"
     }
   },
-  "engineered_features": [],
+  "engineered_features": [
+    {
+      "feature_name": "engineered_feature",
+      "formula": "daily_streams / (spotify_streams_total + eps)",
+      "data_type": "float64",
+      "rationale": "Captures proportion of daily activity relative to overall popularity",
+      "correlation_with_target": null
+    }
+  ],
   "correlation_analysis": {
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
+      {
+        "feature_1": "daily_stream_share_pct",
+        "feature_2": "engineered_feature",
+        "correlation": 1.0
+      },
       {
         "feature_1": "spotify_streams_total",
         "feature_2": "daily_streams",
@@ -219,6 +237,11 @@
       {
         "feature_1": "daily_streams_rank",
         "feature_2": "daily_stream_share_pct",
+        "correlation": -0.7254
+      },
+      {
+        "feature_1": "daily_streams_rank",
+        "feature_2": "engineered_feature",
         "correlation": -0.7254
       },
       {
@@ -237,24 +260,14 @@
         "correlation": 0.6221
       },
       {
+        "feature_1": "daily_streams",
+        "feature_2": "engineered_feature",
+        "correlation": 0.6221
+      },
+      {
         "feature_1": "rank",
         "feature_2": "daily_streams",
         "correlation": -0.5854
-      },
-      {
-        "feature_1": "spotify_streams_total",
-        "feature_2": "daily_streams_rank",
-        "correlation": -0.5632
-      },
-      {
-        "feature_1": "rank",
-        "feature_2": "daily_stream_share_pct",
-        "correlation": -0.2206
-      },
-      {
-        "feature_1": "spotify_streams_total",
-        "feature_2": "daily_stream_share_pct",
-        "correlation": 0.1212
       }
     ],
     "correlation_matrix_text": {
@@ -265,7 +278,8 @@
         "daily_streams": -0.585,
         "daily_streams_rank": 0.708,
         "daily_stream_share_pct": -0.221,
-        "wrapped_global_top10_rank": -0.028
+        "wrapped_global_top10_rank": 0.0,
+        "engineered_feature": -0.221
       },
       "billed_artist_count": {
         "rank": 0.093,
@@ -274,7 +288,8 @@
         "daily_streams": -0.074,
         "daily_streams_rank": 0.081,
         "daily_stream_share_pct": -0.062,
-        "wrapped_global_top10_rank": -0.003
+        "wrapped_global_top10_rank": 0.0,
+        "engineered_feature": -0.062
       },
       "spotify_streams_total": {
         "rank": -0.68,
@@ -283,7 +298,8 @@
         "daily_streams": 0.78,
         "daily_streams_rank": -0.563,
         "daily_stream_share_pct": 0.121,
-        "wrapped_global_top10_rank": 0.107
+        "wrapped_global_top10_rank": -0.025,
+        "engineered_feature": 0.121
       },
       "daily_streams": {
         "rank": -0.585,
@@ -292,7 +308,8 @@
         "daily_streams": 1.0,
         "daily_streams_rank": -0.734,
         "daily_stream_share_pct": 0.622,
-        "wrapped_global_top10_rank": 0.067
+        "wrapped_global_top10_rank": -0.011,
+        "engineered_feature": 0.622
       },
       "daily_streams_rank": {
         "rank": 0.708,
@@ -301,7 +318,8 @@
         "daily_streams": -0.734,
         "daily_streams_rank": 1.0,
         "daily_stream_share_pct": -0.725,
-        "wrapped_global_top10_rank": -0.027
+        "wrapped_global_top10_rank": 0.001,
+        "engineered_feature": -0.725
       },
       "daily_stream_share_pct": {
         "rank": -0.221,
@@ -310,26 +328,38 @@
         "daily_streams": 0.622,
         "daily_streams_rank": -0.725,
         "daily_stream_share_pct": 1.0,
-        "wrapped_global_top10_rank": -0.001
+        "wrapped_global_top10_rank": 0.001,
+        "engineered_feature": 1.0
       },
       "wrapped_global_top10_rank": {
-        "rank": -0.028,
-        "billed_artist_count": -0.003,
-        "spotify_streams_total": 0.107,
-        "daily_streams": 0.067,
-        "daily_streams_rank": -0.027,
-        "daily_stream_share_pct": -0.001,
-        "wrapped_global_top10_rank": 1.0
+        "rank": 0.0,
+        "billed_artist_count": 0.0,
+        "spotify_streams_total": -0.025,
+        "daily_streams": -0.011,
+        "daily_streams_rank": 0.001,
+        "daily_stream_share_pct": 0.001,
+        "wrapped_global_top10_rank": 1.0,
+        "engineered_feature": 0.001
+      },
+      "engineered_feature": {
+        "rank": -0.221,
+        "billed_artist_count": -0.062,
+        "spotify_streams_total": 0.121,
+        "daily_streams": 0.622,
+        "daily_streams_rank": -0.725,
+        "daily_stream_share_pct": 1.0,
+        "wrapped_global_top10_rank": 0.001,
+        "engineered_feature": 1.0
       }
     }
   },
   "statistical_hypothesis_tests": {
     "rank": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0283,
-      "p_value": 0.4448705824287889,
+      "statistic": 0.0002,
+      "p_value": 0.9947509816627866,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0283, p = 4.4487e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0002, p = 9.9475e-01. (Not Significant)"
     },
     "track": {
       "test_name": "One-Way ANOVA",
@@ -340,56 +370,61 @@
     },
     "artist": {
       "test_name": "One-Way ANOVA",
-      "statistic": 0.771,
-      "p_value": 0.9622720971222236,
+      "statistic": 0.7544,
+      "p_value": 0.9728609115880247,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.7710, p = 9.6227e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.7544, p = 9.7286e-01. (Not Significant)"
     },
     "billed_artist_count": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.003,
-      "p_value": 0.9358117408020807,
+      "statistic": -0.0,
+      "p_value": 1.0000000000000004,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0030, p = 9.3581e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0000, p = 1.0000e+00. (Not Significant)"
     },
     "is_collaboration": {
       "test_name": "Two-Sample Welch T-Test",
-      "statistic": 0.447,
-      "p_value": 0.6550407088304635,
+      "statistic": 0.0,
+      "p_value": 0.999999999999305,
       "is_statistically_significant": false,
-      "interpretation": "T-statistic = 0.4470, p = 6.5504e-01. (Not Significant)"
+      "interpretation": "T-statistic = 0.0000, p = 1.0000e+00. (Not Significant)"
     },
     "spotify_streams_total": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.1068,
-      "p_value": 0.003871665467323257,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1068, p = 3.8717e-03. (Statistically Significant)"
+      "statistic": -0.025,
+      "p_value": 0.5002855295732426,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0250, p = 5.0029e-01. (Not Significant)"
     },
     "daily_streams": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0668,
-      "p_value": 0.07111754700416381,
+      "statistic": -0.0113,
+      "p_value": 0.7607030934570516,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0668, p = 7.1118e-02. (Not Significant)"
+      "interpretation": "Pearson r = -0.0113, p = 7.6070e-01. (Not Significant)"
     },
     "daily_streams_rank": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0274,
-      "p_value": 0.46017814780369276,
+      "statistic": 0.0006,
+      "p_value": 0.986586376066133,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0274, p = 4.6018e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0006, p = 9.8659e-01. (Not Significant)"
     },
     "daily_stream_share_pct": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0009,
-      "p_value": 0.9815690651287223,
+      "statistic": 0.0006,
+      "p_value": 0.9861563965917305,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0009, p = 9.8157e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0006, p = 9.8616e-01. (Not Significant)"
     },
-    "significant_predictors": [
-      "spotify_streams_total"
-    ]
+    "engineered_feature": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0007,
+      "p_value": 0.9856670914463773,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0007, p = 9.8567e-01. (Not Significant)"
+    },
+    "significant_predictors": []
   },
   "predictive_modeling_blueprint": {
     "target_definition": "wrapped_global_top10_rank",
@@ -414,15 +449,13 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: wrapped_global_top10_rank (Classification). Use robust cross-validation on 730 rows x 10 columns."
+    "executive_summary": "Target: wrapped_global_top10_rank (Classification). Use robust cross-validation on 730 rows x 11 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 730 rows and 10 columns.",
+      "Dataset contains 730 rows and 11 columns.",
       "Processed missing values and computed statistical distributions."
     ],
-    "statistically_significant_predictors": [
-      "spotify_streams_total"
-    ]
+    "statistically_significant_predictors": []
   }
 }

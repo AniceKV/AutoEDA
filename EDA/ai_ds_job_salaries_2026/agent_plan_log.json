@@ -1,0 +1,170 @@
+[
+  {
+    "loop": 1,
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {}\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"remote_ratio\",\n        \"years_experience\",\n        \"team_size\",\n        \"certifications_count\",\n        \"weekly_hours\",\n        \"ai_tools_hours_per_week\",\n        \"salary_usd\",\n        \"equity_offered_pct\",\n        \"bonus_pct\",\n        \"job_satisfaction_score\",\n        \"interviews_to_offer\",\n        \"upskilling_hours_per_month\",\n        \"fears_ai_automation_score\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"salary_usd\"\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {}\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"years_experience\",\n        \"remote_ratio\",\n        \"team_size\",\n        \"certifications_count\",\n        \"weekly_hours\",\n        \"ai_tools_hours_per_week\",\n        \"equity_offered_pct\",\n        \"bonus_pct\",\n        \"job_satisfaction_score\",\n        \"interviews_to_offer\",\n        \"upskilling_hours_per_month\",\n        \"fears_ai_automation_score\",\n        \"salary_usd\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"salary_usd\",\n      \"feature_col\": \"years_experience\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"years_experience\",\n          \"y\": \"salary_usd\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"education_level\",\n          \"y\": \"salary_usd\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"company_size\",\n          \"y\": \"salary_usd\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"remote_ratio\",\n          \"y\": \"salary_usd\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"uses_ai_tools_daily\",\n          \"y\": \"salary_usd\",\n          \"hue\": null\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"years_experience\",\n        \"remote_ratio\",\n        \"weekly_hours\",\n        \"salary_usd\"\n      ],\n      \"hue\": null\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"type\": \"log1p\",\n          \"source\": \"salary_usd\",\n          \"new_name\": \"log_salary_usd\"\n        },\n        {\n          \"type\": \"ratio\",\n          \"numerator\": \"salary_usd\",\n          \"denominator\": \"years_experience\",\n          \"new_name\": \"salary_per_year\"\n        },\n        {\n          \"type\": \"interaction\",\n          \"features\": [\n            \"remote_ratio\",\n            \"uses_ai_tools_daily\"\n          ],\n          \"new_name\": \"remote_ai_interaction\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"salary_usd\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "plan": [
+      {
+        "tool": "impute_missing_data",
+        "args": {}
+      },
+      {
+        "tool": "detect_and_handle_outliers",
+        "args": {
+          "columns": [
+            "remote_ratio",
+            "years_experience",
+            "team_size",
+            "certifications_count",
+            "weekly_hours",
+            "ai_tools_hours_per_week",
+            "salary_usd",
+            "equity_offered_pct",
+            "bonus_pct",
+            "job_satisfaction_score",
+            "interviews_to_offer",
+            "upskilling_hours_per_month",
+            "fears_ai_automation_score"
+          ],
+          "action": "profile"
+        }
+      },
+      {
+        "tool": "run_statistical_hypothesis_tests",
+        "args": {
+          "target_col": "salary_usd"
+        }
+      },
+      {
+        "tool": "plot_correlation_matrix",
+        "args": {
+          "output_dir": "./sandbox_run"
+        }
+      },
+      {
+        "tool": "plot_feature_distributions",
+        "args": {
+          "columns": [
+            "years_experience",
+            "remote_ratio",
+            "team_size",
+            "certifications_count",
+            "weekly_hours",
+            "ai_tools_hours_per_week",
+            "equity_offered_pct",
+            "bonus_pct",
+            "job_satisfaction_score",
+            "interviews_to_offer",
+            "upskilling_hours_per_month",
+            "fears_ai_automation_score",
+            "salary_usd"
+          ],
+          "output_dir": "./sandbox_run"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "salary_usd",
+          "feature_col": "years_experience",
+          "output_dir": "./sandbox_run"
+        }
+      },
+      {
+        "tool": "plot_semantic_bivariate_relationships",
+        "args": {
+          "bivariate_pairs": [
+            {
+              "x": "years_experience",
+              "y": "salary_usd",
+              "hue": null
+            },
+            {
+              "x": "education_level",
+              "y": "salary_usd",
+              "hue": null
+            },
+            {
+              "x": "company_size",
+              "y": "salary_usd",
+              "hue": null
+            },
+            {
+              "x": "remote_ratio",
+              "y": "salary_usd",
+              "hue": null
+            },
+            {
+              "x": "uses_ai_tools_daily",
+              "y": "salary_usd",
+              "hue": null
+            }
+          ],
+          "output_dir": "./sandbox_run"
+        }
+      },
+      {
+        "tool": "plot_pairplot",
+        "args": {
+          "columns": [
+            "years_experience",
+            "remote_ratio",
+            "weekly_hours",
+            "salary_usd"
+          ],
+          "hue": null,
+          "output_dir": "./sandbox_run"
+        }
+      },
+      {
+        "tool": "engineer_features",
+        "args": {
+          "feature_specs": [
+            {
+              "type": "log1p",
+              "source": "salary_usd",
+              "new_name": "log_salary_usd"
+            },
+            {
+              "type": "ratio",
+              "numerator": "salary_usd",
+              "denominator": "years_experience",
+              "new_name": "salary_per_year"
+            },
+            {
+              "type": "interaction",
+              "features": [
+                "remote_ratio",
+                "uses_ai_tools_daily"
+              ],
+              "new_name": "remote_ai_interaction"
+            }
+          ],
+          "target_col": "salary_usd"
+        }
+      },
+      {
+        "tool": "generate_predictive_blueprint",
+        "args": {
+          "target_col": "salary_usd"
+        }
+      },
+      {
+        "tool": "finish_analysis",
+        "args": {}
+      }
+    ],
+    "step_results": [
+      "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'job_title': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'experience_level': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'employment_type': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'company_size': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'company_location': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'employee_residence': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'industry': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'remote_ratio': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'years_experience': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'education_level': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'primary_language': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'has_ml_in_title': {'dtype': 'bool', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'manages_people': {'dtype': 'bool', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'team_size': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'certifications_count': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'weekly_hours': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'uses_ai_tools_daily': {'dtype': 'bool', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'ai_tools_hours_per_week': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'salary_currency': {'dtype': 'object', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'salary_usd': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'equity_offered_pct': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'bonus_pct': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'job_satisfaction_score': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'interviews_to_offer': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'switched_jobs_last_year': {'dtype': 'bool', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'upskilling_hours_per_month': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'fears_ai_automation_score': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
+      "detect_and_handle_outliers successful. Outlier stats collected.",
+      "run_statistical_hypothesis_tests successful. Significant predictors: ['job_title', 'experience_level', 'employment_type', 'company_size', 'company_location', 'employee_residence', 'industry', 'remote_ratio', 'years_experience', 'education_level', 'has_ml_in_title', 'manages_people', 'certifications_count', 'weekly_hours', 'uses_ai_tools_daily', 'ai_tools_hours_per_week', 'salary_currency', 'equity_offered_pct', 'bonus_pct', 'job_satisfaction_score', 'interviews_to_offer', 'switched_jobs_last_year', 'upskilling_hours_per_month', 'fears_ai_automation_score']",
+      "plot_correlation_matrix successful.",
+      "plot_feature_distributions successful.",
+      "plot_target_interaction successful.",
+      "plot_semantic_bivariate_relationships successful. Count: 5",
+      "plot_pairplot successful.",
+      "engineer_features successful. Generated 1 features.",
+      "generate_predictive_blueprint successful.",
+      "Agent called finish_analysis. Terminating loop."
+    ]
+  }
+]

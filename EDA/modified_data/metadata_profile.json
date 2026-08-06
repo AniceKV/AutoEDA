@@ -1,0 +1,228 @@
+{
+    "dataset_name": "modified_data.csv",
+    "dimensions": {
+        "rows": 4600,
+        "columns": 18
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "date": {
+            "type": "object",
+            "cardinality": 70,
+            "key_metric": "Top Values: '2014-06-23': 142, '2014-06-25': 131, '2014-06-26': 131"
+        },
+        "price": {
+            "type": "float64",
+            "cardinality": 1741,
+            "key_metric": "Range: [0.00 to 26590000.00] | Mean: 551962.99 | Median: 460943.46 | Highly Skewed (24.79)"
+        },
+        "bedrooms": {
+            "type": "float64",
+            "cardinality": 10,
+            "key_metric": "Range: [0.00 to 9.00] | Mean: 3.40 | Median: 3.00"
+        },
+        "bathrooms": {
+            "type": "float64",
+            "cardinality": 26,
+            "key_metric": "Range: [0.00 to 8.00] | Mean: 2.16 | Median: 2.25"
+        },
+        "sqft_living": {
+            "type": "int64",
+            "cardinality": 566,
+            "key_metric": "Range: [370.00 to 13540.00] | Mean: 2139.35 | Median: 1980.00 | Highly Skewed (1.72)"
+        },
+        "sqft_lot": {
+            "type": "int64",
+            "cardinality": 3113,
+            "key_metric": "Range: [638.00 to 1074218.00] | Mean: 14852.52 | Median: 7683.00 | Highly Skewed (11.31)"
+        },
+        "floors": {
+            "type": "float64",
+            "cardinality": 6,
+            "key_metric": "Range: [1.00 to 3.50] | Mean: 1.51 | Median: 1.50"
+        },
+        "waterfront": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.01 | Median: 0.00 | Highly Skewed (11.68)"
+        },
+        "view": {
+            "type": "int64",
+            "cardinality": 5,
+            "key_metric": "Range: [0.00 to 4.00] | Mean: 0.24 | Median: 0.00 | Highly Skewed (3.34)"
+        },
+        "condition": {
+            "type": "int64",
+            "cardinality": 5,
+            "key_metric": "Range: [1.00 to 5.00] | Mean: 3.45 | Median: 3.00"
+        },
+        "sqft_above": {
+            "type": "int64",
+            "cardinality": 511,
+            "key_metric": "Range: [370.00 to 9410.00] | Mean: 1827.27 | Median: 1590.00 | Highly Skewed (1.49)"
+        },
+        "sqft_basement": {
+            "type": "int64",
+            "cardinality": 207,
+            "key_metric": "Range: [0.00 to 4820.00] | Mean: 312.08 | Median: 0.00 | Highly Skewed (1.64)"
+        },
+        "yr_built": {
+            "type": "int64",
+            "cardinality": 115,
+            "key_metric": "Range: [1900.00 to 2014.00] | Mean: 1970.79 | Median: 1976.00"
+        },
+        "yr_renovated": {
+            "type": "int64",
+            "cardinality": 60,
+            "key_metric": "Range: [0.00 to 2014.00] | Mean: 808.61 | Median: 0.00"
+        },
+        "street": {
+            "type": "object",
+            "cardinality": 4525,
+            "key_metric": "Top Values: '2520 Mulberry Walk NE': 4, '2500 Mulberry Walk NE': 3, '11716 16th Ave NE': 2"
+        },
+        "city": {
+            "type": "object",
+            "cardinality": 44,
+            "key_metric": "Top Values: 'Seattle': 1573, 'Renton': 293, 'Bellevue': 286"
+        },
+        "statezip": {
+            "type": "object",
+            "cardinality": 77,
+            "key_metric": "Top Values: 'WA 98103': 148, 'WA 98052': 135, 'WA 98117': 132"
+        },
+        "price_per_sqft": {
+            "type": "float64",
+            "cardinality": 4005,
+            "key_metric": "Range: [0.00 to 22533.90] | Mean: 265.88 | Median: 243.86 | Highly Skewed (53.47)"
+        }
+    },
+    "columns": [
+        {
+            "column": "date",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 70
+        },
+        {
+            "column": "price",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1741
+        },
+        {
+            "column": "bedrooms",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 10
+        },
+        {
+            "column": "bathrooms",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 26
+        },
+        {
+            "column": "sqft_living",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 566
+        },
+        {
+            "column": "sqft_lot",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 3113
+        },
+        {
+            "column": "floors",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 6
+        },
+        {
+            "column": "waterfront",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2
+        },
+        {
+            "column": "view",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5
+        },
+        {
+            "column": "condition",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5
+        },
+        {
+            "column": "sqft_above",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 511
+        },
+        {
+            "column": "sqft_basement",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 207
+        },
+        {
+            "column": "yr_built",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 115
+        },
+        {
+            "column": "yr_renovated",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 60
+        },
+        {
+            "column": "street",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 4525
+        },
+        {
+            "column": "city",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 44
+        },
+        {
+            "column": "statezip",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 77
+        },
+        {
+            "column": "price_per_sqft",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 4005
+        }
+    ]
+}
