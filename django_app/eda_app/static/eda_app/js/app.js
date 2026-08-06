@@ -505,6 +505,16 @@ function initThemeToggle() {
       document.documentElement.removeAttribute('data-theme');
       if (checkbox) checkbox.checked = false;
     }
+
+    // Live sync to embedded report iframe
+    const reportIframe = document.getElementById('report-iframe');
+    if (reportIframe && reportIframe.contentWindow) {
+      try {
+        if (reportIframe.contentWindow.toggleReportTheme) {
+          reportIframe.contentWindow.toggleReportTheme(theme === 'light');
+        }
+      } catch (e) {}
+    }
   }
 
   const savedTheme = localStorage.getItem('autoeda-theme') || 'dark';

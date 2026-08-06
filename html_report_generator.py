@@ -21,24 +21,53 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            const t = localStorage.getItem('autoeda-theme');
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
     <style>
         :root {
             --bg-dark: #09090b;
-            --bg-card: #141417;
+            --bg-card: #121215;
             --bg-card-hover: #1c1c20;
             --border-color: #27272a;
-            --border-highlight: #52525b;
+            --border-highlight: #ffffff;
             --primary: #ffffff;
             --primary-glow: rgba(255, 255, 255, 0.15);
-            --accent-purple: #e4e4e7;
-            --accent-pink: #d4d4d8;
-            --accent-cyan: #fafafa;
-            --accent-green: #ffffff;
-            --accent-warning: #e4e4e7;
-            --accent-danger: #fafafa;
             --text-main: #fafafa;
             --text-muted: #a1a1aa;
             --text-dim: #71717a;
+            --logo-bg: linear-gradient(135deg, #ffffff 0%, #e4e4e7 100%);
+            --logo-text: #09090b;
+            --btn-active-bg: linear-gradient(135deg, #ffffff 0%, #e4e4e7 100%);
+            --btn-active-text: #09090b;
+            --toggle-track-off: #27272a;
+            --toggle-track-on: linear-gradient(135deg, #ffffff 0%, #e4e4e7 100%);
+            --toggle-knob-off: #71717a;
+            --toggle-knob-on: #09090b;
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #fafafa;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f4f4f5;
+            --border-color: #e4e4e7;
+            --border-highlight: #18181b;
+            --primary: #09090b;
+            --primary-glow: rgba(0, 0, 0, 0.12);
+            --text-main: #09090b;
+            --text-muted: #52525b;
+            --text-dim: #71717a;
+            --logo-bg: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+            --logo-text: #ffffff;
+            --btn-active-bg: linear-gradient(135deg, #27272a 0%, #09090b 100%);
+            --btn-active-text: #ffffff;
+            --toggle-track-off: #e4e4e7;
+            --toggle-track-on: linear-gradient(135deg, #27272a 0%, #09090b 100%);
+            --toggle-knob-off: #ffffff;
+            --toggle-knob-on: #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,15 +78,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             color: var(--text-main);
             line-height: 1.5;
             padding-bottom: 40px;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 40%);
-            background-attachment: fixed;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         /* Header Banner */
         .header-container {
-            background: rgba(18, 18, 21, 0.92);
+            background: var(--bg-card);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -67,6 +93,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.2s ease, border-color 0.2s ease;
         }
         
         .header-title-group {
@@ -79,20 +106,18 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 0.9rem;
             font-weight: 800;
             letter-spacing: 0.08em;
-            background: linear-gradient(135deg, #ffffff, #e4e4e7);
-            color: #09090b;
+            background: var(--logo-bg);
+            color: var(--logo-text);
             padding: 6px 12px;
             border-radius: 8px;
-            box-shadow: 0 0 15px var(--primary-glow);
+            box-shadow: 0 2px 8px var(--primary-glow);
         }
 
         .header-text h1 {
             font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
         }
 
         .header-text p {
@@ -101,14 +126,55 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         .header-badge {
-            background: #1c1c20;
-            border: 1px solid #3f3f46;
-            color: #fafafa;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 0.05em;
+        }
+
+        /* Toggle Switch Component */
+        .toggle-switch {
+            position: relative;
+            width: 36px; height: 20px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--toggle-track-off);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.18s ease;
+        }
+
+        .toggle-switch input:checked + .toggle-track {
+            background: var(--toggle-track-on);
+            border-color: var(--border-highlight);
+        }
+
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--toggle-knob-off);
+            top: 2px; left: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+
+        .toggle-switch input:checked + .toggle-track::after {
+            transform: translateX(16px);
+            background: var(--toggle-knob-on);
         }
 
         .main-wrapper {
@@ -121,7 +187,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .nav-tabs {
             display: flex;
             gap: 8px;
-            background: rgba(15, 23, 42, 0.8);
+            background: var(--bg-card);
             padding: 6px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
@@ -148,13 +214,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         .tab-btn:hover {
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-card-hover);
         }
 
         .tab-btn.active {
-            background: var(--primary);
-            color: #ffffff;
-            box-shadow: 0 4px 12px var(--primary-glow);
+            background: var(--btn-active-bg);
+            color: var(--btn-active-text);
+            font-weight: 700;
+            box-shadow: 0 2px 8px var(--primary-glow);
         }
 
         .tab-content {
@@ -204,9 +271,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 1.8rem;
             font-weight: 800;
             margin-top: 4px;
-            background: linear-gradient(135deg, #f8fafc, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
         }
 
         .metric-lbl {
@@ -244,25 +309,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             border-radius: 8px;
             margin-bottom: 8px;
             font-size: 0.85rem;
-            border: 1px solid transparent;
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: rgba(245, 158, 11, 0.3);
-            color: #fcd34d;
-        }
-
-        .alert-notice {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.3);
-            color: #a5b4fc;
-        }
-
-        .alert-info {
-            background: rgba(6, 182, 212, 0.1);
-            border-color: rgba(6, 182, 212, 0.3);
-            color: #67e8f9;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
         }
 
         .alert-badge {
@@ -271,6 +320,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-weight: 700;
             font-size: 0.7rem;
             text-transform: uppercase;
+            background: var(--border-color);
+            color: var(--text-main);
         }
 
         /* Variable Cards */
@@ -289,7 +340,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         .var-search:focus {
-            border-color: var(--primary);
+            border-color: var(--border-highlight);
         }
 
         .var-card {
@@ -314,7 +365,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 1.15rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         .var-tags {
@@ -328,11 +379,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             padding: 3px 8px;
             border-radius: 6px;
             letter-spacing: 0.04em;
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
         }
-
-        .tag-type { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); }
-        .tag-miss { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-        .tag-uniq { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.4); }
 
         .var-body {
             display: grid;
@@ -352,7 +402,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         .stats-table td {
             padding: 6px 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .stats-table tr:last-child td { border-bottom: none; }
@@ -373,7 +423,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             top: 10px;
             bottom: 10px;
             width: 2px;
-            background: linear-gradient(180deg, var(--primary), var(--accent-purple));
+            background: var(--border-color);
         }
 
         .timeline-step {
@@ -394,7 +444,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             height: 12px;
             border-radius: 50%;
             background: var(--primary);
-            box-shadow: 0 0 8px var(--primary);
         }
 
         .step-header {
@@ -407,28 +456,28 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .step-title {
             font-size: 0.95rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text-main);
             font-family: 'JetBrains Mono', monospace;
         }
 
         .step-rationale {
             font-size: 0.88rem;
-            color: #cbd5e1;
+            color: var(--text-muted);
             margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg-card-hover);
             padding: 10px 14px;
             border-radius: 8px;
             border-left: 3px solid var(--primary);
         }
 
         .step-code {
-            background: #04060a;
+            background: var(--bg-card-hover);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 10px 12px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.78rem;
-            color: #a5b4fc;
+            color: var(--text-main);
             overflow-x: auto;
             white-space: pre-wrap;
         }
@@ -474,7 +523,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .blueprint-item {
             margin-bottom: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .blueprint-item:last-child {
@@ -485,7 +534,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         .blueprint-key {
             font-weight: 700;
-            color: var(--accent-cyan);
+            color: var(--text-main);
             font-size: 0.9rem;
             margin-bottom: 4px;
         }
@@ -507,7 +556,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 <p>Interactive Analysis Report &bull; Generated: {{ generation_time }}</p>
             </div>
         </div>
-        <div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div title="Toggle Light / Dark Mode" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); user-select: none;">Light Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="report-theme-checkbox" onchange="toggleReportTheme(this.checked)">
+                    <span class="toggle-track"></span>
+                </label>
+            </div>
             <span class="header-badge">{{ dimensions.rows }} Rows x {{ dimensions.columns }} Cols</span>
         </div>
     </header>
@@ -800,7 +856,41 @@ Result Summary: {{ step.result }}</div>
             });
         }
 
+        function toggleReportTheme(isLight) {
+            const themeName = isLight ? 'light' : 'dark';
+            if (isLight) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            localStorage.setItem('autoeda-theme', themeName);
+
+            const fontColor = isLight ? '#09090b' : '#fafafa';
+            const gridColor = isLight ? '#e4e4e7' : '#27272a';
+
+            document.querySelectorAll('.js-plotly-plot').forEach(plotDiv => {
+                try {
+                    Plotly.relayout(plotDiv, {
+                        'paper_bgcolor': 'rgba(0,0,0,0)',
+                        'plot_bgcolor': 'rgba(0,0,0,0)',
+                        'font.color': fontColor,
+                        'xaxis.gridcolor': gridColor,
+                        'yaxis.gridcolor': gridColor,
+                        'xaxis.color': fontColor,
+                        'yaxis.color': fontColor
+                    });
+                } catch(e){}
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('autoeda-theme');
+            if (savedTheme === 'light') {
+                const cb = document.getElementById('report-theme-checkbox');
+                if (cb) cb.checked = true;
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+
             // Render Overview Dtypes Chart
             const dtypeData = {{ dtype_chart_json|safe }};
             if (dtypeData && dtypeData.data && dtypeData.data.length > 0) {
@@ -825,6 +915,10 @@ Result Summary: {{ step.result }}</div>
                 if (chartSpec && chartSpec.data && chartSpec.data.length > 0) {
                     Plotly.newPlot(divId, chartSpec.data, chartSpec.layout, {responsive: true, displayModeBar: false});
                 }
+            }
+
+            if (savedTheme === 'light') {
+                toggleReportTheme(true);
             }
         });
     </script>
