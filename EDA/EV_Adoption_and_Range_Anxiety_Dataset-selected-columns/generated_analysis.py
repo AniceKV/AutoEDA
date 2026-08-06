@@ -7,24 +7,7 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: [
-  {
-    "feature_name": "engineered_feature",
-    "formula": "Daily_Commute_km / (Age + eps)",
-    "data_type": "float64",
-    "rationale": "High-signal feature engineering transformation",
-    "correlation_with_target": 0.0062
-  },
-  {
-    "feature_name": "engineered_feature",
-    "formula": "Number_of_Cars_Owned * Charging_Stations_Near_Home",
-    "data_type": "int64",
-    "rationale": "High-signal feature engineering transformation",
-    "correlation_with_target": -0.0055
-  }
-]
-# Feature 'engineered_feature': Daily_Commute_km / (Age + eps)
-# Feature 'engineered_feature': Number_of_Cars_Owned * Charging_Stations_Near_Home
+# Engineered Features Specs: []
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -50,7 +33,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Annual_Income_USD (Regression). Use robust cross-validation on 10000 rows x 11 columns."
+  "executive_summary": "Target: Annual_Income_USD (Regression). Use robust cross-validation on 10000 rows x 10 columns."
 }
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv",
     "shape": {
       "rows": 10000,
-      "columns": 11
+      "columns": 10
     },
     "target_column": "Annual_Income_USD",
     "column_summary": {
@@ -25,7 +25,7 @@
       "Annual_Income_USD": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 8916
+        "cardinality": 8859
       },
       "City_Type": {
         "dtype": "str",
@@ -35,10 +35,10 @@
       "Daily_Commute_km": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 992
+        "cardinality": 954
       },
       "Number_of_Cars_Owned": {
-        "dtype": "int64",
+        "dtype": "float64",
         "missing_count": 0,
         "cardinality": 4
       },
@@ -56,11 +56,6 @@
         "dtype": "int64",
         "missing_count": 0,
         "cardinality": 20
-      },
-      "engineered_feature": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 36
       }
     }
   },
@@ -97,9 +92,9 @@
         "dtype": "float64",
         "missing_before": 178,
         "missing_after": 0,
-        "method": "mean",
+        "method": "median",
         "skewness": 0.31,
-        "fill_value": 85378.48584809611
+        "fill_value": 84708.0
       },
       "City_Type": {
         "dtype": "str",
@@ -112,9 +107,9 @@
         "dtype": "float64",
         "missing_before": 181,
         "missing_after": 0,
-        "method": "mean",
+        "method": "median",
         "skewness": 0.34,
-        "fill_value": 41.10541806701294
+        "fill_value": 40.2
       },
       "Number_of_Cars_Owned": {
         "dtype": "int64",
@@ -155,7 +150,7 @@
       "upper_bound": 91.0,
       "outlier_count": 0,
       "outlier_percentage": 0.0,
-      "action_taken": "profile"
+      "action_taken": "cap"
     },
     "Annual_Income_USD": {
       "q1": 61883.5,
@@ -165,7 +160,7 @@
       "upper_bound": 174521.0,
       "outlier_count": 58,
       "outlier_percentage": 0.58,
-      "action_taken": "profile"
+      "action_taken": "cap"
     },
     "Daily_Commute_km": {
       "q1": 23.6,
@@ -175,7 +170,7 @@
       "upper_bound": 106.35,
       "outlier_count": 44,
       "outlier_percentage": 0.44,
-      "action_taken": "profile"
+      "action_taken": "cap"
     },
     "Number_of_Cars_Owned": {
       "q1": 1.0,
@@ -185,7 +180,7 @@
       "upper_bound": 3.5,
       "outlier_count": 511,
       "outlier_percentage": 5.11,
-      "action_taken": "profile"
+      "action_taken": "cap"
     },
     "Charging_Stations_Near_Home": {
       "q1": 2.0,
@@ -195,7 +190,7 @@
       "upper_bound": 17.0,
       "outlier_count": 0,
       "outlier_percentage": 0.0,
-      "action_taken": "profile"
+      "action_taken": "cap"
     },
     "Charging_Stations_Near_Work": {
       "q1": 3.0,
@@ -205,27 +200,12 @@
       "upper_bound": 23.0,
       "outlier_count": 0,
       "outlier_percentage": 0.0,
-      "action_taken": "profile"
+      "action_taken": "cap"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "engineered_feature",
-      "formula": "Daily_Commute_km / (Age + eps)",
-      "data_type": "float64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": 0.0062
-    },
-    {
-      "feature_name": "engineered_feature",
-      "formula": "Number_of_Cars_Owned * Charging_Stations_Near_Home",
-      "data_type": "int64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": -0.0055
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e1d2c2e9-afe2-49de-ad00-9571959aa3c0\\correlation_matrix.png",
     "top_correlations": [
       {
         "feature_1": "Charging_Stations_Near_Home",
@@ -240,12 +220,12 @@
       {
         "feature_1": "Age",
         "feature_2": "Daily_Commute_km",
-        "correlation": -0.0136
+        "correlation": -0.0134
       },
       {
         "feature_1": "Age",
         "feature_2": "Annual_Income_USD",
-        "correlation": -0.0115
+        "correlation": -0.0114
       },
       {
         "feature_1": "Age",
@@ -255,81 +235,81 @@
       {
         "feature_1": "Daily_Commute_km",
         "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0074
-      },
-      {
-        "feature_1": "Annual_Income_USD",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0047
+        "correlation": -0.0057
       },
       {
         "feature_1": "Number_of_Cars_Owned",
         "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0043
+        "correlation": 0.0053
       },
       {
         "feature_1": "Annual_Income_USD",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": 0.0042
+        "feature_2": "Charging_Stations_Near_Home",
+        "correlation": 0.0049
       },
       {
         "feature_1": "Age",
         "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0033
+        "correlation": -0.0042
+      },
+      {
+        "feature_1": "Annual_Income_USD",
+        "feature_2": "Number_of_Cars_Owned",
+        "correlation": 0.004
       }
     ],
     "correlation_matrix_text": {
       "Age": {
         "Age": 1.0,
         "Annual_Income_USD": -0.011,
-        "Daily_Commute_km": -0.014,
-        "Number_of_Cars_Owned": -0.003,
+        "Daily_Commute_km": -0.013,
+        "Number_of_Cars_Owned": -0.004,
         "Charging_Stations_Near_Home": -0.008,
         "Charging_Stations_Near_Work": -0.002
       },
       "Annual_Income_USD": {
         "Age": -0.011,
         "Annual_Income_USD": 1.0,
-        "Daily_Commute_km": 0.002,
+        "Daily_Commute_km": 0.003,
         "Number_of_Cars_Owned": 0.004,
         "Charging_Stations_Near_Home": 0.005,
         "Charging_Stations_Near_Work": 0.003
       },
       "Daily_Commute_km": {
-        "Age": -0.014,
-        "Annual_Income_USD": 0.002,
+        "Age": -0.013,
+        "Annual_Income_USD": 0.003,
         "Daily_Commute_km": 1.0,
-        "Number_of_Cars_Owned": -0.007,
+        "Number_of_Cars_Owned": -0.006,
         "Charging_Stations_Near_Home": 0.027,
-        "Charging_Stations_Near_Work": 0.003
+        "Charging_Stations_Near_Work": 0.002
       },
       "Number_of_Cars_Owned": {
-        "Age": -0.003,
+        "Age": -0.004,
         "Annual_Income_USD": 0.004,
-        "Daily_Commute_km": -0.007,
+        "Daily_Commute_km": -0.006,
         "Number_of_Cars_Owned": 1.0,
-        "Charging_Stations_Near_Home": 0.004,
-        "Charging_Stations_Near_Work": 0.0
+        "Charging_Stations_Near_Home": 0.005,
+        "Charging_Stations_Near_Work": 0.002
       },
       "Charging_Stations_Near_Home": {
         "Age": -0.008,
         "Annual_Income_USD": 0.005,
         "Daily_Commute_km": 0.027,
-        "Number_of_Cars_Owned": 0.004,
+        "Number_of_Cars_Owned": 0.005,
         "Charging_Stations_Near_Home": 1.0,
         "Charging_Stations_Near_Work": 0.481
       },
       "Charging_Stations_Near_Work": {
         "Age": -0.002,
         "Annual_Income_USD": 0.003,
-        "Daily_Commute_km": 0.003,
-        "Number_of_Cars_Owned": 0.0,
+        "Daily_Commute_km": 0.002,
+        "Number_of_Cars_Owned": 0.002,
         "Charging_Stations_Near_Home": 0.481,
         "Charging_Stations_Near_Work": 1.0
       }
     },
     "categorical_associations": {
-      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f\\categorical_association_matrix.png",
+      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e1d2c2e9-afe2-49de-ad00-9571959aa3c0\\categorical_association_matrix.png",
       "top_correlations": [
         {
           "feature_1": "Gender",
@@ -367,7 +347,7 @@
     }
   },
   "categorical_associations": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f\\categorical_association_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e1d2c2e9-afe2-49de-ad00-9571959aa3c0\\categorical_association_matrix.png",
     "top_correlations": [
       {
         "feature_1": "Gender",
@@ -406,59 +386,59 @@
   "statistical_hypothesis_tests": {
     "Age": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0115,
-      "p_value": 0.25134190553489066,
+      "statistic": -0.0114,
+      "p_value": 0.2545726998773482,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0115, p = 2.5134e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0114, p = 2.5457e-01. (Not Significant)"
     },
     "Gender": {
       "test_name": "One-Way ANOVA",
-      "statistic": 0.5635,
-      "p_value": 0.5692491083297393,
+      "statistic": 0.5826,
+      "p_value": 0.5584838743031152,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.5635, p = 5.6925e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.5826, p = 5.5848e-01. (Not Significant)"
     },
     "City_Type": {
       "test_name": "One-Way ANOVA",
-      "statistic": 0.603,
-      "p_value": 0.5472101281359003,
+      "statistic": 0.5639,
+      "p_value": 0.569016929602619,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.6030, p = 5.4721e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.5639, p = 5.6902e-01. (Not Significant)"
     },
     "Daily_Commute_km": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0023,
-      "p_value": 0.8143402362588501,
+      "statistic": 0.0028,
+      "p_value": 0.7786223789399839,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0023, p = 8.1434e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0028, p = 7.7862e-01. (Not Significant)"
     },
     "Number_of_Cars_Owned": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0042,
-      "p_value": 0.6712442271694199,
+      "statistic": 0.004,
+      "p_value": 0.6912972562810229,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0042, p = 6.7124e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0040, p = 6.9130e-01. (Not Significant)"
     },
     "Current_Car_Type": {
       "test_name": "One-Way ANOVA",
-      "statistic": 2.0844,
-      "p_value": 0.09999021137220938,
+      "statistic": 2.0595,
+      "p_value": 0.10330846168125059,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 2.0844, p = 9.9990e-02. (Not Significant)"
+      "interpretation": "F-statistic = 2.0595, p = 1.0331e-01. (Not Significant)"
     },
     "Charging_Stations_Near_Home": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0047,
-      "p_value": 0.6402939183625198,
+      "statistic": 0.0049,
+      "p_value": 0.6213525075662638,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0047, p = 6.4029e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0049, p = 6.2135e-01. (Not Significant)"
     },
     "Charging_Stations_Near_Work": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0026,
-      "p_value": 0.7938431042833708,
+      "statistic": 0.0025,
+      "p_value": 0.8017104725650908,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0026, p = 7.9384e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0025, p = 8.0171e-01. (Not Significant)"
     },
     "significant_predictors": []
   },
@@ -485,11 +465,11 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Annual_Income_USD (Regression). Use robust cross-validation on 10000 rows x 11 columns."
+    "executive_summary": "Target: Annual_Income_USD (Regression). Use robust cross-validation on 10000 rows x 10 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 10000 rows and 11 columns.",
+      "Dataset contains 10000 rows and 10 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": []

@@ -7,7 +7,16 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# Engineered Features Specs: [
+  {
+    "feature_name": "engineered_feature",
+    "formula": "np.log1p(Fare)",
+    "data_type": "float64",
+    "rationale": "High-signal feature engineering transformation",
+    "correlation_with_target": null
+  }
+]
+df['engineered_feature'] = np.log1p(df['Fare'].clip(lower=0))
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -33,7 +42,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+  "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 13 columns."
 }
 
 if __name__ == '__main__':

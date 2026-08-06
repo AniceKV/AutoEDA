@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\Titanic-Dataset.csv",
     "shape": {
       "rows": 891,
-      "columns": 12
+      "columns": 13
     },
     "target_column": "Survived",
     "column_summary": {
@@ -35,7 +35,7 @@
       "Age": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 88
+        "cardinality": 89
       },
       "SibSp": {
         "dtype": "int64",
@@ -66,6 +66,11 @@
         "dtype": "str",
         "missing_count": 0,
         "cardinality": 3
+      },
+      "engineered_feature": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 248
       }
     }
   },
@@ -116,9 +121,9 @@
         "dtype": "float64",
         "missing_before": 177,
         "missing_after": 0,
-        "method": "median",
+        "method": "mean",
         "skewness": 0.39,
-        "fill_value": 28.0
+        "fill_value": 29.69911764705882
       },
       "SibSp": {
         "dtype": "int64",
@@ -177,6 +182,16 @@
       "outlier_percentage": 7.41,
       "action_taken": "profile"
     },
+    "Fare": {
+      "q1": 7.9104,
+      "q3": 31.0,
+      "iqr": 23.0896,
+      "lower_bound": -26.724,
+      "upper_bound": 65.6344,
+      "outlier_count": 116,
+      "outlier_percentage": 13.02,
+      "action_taken": "profile"
+    },
     "SibSp": {
       "q1": 0.0,
       "q3": 1.0,
@@ -196,22 +211,30 @@
       "outlier_count": 213,
       "outlier_percentage": 23.91,
       "action_taken": "profile"
-    },
-    "Fare": {
-      "q1": 7.9104,
-      "q3": 31.0,
-      "iqr": 23.0896,
-      "lower_bound": -26.724,
-      "upper_bound": 65.6344,
-      "outlier_count": 116,
-      "outlier_percentage": 13.02,
-      "action_taken": "profile"
     }
   },
-  "engineered_features": [],
+  "engineered_features": [
+    {
+      "feature_name": "engineered_feature",
+      "formula": "np.log1p(Fare)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": null
+    }
+  ],
   "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a\\correlation_matrix.png",
     "top_correlations": [
+      {
+        "feature_1": "Fare",
+        "feature_2": "engineered_feature",
+        "correlation": 0.7875
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "engineered_feature",
+        "correlation": -0.661
+      },
       {
         "feature_1": "Pclass",
         "feature_2": "Fare",
@@ -223,44 +246,34 @@
         "correlation": 0.4148
       },
       {
-        "feature_1": "Pclass",
-        "feature_2": "Age",
-        "correlation": -0.3399
-      },
-      {
         "feature_1": "Survived",
         "feature_2": "Pclass",
         "correlation": -0.3385
       },
       {
-        "feature_1": "Survived",
-        "feature_2": "Fare",
-        "correlation": 0.2573
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "SibSp",
-        "correlation": -0.2333
-      },
-      {
         "feature_1": "Parch",
-        "feature_2": "Fare",
-        "correlation": 0.2162
+        "feature_2": "engineered_feature",
+        "correlation": 0.3322
       },
       {
-        "feature_1": "Age",
-        "feature_2": "Parch",
-        "correlation": -0.1725
+        "feature_1": "Pclass",
+        "feature_2": "Age",
+        "correlation": -0.3313
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "engineered_feature",
+        "correlation": 0.3299
       },
       {
         "feature_1": "SibSp",
-        "feature_2": "Fare",
-        "correlation": 0.1597
+        "feature_2": "engineered_feature",
+        "correlation": 0.3185
       },
       {
-        "feature_1": "Age",
+        "feature_1": "Survived",
         "feature_2": "Fare",
-        "correlation": 0.0967
+        "correlation": 0.2573
       }
     ],
     "correlation_matrix_text": {
@@ -268,37 +281,41 @@
         "PassengerId": 1.0,
         "Survived": -0.005,
         "Pclass": -0.035,
-        "Age": 0.034,
+        "Age": 0.033,
         "SibSp": -0.058,
         "Parch": -0.002,
-        "Fare": 0.013
+        "Fare": 0.013,
+        "engineered_feature": -0.007
       },
       "Survived": {
         "PassengerId": -0.005,
         "Survived": 1.0,
         "Pclass": -0.338,
-        "Age": -0.065,
+        "Age": -0.07,
         "SibSp": -0.035,
         "Parch": 0.082,
-        "Fare": 0.257
+        "Fare": 0.257,
+        "engineered_feature": 0.33
       },
       "Pclass": {
         "PassengerId": -0.035,
         "Survived": -0.338,
         "Pclass": 1.0,
-        "Age": -0.34,
+        "Age": -0.331,
         "SibSp": 0.083,
         "Parch": 0.018,
-        "Fare": -0.549
+        "Fare": -0.549,
+        "engineered_feature": -0.661
       },
       "Age": {
-        "PassengerId": 0.034,
-        "Survived": -0.065,
-        "Pclass": -0.34,
+        "PassengerId": 0.033,
+        "Survived": -0.07,
+        "Pclass": -0.331,
         "Age": 1.0,
         "SibSp": -0.233,
-        "Parch": -0.172,
-        "Fare": 0.097
+        "Parch": -0.179,
+        "Fare": 0.092,
+        "engineered_feature": 0.102
       },
       "SibSp": {
         "PassengerId": -0.058,
@@ -307,29 +324,42 @@
         "Age": -0.233,
         "SibSp": 1.0,
         "Parch": 0.415,
-        "Fare": 0.16
+        "Fare": 0.16,
+        "engineered_feature": 0.319
       },
       "Parch": {
         "PassengerId": -0.002,
         "Survived": 0.082,
         "Pclass": 0.018,
-        "Age": -0.172,
+        "Age": -0.179,
         "SibSp": 0.415,
         "Parch": 1.0,
-        "Fare": 0.216
+        "Fare": 0.216,
+        "engineered_feature": 0.332
       },
       "Fare": {
         "PassengerId": 0.013,
         "Survived": 0.257,
         "Pclass": -0.549,
-        "Age": 0.097,
+        "Age": 0.092,
         "SibSp": 0.16,
         "Parch": 0.216,
-        "Fare": 1.0
+        "Fare": 1.0,
+        "engineered_feature": 0.788
+      },
+      "engineered_feature": {
+        "PassengerId": -0.007,
+        "Survived": 0.33,
+        "Pclass": -0.661,
+        "Age": 0.102,
+        "SibSp": 0.319,
+        "Parch": 0.332,
+        "Fare": 0.788,
+        "engineered_feature": 1.0
       }
     },
     "categorical_associations": {
-      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a\\categorical_association_matrix.png",
       "top_correlations": [
         {
           "feature_1": "Sex",
@@ -350,7 +380,7 @@
     }
   },
   "categorical_associations": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a\\categorical_association_matrix.png",
     "top_correlations": [
       {
         "feature_1": "Sex",
@@ -393,10 +423,10 @@
     },
     "Age": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0649,
-      "p_value": 0.0527606884758556,
-      "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0649, p = 5.2761e-02. (Not Significant)"
+      "statistic": -0.0698,
+      "p_value": 0.03721708372685049,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.0698, p = 3.7217e-02. (Statistically Significant)"
     },
     "SibSp": {
       "test_name": "Pearson Correlation Test",
@@ -440,14 +470,23 @@
       "is_statistically_significant": true,
       "interpretation": "F-statistic = 13.3269, p = 1.9832e-06. (Statistically Significant)"
     },
+    "engineered_feature": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.3299,
+      "p_value": 4.6466702861660465e-24,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.3299, p = 4.6467e-24. (Statistically Significant)"
+    },
     "significant_predictors": [
       "Pclass",
       "Sex",
+      "Age",
       "Parch",
       "Ticket",
       "Fare",
       "Cabin",
-      "Embarked"
+      "Embarked",
+      "engineered_feature"
     ]
   },
   "predictive_modeling_blueprint": {
@@ -473,21 +512,23 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 13 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 891 rows and 12 columns.",
+      "Dataset contains 891 rows and 13 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
       "Pclass",
       "Sex",
+      "Age",
       "Parch",
       "Ticket",
       "Fare",
       "Cabin",
-      "Embarked"
+      "Embarked",
+      "engineered_feature"
     ]
   }
 }

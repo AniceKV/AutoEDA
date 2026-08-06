@@ -74,9 +74,9 @@ def run_tool_based_eda(
     """
     Agentic Tool-Based Orchestrator for AutoEDA with Multi-Turn Memory and Refinement Loop.
     """
-    effective_api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+    effective_api_key = os.getenv("OPENROUTER_API_KEY") or api_key
     if not effective_api_key:
-        raise ValueError("OPENROUTER_API_KEY is missing. Provide it via UI form or set it in your environment / .env file.")
+        raise ValueError("OPENROUTER_API_KEY is missing. Set it in your environment / .env file.")
 
     effective_model = model_name or os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
 
