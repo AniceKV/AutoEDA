@@ -311,13 +311,11 @@ def main():
         st.write("") # spacing
 
         # Clean Concise Primary Tabs Bar
-        t_vars, t_plots, t_summary, t_metrics, t_script, t_dvc = st.tabs([
+        t_vars, t_plots, t_summary, t_metrics= st.tabs([
             "Variable Profiling",
             "Visual Gallery",
             "Executive Summary",
             "Metrics & Blueprint",
-            "Production Code",
-            "Data Version Control"
         ])
 
         # -------------------------------------------------------------
@@ -505,43 +503,6 @@ def main():
             else:
                 st.info("Run the pipeline to generate metrics.json for this dataset.")
 
-        # -------------------------------------------------------------
-        # TAB 5: GENERATED PRODUCTION CODE
-        # -------------------------------------------------------------
-        with t_script:
-            script_path = os.path.join(eda_dir, "generated_analysis.py") if eda_dir else ""
-            if script_path and os.path.exists(script_path):
-                st.subheader("LLM-Coded Production Feature Engineering & Predictive Blueprint Script")
-                with open(script_path, "r", encoding="utf-8") as f:
-                    code_text = f.read()
-                st.code(code_text, language="python")
-                st.download_button(
-                    label="Download generated_analysis.py",
-                    data=code_text,
-                    file_name="generated_analysis.py",
-                    mime="text/x-python"
-                )
-            else:
-                st.info("Generated analysis script will be rendered here after running the pipeline for this dataset.")
-
-        # -------------------------------------------------------------
-        # TAB 6: STATEFUL DATA VERSION CONTROL (DVC)
-        # -------------------------------------------------------------
-        with t_dvc:
-            st.subheader("DVC Stateful Execution Memory Checkpoints")
-            dvc_files = sorted(glob.glob(os.path.join(eda_dir, "df_state_*.csv"))) if eda_dir and os.path.exists(eda_dir) else []
-            
-            if dvc_files:
-                for dvc_f in dvc_files:
-                    bname = os.path.basename(dvc_f)
-                    with st.expander(f"Checkpoint State: `{bname}`", expanded=True):
-                        df_s = pd.read_csv(dvc_f)
-                        st.markdown(f"Dimensions: `{len(df_s)}` rows x `{len(df_s.columns)}` columns")
-                        st.dataframe(df_s.head(10), use_container_width=True)
-            else:
-                st.info("DVC state files will appear here after running the pipeline for this dataset.")
-    else:
-        st.info("Upload a dataset or choose a sample in the sidebar to view YData-style profiling.")
 
 
 if __name__ == "__main__":

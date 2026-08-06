@@ -1,61 +1,101 @@
 {
   "dataset_overview": {
-    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv",
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\modified_data.csv",
     "shape": {
-      "rows": 10000,
-      "columns": 10
+      "rows": 4600,
+      "columns": 18
     },
-    "target_column": "Current_Car_Type",
+    "target_column": "price",
     "column_summary": {
-      "Buyer_ID": {
+      "date": {
         "dtype": "object",
         "missing_count": 0,
-        "cardinality": 10000
+        "cardinality": 70
       },
-      "Age": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 45
-      },
-      "Gender": {
-        "dtype": "object",
-        "missing_count": 0,
-        "cardinality": 3
-      },
-      "Annual_Income_USD": {
+      "price": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 8916
+        "cardinality": 1741
       },
-      "City_Type": {
-        "dtype": "object",
-        "missing_count": 0,
-        "cardinality": 3
-      },
-      "Daily_Commute_km": {
+      "bedrooms": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 991
+        "cardinality": 10
       },
-      "Number_of_Cars_Owned": {
+      "bathrooms": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 26
+      },
+      "sqft_living": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 4
+        "cardinality": 566
       },
-      "Current_Car_Type": {
+      "sqft_lot": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 3113
+      },
+      "floors": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 6
+      },
+      "waterfront": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "view": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 5
+      },
+      "condition": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 5
+      },
+      "sqft_above": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 511
+      },
+      "sqft_basement": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 207
+      },
+      "yr_built": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 115
+      },
+      "yr_renovated": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 60
+      },
+      "street": {
         "dtype": "object",
         "missing_count": 0,
-        "cardinality": 4
+        "cardinality": 4525
       },
-      "Charging_Stations_Near_Home": {
-        "dtype": "int64",
+      "city": {
+        "dtype": "object",
         "missing_count": 0,
-        "cardinality": 15
+        "cardinality": 44
       },
-      "Charging_Stations_Near_Work": {
-        "dtype": "int64",
+      "statezip": {
+        "dtype": "object",
         "missing_count": 0,
-        "cardinality": 20
+        "cardinality": 77
+      },
+      "price_per_sqft": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 4005
       }
     }
   },
@@ -67,73 +107,127 @@
       "Categorical/String columns use mode imputation with 'Unknown' fallback."
     ],
     "columns": {
-      "Buyer_ID": {
+      "date": {
         "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "Age": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Gender": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Annual_Income_USD": {
+      "price": {
         "dtype": "float64",
-        "missing_before": 178,
-        "missing_after": 0,
-        "method": "median",
-        "skewness": 0.31,
-        "fill_value": 84708.0
-      },
-      "City_Type": {
-        "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "Daily_Commute_km": {
+      "bedrooms": {
         "dtype": "float64",
-        "missing_before": 181,
+        "missing_before": 0,
         "missing_after": 0,
-        "method": "median",
-        "skewness": 0.34,
-        "fill_value": 40.2
+        "method": "none",
+        "fill_value": null
       },
-      "Number_of_Cars_Owned": {
+      "bathrooms": {
+        "dtype": "float64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "sqft_living": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "Current_Car_Type": {
+      "sqft_lot": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "floors": {
+        "dtype": "float64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "waterfront": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "view": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "condition": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "sqft_above": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "sqft_basement": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "yr_built": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "yr_renovated": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "street": {
         "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "Charging_Stations_Near_Home": {
-        "dtype": "int64",
+      "city": {
+        "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "Charging_Stations_Near_Work": {
-        "dtype": "int64",
+      "statezip": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "price_per_sqft": {
+        "dtype": "float64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
@@ -142,64 +236,54 @@
     }
   },
   "outlier_analysis": {
-    "Age": {
-      "q1": 36.0,
-      "q3": 58.0,
-      "iqr": 22.0,
-      "lower_bound": 3.0,
-      "upper_bound": 91.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
+    "price": {
+      "q1": 322875.0,
+      "q3": 654962.5,
+      "iqr": 332087.5,
+      "lower_bound": -175256.25,
+      "upper_bound": 1153093.75,
+      "outlier_count": 240,
+      "outlier_percentage": 5.22,
       "action_taken": "profile"
     },
-    "Annual_Income_USD": {
-      "q1": 61883.5,
-      "q3": 106938.5,
-      "iqr": 45055.0,
-      "lower_bound": -5699.0,
-      "upper_bound": 174521.0,
-      "outlier_count": 58,
-      "outlier_percentage": 0.58,
+    "sqft_living": {
+      "q1": 1460.0,
+      "q3": 2620.0,
+      "iqr": 1160.0,
+      "lower_bound": -280.0,
+      "upper_bound": 4360.0,
+      "outlier_count": 129,
+      "outlier_percentage": 2.8,
       "action_taken": "profile"
     },
-    "Daily_Commute_km": {
-      "q1": 23.6,
-      "q3": 56.7,
-      "iqr": 33.1,
-      "lower_bound": -26.05,
-      "upper_bound": 106.35,
-      "outlier_count": 44,
-      "outlier_percentage": 0.44,
+    "sqft_lot": {
+      "q1": 5000.75,
+      "q3": 11001.25,
+      "iqr": 6000.5,
+      "lower_bound": -4000.0,
+      "upper_bound": 20002.0,
+      "outlier_count": 541,
+      "outlier_percentage": 11.76,
       "action_taken": "profile"
     },
-    "Number_of_Cars_Owned": {
-      "q1": 1.0,
-      "q3": 2.0,
-      "iqr": 1.0,
-      "lower_bound": -0.5,
-      "upper_bound": 3.5,
-      "outlier_count": 511,
-      "outlier_percentage": 5.11,
+    "sqft_above": {
+      "q1": 1190.0,
+      "q3": 2300.0,
+      "iqr": 1110.0,
+      "lower_bound": -475.0,
+      "upper_bound": 3965.0,
+      "outlier_count": 116,
+      "outlier_percentage": 2.52,
       "action_taken": "profile"
     },
-    "Charging_Stations_Near_Home": {
-      "q1": 2.0,
-      "q3": 8.0,
-      "iqr": 6.0,
-      "lower_bound": -7.0,
-      "upper_bound": 17.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "Charging_Stations_Near_Work": {
-      "q1": 3.0,
-      "q3": 11.0,
-      "iqr": 8.0,
-      "lower_bound": -9.0,
-      "upper_bound": 23.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
+    "sqft_basement": {
+      "q1": 0.0,
+      "q3": 610.0,
+      "iqr": 610.0,
+      "lower_bound": -915.0,
+      "upper_bound": 1525.0,
+      "outlier_count": 82,
+      "outlier_percentage": 1.78,
       "action_taken": "profile"
     }
   },
@@ -208,181 +292,428 @@
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
       {
-        "feature_1": "Charging_Stations_Near_Home",
-        "feature_2": "Charging_Stations_Near_Work",
-        "correlation": 0.4808
+        "feature_1": "sqft_living",
+        "feature_2": "sqft_above",
+        "correlation": 0.8764
       },
       {
-        "feature_1": "Daily_Commute_km",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.027
+        "feature_1": "price",
+        "feature_2": "price_per_sqft",
+        "correlation": 0.8193
       },
       {
-        "feature_1": "Age",
-        "feature_2": "Daily_Commute_km",
-        "correlation": -0.0137
+        "feature_1": "bathrooms",
+        "feature_2": "sqft_living",
+        "correlation": 0.7612
       },
       {
-        "feature_1": "Age",
-        "feature_2": "Annual_Income_USD",
-        "correlation": -0.0114
+        "feature_1": "bathrooms",
+        "feature_2": "sqft_above",
+        "correlation": 0.6899
       },
       {
-        "feature_1": "Age",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": -0.0081
+        "feature_1": "bedrooms",
+        "feature_2": "sqft_living",
+        "correlation": 0.5949
       },
       {
-        "feature_1": "Daily_Commute_km",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0074
+        "feature_1": "bedrooms",
+        "feature_2": "bathrooms",
+        "correlation": 0.5459
       },
       {
-        "feature_1": "Annual_Income_USD",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0046
+        "feature_1": "floors",
+        "feature_2": "sqft_above",
+        "correlation": 0.5228
       },
       {
-        "feature_1": "Number_of_Cars_Owned",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0043
+        "feature_1": "bathrooms",
+        "feature_2": "floors",
+        "correlation": 0.4864
       },
       {
-        "feature_1": "Annual_Income_USD",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": 0.0042
+        "feature_1": "bedrooms",
+        "feature_2": "sqft_above",
+        "correlation": 0.4847
       },
       {
-        "feature_1": "Age",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0033
+        "feature_1": "floors",
+        "feature_2": "yr_built",
+        "correlation": 0.4675
       }
     ],
     "correlation_matrix_text": {
-      "Age": {
-        "Age": 1.0,
-        "Annual_Income_USD": -0.011,
-        "Daily_Commute_km": -0.014,
-        "Number_of_Cars_Owned": -0.003,
-        "Charging_Stations_Near_Home": -0.008,
-        "Charging_Stations_Near_Work": -0.002
+      "price": {
+        "price": 1.0,
+        "bedrooms": 0.2,
+        "bathrooms": 0.327,
+        "sqft_living": 0.43,
+        "sqft_lot": 0.05,
+        "floors": 0.151,
+        "waterfront": 0.136,
+        "view": 0.229,
+        "condition": 0.035,
+        "sqft_above": 0.368,
+        "sqft_basement": 0.21,
+        "yr_built": 0.022,
+        "yr_renovated": -0.029,
+        "price_per_sqft": 0.819
       },
-      "Annual_Income_USD": {
-        "Age": -0.011,
-        "Annual_Income_USD": 1.0,
-        "Daily_Commute_km": 0.002,
-        "Number_of_Cars_Owned": 0.004,
-        "Charging_Stations_Near_Home": 0.005,
-        "Charging_Stations_Near_Work": 0.003
+      "bedrooms": {
+        "price": 0.2,
+        "bedrooms": 1.0,
+        "bathrooms": 0.546,
+        "sqft_living": 0.595,
+        "sqft_lot": 0.069,
+        "floors": 0.178,
+        "waterfront": -0.003,
+        "view": 0.111,
+        "condition": 0.025,
+        "sqft_above": 0.485,
+        "sqft_basement": 0.334,
+        "yr_built": 0.142,
+        "yr_renovated": -0.061,
+        "price_per_sqft": -0.073
       },
-      "Daily_Commute_km": {
-        "Age": -0.014,
-        "Annual_Income_USD": 0.002,
-        "Daily_Commute_km": 1.0,
-        "Number_of_Cars_Owned": -0.007,
-        "Charging_Stations_Near_Home": 0.027,
-        "Charging_Stations_Near_Work": 0.003
+      "bathrooms": {
+        "price": 0.327,
+        "bedrooms": 0.546,
+        "bathrooms": 1.0,
+        "sqft_living": 0.761,
+        "sqft_lot": 0.108,
+        "floors": 0.486,
+        "waterfront": 0.076,
+        "view": 0.212,
+        "condition": -0.12,
+        "sqft_above": 0.69,
+        "sqft_basement": 0.298,
+        "yr_built": 0.463,
+        "yr_renovated": -0.216,
+        "price_per_sqft": -0.033
       },
-      "Number_of_Cars_Owned": {
-        "Age": -0.003,
-        "Annual_Income_USD": 0.004,
-        "Daily_Commute_km": -0.007,
-        "Number_of_Cars_Owned": 1.0,
-        "Charging_Stations_Near_Home": 0.004,
-        "Charging_Stations_Near_Work": 0.0
+      "sqft_living": {
+        "price": 0.43,
+        "bedrooms": 0.595,
+        "bathrooms": 0.761,
+        "sqft_living": 1.0,
+        "sqft_lot": 0.211,
+        "floors": 0.345,
+        "waterfront": 0.118,
+        "view": 0.311,
+        "condition": -0.063,
+        "sqft_above": 0.876,
+        "sqft_basement": 0.447,
+        "yr_built": 0.288,
+        "yr_renovated": -0.123,
+        "price_per_sqft": -0.049
       },
-      "Charging_Stations_Near_Home": {
-        "Age": -0.008,
-        "Annual_Income_USD": 0.005,
-        "Daily_Commute_km": 0.027,
-        "Number_of_Cars_Owned": 0.004,
-        "Charging_Stations_Near_Home": 1.0,
-        "Charging_Stations_Near_Work": 0.481
+      "sqft_lot": {
+        "price": 0.05,
+        "bedrooms": 0.069,
+        "bathrooms": 0.108,
+        "sqft_living": 0.211,
+        "sqft_lot": 1.0,
+        "floors": 0.004,
+        "waterfront": 0.017,
+        "view": 0.074,
+        "condition": 0.001,
+        "sqft_above": 0.216,
+        "sqft_basement": 0.035,
+        "yr_built": 0.051,
+        "yr_renovated": -0.023,
+        "price_per_sqft": -0.028
       },
-      "Charging_Stations_Near_Work": {
-        "Age": -0.002,
-        "Annual_Income_USD": 0.003,
-        "Daily_Commute_km": 0.003,
-        "Number_of_Cars_Owned": 0.0,
-        "Charging_Stations_Near_Home": 0.481,
-        "Charging_Stations_Near_Work": 1.0
+      "floors": {
+        "price": 0.151,
+        "bedrooms": 0.178,
+        "bathrooms": 0.486,
+        "sqft_living": 0.345,
+        "sqft_lot": 0.004,
+        "floors": 1.0,
+        "waterfront": 0.022,
+        "view": 0.031,
+        "condition": -0.275,
+        "sqft_above": 0.523,
+        "sqft_basement": -0.256,
+        "yr_built": 0.467,
+        "yr_renovated": -0.234,
+        "price_per_sqft": -0.01
+      },
+      "waterfront": {
+        "price": 0.136,
+        "bedrooms": -0.003,
+        "bathrooms": 0.076,
+        "sqft_living": 0.118,
+        "sqft_lot": 0.017,
+        "floors": 0.022,
+        "waterfront": 1.0,
+        "view": 0.361,
+        "condition": 0.0,
+        "sqft_above": 0.079,
+        "sqft_basement": 0.098,
+        "yr_built": -0.024,
+        "yr_renovated": 0.009,
+        "price_per_sqft": 0.035
+      },
+      "view": {
+        "price": 0.229,
+        "bedrooms": 0.111,
+        "bathrooms": 0.212,
+        "sqft_living": 0.311,
+        "sqft_lot": 0.074,
+        "floors": 0.031,
+        "waterfront": 0.361,
+        "view": 1.0,
+        "condition": 0.063,
+        "sqft_above": 0.174,
+        "sqft_basement": 0.322,
+        "yr_built": -0.064,
+        "yr_renovated": 0.023,
+        "price_per_sqft": 0.043
+      },
+      "condition": {
+        "price": 0.035,
+        "bedrooms": 0.025,
+        "bathrooms": -0.12,
+        "sqft_living": -0.063,
+        "sqft_lot": 0.001,
+        "floors": -0.275,
+        "waterfront": 0.0,
+        "view": 0.063,
+        "condition": 1.0,
+        "sqft_above": -0.178,
+        "sqft_basement": 0.201,
+        "yr_built": -0.4,
+        "yr_renovated": -0.187,
+        "price_per_sqft": 0.047
+      },
+      "sqft_above": {
+        "price": 0.368,
+        "bedrooms": 0.485,
+        "bathrooms": 0.69,
+        "sqft_living": 0.876,
+        "sqft_lot": 0.216,
+        "floors": 0.523,
+        "waterfront": 0.079,
+        "view": 0.174,
+        "condition": -0.178,
+        "sqft_above": 1.0,
+        "sqft_basement": -0.039,
+        "yr_built": 0.409,
+        "yr_renovated": -0.16,
+        "price_per_sqft": -0.045
+      },
+      "sqft_basement": {
+        "price": 0.21,
+        "bedrooms": 0.334,
+        "bathrooms": 0.298,
+        "sqft_living": 0.447,
+        "sqft_lot": 0.035,
+        "floors": -0.256,
+        "waterfront": 0.098,
+        "view": 0.322,
+        "condition": 0.201,
+        "sqft_above": -0.039,
+        "sqft_basement": 1.0,
+        "yr_built": -0.162,
+        "yr_renovated": 0.043,
+        "price_per_sqft": -0.018
+      },
+      "yr_built": {
+        "price": 0.022,
+        "bedrooms": 0.142,
+        "bathrooms": 0.463,
+        "sqft_living": 0.288,
+        "sqft_lot": 0.051,
+        "floors": 0.467,
+        "waterfront": -0.024,
+        "view": -0.064,
+        "condition": -0.4,
+        "sqft_above": 0.409,
+        "sqft_basement": -0.162,
+        "yr_built": 1.0,
+        "yr_renovated": -0.321,
+        "price_per_sqft": -0.078
+      },
+      "yr_renovated": {
+        "price": -0.029,
+        "bedrooms": -0.061,
+        "bathrooms": -0.216,
+        "sqft_living": -0.123,
+        "sqft_lot": -0.023,
+        "floors": -0.234,
+        "waterfront": 0.009,
+        "view": 0.023,
+        "condition": -0.187,
+        "sqft_above": -0.16,
+        "sqft_basement": 0.043,
+        "yr_built": -0.321,
+        "yr_renovated": 1.0,
+        "price_per_sqft": 0.016
+      },
+      "price_per_sqft": {
+        "price": 0.819,
+        "bedrooms": -0.073,
+        "bathrooms": -0.033,
+        "sqft_living": -0.049,
+        "sqft_lot": -0.028,
+        "floors": -0.01,
+        "waterfront": 0.035,
+        "view": 0.043,
+        "condition": 0.047,
+        "sqft_above": -0.045,
+        "sqft_basement": -0.018,
+        "yr_built": -0.078,
+        "yr_renovated": 0.016,
+        "price_per_sqft": 1.0
       }
     }
   },
   "statistical_hypothesis_tests": {
-    "Buyer_ID": {
-      "test_name": "Chi-Square Test of Independence",
-      "statistic": 30000.0,
-      "p_value": 0.49402828612531213,
-      "is_statistically_significant": false,
-      "interpretation": "Chi2 = 30000.0000, dof = 29997, p = 4.9403e-01. (Not Significant)"
-    },
-    "Age": {
+    "date": {
       "test_name": "One-Way ANOVA",
-      "statistic": 1.8102,
-      "p_value": 0.1429220309148599,
+      "statistic": 1.0113,
+      "p_value": 0.45185633485060606,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 1.8102, p = 1.4292e-01. (Not Significant)"
+      "interpretation": "F-statistic = 1.0113, p = 4.5186e-01. (Not Significant)"
     },
-    "Gender": {
-      "test_name": "Chi-Square Test of Independence",
-      "statistic": 1.0359,
-      "p_value": 0.9842155472839936,
+    "bedrooms": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2003,
+      "p_value": 7.382065412349795e-43,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2003, p = 7.3821e-43. (Statistically Significant)"
+    },
+    "bathrooms": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.3271,
+      "p_value": 3.6446269835087346e-115,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.3271, p = 3.6446e-115. (Statistically Significant)"
+    },
+    "sqft_living": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.4304,
+      "p_value": 7.54989590427798e-207,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.4304, p = 7.5499e-207. (Statistically Significant)"
+    },
+    "sqft_lot": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0505,
+      "p_value": 0.0006192879039218561,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0505, p = 6.1929e-04. (Statistically Significant)"
+    },
+    "floors": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.1515,
+      "p_value": 5.187215923996609e-25,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.1515, p = 5.1872e-25. (Statistically Significant)"
+    },
+    "waterfront": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.1356,
+      "p_value": 2.4568216421067873e-20,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.1356, p = 2.4568e-20. (Statistically Significant)"
+    },
+    "view": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2285,
+      "p_value": 1.4683528987509534e-55,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2285, p = 1.4684e-55. (Statistically Significant)"
+    },
+    "condition": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0349,
+      "p_value": 0.017879821783282446,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0349, p = 1.7880e-02. (Statistically Significant)"
+    },
+    "sqft_above": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.3676,
+      "p_value": 3.8082990527396874e-147,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.3676, p = 3.8083e-147. (Statistically Significant)"
+    },
+    "sqft_basement": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2104,
+      "p_value": 3.3606614508791908e-47,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2104, p = 3.3607e-47. (Statistically Significant)"
+    },
+    "yr_built": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0219,
+      "p_value": 0.13829333009383224,
       "is_statistically_significant": false,
-      "interpretation": "Chi2 = 1.0359, dof = 6, p = 9.8422e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0219, p = 1.3829e-01. (Not Significant)"
     },
-    "Annual_Income_USD": {
+    "yr_renovated": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.0288,
+      "p_value": 0.05100981270475135,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0288, p = 5.1010e-02. (Not Significant)"
+    },
+    "street": {
       "test_name": "One-Way ANOVA",
-      "statistic": 2.0803,
-      "p_value": 0.10053619095180616,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = 2.0803, p = 1.0054e-01. (Not Significant)"
+      "statistic": 1.6047,
+      "p_value": 0.022220603584191322,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 1.6047, p = 2.2221e-02. (Statistically Significant)"
     },
-    "City_Type": {
-      "test_name": "Chi-Square Test of Independence",
-      "statistic": 1.544,
-      "p_value": 0.9565204353246848,
-      "is_statistically_significant": false,
-      "interpretation": "Chi2 = 1.5440, dof = 6, p = 9.5652e-01. (Not Significant)"
-    },
-    "Daily_Commute_km": {
+    "city": {
       "test_name": "One-Way ANOVA",
-      "statistic": 0.2107,
-      "p_value": 0.8890625345184906,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.2107, p = 8.8906e-01. (Not Significant)"
+      "statistic": 13.7163,
+      "p_value": 7.543938534855021e-85,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 13.7163, p = 7.5439e-85. (Statistically Significant)"
     },
-    "Number_of_Cars_Owned": {
+    "statezip": {
       "test_name": "One-Way ANOVA",
-      "statistic": 0.0629,
-      "p_value": 0.9794037019920961,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.0629, p = 9.7940e-01. (Not Significant)"
+      "statistic": 12.7456,
+      "p_value": 1.8142863430077945e-136,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 12.7456, p = 1.8143e-136. (Statistically Significant)"
     },
-    "Charging_Stations_Near_Home": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 0.2881,
-      "p_value": 0.834005016936537,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.2881, p = 8.3401e-01. (Not Significant)"
+    "price_per_sqft": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.8193,
+      "p_value": 0.0,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.8193, p = 0.0000e+00. (Statistically Significant)"
     },
-    "Charging_Stations_Near_Work": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 0.1864,
-      "p_value": 0.905688165841452,
-      "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.1864, p = 9.0569e-01. (Not Significant)"
-    },
-    "significant_predictors": []
+    "significant_predictors": [
+      "bedrooms",
+      "bathrooms",
+      "sqft_living",
+      "sqft_lot",
+      "floors",
+      "waterfront",
+      "view",
+      "condition",
+      "sqft_above",
+      "sqft_basement",
+      "street",
+      "city",
+      "statezip",
+      "price_per_sqft"
+    ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "Current_Car_Type",
-    "problem_type": "Classification",
+    "target_definition": "price",
+    "problem_type": "Regression",
     "recommended_algorithms": [
-      "Regularized Logistic Regression (baseline)",
-      "Random Forest Classifier",
-      "Gradient Boosting Classifier (XGBoost / LightGBM)",
-      "Support Vector Classifier (SVM)"
+      "Regularized Linear Regression (Ridge / Lasso)",
+      "Random Forest Regressor",
+      "Gradient Boosting Regressor",
+      "Support Vector Regressor (SVR)"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -390,21 +721,36 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Stratified K-Fold Cross-Validation (5 folds)",
-      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+      "K-Fold Cross-Validation (5 folds)",
+      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Current_Car_Type (Classification). Use robust cross-validation on 10000 rows x 10 columns."
+    "executive_summary": "Target: price (Regression). Use robust cross-validation on 4600 rows x 18 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 10000 rows and 10 columns.",
+      "Dataset contains 4600 rows and 18 columns.",
       "Processed missing values and computed statistical distributions."
     ],
-    "statistically_significant_predictors": []
+    "statistically_significant_predictors": [
+      "bedrooms",
+      "bathrooms",
+      "sqft_living",
+      "sqft_lot",
+      "floors",
+      "waterfront",
+      "view",
+      "condition",
+      "sqft_above",
+      "sqft_basement",
+      "street",
+      "city",
+      "statezip",
+      "price_per_sqft"
+    ]
   }
 }

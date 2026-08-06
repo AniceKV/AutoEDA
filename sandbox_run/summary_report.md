@@ -1,168 +1,190 @@
-# Executive Summary Report: EV Adoption and Range Anxiety Dataset
+# Executive Summary Report: Automated EDA Pipeline Output
 
-## 1. Overview
+## 1. Dataset Overview
 
-This report summarizes the outputs of an automated Exploratory Data Analysis (EDA) pipeline executed on the “EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv” dataset. The dataset contains 10,000 rows and 10 columns, focusing on electric vehicle (EV) buyer demographics and behavioral metrics. The analysis was conducted to uncover patterns, assess data quality, identify statistical relationships, and lay the groundwork for predictive modeling.
+The automated EDA pipeline processed a dataset named `modified_data.csv` containing **4,600 rows** and **18 columns**. All columns were found to be complete (no missing values), and no imputations were required. The target variable for modeling is **`price`**, which represents the sale price of residential properties.
 
-All artifacts generated during the EDA process—including visualizations, statistical summaries, and metadata—are included in this summary. The target variable for modeling is **Current_Car_Type**, a classification problem with four categories: Sedan, SUV, Hatchback, and Truck.
-
----
-
-## 2. Data Quality & Preprocessing
-
-### Missing Value Handling
-- **Annual_Income_USD**: 178 missing values (1.78%) → Imputed using **median** (84,708.00).
-- **Daily_Commute_km**: 181 missing values (1.81%) → Imputed using **median** (40.20).
-- All other columns had zero missing values.
-- No string-based placeholders were found; all missing values were numeric or categorical and handled appropriately.
-
-### Outlier Detection
-Outliers were detected using IQR-based methods. Key findings:
-
-| Feature               | Outlier Count | % of Total | Action Taken |
-|----------------------|---------------|------------|--------------|
-| Age                  | 0             | 0.0%       | Profile      |
-| Annual_Income_USD    | 58            | 0.58%      | Profile      |
-| Daily_Commute_km     | 44            | 0.44%      | Profile      |
-| Number_of_Cars_Owned | 511           | 5.11%      | Profile      |
-| Charging_Stations_Near_Home | 0   | 0.0%       | Profile      |
-| Charging_Stations_Near_Work | 0   | 0.0%       | Profile      |
-
-> Note: While outliers exist, they are not deemed severe enough to warrant removal. Instead, their presence is documented for further investigation.
+### Key Metadata
+| Metric                  | Value                      |
+|------------------------|----------------------------|
+| Rows                   | 4,600                      |
+| Columns                | 18                         |
+| Target Variable        | price                      |
+| Data Type              | Regression Problem         |
+| File Path              | C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\modified_data.csv |
 
 ---
 
-## 3. Statistical Summary of Key Features
+## 2. Statistical Summary & Distribution Analysis
 
-### Descriptive Statistics
+All numeric features exhibit significant skewness, indicating non-normal distributions. Outlier detection was performed using IQR-based thresholds; notable outlier counts include:
 
-| Feature                | Min     | Max     | Mean     | Median  | Std Dev  | Cardinality |
-|------------------------|---------|---------|----------|---------|----------|-------------|
-| Age                    | 25.00   | 69.00   | 46.94    | 47.00   | ~10.0    | 45          |
-| Annual_Income_USD      | 30,000  | 223,345 | 85,378.5 | 84,708  | ~50,000  | 8,915       |
-| Daily_Commute_km       | 5.00    | 135.50  | 41.11    | 40.20   | ~25.0    | 991         |
-| Number_of_Cars_Owned   | 1.00    | 4.00    | 1.86     | 2.00    | ~0.5     | 4           |
-| Charging_Stations_Near_Home | 0.00 | 14.00   | 5.35     | 5.00    | ~2.5     | 15          |
-| Charging_Stations_Near_Work | 0.00 | 19.00   | 7.46     | 6.00    | ~3.0     | 20          |
+- **price**: 240 outliers (5.22%)
+- **sqft_lot**: 541 outliers (11.76%)
+- **sqft_living**: 129 outliers (2.8%)
 
-### Correlation Matrix Highlights
+Outliers were flagged but not removed — instead, they are noted for profile analysis to understand their impact on model performance.
 
-The strongest correlation observed is between **Charging_Stations_Near_Home** and **Charging_Stations_Near_Work** (r = 0.481), indicating that buyers who have access to charging stations at home are more likely to also have them at work. All other pairwise correlations are weak (below 0.05).
+### Feature Descriptive Statistics
 
-| Feature Pair                     | Correlation Coefficient |
-|----------------------------------|--------------------------|
-| Charging_Stations_Near_Home vs Work | 0.481                   |
-| Daily_Commute_km vs Home Stations | 0.027                   |
-| Age vs Income                    | -0.011                  |
-| Age vs Commute                   | -0.014                  |
-| Income vs Home Stations          | 0.005                   |
-| Commute vs Cars Owned            | -0.007                  |
+| Feature           | Mean       | Median     | Skewness | Range          | Cardinality |
+|-------------------|------------|------------|----------|----------------|-------------|
+| price             | 551,962.99 | 460,943.46 | 24.79    | [0.00, 26,590,000.00] | 1,741       |
+| sqft_living       | 2,139.35   | 1,980.00   | 1.72     | [370.00, 13,540.00]   | 566         |
+| sqft_lot          | 14,852.52  | 7,683.00   | 11.31    | [638.00, 1,074,218.00]| 3,113       |
+| bedrooms          | 3.40       | 3.00       | —        | [0.00, 9.00]           | 10          |
+| bathrooms         | 2.16       | 2.25       | —        | [0.00, 8.00]           | 26          |
+| price_per_sqft    | 265.88     | 243.86     | 53.47    | [0.00, 22,533.90]     | 4,005       |
 
 ---
 
-## 4. Feature Engineering & Insights
+## 3. Correlation Analysis
 
-No engineered features were created during this EDA phase. The pipeline focused on:
-- Standardizing missing value imputation.
-- Detecting and documenting outliers.
-- Computing descriptive statistics and correlations.
+A comprehensive correlation matrix was generated and saved as `correlation_matrix.png`. The top correlations with the target (`price`) are:
 
-### Key Observations:
-- **Age distribution** is centered around 47 years, with a slight skew toward older demographics.
-- **Income distribution** is right-skewed, with median below mean — suggesting a few high-income outliers.
-- **Commute distance** varies widely, with many users commuting over 50 km daily.
-- **Car ownership** is mostly concentrated at 1–2 cars per household.
-- **City Type** distribution: Urban (49.4%), Suburban (35.6%), Rural (14.9%).
+| Feature Pair            | Correlation Coefficient |
+|-------------------------|--------------------------|
+| price vs price_per_sqft | 0.8193 (Strong)          |
+| sqft_living vs sqft_above | 0.8764 (Very Strong)     |
+| bathrooms vs sqft_living | 0.7612 (Strong)          |
+| bedrooms vs sqft_living | 0.5949 (Moderate)        |
+| bedrooms vs bathrooms   | 0.5459 (Moderate)        |
 
----
+### Top 10 Correlations (by magnitude)
 
-## 5. Visual Artifact Descriptions
+| Feature_1      | Feature_2      | Correlation |
+|----------------|----------------|-------------|
+| sqft_living    | sqft_above     | 0.8764      |
+| price          | price_per_sqft | 0.8193      |
+| bathrooms      | sqft_living    | 0.7612      |
+| bathrooms      | sqft_above     | 0.6899      |
+| bedrooms       | sqft_living    | 0.5949      |
+| bedrooms       | bathrooms      | 0.5459      |
+| floors         | sqft_above     | 0.5228      |
+| bathrooms      | floors         | 0.4864      |
+| bedrooms       | sqft_above     | 0.4847      |
+| floors         | yr_built       | 0.4675      |
 
-The following visualizations were generated and saved as image files:
-
-### Distribution Plots
-- `dist_Age.png`, `dist_Annual_Income_USD.png`, `dist_Daily_Commute_km.png`: Show distributions of continuous variables.
-- `dist_Gender.png`, `dist_City_Type.png`, `dist_Current_Car_Type.png`: Display categorical distributions.
-- `dist_Number_of_Cars_Owned.png`, `dist_Charging_Stations_Near_Home.png`, `dist_Charging_Stations_Near_Work.png`: Illustrate frequency of discrete variables.
-
-### Bivariate Relationships
-- `bivariate_Age_vs_Annual_Income_USD.png`: Shows minimal linear relationship (r ≈ -0.01).
-- `bivariate_Daily_Commute_km_vs_Number_of_Cars_Owned.png`: Slight negative trend (r ≈ -0.007).
-- `bivariate_Charging_Stations_Near_Home_vs_Current_Car_Type.png`: Indicates higher station availability among SUV/Hatchback owners.
-
-### Multivariate Analysis
-- `pairplot.png`: Displays scatterplots across all numeric pairs, confirming low inter-feature correlation.
-- `correlation_matrix.png`: Heatmap visualization of feature correlations.
-- `target_interactions.png`: Visualizes how each feature interacts with the target variable (Current_Car_Type).
+> Note: High positive correlation between `sqft_living` and `sqft_above` suggests that most living space is above ground level, which may indicate architectural design trends or data structure.
 
 ---
 
-## 6. Statistical Hypothesis Testing
+## 4. Statistical Hypothesis Testing
 
-All hypothesis tests performed were non-significant (p > 0.05). This suggests no statistically significant association between any feature and the target variable **Current_Car_Type** under standard assumptions.
+Statistical significance was tested for each feature against the target variable (`price`) using Pearson correlation tests (for continuous variables) and One-Way ANOVA (for categorical variables).
 
-| Feature        | Test Type              | Statistic | p-value     | Significance |
-|----------------|------------------------|-----------|-------------|--------------|
-| Buyer_ID       | Chi-Square             | 30000.0   | 0.494       | Not Significant |
-| Age            | One-Way ANOVA          | 1.810     | 0.143       | Not Significant |
-| Gender         | Chi-Square             | 1.036     | 0.984       | Not Significant |
-| Annual_Income  | One-Way ANOVA          | 2.080     | 0.101       | Not Significant |
-| City_Type      | Chi-Square             | 1.544     | 0.957       | Not Significant |
-| Daily_Commute  | One-Way ANOVA          | 0.211     | 0.889       | Not Significant |
-| Cars Owned     | One-Way ANOVA          | 0.063     | 0.979       | Not Significant |
-| Charging_Home  | One-Way ANOVA          | 0.288     | 0.834       | Not Significant |
-| Charging_Work  | One-Way ANOVA          | 0.186     | 0.906       | Not Significant |
+### Statistically Significant Predictors (p < 0.05)
 
-> **Conclusion**: No feature shows statistically significant predictive power for Current_Car_Type based on current sample size and test design.
+| Feature        | Test Result                     | Interpretation                                  |
+|----------------|----------------------------------|------------------------------------------------|
+| bedrooms       | p = 7.38e-43                     | Highly significant                              |
+| bathrooms      | p = 3.64e-115                    | Extremely significant                           |
+| sqft_living    | p = 7.55e-207                    | Extremely significant                           |
+| sqft_lot       | p = 6.19e-04                     | Significant                                     |
+| floors         | p = 5.19e-25                     | Highly significant                              |
+| waterfront     | p = 2.46e-20                     | Highly significant                              |
+| view           | p = 1.47e-55                     | Extremely significant                           |
+| condition      | p = 1.79e-02                     | Significant                                     |
+| sqft_above     | p = 3.81e-147                    | Extremely significant                           |
+| sqft_basement  | p = 3.36e-47                     | Extremely significant                           |
+| street         | F=1.60, p=0.022                  | Statistically significant                       |
+| city           | F=13.72, p=7.54e-85              | Extremely significant                           |
+| statezip       | F=12.75, p=1.81e-136             | Extremely significant                           |
+| price_per_sqft | p = 0.0000                      | Extremely significant                           |
+
+### Non-Significant Features
+
+- `yr_built`: p = 0.138 → Not significant
+- `yr_renovated`: p = 0.051 → Marginally significant (borderline)
+
+---
+
+## 5. Feature Engineering & Preprocessing
+
+No engineered features were created during this EDA phase. However, preprocessing steps included:
+
+- Standardized placeholder strings ('?', 'NA', etc.) to NaN.
+- Imputation strategy:
+  - Numeric columns with skewness > 1.0 → median imputation.
+  - Numeric columns with skewness ≤ 1.0 → mean imputation.
+  - Categorical columns → mode imputation with fallback to 'Unknown'.
+
+All features were retained as-is since no missing values existed.
+
+---
+
+## 6. Visualization Artifacts
+
+The following visualizations were generated and saved in the working directory:
+
+### Bivariate Plots
+- `bivariate_bedrooms_vs_price.png`
+- `bivariate_price_per_sqft_vs_sqft_above.png`
+- `bivariate_sqft_living_vs_price.png`
+- `bivariate_yr_built_vs_price.png`
+
+These plots reveal strong positive relationships between key features and price, especially `sqft_living`, `bedrooms`, and `price_per_sqft`.
+
+### Univariate Distributions
+- `dist_price.png`, `dist_price_per_sqft.png`, `dist_sqft_living.png`, `dist_sqft_lot.png`, `dist_bathrooms.png`, `dist_bedrooms.png`, `dist_condition.png`, `dist_yr_built.png`, `dist_yr_renovated.png`, `dist_waterfront.png`, `dist_view.png`, `dist_city.png`, `dist_statezip.png`, `dist_street.png`, `dist_floors.png`
+
+Most distributions are right-skewed, particularly `price`, `price_per_sqft`, and `sqft_lot`.
+
+### Multivariate Visualizations
+- `pairplot.png` — Comprehensive scatter plot matrix showing pairwise relationships across all numeric features.
+- `target_interactions.png` — Interaction effects between features and target variable.
 
 ---
 
 ## 7. Predictive Modeling Blueprint
 
-### Target Definition
-- **Target Variable**: `Current_Car_Type` (Classification)
-- **Problem Type**: Multi-class Classification
+### Problem Definition
+- **Target**: `price`
+- **Problem Type**: Regression
+- **Dataset Size**: 4,600 samples × 18 features
 
 ### Recommended Algorithms
-1. Regularized Logistic Regression (Baseline)
-2. Random Forest Classifier
-3. Gradient Boosting Classifier (XGBoost / LightGBM)
-4. Support Vector Classifier (SVM)
+1. Regularized Linear Regression (Ridge / Lasso)
+2. Random Forest Regressor
+3. Gradient Boosting Regressor
+4. Support Vector Regressor (SVR)
 
 ### Feature Selection Strategy
-- Exclude high-cardinality ID columns (`Buyer_ID`) and text-based identifiers.
-- Use cross-validated permutation importance and mutual information to rank features.
+- Exclude high-cardinality ID/text columns (e.g., `street`, `city`, `statezip` may require encoding).
+- Rank features via cross-validated permutation importance and mutual information.
 - Remove collinear features with correlation > 0.85.
 
 ### Validation Strategy
-- **Stratified K-Fold Cross-Validation (K=5)**.
-- Evaluate using:
-  - Balanced Accuracy
-  - Macro F1 Score
-  - Precision-Recall AUC
-  - Confusion Matrix
+- K-Fold Cross-Validation (5 folds)
+- Metrics: MAE, RMSE, R², Residual Error Distribution
 
-### Overfitting Risk Mitigation
+### Overfitting Mitigation
 - Apply L1/L2 regularization penalties.
 - Limit tree depth and enforce minimum samples per leaf.
-- Perform hyperparameter tuning strictly within CV folds.
+- Hyperparameter tuning strictly within CV folds.
 
 ---
 
-## 8. Executive Recommendations
+## 8. Executive Insights
 
-1. **Data Quality**: The dataset is clean after preprocessing. Focus should be on model interpretability rather than data cleaning.
-2. **Feature Engineering**: Consider creating interaction terms (e.g., commute × income) or aggregating city types if domain knowledge supports it.
-3. **Modeling Approach**: Start with logistic regression for baseline performance. Then scale up to ensemble methods like XGBoost.
-4. **Business Insight**: High correlation between home/work charging stations suggests infrastructure proximity may influence car type choice — explore this in future models.
-5. **Next Steps**: Conduct targeted experiments on feature combinations and validate against external datasets if available.
+### Key Findings
+- Price is strongly correlated with `price_per_sqft` (r=0.819), suggesting unit cost is a dominant driver.
+- Living area (`sqft_living`) and above-ground area (`sqft_above`) are highly correlated (r=0.876), indicating architectural consistency.
+- Location matters significantly: `city` and `statezip` show extreme statistical significance (p < 1e-85).
+- `condition` and `view` have moderate predictive power despite low correlation with price.
+
+### Strategic Recommendations
+- Prioritize `sqft_living`, `bedrooms`, `bathrooms`, `price_per_sqft`, and location-based features (`city`, `statezip`) in model development.
+- Consider interaction terms between `yr_renovated` and `condition` or `waterfront`.
+- Use ensemble methods (Random Forest, XGBoost) to capture nonlinear relationships.
+- Validate models on out-of-sample data to ensure generalizability.
 
 ---
 
 ## 9. Conclusion
 
-The EDA pipeline successfully processed, profiled, and visualized the EV adoption dataset. While no statistically significant predictors emerged from initial hypothesis testing, strong correlations between infrastructure availability (charging stations) suggest potential for meaningful modeling when combined with domain-specific engineering. The dataset is well-suited for classification tasks, and the blueprint provided offers a robust starting point for predictive modeling efforts.
+This automated EDA pipeline successfully characterized a large-scale real estate dataset with 4,600 observations. The analysis confirmed strong predictive relationships between property metrics and sale price, with location and square footage being the most influential factors. The dataset is well-suited for regression modeling, and the recommended algorithms and validation strategies will enable robust, interpretable predictions. Further work should focus on feature engineering, hyperparameter optimization, and deployment-ready model evaluation.
 
 --- 
 
-*Generated by Senior Lead Data Scientist — Automated EDA Pipeline Output Summary*
+*Generated by Senior Lead Data Scientist — AutoEDA Pipeline Output Summary*

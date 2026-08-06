@@ -2,154 +2,188 @@
 
 ## 1. Dataset Overview
 
-The automated Exploratory Data Analysis (EDA) pipeline has processed a dataset named `modified_data.csv`, containing **4,600 rows** and **18 columns**. All columns are fully populated with no missing values detected prior to imputation. The target variable for modeling is **`price`**, indicating a regression problem.
+The automated EDA pipeline processed a dataset named `modified_data.csv` containing **4,600 rows** and **18 columns**. All columns were found to be complete (no missing values), and no imputations were required. The target variable for modeling is **`price`**, which represents the sale price of residential properties.
 
 ### Key Metadata
-| Metric                  | Value               |
-|------------------------|---------------------|
-| Rows                   | 4,600              |
-| Columns                | 18                 |
-| Target Variable        | price              |
-| Problem Type           | Regression         |
-| Data Source Path       | C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\modified_data.csv |
+| Metric                  | Value                      |
+|------------------------|----------------------------|
+| Rows                   | 4,600                      |
+| Columns                | 18                         |
+| Target Variable        | price                      |
+| Data Type              | Regression Problem         |
+| File Path              | C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\modified_data.csv |
 
 ---
 
 ## 2. Statistical Summary & Distribution Analysis
 
-All numeric features exhibit skewness, with several showing extreme right-skewness (>50), suggesting heavy-tailed distributions. Outlier detection was performed using IQR-based thresholds; notable outlier counts include:
+All numeric features exhibit significant skewness, indicating non-normal distributions. Outlier detection was performed using IQR-based thresholds; notable outlier counts include:
 
 - **price**: 240 outliers (5.22%)
 - **sqft_lot**: 541 outliers (11.76%)
-- **bathrooms**: 141 outliers (3.07%)
+- **sqft_living**: 129 outliers (2.8%)
 
-Outliers were flagged but not removed — instead, they are profiled for further investigation.
+Outliers were flagged but not removed — instead, they are noted for profile analysis to understand their impact on model performance.
 
-### Feature Skewness Summary
-| Feature             | Skewness | Notes                          |
-|---------------------|----------|--------------------------------|
-| price               | 24.79    | Highly skewed                  |
-| sqft_living         | 1.72     | Highly skewed                  |
-| sqft_lot            | 11.31    | Highly skewed                  |
-| price_per_sqft      | 53.47    | Extremely skewed               |
-| sqft_above          | 1.49     | Highly skewed                  |
-| sqft_basement       | 1.64     | Highly skewed                  |
+### Feature Descriptive Statistics
+
+| Feature           | Mean       | Median     | Skewness | Range          | Cardinality |
+|-------------------|------------|------------|----------|----------------|-------------|
+| price             | 551,962.99 | 460,943.46 | 24.79    | [0.00, 26,590,000.00] | 1,741       |
+| sqft_living       | 2,139.35   | 1,980.00   | 1.72     | [370.00, 13,540.00]   | 566         |
+| sqft_lot          | 14,852.52  | 7,683.00   | 11.31    | [638.00, 1,074,218.00]| 3,113       |
+| bedrooms          | 3.40       | 3.00       | —        | [0.00, 9.00]           | 10          |
+| bathrooms         | 2.16       | 2.25       | —        | [0.00, 8.00]           | 26          |
+| price_per_sqft    | 265.88     | 243.86     | 53.47    | [0.00, 22,533.90]     | 4,005       |
 
 ---
 
-## 3. Correlation & Feature Relationships
+## 3. Correlation Analysis
 
-A comprehensive correlation matrix was computed and visualized in `correlation_matrix.png`. The strongest relationships are:
+A comprehensive correlation matrix was generated and saved as `correlation_matrix.png`. The top correlations with the target (`price`) are:
 
-### Top 10 Correlations
-| Feature 1        | Feature 2        | Correlation | Significance |
-|------------------|------------------|-------------|--------------|
-| sqft_living      | sqft_above       | 0.8764      | ★★★★          |
-| price            | price_per_sqft   | 0.8193      | ★★★★          |
-| bathrooms        | sqft_living      | 0.7612      | ★★★★          |
-| bathrooms        | sqft_above       | 0.6899      | ★★★★          |
-| bedrooms         | sqft_living      | 0.5949      | ★★★           |
-| bedrooms         | bathrooms        | 0.5459      | ★★★           |
-| floors           | sqft_above       | 0.5228      | ★★★           |
-| bathrooms        | floors           | 0.4864      | ★★★           |
-| bedrooms         | sqft_above       | 0.4847      | ★★★           |
-| floors           | yr_built         | 0.4675      | ★★★           |
+| Feature Pair            | Correlation Coefficient |
+|-------------------------|--------------------------|
+| price vs price_per_sqft | 0.8193 (Strong)          |
+| sqft_living vs sqft_above | 0.8764 (Very Strong)     |
+| bathrooms vs sqft_living | 0.7612 (Strong)          |
+| bedrooms vs sqft_living | 0.5949 (Moderate)        |
+| bedrooms vs bathrooms   | 0.5459 (Moderate)        |
 
-> **Note**: Features with correlation > 0.85 are candidates for collinearity removal during feature engineering.
+### Top 10 Correlations (by magnitude)
+
+| Feature_1      | Feature_2      | Correlation |
+|----------------|----------------|-------------|
+| sqft_living    | sqft_above     | 0.8764      |
+| price          | price_per_sqft | 0.8193      |
+| bathrooms      | sqft_living    | 0.7612      |
+| bathrooms      | sqft_above     | 0.6899      |
+| bedrooms       | sqft_living    | 0.5949      |
+| bedrooms       | bathrooms      | 0.5459      |
+| floors         | sqft_above     | 0.5228      |
+| bathrooms      | floors         | 0.4864      |
+| bedrooms       | sqft_above     | 0.4847      |
+| floors         | yr_built       | 0.4675      |
+
+> Note: High positive correlation between `sqft_living` and `sqft_above` suggests that most living space is above ground level, which may indicate architectural design trends or data structure.
 
 ---
 
 ## 4. Statistical Hypothesis Testing
 
-Statistical significance tests confirm strong predictive power for most features against the target (`price`). Only two variables — `yr_built` and `yr_renovated` — showed non-significant correlations (p > 0.05).
+Statistical significance was tested for each feature against the target variable (`price`) using Pearson correlation tests (for continuous variables) and One-Way ANOVA (for categorical variables).
 
-### Significant Predictors (p < 0.05)
-| Feature         | Pearson r | p-value       | Interpretation                     |
-|-----------------|-----------|---------------|------------------------------------|
-| bedrooms        | 0.2003    | 7.38e-43      | Statistically significant           |
-| bathrooms       | 0.3271    | 3.64e-115     | Statistically significant           |
-| sqft_living     | 0.4304    | 7.55e-207     | Statistically significant           |
-| sqft_lot        | 0.0505    | 6.19e-04      | Statistically significant           |
-| floors          | 0.1515    | 5.19e-25      | Statistically significant           |
-| waterfront      | 0.1356    | 2.46e-20      | Statistically significant           |
-| view            | 0.2285    | 1.47e-55      | Statistically significant           |
-| condition       | 0.0349    | 1.79e-02      | Statistically significant           |
-| sqft_above      | 0.3676    | 3.81e-147     | Statistically significant           |
-| sqft_basement   | 0.2104    | 3.36e-47      | Statistically significant           |
-| street          | —         | 2.22e-02      | Statistically significant (ANOVA)  |
-| city            | —         | 7.54e-85      | Statistically significant (ANOVA)  |
-| statezip        | —         | 1.81e-136     | Statistically significant (ANOVA)  |
-| price_per_sqft  | 0.8193    | 0.0000        | Statistically significant           |
+### Statistically Significant Predictors (p < 0.05)
 
-> **Non-significant predictors**: `yr_built` (p=0.138), `yr_renovated` (p=0.051)
+| Feature        | Test Result                     | Interpretation                                  |
+|----------------|----------------------------------|------------------------------------------------|
+| bedrooms       | p = 7.38e-43                     | Highly significant                              |
+| bathrooms      | p = 3.64e-115                    | Extremely significant                           |
+| sqft_living    | p = 7.55e-207                    | Extremely significant                           |
+| sqft_lot       | p = 6.19e-04                     | Significant                                     |
+| floors         | p = 5.19e-25                     | Highly significant                              |
+| waterfront     | p = 2.46e-20                     | Highly significant                              |
+| view           | p = 1.47e-55                     | Extremely significant                           |
+| condition      | p = 1.79e-02                     | Significant                                     |
+| sqft_above     | p = 3.81e-147                    | Extremely significant                           |
+| sqft_basement  | p = 3.36e-47                     | Extremely significant                           |
+| street         | F=1.60, p=0.022                  | Statistically significant                       |
+| city           | F=13.72, p=7.54e-85              | Extremely significant                           |
+| statezip       | F=12.75, p=1.81e-136             | Extremely significant                           |
+| price_per_sqft | p = 0.0000                      | Extremely significant                           |
+
+### Non-Significant Features
+
+- `yr_built`: p = 0.138 → Not significant
+- `yr_renovated`: p = 0.051 → Marginally significant (borderline)
 
 ---
 
-## 5. Visual Artifact Descriptions
+## 5. Feature Engineering & Preprocessing
 
-The following visualizations were generated and saved as image files:
+No engineered features were created during this EDA phase. However, preprocessing steps included:
+
+- Standardized placeholder strings ('?', 'NA', etc.) to NaN.
+- Imputation strategy:
+  - Numeric columns with skewness > 1.0 → median imputation.
+  - Numeric columns with skewness ≤ 1.0 → mean imputation.
+  - Categorical columns → mode imputation with fallback to 'Unknown'.
+
+All features were retained as-is since no missing values existed.
+
+---
+
+## 6. Visualization Artifacts
+
+The following visualizations were generated and saved in the working directory:
 
 ### Bivariate Plots
-- `bivariate_bedrooms_vs_price.png`: Shows positive linear trend — more bedrooms correlate with higher prices.
-- `bivariate_sqft_living_vs_price.png`: Strong positive relationship — larger living area → higher price.
-- `bivariate_yr_built_vs_price.png`: Weak or negligible effect — older homes do not consistently command higher prices.
-- `bivariate_price_per_sqft_vs_condition.png`: Condition has modest impact on price per square foot.
+- `bivariate_bedrooms_vs_price.png`
+- `bivariate_price_per_sqft_vs_sqft_above.png`
+- `bivariate_sqft_living_vs_price.png`
+- `bivariate_yr_built_vs_price.png`
+
+These plots reveal strong positive relationships between key features and price, especially `sqft_living`, `bedrooms`, and `price_per_sqft`.
 
 ### Univariate Distributions
-- `dist_price.png`, `dist_price_per_sqft.png`: Right-skewed distributions with long tails.
-- `dist_sqft_living.png`, `dist_sqft_lot.png`: Heavy-tailed, indicating presence of luxury properties.
-- `dist_city.png`, `dist_statezip.png`: High cardinality categorical features — Seattle, WA 98103, WA 98052 dominate.
+- `dist_price.png`, `dist_price_per_sqft.png`, `dist_sqft_living.png`, `dist_sqft_lot.png`, `dist_bathrooms.png`, `dist_bedrooms.png`, `dist_condition.png`, `dist_yr_built.png`, `dist_yr_renovated.png`, `dist_waterfront.png`, `dist_view.png`, `dist_city.png`, `dist_statezip.png`, `dist_street.png`, `dist_floors.png`
 
-### Other Visuals
-- `target_interactions.png`: Interaction effects between features and target variable.
-- `correlation_matrix.png`: Heatmap visualization of pairwise correlations.
+Most distributions are right-skewed, particularly `price`, `price_per_sqft`, and `sqft_lot`.
+
+### Multivariate Visualizations
+- `pairplot.png` — Comprehensive scatter plot matrix showing pairwise relationships across all numeric features.
+- `target_interactions.png` — Interaction effects between features and target variable.
 
 ---
 
-## 6. Feature Engineering & Modeling Blueprint
+## 7. Predictive Modeling Blueprint
+
+### Problem Definition
+- **Target**: `price`
+- **Problem Type**: Regression
+- **Dataset Size**: 4,600 samples × 18 features
 
 ### Recommended Algorithms
-- Regularized Linear Regression (Ridge / Lasso)
-- Random Forest Regressor
-- Gradient Boosting Regressor
-- Support Vector Regressor (SVR)
+1. Regularized Linear Regression (Ridge / Lasso)
+2. Random Forest Regressor
+3. Gradient Boosting Regressor
+4. Support Vector Regressor (SVR)
 
 ### Feature Selection Strategy
-1. Exclude high-cardinality ID/text columns (`street`, `city`, `statezip`) unless encoded appropriately.
-2. Rank features via cross-validated permutation importance and mutual information.
-3. Remove collinear features with correlation > 0.85 (e.g., `sqft_living` and `sqft_above`).
+- Exclude high-cardinality ID/text columns (e.g., `street`, `city`, `statezip` may require encoding).
+- Rank features via cross-validated permutation importance and mutual information.
+- Remove collinear features with correlation > 0.85.
 
 ### Validation Strategy
 - K-Fold Cross-Validation (5 folds)
-- Metrics: MAE, RMSE, R-Squared, Residual Error Distribution
+- Metrics: MAE, RMSE, R², Residual Error Distribution
 
 ### Overfitting Mitigation
-- Apply L1/L2 regularization penalties
-- Limit tree depth and enforce minimum samples per leaf
-- Hyperparameter tuning strictly within CV folds
+- Apply L1/L2 regularization penalties.
+- Limit tree depth and enforce minimum samples per leaf.
+- Hyperparameter tuning strictly within CV folds.
 
 ---
 
-## 7. Extracted Insights & Recommendations
+## 8. Executive Insights
 
 ### Key Findings
-- **Price is strongly driven by square footage** (`sqft_living`, `sqft_above`).
-- **Location matters** — `city` and `statezip` show statistically significant group-level differences.
-- **Condition and view** have moderate influence on pricing.
-- **Price per square foot** is highly correlated with absolute price — useful for normalization or as a derived feature.
-- **Renovation year (`yr_renovated`)** shows weak correlation — may be less predictive than other features.
+- Price is strongly correlated with `price_per_sqft` (r=0.819), suggesting unit cost is a dominant driver.
+- Living area (`sqft_living`) and above-ground area (`sqft_above`) are highly correlated (r=0.876), indicating architectural consistency.
+- Location matters significantly: `city` and `statezip` show extreme statistical significance (p < 1e-85).
+- `condition` and `view` have moderate predictive power despite low correlation with price.
 
 ### Strategic Recommendations
-- Prioritize `sqft_living`, `bedrooms`, `bathrooms`, `condition`, `view`, and `price_per_sqft` as core predictors.
-- Consider encoding `city` and `statezip` as categorical embeddings or one-hot vectors.
-- Use `price_per_sqft` as a normalized feature to reduce noise from property size variation.
-- Investigate outliers in `price` and `sqft_lot` — potential data entry errors or luxury anomalies.
+- Prioritize `sqft_living`, `bedrooms`, `bathrooms`, `price_per_sqft`, and location-based features (`city`, `statezip`) in model development.
+- Consider interaction terms between `yr_renovated` and `condition` or `waterfront`.
+- Use ensemble methods (Random Forest, XGBoost) to capture nonlinear relationships.
+- Validate models on out-of-sample data to ensure generalizability.
 
 ---
 
-## 8. Conclusion
+## 9. Conclusion
 
-This dataset presents a rich opportunity for predictive modeling, particularly in real estate valuation. The automated EDA pipeline successfully identified key drivers of price, confirmed statistical significance across multiple features, and provided actionable insights for model development. The next steps should focus on feature engineering, hyperparameter optimization, and deployment-ready model validation using robust cross-validation frameworks.
+This automated EDA pipeline successfully characterized a large-scale real estate dataset with 4,600 observations. The analysis confirmed strong predictive relationships between property metrics and sale price, with location and square footage being the most influential factors. The dataset is well-suited for regression modeling, and the recommended algorithms and validation strategies will enable robust, interpretable predictions. Further work should focus on feature engineering, hyperparameter optimization, and deployment-ready model evaluation.
 
 --- 
 
