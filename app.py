@@ -233,7 +233,6 @@ def main():
     # Top Branding Header
     st.markdown("""
     <div class="openrouter-header">
-        <div class="openrouter-badge">⚡ AutoEDA Pro Agent • v3.6</div>
         <div class="openrouter-title">Autonomous Tool-Based Data Science Platform</div>
         <div class="openrouter-subtitle">Stateful Agent Pipeline • Algorithmic Profiling & Statistical Modeling Blueprint</div>
     </div>
