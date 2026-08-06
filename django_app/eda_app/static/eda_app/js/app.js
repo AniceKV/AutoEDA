@@ -493,28 +493,30 @@ function initSidebarToggle() {
   if (overlay) overlay.addEventListener('click', close);
 }
 
-// ── Theme toggle (Light / Dark) ───────────────────────────────
+// ── Theme Toggle module ──────────────────────────────────────
 function initThemeToggle() {
-  const toggleBtn = document.getElementById('theme-toggle');
-  const icon      = document.getElementById('theme-toggle-icon');
-  const text      = document.getElementById('theme-toggle-text');
+  const btn = document.getElementById('theme-toggle-btn');
+  const icon = document.getElementById('theme-toggle-icon');
 
-  function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('autoeda-theme', theme);
-    if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
-    if (text) text.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      if (icon) icon.textContent = '🌙';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (icon) icon.textContent = '☀️';
+    }
   }
 
-  const saved = localStorage.getItem('autoeda-theme') || 'dark';
-  setTheme(saved);
+  const savedTheme = localStorage.getItem('autoeda-theme') || 'dark';
+  applyTheme(savedTheme);
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      setTheme(next);
-      Toast.show(`Switched to ${next} theme.`, 'info', 1800);
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const nextTheme = isLight ? 'dark' : 'light';
+      localStorage.setItem('autoeda-theme', nextTheme);
+      applyTheme(nextTheme);
     });
   }
 }
