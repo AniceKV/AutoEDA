@@ -219,6 +219,15 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 8px !important;
     }
+    
+    /* Hide Expander Dropdown Arrow */
+    .stExpander summary svg {
+        display: none !important;
+    }
+    
+    .stExpander div[data-testid="stExpanderToggleIcon"] {
+        display: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
