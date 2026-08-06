@@ -5,7 +5,8 @@ __pycache__/
 .idea/
 temp_uploads/
 sandbox_run/
-sandbox_test/
+tests/sandbox_test/
+tests/test_sandbox/
 .cache/
 app.py
 django_app/.sessions/
