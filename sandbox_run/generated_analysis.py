@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\train.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\StudentsPerformance.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -11,13 +11,13 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "price_range",
-  "problem_type": "Classification",
+  "target_definition": "writing score",
+  "problem_type": "Regression",
   "recommended_algorithms": [
-    "Regularized Logistic Regression (baseline)",
-    "Random Forest Classifier",
-    "Gradient Boosting Classifier (XGBoost / LightGBM)",
-    "Support Vector Classifier (SVM)"
+    "Regularized Linear Regression (Ridge / Lasso)",
+    "Random Forest Regressor",
+    "Gradient Boosting Regressor",
+    "Support Vector Regressor (SVR)"
   ],
   "feature_selection_strategy": [
     "Exclude high-cardinality ID or text name columns",
@@ -25,15 +25,15 @@ predictive_blueprint = {
     "Remove collinear features exceeding correlation threshold > 0.85"
   ],
   "validation_strategy": [
-    "Stratified K-Fold Cross-Validation (5 folds)",
-    "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    "K-Fold Cross-Validation (5 folds)",
+    "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
   ],
   "overfitting_risk_mitigation": [
     "Apply regularization penalties (L1/L2)",
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: price_range (Classification). Use robust cross-validation on 2000 rows x 21 columns."
+  "executive_summary": "Target: writing score (Regression). Use robust cross-validation on 1000 rows x 8 columns."
 }
 
 if __name__ == '__main__':

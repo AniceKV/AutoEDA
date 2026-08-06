@@ -1,0 +1,527 @@
+{% extends "eda_app/base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- ═══ HERO HEADER ═══════════════════════════════════════════ -->
+{% if not selected_csv_path %}
+<div class="hero-header">
+  <div class="hero-title">Autonomous Tool-Based Data Science Platform</div>
+  <div class="hero-subtitle">Stateful Agent Pipeline &bull; Algorithmic Profiling &bull; Statistical Modeling Blueprint</div>
+</div>
+{% else %}
+<div class="hero-header">
+  <div class="hero-title">AutoEDA Pro</div>
+  <div class="hero-subtitle">Stateful Agent Pipeline &bull; Algorithmic Profiling &bull; Statistical Modeling Blueprint</div>
+</div>
+{% endif %}
+
+<!-- ═══ PIPELINE STATUS BANNER ════════════════════════════════ -->
+{% if pipeline_state %}
+  {% if pipeline_state.status == 'error' %}
+  <div class="alert-banner error" style="margin-bottom:16px;">
+    <span class="alert-icon">⚠</span>
+    <span>{{ pipeline_state.message }}</span>
+  </div>
+  {% elif pipeline_state.status == 'done' and not overview %}
+  <div class="alert-banner success" style="margin-bottom:16px;">
+    <span class="alert-icon">✓</span>
+    <span>Analysis complete. Select a dataset to view results.</span>
+  </div>
+  {% endif %}
+{% endif %}
+
+<!-- ═══ DATASET OVERVIEW STRIP ════════════════════════════════ -->
+{% if overview %}
+<div class="metric-strip">
+  <div class="metric-card">
+    <div class="metric-value">{{ overview.rows }}</div>
+    <div class="metric-label">Total Rows</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">{{ overview.cols }}</div>
+    <div class="metric-label">Columns</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">{{ overview.numeric }}</div>
+    <div class="metric-label">Numeric</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">{{ overview.categorical }}</div>
+    <div class="metric-label">Categorical</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value">{{ overview.missing_pct }}%</div>
+    <div class="metric-label">Missing Cells</div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ═══ EMPTY STATE ════════════════════════════════════════════ -->
+{% if not selected_csv_path %}
+<div class="card" style="margin-top:20px;">
+  <div class="empty-state">
+    <div class="empty-state-icon">◈</div>
+    <h3>No Dataset Selected</h3>
+    <p>Choose a sample CSV from the sidebar or upload your own file, then click <strong>Execute Pipeline</strong> to start the autonomous analysis.</p>
+  </div>
+</div>
+{% else %}
+
+<!-- ═══ DATASET INFO STRIP ════════════════════════════════════ -->
+<div class="dataset-info-strip">
+  <span>Dataset: <strong>{{ dataset_name }}</strong></span>
+  <span class="info-sep">|</span>
+  <span>Path: <span style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-dim);">{{ selected_csv_path }}</span></span>
+</div>
+
+<!-- ═══ PRIMARY TAB BAR ═══════════════════════════════════════ -->
+<div class="tab-bar">
+  <button class="tab-btn" data-tab="tab-preview">
+    <span>⊟</span> Data Preview
+  </button>
+  <button class="tab-btn" data-tab="tab-report">
+    <span>⬡</span> Interactive Report
+  </button>
+  <button class="tab-btn" data-tab="tab-profiles">
+    <span>≡</span> Variable Profiles
+  </button>
+  <button class="tab-btn" data-tab="tab-gallery">
+    <span>⊞</span> Visual Gallery
+  </button>
+  <button class="tab-btn" data-tab="tab-summary">
+    <span>☰</span> Executive Summary
+  </button>
+  <button class="tab-btn" data-tab="tab-metrics">
+    <span>◎</span> Metrics &amp; Blueprint
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 0: DATA PREVIEW
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-preview" class="tab-panel">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Raw Data Preview</div>
+      <div class="section-sub">First 50 rows of <strong>{{ dataset_name }}</strong> — loaded on demand</div>
+    </div>
+  </div>
+
+  <div id="preview-content">
+    <div class="preview-loading" id="preview-loading">
+      <div class="pulse-dot" style="margin:0 auto 10px;width:12px;height:12px;background:var(--accent);"></div>
+      Loading preview…
+    </div>
+    <div id="preview-table-container" style="display:none;">
+      <!-- JS renders table here -->
+    </div>
+    <div id="preview-error" style="display:none;" class="alert-banner error">
+      <span class="alert-icon">⚠</span>
+      <span id="preview-error-msg"></span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 1: Interactive HTML Report
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-report" class="tab-panel">
+  {% if html_report_exists %}
+  <div class="section-header">
+    <div>
+      <div class="section-title">Interactive Profile Report</div>
+      <div class="section-sub">Self-contained Plotly report for <strong>{{ dataset_name }}</strong></div>
+    </div>
+    <a href="/download-report/" class="btn btn-ghost">
+      ↓ Download HTML
+    </a>
+  </div>
+  <div class="report-iframe-wrap">
+    <iframe id="report-iframe" data-src="/artifact/{{ html_report_rel }}" title="EDA Report"></iframe>
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">⬡</div>
+      <h3>Report Not Generated Yet</h3>
+      <p>Run the analysis pipeline to generate the interactive HTML profile report for <strong>{{ dataset_name }}</strong>.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 2: Variable Profiles
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-profiles" class="tab-panel">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Variable Deep-Dive</div>
+      <div class="section-sub">{{ profiles|length }} variable{{ profiles|length|pluralize }} — click any row to expand</div>
+    </div>
+  </div>
+
+  {% if profiles %}
+  <div class="search-row">
+    <input type="text" id="variable-search" placeholder="Filter variables…">
+  </div>
+
+  {% for p in profiles %}
+  <div class="accordion-item" data-col="{{ p.column }}">
+    <button class="accordion-trigger" type="button">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--accent);">{{ p.column }}</span>
+      {% if p.is_numeric %}
+        <span class="badge badge-numeric">Numeric</span>
+      {% else %}
+        <span class="badge badge-categ">Categorical</span>
+      {% endif %}
+      {% if p.missing_count > 0 %}
+        <span class="badge badge-missing">{{ p.missing_count }} missing</span>
+      {% endif %}
+      <span class="text-muted" style="margin-left:4px;">{{ p.dtype }}</span>
+      <span class="text-muted">&middot; {{ p.cardinality }} distinct</span>
+      <span class="chevron">▼</span>
+    </button>
+
+    <div class="accordion-body">
+      <div class="accordion-grid">
+
+        <!-- Stats column -->
+        <div>
+          <div class="panel-header">Statistics</div>
+          {% if p.is_numeric %}
+          <table class="stats-table">
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+            <tbody>
+              {% if p.mean is not None %}<tr><td>Mean</td><td>{{ p.mean|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.median is not None %}<tr><td>Median</td><td>{{ p.median|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.std is not None %}<tr><td>Std Dev</td><td>{{ p.std|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.min is not None %}<tr><td>Min</td><td>{{ p.min|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.max is not None %}<tr><td>Max</td><td>{{ p.max|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.q1 is not None %}<tr><td>Q1 (25%)</td><td>{{ p.q1|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.q3 is not None %}<tr><td>Q3 (75%)</td><td>{{ p.q3|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.iqr is not None %}<tr><td>IQR</td><td>{{ p.iqr|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.skew is not None %}<tr><td>Skewness</td><td>{{ p.skew|floatformat:4 }}</td></tr>{% endif %}
+              {% if p.kurtosis is not None %}<tr><td>Kurtosis</td><td>{{ p.kurtosis|floatformat:4 }}</td></tr>{% endif %}
+              <tr><td>Missing</td><td>{{ p.missing_count }} ({{ p.missing_pct }}%)</td></tr>
+              <tr><td>Unique</td><td>{{ p.cardinality }} ({{ p.unique_pct }}%)</td></tr>
+            </tbody>
+          </table>
+          {% else %}
+          <div class="panel-header" style="margin-top:12px;">Top Values</div>
+          <table class="stats-table">
+            <thead><tr><th>Value</th><th>Count</th><th>%</th></tr></thead>
+            <tbody>
+              {% for tv in p.top_values %}
+              <tr>
+                <td class="mono">{{ tv.Value }}</td>
+                <td>{{ tv.Count }}</td>
+                <td>{{ tv.Pct }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div style="margin-top:10px;" class="text-muted">{{ p.missing_count }} missing &middot; {{ p.cardinality }} distinct</div>
+          {% endif %}
+        </div>
+
+        <!-- Distribution PNG column -->
+        <div>
+          <div class="panel-header">Distribution</div>
+          {% if p.dist_img %}
+          <img src="/artifact/{{ p.dist_img }}" alt="Distribution of {{ p.column }}"
+               style="width:100%;border-radius:6px;border:1px solid var(--border);">
+          {% else %}
+          <div class="empty-state" style="padding:24px 10px;">
+            <div class="empty-state-icon" style="font-size:1.2rem;">◫</div>
+            <p style="font-size:0.75rem;">Run pipeline to generate distribution plot</p>
+          </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">≡</div>
+      <h3>No Variable Data</h3>
+      <p>Select a dataset to view per-column statistical profiles.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 3: Visual Gallery
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-gallery" class="tab-panel">
+  <div class="section-header">
+    <div class="section-title">Generated Visualisations</div>
+  </div>
+
+  {% if plots.bivariate or plots.heatmaps or plots.distributions or plots.other %}
+
+  <div class="sub-tab-bar" data-scope="gallery">
+    <button class="sub-tab-btn" data-subtab="biv">Bivariate Relationships</button>
+    <button class="sub-tab-btn" data-subtab="heat">Heatmaps &amp; Pairplot</button>
+    <button class="sub-tab-btn" data-subtab="dist">Distributions</button>
+    {% if plots.other %}<button class="sub-tab-btn" data-subtab="other">Other ({{ plots.other|length }})</button>{% endif %}
+  </div>
+
+  <!-- Bivariate -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="biv">
+    {% if plots.bivariate %}
+    <div class="image-grid cols-2">
+      {% for rel_path in plots.bivariate %}
+      <div class="image-tile">
+        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
+        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No bivariate plots generated.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Heatmaps -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="heat">
+    {% if plots.heatmaps %}
+    <div class="image-grid cols-2">
+      {% for rel_path in plots.heatmaps %}
+      <div class="image-tile">
+        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
+        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No heatmaps or pairplots generated yet.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Distributions -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="dist">
+    {% if plots.distributions %}
+    <div class="image-grid cols-3">
+      {% for rel_path in plots.distributions %}
+      <div class="image-tile">
+        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
+        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No distribution PNGs generated yet.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Other plots -->
+  {% if plots.other %}
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="other">
+    <div class="image-grid cols-2">
+      {% for rel_path in plots.other %}
+      <div class="image-tile">
+        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
+        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">⊞</div>
+      <h3>No Visualisations Yet</h3>
+      <p>Execute the analysis pipeline to generate charts for <strong>{{ dataset_name }}</strong>.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 4: Executive Summary
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-summary" class="tab-panel">
+  <div class="section-header">
+    <div class="section-title">Executive Summary</div>
+  </div>
+
+  {% if summary_html %}
+  <div class="card">
+    <div class="markdown-body">{{ summary_html|safe }}</div>
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">☰</div>
+      <h3>No Summary Generated</h3>
+      <p>Enable <strong>Executive Summary</strong> in the sidebar and run the pipeline to generate a narrative report.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 5: Metrics & Blueprint
+═══════════════════════════════════════════════════════════ -->
+<div id="tab-metrics" class="tab-panel">
+
+  {% if metrics %}
+  <div class="sub-tab-bar" data-scope="metrics">
+    <button class="sub-tab-btn" data-subtab="blueprint">Predictive Blueprint</button>
+    <button class="sub-tab-btn" data-subtab="hypothesis">Hypothesis Tests</button>
+    <button class="sub-tab-btn" data-subtab="raw">Raw metrics.json</button>
+  </div>
+
+  <!-- Blueprint -->
+  <div class="sub-tab-panel" data-scope="metrics" data-subtab="blueprint">
+    {% if blueprint %}
+    <div class="card" style="margin-bottom:16px;">
+      <div class="flex items-center gap-8" style="margin-bottom:12px;">
+        <span class="badge badge-numeric">{{ blueprint.problem_type|default:"Unknown" }}</span>
+        <span class="text-muted">Target: <span class="mono">{{ blueprint.target_definition|default:"N/A" }}</span></span>
+      </div>
+      {% if blueprint.executive_summary %}
+      <div class="alert-banner info" style="margin-bottom:0;">
+        <span class="alert-icon">ℹ</span>
+        <span>{{ blueprint.executive_summary }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="blueprint-grid">
+      <div class="blueprint-section">
+        <h4>Recommended Algorithms</h4>
+        <ul class="blueprint-list">
+          {% for algo in blueprint.recommended_algorithms %}
+          <li>{{ algo }}</li>
+          {% empty %}<li style="color:var(--text-dim);">None</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="blueprint-section">
+        <h4>Validation Strategy</h4>
+        <ul class="blueprint-list">
+          {% for v in blueprint.validation_strategy %}
+          <li>{{ v }}</li>
+          {% empty %}<li style="color:var(--text-dim);">None</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="blueprint-section">
+        <h4>Feature Selection</h4>
+        <ul class="blueprint-list">
+          {% for fs in blueprint.feature_selection_strategy %}
+          <li>{{ fs }}</li>
+          {% empty %}<li style="color:var(--text-dim);">None</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="blueprint-section">
+        <h4>Overfitting Mitigation</h4>
+        <ul class="blueprint-list">
+          {% for om in blueprint.overfitting_risk_mitigation %}
+          <li>{{ om }}</li>
+          {% empty %}<li style="color:var(--text-dim);">None</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No blueprint data available. Run the pipeline first.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Hypothesis Tests -->
+  <div class="sub-tab-panel" data-scope="metrics" data-subtab="hypothesis">
+    {% if sig_predictors %}
+    <div class="alert-banner success" style="margin-bottom:16px;">
+      <span class="alert-icon">✓</span>
+      <div>
+        <strong>Statistically Significant Predictors (α = 0.05):</strong>
+        <div class="chip-list" style="margin-top:6px;">
+          {% for sp in sig_predictors %}
+          <span class="chip">{{ sp }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if hyp_rows %}
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Test</th>
+            <th>Statistic</th>
+            <th>p-value</th>
+            <th>Significant</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in hyp_rows %}
+          <tr>
+            <td class="mono">{{ row.feature }}</td>
+            <td>{{ row.test }}</td>
+            <td class="mono">{{ row.statistic }}</td>
+            <td class="mono">{{ row.p_value|floatformat:6 }}</td>
+            <td>
+              {% if row.significant %}
+                <span class="badge badge-sig">Yes</span>
+              {% else %}
+                <span class="badge badge-nosig">No</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No hypothesis test results available. Run the pipeline first.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Raw JSON -->
+  <div class="sub-tab-panel" data-scope="metrics" data-subtab="raw">
+    <div class="card">
+      <div class="panel-header">metrics.json</div>
+      <pre class="code-block">{{ metrics_json }}</pre>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">◎</div>
+      <h3>No Metrics Available</h3>
+      <p>Run the analysis pipeline to generate the canonical <span class="mono">metrics.json</span> for <strong>{{ dataset_name }}</strong>.</p>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+<!-- END tab-metrics -->
+
+{% endif %}
+<!-- END dataset selected block -->
+
+{% endblock %}

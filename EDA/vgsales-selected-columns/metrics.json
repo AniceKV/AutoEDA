@@ -1,0 +1,254 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\vgsales-selected-columns.csv",
+    "shape": {
+      "rows": 1494,
+      "columns": 10
+    },
+    "target_column": "Other_Sales",
+    "column_summary": {
+      "Rank": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Name": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Platform": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Year": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Genre": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Publisher": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "NA_Sales": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "EU_Sales": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "JP_Sales": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      },
+      "Other_Sales": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 1
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
+    "columns": {
+      "Rank": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Name": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Platform": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Year": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Genre": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Publisher": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "NA_Sales": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "EU_Sales": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "JP_Sales": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      },
+      "Other_Sales": {
+        "dtype": "float64",
+        "missing_before": 1494,
+        "missing_after": 0,
+        "method": "mean",
+        "skewness": 0.0,
+        "fill_value": 0.0
+      }
+    }
+  },
+  "outlier_analysis": {},
+  "engineered_features": [],
+  "correlation_analysis": {
+    "error": "Insufficient numeric columns for correlation analysis."
+  },
+  "categorical_associations": {},
+  "statistical_hypothesis_tests": {
+    "Rank": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "Name": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "Platform": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "Year": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "Genre": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "Publisher": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "NA_Sales": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "EU_Sales": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "JP_Sales": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": NaN,
+      "p_value": 1.0,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = nan, p = nan. (Not Significant)"
+    },
+    "significant_predictors": []
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
+    "recommended_algorithms": [
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Evaluate Silhouette Score and Inertia elbow curve"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1494 rows x 10 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 1494 rows and 10 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": []
+  }
+}

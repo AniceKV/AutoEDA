@@ -7,3 +7,6 @@ temp_uploads/
 sandbox_run/
 sandbox_test/
 .cache/
+app.py
+django_app/.sessions/
+django_app/staticfiles/

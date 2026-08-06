@@ -1,0 +1,253 @@
+{
+    "dataset_name": "vgsales-selected-columns.csv",
+    "dimensions": {
+        "rows": 1494,
+        "columns": 10
+    },
+    "missing_values_summary": {
+        "Rank": "1494 (100.0%)",
+        "Name": "1494 (100.0%)",
+        "Platform": "1494 (100.0%)",
+        "Year": "1494 (100.0%)",
+        "Genre": "1494 (100.0%)",
+        "Publisher": "1494 (100.0%)",
+        "NA_Sales": "1494 (100.0%)",
+        "EU_Sales": "1494 (100.0%)",
+        "JP_Sales": "1494 (100.0%)",
+        "Other_Sales": "1494 (100.0%)"
+    },
+    "schema": {
+        "Rank": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Name": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Platform": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Year": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Genre": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Publisher": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "NA_Sales": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "EU_Sales": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "JP_Sales": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Other_Sales": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        }
+    },
+    "columns": [
+        {
+            "column": "Rank",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Name",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Platform",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Year",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Genre",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Publisher",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "NA_Sales",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "EU_Sales",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "JP_Sales",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Other_Sales",
+            "dtype": "float64",
+            "missing_count": 1494,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        }
+    ]
+}

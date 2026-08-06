@@ -1,0 +1,511 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\data.csv",
+    "shape": {
+      "rows": 891,
+      "columns": 12
+    },
+    "target_column": "Survived",
+    "column_summary": {
+      "PassengerId": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 891
+      },
+      "Survived": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Pclass": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Name": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 891
+      },
+      "Sex": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Age": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 88
+      },
+      "SibSp": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Parch": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Ticket": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 514
+      },
+      "Fare": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 248
+      },
+      "Cabin": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 147
+      },
+      "Embarked": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
+    "columns": {
+      "PassengerId": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Survived": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Pclass": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Name": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Sex": {
+        "dtype": "object",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Age": {
+        "dtype": "float64",
+        "missing_before": 177,
+        "missing_after": 0,
+        "method": "median",
+        "skewness": 0.39,
+        "fill_value": 28.0
+      },
+      "SibSp": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Parch": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Ticket": {
+        "dtype": "float64",
+        "missing_before": 230,
+        "missing_after": 0,
+        "method": "median",
+        "skewness": 5.27,
+        "fill_value": 236171.0
+      },
+      "Fare": {
+        "dtype": "float64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Cabin": {
+        "dtype": "object",
+        "missing_before": 687,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "B96 B98"
+      },
+      "Embarked": {
+        "dtype": "object",
+        "missing_before": 2,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "S"
+      }
+    }
+  },
+  "outlier_analysis": {
+    "Age": {
+      "q1": 22.0,
+      "q3": 35.0,
+      "iqr": 13.0,
+      "lower_bound": 2.5,
+      "upper_bound": 54.5,
+      "outlier_count": 66,
+      "outlier_percentage": 7.41,
+      "action_taken": "profile"
+    },
+    "SibSp": {
+      "q1": 0.0,
+      "q3": 1.0,
+      "iqr": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 46,
+      "outlier_percentage": 5.16,
+      "action_taken": "profile"
+    },
+    "Parch": {
+      "q1": 0.0,
+      "q3": 0.0,
+      "iqr": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 213,
+      "outlier_percentage": 23.91,
+      "action_taken": "profile"
+    },
+    "Fare": {
+      "q1": 7.9104,
+      "q3": 31.0,
+      "iqr": 23.0896,
+      "lower_bound": -26.724,
+      "upper_bound": 65.6344,
+      "outlier_count": 116,
+      "outlier_percentage": 13.02,
+      "action_taken": "profile"
+    }
+  },
+  "engineered_features": [],
+  "correlation_analysis": {
+    "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Fare",
+        "correlation": -0.5495
+      },
+      {
+        "feature_1": "SibSp",
+        "feature_2": "Parch",
+        "correlation": 0.4148
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Age",
+        "correlation": -0.3399
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Pclass",
+        "correlation": -0.3385
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Fare",
+        "correlation": 0.2573
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Ticket",
+        "correlation": 0.237
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "SibSp",
+        "correlation": -0.2333
+      },
+      {
+        "feature_1": "Parch",
+        "feature_2": "Fare",
+        "correlation": 0.2162
+      },
+      {
+        "feature_1": "SibSp",
+        "feature_2": "Ticket",
+        "correlation": 0.1836
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Parch",
+        "correlation": -0.1725
+      }
+    ],
+    "correlation_matrix_text": {
+      "PassengerId": {
+        "PassengerId": 1.0,
+        "Survived": -0.005,
+        "Pclass": -0.035,
+        "Age": 0.034,
+        "SibSp": -0.058,
+        "Parch": -0.002,
+        "Ticket": -0.064,
+        "Fare": 0.013
+      },
+      "Survived": {
+        "PassengerId": -0.005,
+        "Survived": 1.0,
+        "Pclass": -0.338,
+        "Age": -0.065,
+        "SibSp": -0.035,
+        "Parch": 0.082,
+        "Ticket": -0.105,
+        "Fare": 0.257
+      },
+      "Pclass": {
+        "PassengerId": -0.035,
+        "Survived": -0.338,
+        "Pclass": 1.0,
+        "Age": -0.34,
+        "SibSp": 0.083,
+        "Parch": 0.018,
+        "Ticket": 0.237,
+        "Fare": -0.549
+      },
+      "Age": {
+        "PassengerId": 0.034,
+        "Survived": -0.065,
+        "Pclass": -0.34,
+        "Age": 1.0,
+        "SibSp": -0.233,
+        "Parch": -0.172,
+        "Ticket": -0.125,
+        "Fare": 0.097
+      },
+      "SibSp": {
+        "PassengerId": -0.058,
+        "Survived": -0.035,
+        "Pclass": 0.083,
+        "Age": -0.233,
+        "SibSp": 1.0,
+        "Parch": 0.415,
+        "Ticket": 0.184,
+        "Fare": 0.16
+      },
+      "Parch": {
+        "PassengerId": -0.002,
+        "Survived": 0.082,
+        "Pclass": 0.018,
+        "Age": -0.172,
+        "SibSp": 0.415,
+        "Parch": 1.0,
+        "Ticket": 0.074,
+        "Fare": 0.216
+      },
+      "Ticket": {
+        "PassengerId": -0.064,
+        "Survived": -0.105,
+        "Pclass": 0.237,
+        "Age": -0.125,
+        "SibSp": 0.184,
+        "Parch": 0.074,
+        "Ticket": 1.0,
+        "Fare": -0.091
+      },
+      "Fare": {
+        "PassengerId": 0.013,
+        "Survived": 0.257,
+        "Pclass": -0.549,
+        "Age": 0.097,
+        "SibSp": 0.16,
+        "Parch": 0.216,
+        "Ticket": -0.091,
+        "Fare": 1.0
+      }
+    },
+    "categorical_associations": {
+      "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+      "top_correlations": [
+        {
+          "feature_1": "Sex",
+          "feature_2": "Embarked",
+          "cramers_v": 0.1107
+        }
+      ],
+      "association_matrix_text": {
+        "Sex": {
+          "Sex": 1.0,
+          "Embarked": 0.111
+        },
+        "Embarked": {
+          "Sex": 0.111,
+          "Embarked": 1.0
+        }
+      }
+    }
+  },
+  "categorical_associations": {
+    "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "Sex",
+        "feature_2": "Embarked",
+        "cramers_v": 0.1107
+      }
+    ],
+    "association_matrix_text": {
+      "Sex": {
+        "Sex": 1.0,
+        "Embarked": 0.111
+      },
+      "Embarked": {
+        "Sex": 0.111,
+        "Embarked": 1.0
+      }
+    }
+  },
+  "statistical_hypothesis_tests": {
+    "PassengerId": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.005,
+      "p_value": 0.8813657768798059,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0050, p = 8.8137e-01. (Not Significant)"
+    },
+    "Pclass": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.3385,
+      "p_value": 2.537047387981532e-25,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.3385, p = 2.5370e-25. (Statistically Significant)"
+    },
+    "Sex": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": 18.6718,
+      "p_value": 2.2836009226010533e-61,
+      "is_statistically_significant": true,
+      "interpretation": "T-statistic = 18.6718, p = 2.2836e-61. (Statistically Significant)"
+    },
+    "Age": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.0649,
+      "p_value": 0.0527606884758556,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0649, p = 5.2761e-02. (Not Significant)"
+    },
+    "SibSp": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.0353,
+      "p_value": 0.29224392869829435,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0353, p = 2.9224e-01. (Not Significant)"
+    },
+    "Parch": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0816,
+      "p_value": 0.014799245374727977,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0816, p = 1.4799e-02. (Statistically Significant)"
+    },
+    "Ticket": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.1054,
+      "p_value": 0.001625279821319169,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.1054, p = 1.6253e-03. (Statistically Significant)"
+    },
+    "Fare": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2573,
+      "p_value": 6.120189341924586e-15,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2573, p = 6.1202e-15. (Statistically Significant)"
+    },
+    "Cabin": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 2.7851,
+      "p_value": 1.2810870373968771e-08,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 2.7851, p = 1.2811e-08. (Statistically Significant)"
+    },
+    "Embarked": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 13.3269,
+      "p_value": 1.9832394915479246e-06,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 13.3269, p = 1.9832e-06. (Statistically Significant)"
+    },
+    "significant_predictors": [
+      "Pclass",
+      "Sex",
+      "Parch",
+      "Ticket",
+      "Fare",
+      "Cabin",
+      "Embarked"
+    ]
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "Survived",
+    "problem_type": "Classification",
+    "recommended_algorithms": [
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 891 rows and 12 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "Pclass",
+      "Sex",
+      "Parch",
+      "Ticket",
+      "Fare",
+      "Cabin",
+      "Embarked"
+    ]
+  }
+}

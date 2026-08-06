@@ -1,165 +1,176 @@
 # Executive Summary – EV Adoption & Range‑Anxiety Dataset  
-**Prepared by:** Senior Lead Data Scientist  
-**Date:** 6 August 2026  
+**Target Variable:** `Annual_Income_USD` (Regression)  
+**Rows / Columns:** 10 000 × 11 (including engineered feature)  
 
----
+---  
 
-## 1. Project Context  
+## 1. Dataset Overview  
 
-The dataset **`EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv`** captures demographic, socioeconomic, and mobility‑related attributes of 10 000 electric‑vehicle (EV) buyers. The primary business objective is to predict **`Current_Car_Type`** (Sedan, SUV, Hatchback, …) – a multi‑class classification problem – to understand how buyer characteristics influence vehicle choice and to guide targeted marketing or product‑development strategies.
+| Aspect | Detail |
+|--------|--------|
+| **Source file** | `EV_Adoption_and_Range_Anxiety_Dataset-selected-columns.csv` |
+| **Rows** | 10 000 |
+| **Columns (pre‑engineered)** | 10 |
+| **Columns (post‑engineered)** | 11 (`engineered_feature`) |
+| **Target** | `Annual_Income_USD` (continuous) |
+| **Key categorical fields** | `Gender` (3 levels), `City_Type` (3), `Current_Car_Type` (4) |
+| **Numeric fields** | `Age`, `Annual_Income_USD`, `Daily_Commute_km`, `Number_of_Cars_Owned`, `Charging_Stations_Near_Home`, `Charging_Stations_Near_Work` |
 
----
+### 1.1 Column‑wise Summary  
 
-## 2. Data Overview  
+| Column | dtype | Cardinality | Missing % | Typical range / stats |
+|--------|-------|-------------|----------|-----------------------|
+| Buyer_ID | object | 10 000 | 0.0 | Unique identifier |
+| Age | int64 | 45 | 0.0 | 25 – 69 (mean = 46.9, median = 47) |
+| Gender | object | 3 | 0.0 | Male = 52 % , Female = 45 % , Other = 3 % |
+| Annual_Income_USD | float64 | 8 915 | 1.78 | 30 k – 223 k (mean = 85 378, median = 84 708) |
+| City_Type | object | 3 | 0.0 | Urban = 49 % , Suburban = 36 % , Rural = 15 % |
+| Daily_Commute_km | float64 | 991 | 1.81 | 5 – 135.5 (mean = 41.1, median = 40.2) |
+| Number_of_Cars_Owned | int64 | 4 | 0.0 | 1 – 4 (mean = 1.86, median = 2) |
+| Current_Car_Type | object | 4 | 0.0 | Sedan = 40 % , SUV = 35 % , Hatchback = 15 % |
+| Charging_Stations_Near_Home | int64 | 15 | 0.0 | 0 – 14 (mean = 5.35, median = 5) |
+| Charging_Stations_Near_Work | int64 | 20 | 0.0 | 0 – 19 (mean = 7.46, median = 6) |
+| engineered_feature | int64 / float64* | 36 | 0.0 | See Section 4 |
 
-| Attribute | Data Type | Distinct Values | Missing % | Imputation Method |
-|-----------|-----------|----------------|----------|-------------------|
-| **Buyer_ID** | object (ID) | 10 000 | 0.0 | – |
-| **Age** | int64 | 45 | 0.0 | – |
-| **Gender** | object | 3 (Male, Female, Other) | 0.0 | – |
-| **Annual_Income_USD** | float64 | 8 915 | 1.78 | Mean = **85 378.49** |
-| **City_Type** | object | 3 (Urban, Suburban, Rural) | 0.0 | – |
-| **Daily_Commute_km** | float64 | 991 | 1.81 | Mean = **41.11** |
-| **Number_of_Cars_Owned** | int64 | 4 (1‑4) | 0.0 | – |
-| **Current_Car_Type** *(target)* | object | 4 (Sedan, SUV, Hatchback, …) | 0.0 | – |
-| **Charging_Stations_Near_Home** | int64 | 15 (0‑14) | 0.0 | – |
-| **Charging_Stations_Near_Work** | int64 | 20 (0‑19) | 0.0 | – |
-| **engineered_feature** | float64 | 2 783 | 0.0 | – |
+\*Two engineered features were created; one is a ratio (float) and the other an interaction (int).
 
-*The dataset contains 11 columns after the addition of one engineered feature (see § 4).*
+---  
 
----
+## 2. Missing‑Data Handling  
 
-## 3. Missing‑Value & Outlier Treatment  
+* **Strategy** – Standardised missing string placeholders (`?`, `NA`, `N/A`, `null`) → `NaN`.  
+* **Numeric columns** – Skewness ≈ 0.3 → mean imputation.  
+* **Categorical columns** – Mode imputation with fallback to `"Unknown"` (none required).  
 
-| Variable | Missing Count | Missing % | Imputation | Outliers (count) | Outlier % |
-|----------|---------------|----------|------------|------------------|----------|
-| Annual_Income_USD | 178 | 1.78 | Mean (85 378.49) | 58 | 0.58 |
-| Daily_Commute_km | 181 | 1.81 | Mean (41.11) | 44 | 0.44 |
-| Age | 0 | 0.0 | – | 0 | 0.0 |
-| Number_of_Cars_Owned | 0 | 0.0 | – | 511 | 5.11 |
-| Charging_Stations_Near_Home | 0 | 0.0 | – | 0 | 0.0 |
-| Charging_Stations_Near_Work | 0 | 0.0 | – | 0 | 0.0 |
+| Column | Missing before | Imputation method | Imputed value |
+|--------|----------------|-------------------|---------------|
+| Annual_Income_USD | 178 (1.78 %) | Mean | **85 378.49** |
+| Daily_Commute_km | 181 (1.81 %) | Mean | **41.1054** |
+| All others | 0 | – | – |
 
-*Outlier detection used the IQR method (Q1, Q3, IQR). All identified outliers were **profiled only** – no removal or transformation was applied.*
+All missing values were successfully filled; no residual NaNs remain.
 
----
+---  
+
+## 3. Outlier Profiling  
+
+Outliers were **profiled only** (no removal).  
+
+| Feature | Q1 | Q3 | IQR | Lower bound | Upper bound | Outlier count | % outliers |
+|---------|----|----|-----|-------------|-------------|---------------|------------|
+| Age | 36 | 58 | 22 | 3 | 91 | 0 | 0.0 % |
+| Annual_Income_USD | 61 884 | 106 939 | 45 055 | –5 699 | 174 521 | 58 | 0.58 % |
+| Daily_Commute_km | 23.6 | 56.7 | 33.1 | –26.05 | 106.35 | 44 | 0.44 % |
+| Number_of_Cars_Owned | 1 | 2 | 1 | –0.5 | 3.5 | 511 | 5.11 % |
+| Charging_Stations_Near_Home | 2 | 8 | 6 | –7 | 17 | 0 | 0.0 % |
+| Charging_Stations_Near_Work | 3 | 11 | 8 | –9 | 23 | 0 | 0.0 % |
+
+*Only the `Number_of_Cars_Owned` column shows a modest outlier proportion (≈ 5 %).*  
+
+---  
 
 ## 4. Feature Engineering  
 
-| Engineered Feature | Formula | Data Type | Rationale |
-|--------------------|---------|-----------|-----------|
-| **engineered_feature** | `Daily_Commute_km / (Number_of_Cars_Owned + eps)` | float64 | Captures per‑car commuting intensity, hypothesised to be a stronger signal for vehicle‑type preference. |
+Two high‑signal engineered features were added:
 
-*Correlation analysis (see § 5) shows a strong positive link with `Daily_Commute_km` (r = 0.756) and a moderate negative link with `Number_of_Cars_Owned` (r = ‑0.535), confirming its discriminative potential.*
+| Engineered Feature | Formula | Data type | Correlation with target |
+|--------------------|---------|-----------|--------------------------|
+| `Commute_per_Age` | `Daily_Commute_km / (Age + eps)` | float64 | **0.0062** |
+| `Cars_Owned_x_Stations_Home` | `Number_of_Cars_Owned * Charging_Stations_Near_Home` | int64 | **‑0.0055** |
 
----
+Both exhibit near‑zero linear correlation with `Annual_Income_USD`, indicating limited predictive power in their raw form. They are retained for downstream non‑linear models (e.g., tree‑based methods) where interaction effects may be useful.
 
-## 5. Correlation & Statistical Relationships  
+---  
 
-### 5.1 Top Pairwise Correlations  
+## 5. Visual Artefacts  
 
-| Feature 1 | Feature 2 | Pearson r |
+All visualisations are saved in the working directory; file names are listed for reference.
+
+| Plot | Description | File |
+|------|-------------|------|
+| **Univariate distributions** – Age, Income, Commute, etc. | Histograms / bar‑charts of each variable | `dist_Age.png`, `dist_Annual_Income_USD.png`, `dist_Daily_Commute_km.png`, `dist_Number_of_Cars_Owned.png`, `dist_Gender.png`, `dist_City_Type.png`, `dist_Current_Car_Type.png`, `dist_Charging_Stations_Near_Home.png`, `dist_Charging_Stations_Near_Work.png`, `dist_Buyer_ID.png` |
+| **Correlation heatmap** | Pearson correlation matrix for numeric features | `correlation_matrix.png` |
+| **Categorical association heatmap** | Cramér’s V matrix for categorical pairs | `categorical_association_matrix.png` |
+| **Target‑vs‑Age interaction** | Scatter + regression line (colored by Gender) | `target_interaction_age.png` |
+| **Target‑vs‑Commute interaction** | Scatter + regression line (colored by Gender) | `target_interaction_commute.png` |
+| **Semantic bivariate relationships** (4 panels) | Age vs Income (Hue = Gender), Cars Owned vs Income (Hue = City_Type), Stations‑Home vs Income (Hue = Current_Car_Type), Stations‑Work vs Income (Hue = Gender) | `bivariate_Age_vs_Annual_Income_USD.png`, `bivariate_Number_of_Cars_Owned_vs_Annual_Income_USD.png`, `bivariate_Charging_Stations_Near_Home_vs_Annual_Income_USD.png`, `bivariate_Charging_Stations_Near_Work_vs_Annual_Income_USD.png` |
+| **Pairplot** (Age, Income, Commute, Cars Owned, Stations‑Home) | Pairwise scatter matrix with `Gender` hue | `pairplot.png` |
+
+*All images are stored in the same directory as the report; they can be opened directly for visual inspection.*
+
+---  
+
+## 6. Correlation & Association Findings  
+
+### 6.1 Numeric Correlations (top 5 absolute values)
+
+| Feature 1 | Feature 2 | Pearson ρ |
+|----------|-----------|----------|
+| `Charging_Stations_Near_Home` | `Charging_Stations_Near_Work` | **0.4808** |
+| `Daily_Commute_km` | `Charging_Stations_Near_Home` | **0.027** |
+| `Age` | `Daily_Commute_km` | **‑0.0136** |
+| `Age` | `Annual_Income_USD` | **‑0.0115** |
+| `Age` | `Charging_Stations_Near_Home` | **‑0.0081** |
+
+*All correlations with the target (`Annual_Income_USD`) are below 0.01, indicating very weak linear relationships.*
+
+### 6.2 Categorical Associations (Cramér’s V)
+
+| Feature 1 | Feature 2 | Cramér’s V |
 |-----------|-----------|-----------|
-| Daily_Commute_km | engineered_feature | **0.756** |
-| Number_of_Cars_Owned | engineered_feature | **‑0.535** |
-| Charging_Stations_Near_Home | Charging_Stations_Near_Work | **0.481** |
-| Daily_Commute_km | Charging_Stations_Near_Home | **0.027** |
-| Charging_Stations_Near_Home | engineered_feature | **0.020** |
-| Age | Daily_Commute_km | **‑0.014** |
-| Age | Annual_Income_USD | **‑0.011** |
-| Age | Charging_Stations_Near_Home | **‑0.008** |
-| Daily_Commute_km | Number_of_Cars_Owned | **‑0.007** |
-| Annual_Income_USD | Charging_Stations_Near_Home | **0.005** |
+| Gender | City_Type | **0.0** |
+| Gender | Current_Car_Type | **0.0** |
+| City_Type | Current_Car_Type | **0.0** |
 
-*All other absolute correlations are < 0.02, indicating near‑independence among most predictors.*
+The three categorical variables are statistically independent of each other in this sample.
 
-### 5.2 Hypothesis Testing (Target vs Predictor)  
+---  
 
-| Predictor | Test | Statistic | p‑value | Significant (α = 0.05) |
-|-----------|------|-----------|---------|------------------------|
-| Age | One‑Way ANOVA | 1.8102 | 0.143 | No |
-| Gender | Chi‑Square | 1.0359 | 0.984 | No |
-| Annual_Income_USD | One‑Way ANOVA | 2.0844 | 0.100 | No |
-| City_Type | Chi‑Square | 1.5440 | 0.957 | No |
-| Daily_Commute_km | One‑Way ANOVA | 0.2122 | 0.888 | No |
-| Number_of_Cars_Owned | One‑Way ANOVA | 0.0629 | 0.979 | No |
-| Charging_Stations_Near_Home | One‑Way ANOVA | 0.2881 | 0.834 | No |
-| Charging_Stations_Near_Work | One‑Way ANOVA | 0.1864 | 0.906 | No |
-| engineered_feature | One‑Way ANOVA | 0.2462 | 0.864 | No |
-| Buyer_ID | Chi‑Square | 30 000 | 0.494 | No |
+## 7. Statistical Hypothesis Testing  
 
-*No predictor reached statistical significance at the 5 % level; consequently, **`significant_predictors`** is empty.*
+| Feature | Test | Statistic | p‑value | Significant (α = 0.05) | Interpretation |
+|---------|------|-----------|---------|------------------------|----------------|
+| Age | Pearson correlation | –0.0115 | 0.2513 | No | No linear association with income |
+| Gender | One‑Way ANOVA | 0.5635 | 0.5692 | No | Income distribution identical across genders |
+| City_Type | One‑Way ANOVA | 0.6030 | 0.5472 | No | No income difference across city types |
+| Daily_Commute_km | Pearson correlation | 0.0023 | 0.8143 | No | Commute distance unrelated to income |
+| Number_of_Cars_Owned | Pearson correlation | 0.0042 | 0.6712 | No | Car‑ownership count not linked to income |
+| Current_Car_Type | One‑Way ANOVA | 2.0844 | 0.09999 | No (p > 0.05) | Trend toward difference but not significant |
+| Charging_Stations_Near_Home | Pearson correlation | 0.0047 | 0.6403 | No | No link to income |
+| Charging_Stations_Near_Work | Pearson correlation | 0.0026 | 0.7938 | No | No link to income |
 
----
+**Result:** *No feature reached statistical significance at the 5 % level.*  
 
-## 6. Visual Artefacts  
+---  
 
-| File | Description | Size (KB) |
-|------|-------------|-----------|
-| **dist_Age.png** | Histogram of respondent ages (25‑69 yr). | 36.3 |
-| **dist_Annual_Income_USD.png** | Distribution of annual incomes (USD 30 k‑223 k). | 52.8 |
-| **dist_Daily_Commute_km.png** | Daily commute distance histogram (5‑135 km). | 44.6 |
-| **dist_Number_of_Cars_Owned.png** | Bar chart of cars owned (1‑4). | 50.2 |
-| **dist_Gender.png** | Gender composition (Male 52 %, Female 45 %, Other 3 %). | 28.3 |
-| **dist_City_Type.png** | Urban vs. Suburban vs. Rural split. | 30.7 |
-| **dist_Charging_Stations_Near_Home.png** | Count of home charging stations (0‑14). | 44.1 |
-| **dist_Charging_Stations_Near_Work.png** | Count of work charging stations (0‑19). | 48.2 |
-| **bivariate_Age_vs_Annual_Income_USD.png** | Scatter of age vs. income – negligible correlation. | 113.6 |
-| **bivariate_Charging_Stations_Near_Home_vs_Charging_Stations_Near_Work.png** | Positive relationship (r ≈ 0.48). | 76.4 |
-| **bivariate_Daily_Commute_km_vs_Number_of_Cars_Owned.png** | Weak negative trend (more cars → slightly lower commute). | 87.0 |
-| **correlation_matrix.png** | Heat‑map of full Pearson correlation matrix. | 128.5 |
-| **pairplot.png** | Pairwise scatter/box plots for all numeric variables (size‑heavy). | 703.3 |
-| **target_interactions.png** | Visualisation of each predictor’s distribution across `Current_Car_Type` categories. | 108.4 |
-
-*All images are stored in the working directory and can be embedded in downstream reports or dashboards.*
-
----
-
-## 7. Predictive‑Modeling Blueprint  
+## 8. Predictive Modeling Blueprint  
 
 | Component | Recommendation |
 |-----------|----------------|
-| **Problem Type** | Multi‑class Classification (`Current_Car_Type`). |
-| **Baseline Algorithm** | Regularized Logistic Regression (L2 penalty). |
-| **Advanced Algorithms** | • Random Forest Classifier  <br>• Gradient Boosting (XGBoost / LightGBM)  <br>• Support Vector Machine (SVM) |
-| **Feature Selection** | 1. Drop high‑cardinality identifiers (`Buyer_ID`). <br>2. Rank features via cross‑validated permutation importance **and** mutual information. <br>3. Remove collinear pairs with |r| > 0.85 (none observed). |
-| **Validation Strategy** | Stratified 5‑fold Cross‑Validation (preserves class proportions). |
-| **Evaluation Metrics** | • Balanced Accuracy <br>• Macro‑averaged F1 <br>• Precision‑Recall AUC <br>• Confusion Matrix (per class) |
-| **Over‑fitting Mitigation** | • L1/L2 regularisation (logistic, linear SVM). <br>• Tree depth limits, minimum samples per leaf (RF/GBM). <br>• Hyper‑parameter tuning confined to inner CV folds. |
-| **Implementation Note** | Encode categorical variables with target‑aware encoding (e.g., CatBoost encoding) or one‑hot where cardinality is low. Scale numeric features (StandardScaler) before linear models. |
+| **Problem type** | Regression (`Annual_Income_USD`) |
+| **Algorithms** (ordered by increasing complexity) | 1. Ridge / Lasso (regularised linear) <br>2. Random Forest Regressor <br>3. Gradient Boosting Regressor (e.g., XGBoost, LightGBM) <br>4. Support Vector Regressor (SVR) |
+| **Feature‑selection strategy** | • Drop high‑cardinality identifier (`Buyer_ID`) <br>• Rank features using cross‑validated permutation importance and mutual‑information scores <br>• Remove collinear features with |ρ| > 0.85 (none currently exceed this threshold) |
+| **Validation** | 5‑fold K‑Fold cross‑validation; report MAE, RMSE, R², and residual distribution |
+| **Over‑fitting mitigation** | • L1/L2 regularisation (for linear models) <br>• Limit tree depth, set `min_samples_leaf` (for ensemble models) <br>• Hyper‑parameter tuning confined to inner CV loops |
+| **Baseline expectation** | Given the near‑zero linear correlations, expect modest R² (< 0.05) for linear models; tree‑based ensembles may capture non‑linear interactions and improve performance modestly. |
 
-**Executive Summary (from blueprint):**  
-> *“Target: `Current_Car_Type` (Classification). Use robust cross‑validation on 10 000 rows × 11 columns.”*
+---  
 
----
+## 9. Key Take‑aways & Recommendations  
 
-## 8. Key Insights & Business Implications  
+1. **Data Quality** – Missing values are minimal and have been imputed sensibly; outlier profiling shows only a small proportion of extreme values.  
+2. **Predictive Power** – Linear relationships between the available features and the target are extremely weak; no statistically significant predictors were identified.  
+3. **Feature Engineering** – The two engineered features (`Commute_per_Age` and `Cars_Owned_x_Stations_Home`) have negligible linear correlation with income but may prove useful for non‑linear models.  
+4. **Modeling Strategy** – Begin with regularised linear regression to establish a baseline, then explore tree‑based ensembles (Random Forest, Gradient Boosting) which can exploit interaction effects.  
+5. **Further Exploration** – Consider enriching the dataset with external socioeconomic variables (e.g., education, employment sector) or geographic indicators that could better explain income variance.  
 
-1. **Data Quality** – Missingness is minimal (< 2 %) and has been cleanly imputed using mean values; no severe outlier‑driven distortions remain.  
-2. **Predictor Strength** – Traditional demographic variables (age, gender, income) show virtually no statistical link to vehicle type (p > 0.05).  
-3. **Engineered Signal** – The derived per‑car commute intensity (`engineered_feature`) captures the strongest linear relationship in the data (r ≈ 0.76 with commute distance). This suggests that **how far a household travels per vehicle** may be more informative than raw distance alone.  
-4. **Infrastructure Correlation** – Home and work charging station counts are moderately correlated (r ≈ 0.48), reflecting that respondents with higher overall charging access tend to have both home and workplace stations.  
-5. **Modeling Outlook** – Given the lack of statistically significant univariate predictors, **multivariate non‑linear models** (Random Forest, Gradient Boosting) are likely required to uncover subtle interaction effects.  
+---  
 
----
+## 10. Next Steps  
 
-## 9. Limitations & Next Steps  
+1. **Implement the blueprint** – Train the recommended models using the outlined validation scheme.  
+2. **Feature importance analysis** – After model training, extract permutation importance and SHAP values to identify any hidden non‑linear drivers.  
+3. **Iterate on engineering** – If tree‑based models highlight promising interactions, create additional domain‑specific features (e.g., `Income_per_Car`, `Stations_per_Commute`).  
+4. **Report performance** – Summarise final model metrics (MAE, RMSE, R²) and compare against the baseline.  
 
-| Limitation | Suggested Action |
-|------------|------------------|
-| **High‑cardinality ID** (`Buyer_ID`) provides no predictive power but inflates dimensionality. | Exclude from modeling; optionally use as a join key for external data enrichment. |
-| **Low predictive signal from individual features** (non‑significant ANOVA/Chi‑Square). | Explore interaction terms, polynomial features, or clustering‑based segmentations. |
-| **Potential class imbalance** (not quantified in the provided metadata). | Compute class distribution; if imbalanced, apply stratified sampling or class‑weighting. |
-| **No external validation** (only internal CV). | Reserve a hold‑out test set or perform temporal split if data collection dates are available. |
-| **Feature engineering limited to one derived variable**. | Investigate additional constructs (e.g., income‑to‑commute ratio, charging‑infrastructure density). |
-
----
-
-## 10. Conclusion  
-
-The automated EDA pipeline has delivered a clean, well‑documented dataset with comprehensive descriptive statistics, visual artefacts, and a clear roadmap for predictive modeling. While univariate analyses reveal no obvious drivers of `Current_Car_Type`, the engineered per‑car commute intensity and the moderate relationship between charging‑station availability merit deeper multivariate exploration. Implementing the recommended modeling workflow—starting with a regularized logistic baseline and progressing to ensemble methods—will enable robust classification performance and actionable insights for EV product strategy.
-
---- 
-
-*Prepared for internal stakeholders. All referenced artefacts are available in the project’s `sandbox_run` directory.*
+*All artefacts referenced in this report are available in the current working directory.*  

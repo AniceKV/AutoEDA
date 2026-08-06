@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoEDA Pro — Autonomous Data Science Platform</title>
+  <meta name="description" content="Professional autonomous exploratory data analysis platform with statistical profiling, hypothesis testing, and ML blueprinting.">
+  <link rel="stylesheet" href="{% static 'eda_app/css/main.css' %}">
+</head>
+<body>
+
+<!-- ═══ TOAST CONTAINER ═══════════════════════════════════════ -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ═══ TOP NAV ═══════════════════════════════════════════════ -->
+<nav class="topnav">
+  <button class="nav-hamburger" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+  <a href="/" class="topnav-logo">AutoEDA Pro</a>
+  <div class="topnav-branding">
+    <span class="topnav-title">Autonomous Data Science</span>
+    <span class="topnav-sub">Stateful Agent Pipeline · Statistical Profiling &amp; ML Blueprint</span>
+  </div>
+  <div class="topnav-spacer"></div>
+  {% if pipeline_state and pipeline_state.status == 'running' %}
+    <span id="nav-status" class="topnav-status running">
+      <span class="pulse-dot"></span> Running pipeline…
+    </span>
+    <span id="pipeline-running-indicator" style="display:none"></span>
+  {% else %}
+    <span id="nav-status" class="topnav-status"></span>
+  {% endif %}
+</nav>
+
+<!-- ═══ LAYOUT ═══════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- ─── SIDEBAR ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <form id="run-form" method="post" action="/run/" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Dataset -->
+      <div class="sidebar-section">
+        <span class="sidebar-label">Data Source</span>
+
+        <label class="radio-option">
+          <input type="radio" name="data_source" value="sample" checked> Sample Datasets
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="data_source" value="upload"> Upload CSV
+        </label>
+
+        <!-- Sample select -->
+        <div id="sample-section">
+          <select name="sample_file" id="sample-file-select">
+            {% for csv in sample_csvs %}
+              <option value="{{ csv }}" {% if dataset_name and csv|slice:":-4" == dataset_name %}selected{% endif %}>
+                {{ csv }}
+              </option>
+            {% empty %}
+              <option disabled>No sample files found in test_data/</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Upload -->
+        <div id="upload-section" style="display:none;">
+          <div class="file-drop-zone" id="file-drop-zone">
+            <input type="file" name="csv_file" accept=".csv">
+            <span class="file-drop-label">Click or drag &amp; drop CSV</span>
+            <span class="file-name-display"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prompt -->
+      <div class="sidebar-section">
+        <span class="sidebar-label">Analysis Prompt</span>
+        <textarea name="user_request" rows="5" placeholder="Describe what to analyse…">{{ default_prompt }}</textarea>
+      </div>
+
+      <!-- Options -->
+      <div class="sidebar-section">
+        <span class="sidebar-label">Options</span>
+        <div class="toggle-row">
+          <span>Executive Summary</span>
+          <label class="toggle-switch">
+            <input type="checkbox" name="generate_summary" {% if generate_summary %}checked{% endif %}>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-bar-container {% if pipeline_state and pipeline_state.status == 'running' %}visible{% endif %}" id="progress-container">
+        <div class="progress-bar-track"><div class="progress-bar-fill"></div></div>
+        <span class="progress-label" id="progress-label">{{ pipeline_state.message|default:"Starting…" }}</span>
+      </div>
+
+      <!-- Live log panel -->
+      <div class="live-log-panel {% if pipeline_state and pipeline_state.status == 'running' %}visible{% endif %}" id="live-log-panel"></div>
+
+      <!-- Actions -->
+      <div class="sidebar-section">
+        <button class="btn btn-primary btn-full" id="run-btn"
+          {% if pipeline_state and pipeline_state.status == 'running' %}disabled{% endif %}>
+          {% if pipeline_state and pipeline_state.status == 'running' %}Running…{% else %}Execute Pipeline{% endif %}
+        </button>
+        <button type="button" class="btn btn-ghost btn-full mt-12" id="reset-btn">
+          Reset Session
+        </button>
+      </div>
+    </form>
+  </aside>
+
+  <!-- ─── MAIN CONTENT ──────────────────────────────────────── -->
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+
+<!-- ═══ SIDEBAR OVERLAY (mobile) ══════════════════════════════ -->
+<div id="sidebar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99; backdrop-filter:blur(2px);"></div>
+
+<!-- ═══ AGENT QUESTION MODAL ══════════════════════════════════ -->
+<div class="modal-overlay {% if agent_question %}visible{% endif %}" id="question-modal"
+     {% if agent_question %}data-question="{{ agent_question }}"{% endif %}>
+  <div class="modal-box">
+    <h3>Agent Requires Clarification</h3>
+    <p id="question-text">{{ agent_question|default:"" }}</p>
+    <form id="question-form" method="post">
+      {% csrf_token %}
+      <textarea name="answer" rows="3" placeholder="Your answer…" style="margin-bottom:14px;"></textarea>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Submit Response</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'eda_app/js/app.js' %}"></script>
+</body>
+</html>

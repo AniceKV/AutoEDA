@@ -23,19 +23,19 @@
         "cardinality": 3
       },
       "Name": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_count": 0,
         "cardinality": 891
       },
       "Sex": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_count": 0,
         "cardinality": 2
       },
       "Age": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 89
+        "cardinality": 88
       },
       "SibSp": {
         "dtype": "int64",
@@ -48,9 +48,9 @@
         "cardinality": 7
       },
       "Ticket": {
-        "dtype": "float64",
+        "dtype": "str",
         "missing_count": 0,
-        "cardinality": 514
+        "cardinality": 681
       },
       "Fare": {
         "dtype": "float64",
@@ -58,12 +58,12 @@
         "cardinality": 248
       },
       "Cabin": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_count": 0,
         "cardinality": 147
       },
       "Embarked": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_count": 0,
         "cardinality": 3
       }
@@ -99,14 +99,14 @@
         "fill_value": null
       },
       "Name": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
       "Sex": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
@@ -116,9 +116,9 @@
         "dtype": "float64",
         "missing_before": 177,
         "missing_after": 0,
-        "method": "mean",
+        "method": "median",
         "skewness": 0.39,
-        "fill_value": 29.69911764705882
+        "fill_value": 28.0
       },
       "SibSp": {
         "dtype": "int64",
@@ -135,12 +135,11 @@
         "fill_value": null
       },
       "Ticket": {
-        "dtype": "float64",
-        "missing_before": 230,
+        "dtype": "str",
+        "missing_before": 0,
         "missing_after": 0,
-        "method": "median",
-        "skewness": 5.27,
-        "fill_value": 236171.0
+        "method": "none",
+        "fill_value": null
       },
       "Fare": {
         "dtype": "float64",
@@ -150,7 +149,7 @@
         "fill_value": null
       },
       "Cabin": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_before": 687,
         "missing_after": 0,
         "method": "mode",
@@ -158,7 +157,7 @@
         "fill_value": "B96 B98"
       },
       "Embarked": {
-        "dtype": "object",
+        "dtype": "str",
         "missing_before": 2,
         "missing_after": 0,
         "method": "mode",
@@ -211,7 +210,7 @@
   },
   "engineered_features": [],
   "correlation_analysis": {
-    "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\correlation_matrix.png",
     "top_correlations": [
       {
         "feature_1": "Pclass",
@@ -224,14 +223,14 @@
         "correlation": 0.4148
       },
       {
+        "feature_1": "Pclass",
+        "feature_2": "Age",
+        "correlation": -0.3399
+      },
+      {
         "feature_1": "Survived",
         "feature_2": "Pclass",
         "correlation": -0.3385
-      },
-      {
-        "feature_1": "Pclass",
-        "feature_2": "Age",
-        "correlation": -0.3313
       },
       {
         "feature_1": "Survived",
@@ -239,14 +238,9 @@
         "correlation": 0.2573
       },
       {
-        "feature_1": "Pclass",
-        "feature_2": "Ticket",
-        "correlation": 0.237
-      },
-      {
         "feature_1": "Age",
         "feature_2": "SibSp",
-        "correlation": -0.2326
+        "correlation": -0.2333
       },
       {
         "feature_1": "Parch",
@@ -254,14 +248,19 @@
         "correlation": 0.2162
       },
       {
+        "feature_1": "Age",
+        "feature_2": "Parch",
+        "correlation": -0.1725
+      },
+      {
         "feature_1": "SibSp",
-        "feature_2": "Ticket",
-        "correlation": 0.1836
+        "feature_2": "Fare",
+        "correlation": 0.1597
       },
       {
         "feature_1": "Age",
-        "feature_2": "Parch",
-        "correlation": -0.1792
+        "feature_2": "Fare",
+        "correlation": 0.0967
       }
     ],
     "correlation_matrix_text": {
@@ -269,41 +268,37 @@
         "PassengerId": 1.0,
         "Survived": -0.005,
         "Pclass": -0.035,
-        "Age": 0.033,
+        "Age": 0.034,
         "SibSp": -0.058,
         "Parch": -0.002,
-        "Ticket": -0.064,
         "Fare": 0.013
       },
       "Survived": {
         "PassengerId": -0.005,
         "Survived": 1.0,
         "Pclass": -0.338,
-        "Age": -0.07,
+        "Age": -0.065,
         "SibSp": -0.035,
         "Parch": 0.082,
-        "Ticket": -0.105,
         "Fare": 0.257
       },
       "Pclass": {
         "PassengerId": -0.035,
         "Survived": -0.338,
         "Pclass": 1.0,
-        "Age": -0.331,
+        "Age": -0.34,
         "SibSp": 0.083,
         "Parch": 0.018,
-        "Ticket": 0.237,
         "Fare": -0.549
       },
       "Age": {
-        "PassengerId": 0.033,
-        "Survived": -0.07,
-        "Pclass": -0.331,
+        "PassengerId": 0.034,
+        "Survived": -0.065,
+        "Pclass": -0.34,
         "Age": 1.0,
         "SibSp": -0.233,
-        "Parch": -0.179,
-        "Ticket": -0.128,
-        "Fare": 0.092
+        "Parch": -0.172,
+        "Fare": 0.097
       },
       "SibSp": {
         "PassengerId": -0.058,
@@ -312,42 +307,29 @@
         "Age": -0.233,
         "SibSp": 1.0,
         "Parch": 0.415,
-        "Ticket": 0.184,
         "Fare": 0.16
       },
       "Parch": {
         "PassengerId": -0.002,
         "Survived": 0.082,
         "Pclass": 0.018,
-        "Age": -0.179,
+        "Age": -0.172,
         "SibSp": 0.415,
         "Parch": 1.0,
-        "Ticket": 0.074,
         "Fare": 0.216
-      },
-      "Ticket": {
-        "PassengerId": -0.064,
-        "Survived": -0.105,
-        "Pclass": 0.237,
-        "Age": -0.128,
-        "SibSp": 0.184,
-        "Parch": 0.074,
-        "Ticket": 1.0,
-        "Fare": -0.091
       },
       "Fare": {
         "PassengerId": 0.013,
         "Survived": 0.257,
         "Pclass": -0.549,
-        "Age": 0.092,
+        "Age": 0.097,
         "SibSp": 0.16,
         "Parch": 0.216,
-        "Ticket": -0.091,
         "Fare": 1.0
       }
     },
     "categorical_associations": {
-      "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
       "top_correlations": [
         {
           "feature_1": "Sex",
@@ -368,7 +350,7 @@
     }
   },
   "categorical_associations": {
-    "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
     "top_correlations": [
       {
         "feature_1": "Sex",
@@ -391,7 +373,7 @@
     "PassengerId": {
       "test_name": "Pearson Correlation Test",
       "statistic": -0.005,
-      "p_value": 0.8813657768798059,
+      "p_value": 0.8813657768798053,
       "is_statistically_significant": false,
       "interpretation": "Pearson r = -0.0050, p = 8.8137e-01. (Not Significant)"
     },
@@ -405,63 +387,62 @@
     "Sex": {
       "test_name": "Two-Sample Welch T-Test",
       "statistic": 18.6718,
-      "p_value": 2.2836009226010533e-61,
+      "p_value": 2.2836009226010668e-61,
       "is_statistically_significant": true,
       "interpretation": "T-statistic = 18.6718, p = 2.2836e-61. (Statistically Significant)"
     },
     "Age": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0698,
-      "p_value": 0.03721708372685028,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0698, p = 3.7217e-02. (Statistically Significant)"
+      "statistic": -0.0649,
+      "p_value": 0.0527606884758556,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0649, p = 5.2761e-02. (Not Significant)"
     },
     "SibSp": {
       "test_name": "Pearson Correlation Test",
       "statistic": -0.0353,
-      "p_value": 0.29224392869829435,
+      "p_value": 0.2922439286982949,
       "is_statistically_significant": false,
       "interpretation": "Pearson r = -0.0353, p = 2.9224e-01. (Not Significant)"
     },
     "Parch": {
       "test_name": "Pearson Correlation Test",
       "statistic": 0.0816,
-      "p_value": 0.014799245374727977,
+      "p_value": 0.014799245374728003,
       "is_statistically_significant": true,
       "interpretation": "Pearson r = 0.0816, p = 1.4799e-02. (Statistically Significant)"
     },
     "Ticket": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": -0.1054,
-      "p_value": 0.001625279821319169,
+      "test_name": "One-Way ANOVA",
+      "statistic": 3.0276,
+      "p_value": 3.3056232354469323e-13,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.1054, p = 1.6253e-03. (Statistically Significant)"
+      "interpretation": "F-statistic = 3.0276, p = 3.3056e-13. (Statistically Significant)"
     },
     "Fare": {
       "test_name": "Pearson Correlation Test",
       "statistic": 0.2573,
-      "p_value": 6.120189341924586e-15,
+      "p_value": 6.1201893419245854e-15,
       "is_statistically_significant": true,
       "interpretation": "Pearson r = 0.2573, p = 6.1202e-15. (Statistically Significant)"
     },
     "Cabin": {
       "test_name": "One-Way ANOVA",
       "statistic": 2.7851,
-      "p_value": 1.2810870373968771e-08,
+      "p_value": 1.281087037396532e-08,
       "is_statistically_significant": true,
       "interpretation": "F-statistic = 2.7851, p = 1.2811e-08. (Statistically Significant)"
     },
     "Embarked": {
       "test_name": "One-Way ANOVA",
       "statistic": 13.3269,
-      "p_value": 1.9832394915479246e-06,
+      "p_value": 1.9832394915475582e-06,
       "is_statistically_significant": true,
       "interpretation": "F-statistic = 13.3269, p = 1.9832e-06. (Statistically Significant)"
     },
     "significant_predictors": [
       "Pclass",
       "Sex",
-      "Age",
       "Parch",
       "Ticket",
       "Fare",
@@ -502,7 +483,6 @@
     "statistically_significant_predictors": [
       "Pclass",
       "Sex",
-      "Age",
       "Parch",
       "Ticket",
       "Fare",

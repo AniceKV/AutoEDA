@@ -1,0 +1,470 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\StudentsPerformance.csv",
+    "shape": {
+      "rows": 1000,
+      "columns": 8
+    },
+    "target_column": "writing score",
+    "column_summary": {
+      "gender": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "race/ethnicity": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 5
+      },
+      "parental level of education": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 6
+      },
+      "lunch": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "test preparation course": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "math score": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 81
+      },
+      "reading score": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 72
+      },
+      "writing score": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 77
+      }
+    }
+  },
+  "imputation_summary": {
+    "rules_applied": [
+      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
+      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
+      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
+      "Categorical/String columns use mode imputation with 'Unknown' fallback."
+    ],
+    "columns": {
+      "gender": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "race/ethnicity": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "parental level of education": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "lunch": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "test preparation course": {
+        "dtype": "str",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "math score": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "reading score": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "writing score": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      }
+    }
+  },
+  "outlier_analysis": {
+    "math score": {
+      "q1": 57.0,
+      "q3": 77.0,
+      "iqr": 20.0,
+      "lower_bound": 27.0,
+      "upper_bound": 107.0,
+      "outlier_count": 8,
+      "outlier_percentage": 0.8,
+      "action_taken": "profile"
+    },
+    "reading score": {
+      "q1": 59.0,
+      "q3": 79.0,
+      "iqr": 20.0,
+      "lower_bound": 29.0,
+      "upper_bound": 109.0,
+      "outlier_count": 6,
+      "outlier_percentage": 0.6,
+      "action_taken": "profile"
+    },
+    "writing score": {
+      "q1": 57.75,
+      "q3": 79.0,
+      "iqr": 21.25,
+      "lower_bound": 25.875,
+      "upper_bound": 110.875,
+      "outlier_count": 5,
+      "outlier_percentage": 0.5,
+      "action_taken": "profile"
+    }
+  },
+  "engineered_features": [],
+  "correlation_analysis": {
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\correlation_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "reading score",
+        "feature_2": "writing score",
+        "correlation": 0.9546
+      },
+      {
+        "feature_1": "math score",
+        "feature_2": "reading score",
+        "correlation": 0.8176
+      },
+      {
+        "feature_1": "math score",
+        "feature_2": "writing score",
+        "correlation": 0.8026
+      }
+    ],
+    "correlation_matrix_text": {
+      "math score": {
+        "math score": 1.0,
+        "reading score": 0.818,
+        "writing score": 0.803
+      },
+      "reading score": {
+        "math score": 0.818,
+        "reading score": 1.0,
+        "writing score": 0.955
+      },
+      "writing score": {
+        "math score": 0.803,
+        "reading score": 0.955,
+        "writing score": 1.0
+      }
+    },
+    "categorical_associations": {
+      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+      "top_correlations": [
+        {
+          "feature_1": "gender",
+          "feature_2": "race/ethnicity",
+          "cramers_v": 0.0709
+        },
+        {
+          "feature_1": "parental level of education",
+          "feature_2": "test preparation course",
+          "cramers_v": 0.0674
+        },
+        {
+          "feature_1": "race/ethnicity",
+          "feature_2": "parental level of education",
+          "cramers_v": 0.0487
+        },
+        {
+          "feature_1": "race/ethnicity",
+          "feature_2": "test preparation course",
+          "cramers_v": 0.0385
+        },
+        {
+          "feature_1": "gender",
+          "feature_2": "parental level of education",
+          "cramers_v": 0.0
+        },
+        {
+          "feature_1": "gender",
+          "feature_2": "lunch",
+          "cramers_v": 0.0
+        },
+        {
+          "feature_1": "gender",
+          "feature_2": "test preparation course",
+          "cramers_v": 0.0
+        },
+        {
+          "feature_1": "race/ethnicity",
+          "feature_2": "lunch",
+          "cramers_v": 0.0
+        },
+        {
+          "feature_1": "parental level of education",
+          "feature_2": "lunch",
+          "cramers_v": 0.0
+        },
+        {
+          "feature_1": "lunch",
+          "feature_2": "test preparation course",
+          "cramers_v": 0.0
+        }
+      ],
+      "association_matrix_text": {
+        "gender": {
+          "gender": 1.0,
+          "race/ethnicity": 0.071,
+          "parental level of education": 0.0,
+          "lunch": 0.0,
+          "test preparation course": 0.0
+        },
+        "race/ethnicity": {
+          "gender": 0.071,
+          "race/ethnicity": 1.0,
+          "parental level of education": 0.049,
+          "lunch": 0.0,
+          "test preparation course": 0.039
+        },
+        "parental level of education": {
+          "gender": 0.0,
+          "race/ethnicity": 0.049,
+          "parental level of education": 1.0,
+          "lunch": 0.0,
+          "test preparation course": 0.067
+        },
+        "lunch": {
+          "gender": 0.0,
+          "race/ethnicity": 0.0,
+          "parental level of education": 0.0,
+          "lunch": 1.0,
+          "test preparation course": 0.0
+        },
+        "test preparation course": {
+          "gender": 0.0,
+          "race/ethnicity": 0.039,
+          "parental level of education": 0.067,
+          "lunch": 0.0,
+          "test preparation course": 1.0
+        }
+      }
+    }
+  },
+  "categorical_associations": {
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "gender",
+        "feature_2": "race/ethnicity",
+        "cramers_v": 0.0709
+      },
+      {
+        "feature_1": "parental level of education",
+        "feature_2": "test preparation course",
+        "cramers_v": 0.0674
+      },
+      {
+        "feature_1": "race/ethnicity",
+        "feature_2": "parental level of education",
+        "cramers_v": 0.0487
+      },
+      {
+        "feature_1": "race/ethnicity",
+        "feature_2": "test preparation course",
+        "cramers_v": 0.0385
+      },
+      {
+        "feature_1": "gender",
+        "feature_2": "parental level of education",
+        "cramers_v": 0.0
+      },
+      {
+        "feature_1": "gender",
+        "feature_2": "lunch",
+        "cramers_v": 0.0
+      },
+      {
+        "feature_1": "gender",
+        "feature_2": "test preparation course",
+        "cramers_v": 0.0
+      },
+      {
+        "feature_1": "race/ethnicity",
+        "feature_2": "lunch",
+        "cramers_v": 0.0
+      },
+      {
+        "feature_1": "parental level of education",
+        "feature_2": "lunch",
+        "cramers_v": 0.0
+      },
+      {
+        "feature_1": "lunch",
+        "feature_2": "test preparation course",
+        "cramers_v": 0.0
+      }
+    ],
+    "association_matrix_text": {
+      "gender": {
+        "gender": 1.0,
+        "race/ethnicity": 0.071,
+        "parental level of education": 0.0,
+        "lunch": 0.0,
+        "test preparation course": 0.0
+      },
+      "race/ethnicity": {
+        "gender": 0.071,
+        "race/ethnicity": 1.0,
+        "parental level of education": 0.049,
+        "lunch": 0.0,
+        "test preparation course": 0.039
+      },
+      "parental level of education": {
+        "gender": 0.0,
+        "race/ethnicity": 0.049,
+        "parental level of education": 1.0,
+        "lunch": 0.0,
+        "test preparation course": 0.067
+      },
+      "lunch": {
+        "gender": 0.0,
+        "race/ethnicity": 0.0,
+        "parental level of education": 0.0,
+        "lunch": 1.0,
+        "test preparation course": 0.0
+      },
+      "test preparation course": {
+        "gender": 0.0,
+        "race/ethnicity": 0.039,
+        "parental level of education": 0.067,
+        "lunch": 0.0,
+        "test preparation course": 1.0
+      }
+    }
+  },
+  "statistical_hypothesis_tests": {
+    "gender": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": 9.9977,
+      "p_value": 1.7118093718497035e-22,
+      "is_statistically_significant": true,
+      "interpretation": "T-statistic = 9.9977, p = 1.7118e-22. (Statistically Significant)"
+    },
+    "race/ethnicity": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 7.1624,
+      "p_value": 1.0979189070061419e-05,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 7.1624, p = 1.0979e-05. (Statistically Significant)"
+    },
+    "parental level of education": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 14.4424,
+      "p_value": 1.1202799969765113e-13,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 14.4424, p = 1.1203e-13. (Statistically Significant)"
+    },
+    "lunch": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": -7.8409,
+      "p_value": 1.716146802532231e-14,
+      "is_statistically_significant": true,
+      "interpretation": "T-statistic = -7.8409, p = 1.7161e-14. (Statistically Significant)"
+    },
+    "test preparation course": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": 10.7525,
+      "p_value": 2.662740173941027e-25,
+      "is_statistically_significant": true,
+      "interpretation": "T-statistic = 10.7525, p = 2.6627e-25. (Statistically Significant)"
+    },
+    "math score": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.8026,
+      "p_value": 3.3760270425673496e-226,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.8026, p = 3.3760e-226. (Statistically Significant)"
+    },
+    "reading score": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.9546,
+      "p_value": 0.0,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.9546, p = 0.0000e+00. (Statistically Significant)"
+    },
+    "significant_predictors": [
+      "gender",
+      "race/ethnicity",
+      "parental level of education",
+      "lunch",
+      "test preparation course",
+      "math score",
+      "reading score"
+    ]
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
+    "recommended_algorithms": [
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Evaluate Silhouette Score and Inertia elbow curve"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 1000 rows and 8 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "gender",
+      "race/ethnicity",
+      "parental level of education",
+      "lunch",
+      "test preparation course",
+      "math score",
+      "reading score"
+    ]
+  }
+}
