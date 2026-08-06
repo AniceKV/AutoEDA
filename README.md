@@ -1,12 +1,12 @@
 # AutoEDA — Autonomous Exploratory Data Analysis & Data Science Platform
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-autoeda.up.railway.app-000000?style=for-the-badge&logo=railway&logoColor=white)](https://autoeda.up.railway.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-autoeda--fjgz.onrender.com-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://autoeda-fjgz.onrender.com/)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.2%2B-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> 🚀 **Live Demo Application:** [https://autoeda.up.railway.app/](https://autoeda.up.railway.app/)
+> 🚀 **Live Demo Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
 ---
 
@@ -16,7 +16,7 @@
 
 ## 🌟 Key Highlights
 
-- 🌐 **Live Web Platform:** Hosted and production-ready at [https://autoeda.up.railway.app/](https://autoeda.up.railway.app/).
+- 🌐 **Live Web Platform:** Hosted and production-ready at [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/).
 - 🤖 **Autonomous Agent Pipeline:** Multi-step reasoning loop that profiles datasets, executes domain tools, runs statistical tests, and pauses for clarification if user instructions are ambiguous.
 - 🌓 **Invertible Light / Dark Minimalist UI:** Includes a persistent, white-to-charcoal monochrome design system with a live Light/Dark mode toggle switch that seamlessly inverts both page components and embedded Plotly charts.
 - 🔄 **Stateful Data Store & DVC Pattern:** In-memory dataset version control (`v0`, `v1`, ...) with automatic rollback to the last valid checkpoint if a transformation corrupts data integrity.
@@ -169,7 +169,7 @@ docker build -t autoeda .
 docker run -p 8000:8000 --env-file .env autoeda
 ```
 
-Live Application: [https://autoeda.up.railway.app/](https://autoeda.up.railway.app/)
+Live Application: [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
 ---
 
