@@ -145,7 +145,7 @@
     <p id="question-text">{{ agent_question|default:"" }}</p>
     <form id="question-form" method="post">
       {% csrf_token %}
-      <textarea name="answer" rows="3" placeholder="Your answer…" style="margin-bottom:14px;"></textarea>
+      <textarea name="answer" rows="3" placeholder="Type your response here…" style="margin-bottom:14px;" required></textarea>
       <div class="modal-actions">
         <button type="submit" class="btn btn-primary">Submit Response</button>
       </div>

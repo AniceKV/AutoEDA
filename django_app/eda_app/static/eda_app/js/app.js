@@ -258,6 +258,7 @@ const StatusBar = (() => {
         } else if (status === 'question') {
           stop();
           setNav('', '');
+          openQuestionModal(data.question || 'Agent requires clarification from user.');
         } else if (status === 'error') {
           stop();
           setNav('error', '⚠ Execution failed');
