@@ -5,12 +5,12 @@
 <!-- ═══ HERO HEADER ═══════════════════════════════════════════ -->
 {% if not selected_csv_path %}
 <div class="hero-header">
-  <div class="hero-title">Autonomous Tool-Based Data Science Platform</div>
+  <div class="hero-title">Select or Upload a Dataset</div>
   <div class="hero-subtitle">Stateful Agent Pipeline &bull; Algorithmic Profiling &bull; Statistical Modeling Blueprint</div>
 </div>
 {% else %}
 <div class="hero-header">
-  <div class="hero-title">AutoEDA Pro</div>
+  <div class="hero-title">{{ dataset_name }}</div>
   <div class="hero-subtitle">Stateful Agent Pipeline &bull; Algorithmic Profiling &bull; Statistical Modeling Blueprint</div>
 </div>
 {% endif %}

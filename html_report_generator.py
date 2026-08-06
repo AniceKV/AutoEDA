@@ -16,29 +16,29 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoEDA Pro - Interactive Profile Report - {{ dataset_name }}</title>
+    <title>AutoEDA - Interactive Profile Report - {{ dataset_name }}</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #07090e;
-            --bg-card: rgba(15, 23, 42, 0.7);
-            --bg-card-hover: rgba(30, 41, 59, 0.8);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(99, 102, 241, 0.4);
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.25);
-            --accent-purple: #a855f7;
-            --accent-pink: #ec4899;
-            --accent-cyan: #06b6d4;
-            --accent-green: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-dim: #64748b;
+            --bg-dark: #09090b;
+            --bg-card: #141417;
+            --bg-card-hover: #1c1c20;
+            --border-color: #27272a;
+            --border-highlight: #52525b;
+            --primary: #ffffff;
+            --primary-glow: rgba(255, 255, 255, 0.15);
+            --accent-purple: #e4e4e7;
+            --accent-pink: #d4d4d8;
+            --accent-cyan: #fafafa;
+            --accent-green: #ffffff;
+            --accent-warning: #e4e4e7;
+            --accent-danger: #fafafa;
+            --text-main: #fafafa;
+            --text-muted: #a1a1aa;
+            --text-dim: #71717a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,14 +50,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             line-height: 1.5;
             padding-bottom: 40px;
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+                radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 40%);
             background-attachment: fixed;
         }
 
         /* Header Banner */
         .header-container {
-            background: rgba(11, 15, 25, 0.85);
+            background: rgba(18, 18, 21, 0.92);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -79,8 +79,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 0.9rem;
             font-weight: 800;
             letter-spacing: 0.08em;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff, #e4e4e7);
+            color: #09090b;
             padding: 6px 12px;
             border-radius: 8px;
             box-shadow: 0 0 15px var(--primary-glow);
@@ -90,7 +90,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -101,9 +101,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         .header-badge {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #a5b4fc;
+            background: #1c1c20;
+            border: 1px solid #3f3f46;
+            color: #fafafa;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
@@ -501,10 +501,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <!-- Header Banner -->
     <header class="header-container">
         <div class="header-title-group">
-            <div class="header-logo">AUTOEDA</div>
+            <div class="header-logo">AutoEDA</div>
             <div class="header-text">
-                <h1>AutoEDA Pro | Interactive Analysis Report</h1>
-                <p>Dataset: <strong>{{ dataset_name }}</strong> &bull; Generated: {{ generation_time }}</p>
+                <h1>{{ dataset_name }}</h1>
+                <p>Interactive Analysis Report &bull; Generated: {{ generation_time }}</p>
             </div>
         </div>
         <div>
