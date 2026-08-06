@@ -149,7 +149,7 @@
   },
   "engineered_features": [],
   "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3af9a7d2-e40c-4cf6-a5ab-90c207f937da\\correlation_matrix.png",
     "top_correlations": [
       {
         "feature_1": "reading score",
@@ -185,7 +185,7 @@
       }
     },
     "categorical_associations": {
-      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3af9a7d2-e40c-4cf6-a5ab-90c207f937da\\categorical_association_matrix.png",
       "top_correlations": [
         {
           "feature_1": "gender",
@@ -278,7 +278,7 @@
     }
   },
   "categorical_associations": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\d02f3c47-df0f-4308-9b66-a25880ac3469\\categorical_association_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3af9a7d2-e40c-4cf6-a5ab-90c207f937da\\categorical_association_matrix.png",
     "top_correlations": [
       {
         "feature_1": "gender",
@@ -430,12 +430,13 @@
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "Undefined (Unsupervised)",
-    "problem_type": "Unsupervised / Exploratory",
+    "target_definition": "writing score",
+    "problem_type": "Regression",
     "recommended_algorithms": [
-      "K-Means Clustering",
-      "Hierarchical Agglomerative Clustering",
-      "Principal Component Analysis (PCA) for Dimensionality Reduction"
+      "Regularized Linear Regression (Ridge / Lasso)",
+      "Random Forest Regressor",
+      "Gradient Boosting Regressor",
+      "Support Vector Regressor (SVR)"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -443,14 +444,15 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Evaluate Silhouette Score and Inertia elbow curve"
+      "K-Fold Cross-Validation (5 folds)",
+      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+    "executive_summary": "Target: writing score (Regression). Use robust cross-validation on 1000 rows x 8 columns."
   },
   "extracted_insights": {
     "key_findings": [

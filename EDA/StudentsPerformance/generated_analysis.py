@@ -11,12 +11,13 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "Undefined (Unsupervised)",
-  "problem_type": "Unsupervised / Exploratory",
+  "target_definition": "writing score",
+  "problem_type": "Regression",
   "recommended_algorithms": [
-    "K-Means Clustering",
-    "Hierarchical Agglomerative Clustering",
-    "Principal Component Analysis (PCA) for Dimensionality Reduction"
+    "Regularized Linear Regression (Ridge / Lasso)",
+    "Random Forest Regressor",
+    "Gradient Boosting Regressor",
+    "Support Vector Regressor (SVR)"
   ],
   "feature_selection_strategy": [
     "Exclude high-cardinality ID or text name columns",
@@ -24,14 +25,15 @@ predictive_blueprint = {
     "Remove collinear features exceeding correlation threshold > 0.85"
   ],
   "validation_strategy": [
-    "Evaluate Silhouette Score and Inertia elbow curve"
+    "K-Fold Cross-Validation (5 folds)",
+    "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
   ],
   "overfitting_risk_mitigation": [
     "Apply regularization penalties (L1/L2)",
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+  "executive_summary": "Target: writing score (Regression). Use robust cross-validation on 1000 rows x 8 columns."
 }
 
 if __name__ == '__main__':
