@@ -108,6 +108,12 @@ def run_tool_based_eda(
         data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
         data_store.set_initial_state(df)
         
+        print("1b. Pre-generating distribution plot assets for all variables...")
+        try:
+            tools.plot_feature_distributions(df, output_dir=workspace_dir)
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating distribution plots: {e}")
+        
         agent_state = {
             "target_col": None,
             "imputation_res": None,

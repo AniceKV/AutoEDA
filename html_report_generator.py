@@ -908,21 +908,15 @@ def compute_alerts(profile: Dict[str, Any], corr_matrix: Optional[pd.DataFrame] 
     return alerts
 
 
-def build_variable_chart(df: pd.DataFrame, col_name: str) -> Optional[Dict[str, Any]]:
+def build_variable_chart(df: Optional[pd.DataFrame], col_name: str, col_info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Generates a Plotly figure spec dict for a single column's distribution.
+    Generates an interactive Plotly figure spec dict for a single column's distribution.
+    - Categorical / Discrete variables -> Count Plot (Bar chart with frequency counts & text labels).
+    - Continuous Numeric variables -> Numeric Distribution Plot (Histogram + marginal Box Plot).
+    - Fallback for missing/empty columns -> Clear annotated chart.
     """
-    if col_name not in df.columns:
-        return None
-        
-    s = df[col_name].dropna()
-    if len(s) == 0:
-        return None
-
-    is_numeric = pd.api.types.is_numeric_dtype(s) and not pd.api.types.is_bool_dtype(s)
-    
     layout = dict(
-        margin=dict(l=30, r=20, t=25, b=30),
+        margin=dict(l=30, r=20, t=30, b=30),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
@@ -930,31 +924,92 @@ def build_variable_chart(df: pd.DataFrame, col_name: str) -> Optional[Dict[str, 
         yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
     )
 
-    if is_numeric:
-        fig = px.histogram(
-            s, 
-            x=col_name, 
-            marginal="box",
-            color_discrete_sequence=['#6366f1'],
-            opacity=0.85
-        )
-        fig.update_layout(**layout)
-        return json.loads(pio.to_json(fig))
-    else:
-        top_counts = s.value_counts().head(10).reset_index()
-        top_counts.columns = [col_name, "count"]
-        fig = px.bar(
-            top_counts, 
-            x=col_name, 
-            y="count",
-            color_discrete_sequence=['#a855f7'],
-            text_auto=True
+    try:
+        if df is None or col_name not in df.columns:
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"No raw data loaded for '{col_name}'",
+                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                font=dict(size=13, color="#94a3b8")
+            )
+            fig.update_layout(**layout)
+            return json.loads(pio.to_json(fig))
+
+        s = df[col_name].dropna()
+        if len(s) == 0:
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"All values missing (NaN) for '{col_name}'",
+                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                font=dict(size=13, color="#ef4444")
+            )
+            fig.update_layout(**layout)
+            return json.loads(pio.to_json(fig))
+
+        is_bool = pd.api.types.is_bool_dtype(s)
+        is_num = pd.api.types.is_numeric_dtype(s) and not is_bool
+        n_unique = s.nunique()
+
+        # Categorical, boolean, or low-cardinality discrete numeric features (<= 10 unique values) get Count Plot
+        is_categorical = (not is_num) or is_bool or (n_unique <= 10)
+
+        if is_categorical:
+            counts_series = s.astype(str).value_counts().head(15)
+            cat_df = pd.DataFrame({
+                "Category": counts_series.index,
+                "Count": counts_series.values
+            })
+            
+            fig = px.bar(
+                cat_df,
+                x="Category",
+                y="Count",
+                color_discrete_sequence=['#a855f7'],
+                text="Count"
+            )
+            fig.update_traces(
+                textposition='outside',
+                texttemplate='%{text}',
+                marker_line_color='rgba(255,255,255,0.15)',
+                marker_line_width=1
+            )
+            fig.update_layout(
+                title=dict(text=f"Categorical Count Plot: {col_name}", font=dict(size=12, color='#e9d5ff')),
+                xaxis_title="Category",
+                yaxis_title="Count",
+                **layout
+            )
+            return json.loads(pio.to_json(fig))
+        else:
+            # Continuous Numeric Distribution Plot (Histogram + Box Plot)
+            s_clean = s.replace([np.inf, -np.inf], np.nan).dropna()
+            fig = px.histogram(
+                s_clean, 
+                x=col_name, 
+                marginal="box",
+                color_discrete_sequence=['#6366f1'],
+                opacity=0.85
+            )
+            fig.update_layout(
+                title=dict(text=f"Numeric Distribution: {col_name}", font=dict(size=12, color='#a5b4fc')),
+                xaxis_title=col_name,
+                yaxis_title="Frequency",
+                **layout
+            )
+            return json.loads(pio.to_json(fig))
+    except Exception as e:
+        print(f"[html_report_generator] Error building chart for '{col_name}': {e}")
+        fig = go.Figure()
+        fig.add_annotation(
+            text=f"Chart Error: {str(e)}",
+            xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+            font=dict(size=12, color="#ef4444")
         )
         fig.update_layout(**layout)
         return json.loads(pio.to_json(fig))
 
 
-def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Optional[str] = None) -> str:
+def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Optional[str] = None, data_path: Optional[str] = None) -> str:
     """
     Main entry point to read workspace metadata and generate a complete self-contained HTML profile report.
     """
@@ -1003,12 +1058,27 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
 
     # 4. Load Dataset DataFrame if available for charts & correlations
     df = None
-    data_files = [f for f in os.listdir(workspace_dir) if f.endswith(".csv")]
-    if data_files:
+    if data_path and os.path.exists(data_path):
         try:
-            df = pd.read_csv(os.path.join(workspace_dir, data_files[0]))
+            df = pd.read_csv(data_path)
         except Exception:
             pass
+
+    if df is None:
+        curr_df_path = os.path.join(workspace_dir, "current_df.csv")
+        if os.path.exists(curr_df_path):
+            try:
+                df = pd.read_csv(curr_df_path)
+            except Exception:
+                pass
+
+    if df is None and os.path.exists(workspace_dir):
+        data_files = [f for f in os.listdir(workspace_dir) if f.endswith(".csv")]
+        if data_files:
+            try:
+                df = pd.read_csv(os.path.join(workspace_dir, data_files[0]))
+            except Exception:
+                pass
 
     # Basic stats
     dimensions = profile.get("dimensions", {"rows": 0, "columns": 0})
@@ -1103,14 +1173,13 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
     # Compute Alerts
     alerts = compute_alerts(profile, corr_matrix)
 
-    # Build per-variable charts
+    # Build per-variable charts (guaranteed for every column in columns_profile)
     var_charts_json = {}
-    if df is not None:
-        for idx, col in enumerate(columns_profile, start=1):
-            col_name = col.get("column")
-            chart_spec = build_variable_chart(df, col_name)
-            if chart_spec:
-                var_charts_json[f"var-chart-{idx}"] = chart_spec
+    for idx, col in enumerate(columns_profile, start=1):
+        col_name = col.get("column")
+        chart_spec = build_variable_chart(df, col_name, col_info=col)
+        if chart_spec:
+            var_charts_json[f"var-chart-{idx}"] = chart_spec
 
     # Image Artifacts (b64 encoded)
     visual_artifacts = []

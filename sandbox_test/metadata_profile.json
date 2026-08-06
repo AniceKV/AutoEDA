@@ -1,70 +1,132 @@
 {
-    "dataset_name": "fertility.csv",
+    "dataset_name": "test_dataset.csv",
     "dimensions": {
         "rows": 100,
-        "columns": 10
+        "columns": 8
     },
     "missing_values_summary": {},
     "schema": {
-        "Season": {
+        "PassengerId": {
+            "type": "int64",
+            "cardinality": 100,
+            "key_metric": "Range: [1.00 to 100.00] | Mean: 50.50 | Median: 50.50"
+        },
+        "Survived": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.49 | Median: 0.00"
+        },
+        "Pclass": {
+            "type": "int64",
+            "cardinality": 3,
+            "key_metric": "Range: [1.00 to 3.00] | Mean: 1.94 | Median: 2.00"
+        },
+        "Sex": {
             "type": "object",
-            "cardinality": 4,
-            "key_metric": "Top Values: 'spring': 37, 'fall': 31, 'winter': 28"
+            "cardinality": 2,
+            "key_metric": "Top Values: 'female': 55, 'male': 45"
+        },
+        "Embarked": {
+            "type": "object",
+            "cardinality": 3,
+            "key_metric": "Top Values: 'C': 36, 'S': 34, 'Q': 30"
         },
         "Age": {
-            "type": "int64",
-            "cardinality": 10,
-            "key_metric": "Range: [27.00 to 36.00] | Mean: 30.11 | Median: 30.00"
+            "type": "float64",
+            "cardinality": 100,
+            "key_metric": "Range: [8.74 to 60.35] | Mean: 30.41 | Median: 29.52"
         },
-        "Childish diseases": {
-            "type": "object",
+        "Fare": {
+            "type": "float64",
+            "cardinality": 100,
+            "key_metric": "Range: [0.43 to 107.11] | Mean: 23.77 | Median: 16.43 | Highly Skewed (1.64)"
+        },
+        "IsAlone": {
+            "type": "bool",
             "cardinality": 2,
-            "key_metric": "Top Values: 'yes': 87, 'no': 13"
-        },
-        "Accident or serious trauma": {
-            "type": "object",
-            "cardinality": 2,
-            "key_metric": "Top Values: 'no': 56, 'yes': 44"
-        },
-        "Surgical intervention": {
-            "type": "object",
-            "cardinality": 2,
-            "key_metric": "Top Values: 'yes': 51, 'no': 49"
-        },
-        "High fevers in the last year": {
-            "type": "object",
-            "cardinality": 3,
-            "key_metric": "Top Values: 'more than 3 months ago': 63, 'no': 28, 'less than 3 months ago': 9"
-        },
-        "Frequency of alcohol consumption": {
-            "type": "object",
-            "cardinality": 5,
-            "key_metric": "Top Values: 'hardly ever or never': 40, 'once a week': 39, 'several times a week': 19"
-        },
-        "Smoking habit": {
-            "type": "object",
-            "cardinality": 3,
-            "key_metric": "Top Values: 'never': 56, 'occasional': 23, 'daily': 21"
-        },
-        "Number of hours spent sitting per day": {
-            "type": "int64",
-            "cardinality": 14,
-            "key_metric": "Range: [1.00 to 342.00] | Mean: 10.80 | Median: 7.00 | Highly Skewed (9.85)"
-        },
-        "Diagnosis": {
-            "type": "object",
-            "cardinality": 2,
-            "key_metric": "Top Values: 'Normal': 88, 'Altered': 12"
+            "key_metric": "Top Values: 'False': 58, 'True': 42"
         }
     },
     "columns": [
         {
-            "column": "Season",
+            "column": "PassengerId",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 100,
+            "unique_pct": 100.0,
+            "mean": 50.5,
+            "median": 50.5,
+            "std": 29.011491975882016,
+            "min": 1.0,
+            "max": 100.0,
+            "q1": 25.75,
+            "q3": 75.25,
+            "iqr": 49.5,
+            "skew": 0.0,
+            "kurtosis": -1.2
+        },
+        {
+            "column": "Survived",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 2.0,
+            "mean": 0.49,
+            "median": 0.0,
+            "std": 0.5024183937956914,
+            "min": 0.0,
+            "max": 1.0,
+            "q1": 0.0,
+            "q3": 1.0,
+            "iqr": 1.0,
+            "skew": 0.04061985691074258,
+            "kurtosis": -2.0395534607699592
+        },
+        {
+            "column": "Pclass",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 3,
+            "unique_pct": 3.0,
+            "mean": 1.94,
+            "median": 2.0,
+            "std": 0.8506681865665152,
+            "min": 1.0,
+            "max": 3.0,
+            "q1": 1.0,
+            "q3": 3.0,
+            "iqr": 2.0,
+            "skew": 0.11581461666231085,
+            "kurtosis": -1.6151788400254024
+        },
+        {
+            "column": "Sex",
             "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 4,
-            "unique_pct": 4.0,
+            "cardinality": 2,
+            "unique_pct": 2.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Embarked",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 3,
+            "unique_pct": 3.0,
             "mean": null,
             "median": null,
             "std": null,
@@ -78,151 +140,43 @@
         },
         {
             "column": "Age",
-            "dtype": "int64",
+            "dtype": "float64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 10,
-            "unique_pct": 10.0,
-            "mean": 30.11,
-            "median": 30.0,
-            "std": 2.2468608854096503,
-            "min": 27.0,
-            "max": 36.0,
-            "q1": 28.0,
-            "q3": 32.0,
-            "iqr": 4.0,
-            "skew": 0.6723640012065619,
-            "kurtosis": -0.20978388292432548
+            "cardinality": 100,
+            "unique_pct": 100.0,
+            "mean": 30.411764819257183,
+            "median": 29.522171236996865,
+            "std": 10.727358145644326,
+            "min": 8.73555055647309,
+            "max": 60.34758051750287,
+            "q1": 23.7271325984578,
+            "q3": 36.48600704208715,
+            "iqr": 12.758874443629352,
+            "skew": 0.4835613599064627,
+            "kurtosis": -0.0009788232412017983
         },
         {
-            "column": "Childish diseases",
-            "dtype": "object",
+            "column": "Fare",
+            "dtype": "float64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 2,
-            "unique_pct": 2.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
+            "cardinality": 100,
+            "unique_pct": 100.0,
+            "mean": 23.77414413847187,
+            "median": 16.432238614776338,
+            "std": 22.2688225139997,
+            "min": 0.4343498011589424,
+            "max": 107.11404041023653,
+            "q1": 7.054887721174402,
+            "q3": 33.10109637045309,
+            "iqr": 26.04620864927869,
+            "skew": 1.6406839699626532,
+            "kurtosis": 3.07355830307108
         },
         {
-            "column": "Accident or serious trauma",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 2,
-            "unique_pct": 2.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
-        },
-        {
-            "column": "Surgical intervention",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 2,
-            "unique_pct": 2.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
-        },
-        {
-            "column": "High fevers in the last year",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 3,
-            "unique_pct": 3.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
-        },
-        {
-            "column": "Frequency of alcohol consumption",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 5,
-            "unique_pct": 5.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
-        },
-        {
-            "column": "Smoking habit",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 3,
-            "unique_pct": 3.0,
-            "mean": null,
-            "median": null,
-            "std": null,
-            "min": null,
-            "max": null,
-            "q1": null,
-            "q3": null,
-            "iqr": null,
-            "skew": null,
-            "kurtosis": null
-        },
-        {
-            "column": "Number of hours spent sitting per day",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 14,
-            "unique_pct": 14.0,
-            "mean": 10.8,
-            "median": 7.0,
-            "std": 33.61697502900893,
-            "min": 1.0,
-            "max": 342.0,
-            "q1": 5.0,
-            "q3": 9.0,
-            "iqr": 4.0,
-            "skew": 9.853502437392178,
-            "kurtosis": 98.02260084386721
-        },
-        {
-            "column": "Diagnosis",
-            "dtype": "object",
+            "column": "IsAlone",
+            "dtype": "bool",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 2,

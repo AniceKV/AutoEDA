@@ -712,7 +712,8 @@ def plot_feature_distributions(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Plots probability distributions / KDE histograms or countplots for key important columns.
+    Plots probability distributions / KDE histograms for continuous numeric columns,
+    or countplots with count labels for categorical and low-cardinality discrete columns.
     Saves each column as a separate dist_{col}.png file.
     """
     plt.close()
@@ -737,21 +738,39 @@ def plot_feature_distributions(
 
         try:
             fig, ax = plt.subplots(figsize=(6, 4))
-            if _is_numeric_col(df[col]):
-                sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
-                ax.set_title(f"Distribution: {col}", fontsize=12, pad=10)
+            s_clean = df[col].dropna()
+            is_bool = pd.api.types.is_bool_dtype(s_clean)
+            is_num = _is_numeric_col(s_clean) and not is_bool
+            n_unique = s_clean.nunique()
+
+            # Continuous numeric variables (is_num and > 10 unique values) get KDE / Histogram
+            if is_num and n_unique > 10:
+                sns.histplot(s_clean, kde=True, ax=ax, color="#6366f1")
+                ax.set_title(f"Numeric Distribution: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Density / Frequency")
             else:
-                col_data = df[col].dropna()
-                if col_data.nunique() > 20:
-                    top_cats = col_data.value_counts().head(20).index
-                    col_data = col_data[col_data.isin(top_cats)]
-                sns.countplot(x=col_data, hue=col_data, ax=ax, palette="Set2", legend=False)
-                ax.set_title(f"Distribution / Top Counts: {col}", fontsize=12, pad=10)
+                # Categorical, boolean, or low-cardinality discrete numeric features get Count Plot
+                if n_unique > 20:
+                    top_cats = s_clean.value_counts().head(20).index
+                    col_data_str = s_clean[s_clean.isin(top_cats)].astype(str)
+                else:
+                    col_data_str = s_clean.astype(str)
+
+                # Order categories by frequency for clean presentation
+                cat_order = col_data_str.value_counts().index
+                sns.countplot(x=col_data_str, hue=col_data_str, order=cat_order, ax=ax, palette="Set2", legend=False)
+                ax.set_title(f"Categorical Count Plot: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Count")
                 ax.tick_params(axis='x', rotation=30)
+
+                # Annotate count bars with exact numeric counts
+                if len(ax.containers) > 0:
+                    try:
+                        ax.bar_label(ax.containers[0], padding=2, fontsize=9)
+                    except Exception:
+                        pass
 
             plt.tight_layout()
             plt.savefig(file_path, dpi=150, bbox_inches="tight")
@@ -766,6 +785,7 @@ def plot_feature_distributions(
         "individual_plots": saved_files,
         "plotted_columns": valid_cols
     }
+
 
 
 # =====================================================================
@@ -1082,7 +1102,7 @@ class PlotCorrelationMatrixArgs(BaseModel):
     save_path: str = Field(default="correlation_matrix.png")
 
 class PlotFeatureDistributionsArgs(BaseModel):
-    columns: List[str] = Field(description="List of key/important column names to plot distributions for")
+    columns: Optional[List[str]] = Field(default=None, description="Optional list of column names to plot distributions for. Pass empty or omit to plot all columns.")
     save_path: str = Field(default="feature_distributions.png")
 
 class PlotTargetInteractionArgs(BaseModel):

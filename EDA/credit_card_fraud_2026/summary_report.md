@@ -1,201 +1,215 @@
-# Executive Summary Report: Credit Card Fraud Detection EDA
+# Executive Summary – Credit‑Card Fraud Detection (2026)
 
-## 1. Dataset Overview
+**Dataset**: `credit_card_fraud_2026.csv`  
+**Rows / Columns**: 20 000 × 26  
+**Target**: `is_fraud` (binary classification) – fraud rate ≈ 1.7 % (mean = 0.01695)  
 
-The automated Exploratory Data Analysis (EDA) pipeline has processed a dataset named `credit_card_fraud_2026.csv`, containing **20,000 rows** and **26 columns**. The target variable for classification is `is_fraud`, which indicates whether a transaction is fraudulent (0 = not fraudulent, 1 = fraudulent). The dataset exhibits no missing values across all features, indicating complete data coverage.
-
-### Key Metadata
-| Metric                  | Value                     |
-|------------------------|---------------------------|
-| Total Rows             | 20,000                    |
-| Total Columns          | 26                        |
-| Target Variable        | is_fraud                  |
-| Data Type              | Classification            |
-| Imputation Applied     | None (no missing values)  |
+The automated EDA pipeline completed data profiling, outlier detection, correlation & categorical association analysis, statistical hypothesis testing, and produced a predictive‑modeling blueprint. No missing values were found; outlier profiling was performed (no removal). Feature‑engineering steps were attempted but did **not** generate new columns (all specifications failed to create features). The following sections synthesize the key quantitative findings and actionable recommendations for model development.
 
 ---
 
-## 2. Statistical Summary & Feature Distributions
+## 1. Dataset Overview  
 
-All numeric and categorical features were profiled. Below are key statistical summaries:
+| Item                              | Value |
+|-----------------------------------|-------|
+| Total rows                        | 20 000 |
+| Total columns                     | 26 |
+| Target column                     | `is_fraud` |
+| Fraud prevalence (mean)           | 0.01695 (≈ 1.7 %) |
+| Numeric columns (high‑skew)       | `amount_usd`, `account_balance_usd`, `hours_since_last_txn`, `distance_from_home_km`, `prior_disputes` |
+| Categorical columns (cardinality) | `merchant_category` (12), `card_type` (5), `auth_method` (5), `channel` (5), `device_type` (8) |
+| Boolean columns                   | 7 (e.g., `is_foreign_transaction`, `used_vpn`) |
 
-### Numerical Features (Summary Statistics)
-| Feature               | Mean       | Median    | Skewness | Outlier % | Notes                          |
-|-----------------------|------------|-----------|----------|-----------|--------------------------------|
-| amount_usd            | 132.42     | 57.51     | 7.21     | 10.3%     | Highly skewed                 |
-| hours_since_last_txn  | 8.95       | 6.21      | 1.89     | 4.78%     | Highly skewed                 |
-| distance_from_home_km | 22.14      | 15.50     | 2.03     | 4.52%     | Highly skewed                 |
-| account_balance_usd   | 3,316.66   | 2,007.68  | 5.63     | 7.85%     | Highly skewed                 |
-| velocity_score        | 19.81      | 18.80     | —        | 1.06%     | Low outlier count             |
-| txn_count_last_24h    | 3.19       | 3.00      | —        | —         | Low variance                   |
+### 1.1 Key Numeric Summaries  
 
-### Categorical Features (Top Values)
-| Feature               | Top Value(s)                         | Count   |
-|-----------------------|-------------------------------------|---------|
-| merchant_category     | Online Retail, Groceries, Restaurants | 3,416 / 3,242 / 2,534 |
-| card_type             | Visa, Mastercard, Amex              | 8,417 / 6,629 / 2,135 |
-| auth_method           | 3D Secure, OTP, PIN                 | 5,554 / 4,792 / 4,173 |
-| channel               | Online, POS, Contactless            | 6,810 / 5,191 / 3,400 |
-| device_type           | Android Phone, iPhone, POS Terminal | 5,503 / 4,179 / 3,162 |
+| Feature                | Mean   | Median | Std‑Dev | Min   | Max      | Skew   | Kurtosis |
+|------------------------|--------|--------|---------|-------|----------|--------|----------|
+| `amount_usd`           | 132.42 | 57.51  | 256.96  | 1.00  | 6 872.69 | 7.21   | 87.55    |
+| `hours_since_last_txn` | 8.95   | 6.21   | 8.84    | 0.01  | 87.05    | 1.89   | 5.05     |
+| `distance_from_home_km`| 22.14  | 15.50  | 22.12   | 0.00  | 216.19   | 2.03   | 6.24     |
+| `account_balance_usd`  | 3 316.66| 2 007.68| 4 350.72| 52.05 | 127 125.86| 5.63   | 70.30    |
+| `cvv_retry_count`      | 0.18   | 0.00   | 0.42    | 0     | 3        | 2.29   | 5.06     |
+| `velocity_score`       | 19.81  | 18.80  | 12.37   | 0.00  | 74.40    | 0.54   | 0.17     |
+| `customer_age`         | 49.67  | 50.00  | 18.49   | 18    | 81       | -0.01  | -1.19    |
+| `prior_disputes`       | 0.28   | 0.00   | 0.53    | 0     | 4        | 1.88   | 3.48     |
 
----
-
-## 3. Outlier Analysis
-
-Outliers were detected using the IQR method. The following features exhibited significant outlier presence (>4%):
-
-| Feature               | Outlier Count | Outlier % | Action Taken |
-|-----------------------|---------------|-----------|--------------|
-| amount_usd            | 2,061         | 10.3%     | Profiled     |
-| hours_since_last_txn  | 955           | 4.78%     | Profiled     |
-| distance_from_home_km | 904           | 4.52%     | Profiled     |
-| account_balance_usd   | 1,569         | 7.85%     | Profiled     |
-| velocity_score        | 213           | 1.06%     | Profiled     |
-
-> *Note: All outliers were flagged for further investigation but not removed or transformed in this phase.*
+*All categorical and boolean columns have 0 % missing values.*
 
 ---
 
-## 4. Correlation Analysis
+## 2. Data Quality  
 
-A Pearson correlation matrix was computed, revealing strong relationships between certain features. The top correlations are summarized below:
+### 2.1 Missing‑Value Handling  
+- No missing entries detected across any column.  
+- Imputation rules were defined (median for highly skewed numerics, mean for near‑normal, mode for categoricals) but were not applied because the dataset is complete.
 
-### Top Positive Correlations
-| Feature 1           | Feature 2         | Correlation | Significance |
-|---------------------|-------------------|-------------|--------------|
-| txn_count_last_24h  | velocity_score    | 0.622       | ✅           |
-| cvv_retry_count     | is_fraud          | 0.156       | ✅           |
-| merchant_risk_score | is_fraud          | 0.108       | ✅           |
-| amount_usd          | merchant_risk_score | 0.097     | ✅           |
-| velocity_score      | is_fraud          | 0.097       | ✅           |
+### 2.2 Outlier Profiling (action = *profile*)  
 
-### Top Negative Correlations
-| Feature 1           | Feature 2         | Correlation | Significance |
-|---------------------|-------------------|-------------|--------------|
-| hours_since_last_txn | velocity_score    | -0.266      | ✅           |
-| time_of_day_hour    | is_fraud          | -0.031      | ✅           |
+| Feature                | IQR   | Lower Bound | Upper Bound | Outliers | % of rows |
+|------------------------|-------|-------------|-------------|----------|-----------|
+| `amount_usd`           | 105.52| –132.04     | 290.03      | 2 061    | 10.3 % |
+| `hours_since_last_txn` | 9.84  | –12.17      | 27.20       | 955      | 4.8 % |
+| `txn_count_last_24h`   | 2.00  | –1.0        | 7.0         | 336      | 1.7 % |
+| `distance_from_home_km`| 24.48 | –30.39      | 67.54       | 904      | 4.5 % |
+| `card_age_months`      | 9.00  | 28.5        | 64.5        | 177      | 0.9 % |
+| `account_balance_usd`  | 2 924.98| –3 368.33   | 8 331.59    | 1 569    | 7.9 % |
+| `cvv_retry_count`      | 0.00  | 0.0         | 0.0         | 3 342    | 16.7 % |
+| `velocity_score`       | 16.90 | –14.65      | 52.95       | 213      | 1.1 % |
+| `prior_disputes`       | 0.00  | 0.0         | 0.0         | 4 915    | 24.6 % |
 
-> *Correlation heatmap saved as `correlation_matrix.png`*
-
----
-
-## 5. Statistical Hypothesis Testing
-
-Statistical significance was tested using Pearson correlation and One-Way ANOVA for categorical features. The following features showed statistically significant relationships with the target (`is_fraud`):
-
-### Statistically Significant Predictors (p < 0.05)
-| Feature               | Test Type             | p-value         | Interpretation                                  |
-|-----------------------|-----------------------|-----------------|------------------------------------------------|
-| amount_usd            | Pearson Correlation  | 4.17e-04        | Strongly associated with fraud                 |
-| merchant_category     | One-Way ANOVA        | 1.16e-20        | Category significantly impacts fraud risk      |
-| auth_method           | One-Way ANOVA        | 1.07e-27        | Authentication method matters                  |
-| is_foreign_transaction| Welch T-Test         | 4.99e-11        | Foreign transactions more likely to be fraud   |
-| hours_since_last_txn  | Pearson Correlation  | 4.64e-05        | Shorter time since last txn → higher fraud risk|
-| txn_count_last_24h    | Pearson Correlation  | 2.38e-17        | High transaction volume → higher fraud risk    |
-| customer_age          | Pearson Correlation  | 5.71e-03        | Older customers less likely to be victims?     |
-| is_new_merchant       | Welch T-Test         | 2.09e-16        | New merchants linked to fraud                  |
-| used_vpn              | Welch T-Test         | 3.56e-09        | VPN usage correlates with fraud                |
-| ip_country_mismatch   | Welch T-Test         | 5.72e-16        | IP mismatch strongly signals fraud             |
-| billing_shipping_mismatch | Welch T-Test     | 5.38e-12        | Mismatched addresses indicate fraud            |
-| cvv_retry_count       | Pearson Correlation  | 1.79e-108       | Multiple CVV retries → high fraud likelihood   |
-| velocity_score        | Pearson Correlation  | 3.10e-43        | Velocity score predicts fraud                  |
-| time_of_day_hour      | Pearson Correlation  | 1.31e-05        | Late-night transactions more risky             |
-| is_ai_generated_scam_attempt | Welch T-Test   | 6.87e-07        | AI-generated scams highly correlated with fraud|
-| merchant_risk_score   | Pearson Correlation  | 1.18e-52        | Higher merchant risk → higher fraud probability|
-| prior_disputes        | Pearson Correlation  | 7.23e-04        | Prior disputes increase fraud risk             |
-
-> **Executive Summary of Significant Predictors**:  
-> `amount_usd`, `merchant_category`, `auth_method`, `is_foreign_transaction`, `hours_since_last_txn`, `txn_count_last_24h`, `customer_age`, `is_new_merchant`, `used_vpn`, `ip_country_mismatch`, `billing_shipping_mismatch`, `cvv_retry_count`, `velocity_score`, `time_of_day_hour`, `is_ai_generated_scam_attempt`, `merchant_risk_score`, `prior_disputes`
+*No rows were removed; outliers were retained for modeling.*
 
 ---
 
-## 6. Bivariate Visualizations
+## 3. Correlation Analysis  
 
-Key bivariate plots were generated to explore feature-target interactions:
+| Feature Pair                     | Pearson r |
+|----------------------------------|-----------|
+| `txn_count_last_24h` & `velocity_score` | **0.6224** |
+| `hours_since_last_txn` & `velocity_score`| **‑0.2655** |
+| `cvv_retry_count` & `is_fraud`   | **0.1555** |
+| `merchant_risk_score` & `is_fraud`| **0.1077** |
+| `velocity_score` & `is_fraud`    | **0.0973** |
+| `amount_usd` & `merchant_risk_score`| **0.0971** |
+| `txn_count_last_24h` & `is_fraud`| **0.0599** |
+| `time_of_day_hour` & `is_fraud`  | **‑0.0308** |
+| `hours_since_last_txn` & `is_fraud`| **‑0.0288** |
+| `amount_usd` & `is_fraud`        | **0.0250** |
 
-### Key Plots:
-- **`bivariate_amount_usd_vs_merchant_risk_score.png`**: Shows positive trend — higher merchant risk scores correlate with larger transaction amounts.
-- **`bivariate_customer_age_vs_velocity_score.png`**: Suggests older customers have lower velocity scores, implying less frequent activity.
-- **`bivariate_cvv_retry_count_vs_is_fraud.png`**: Strong association — higher retry counts → higher fraud likelihood.
-- **`bivariate_distance_from_home_km_vs_is_foreign_transaction.png`**: Transactions from far distances are more likely to be foreign.
-
-> *All visualizations are stored in the working directory.*
-
----
-
-## 7. Feature Engineering Highlights
-
-No engineered features were created during this EDA phase. However, the following insights suggest potential future engineering:
-
-- **Velocity Score**: Could be enhanced by incorporating rolling window calculations.
-- **Merchant Risk Score**: May benefit from normalization or binning.
-- **Time-based Features**: Consider creating “hour-of-day” bins or “weekend vs weekday” flags.
-- **Interaction Terms**: Potential for `is_foreign_transaction × merchant_risk_score` or `cvv_retry_count × txn_count_last_24h`.
+*All correlations are modest; the strongest linear relationship is between transaction count in the last 24 h and the velocity score (r ≈ 0.62).*
 
 ---
 
-## 8. Predictive Modeling Blueprint
+## 4. Categorical Association (Cramér’s V)  
 
-### Problem Definition
-- **Target**: `is_fraud` (Binary Classification)
-- **Dataset Size**: 20,000 samples × 26 features
-- **Goal**: Build a robust fraud detection model with high precision and recall.
+| Categorical Pair                     | Cramér’s V |
+|--------------------------------------|------------|
+| `is_foreign_transaction` & `ip_country_mismatch` | **0.2722** |
+| `channel` & `billing_shipping_mismatch`          | **0.1605** |
+| `channel` & `is_ai_generated_scam_attempt`      | **0.0992** |
+| `device_type` & `ip_country_mismatch`           | **0.0251** |
+| `merchant_category` & `is_new_merchant`         | **0.0215** |
+| `billing_shipping_mismatch` & `is_ai_generated_scam_attempt` | **0.0198** |
+| `auth_method` & `is_ai_generated_scam_attempt` | **0.0192** |
+| `device_type` & `is_ai_generated_scam_attempt`| **0.0138** |
+| `merchant_category` & `is_ai_generated_scam_attempt`| **0.0126** |
+| `device_type` & `used_vpn`                     | **0.0112** |
 
-### Recommended Algorithms
-1. Regularized Logistic Regression (Baseline)
-2. Random Forest Classifier
-3. Gradient Boosting Classifier (XGBoost / LightGBM)
-4. Support Vector Classifier (SVM)
-
-### Feature Selection Strategy
-- Exclude ID columns (`transaction_id`) and low-information categorical variables.
-- Use cross-validated permutation importance and mutual information to rank features.
-- Remove collinear features with correlation > 0.85.
-
-### Validation Strategy
-- Stratified K-Fold Cross-Validation (5 folds)
-- Metrics: Balanced Accuracy, Macro F1, Precision-Recall AUC, Confusion Matrix
-
-### Overfitting Mitigation
-- Apply L1/L2 regularization
-- Limit tree depth and enforce minimum samples per leaf
-- Hyperparameter tuning within CV folds only
+*The strongest association is between foreign‑transaction flag and IP‑country mismatch (V ≈ 0.27).*
 
 ---
 
-## 9. Image Artifact Descriptions
+## 5. Statistical Hypothesis Testing  
 
-The following visual artifacts were generated and saved:
+All tests were performed at α = 0.05.  
 
-| Artifact Name                      | Description                                                                 |
-|------------------------------------|-----------------------------------------------------------------------------|
-| `correlation_matrix.png`           | Heatmap showing pairwise correlations among all features.                   |
-| `pairplot.png`                     | Scatterplots of all numerical pairs + histograms on diagonal.               |
-| `target_interactions.png`          | Visualization of how each feature interacts with the target (`is_fraud`).   |
-| `bivariate_*_vs_is_fraud.png`      | 5 key bivariate scatterplots highlighting strongest feature-target links.   |
-| `dist_*_png`                       | Distribution plots for all continuous and binary features.                  |
+| Feature                | Test Type                | Statistic | p‑value | Significant? |
+|------------------------|--------------------------|-----------|---------|--------------|
+| `amount_usd`           | Pearson correlation      | 0.0250    | 4.17 e‑4| ✅ |
+| `merchant_category`   | One‑Way ANOVA            | 11.0278   | 1.16 e‑20| ✅ |
+| `auth_method`          | One‑Way ANOVA            | 33.2641   | 1.07 e‑27| ✅ |
+| `is_foreign_transaction`| Welch t‑test (binary)   | –6.6283   | 4.99 e‑11| ✅ |
+| `hours_since_last_txn` | Pearson correlation      | –0.0288   | 4.64 e‑5| ✅ |
+| `txn_count_last_24h`   | Pearson correlation      | 0.0599    | 2.38 e‑17| ✅ |
+| `customer_age`         | Pearson correlation      | 0.0195    | 5.71 e‑3| ✅ |
+| `is_new_merchant`      | Welch t‑test (binary)    | –8.2423   | 2.09 e‑16| ✅ |
+| `used_vpn`             | Welch t‑test (binary)    | –5.9316   | 3.56 e‑9| ✅ |
+| `ip_country_mismatch`  | Welch t‑test (binary)    | –8.2095   | 5.72 e‑16| ✅ |
+| `billing_shipping_mismatch`| Welch t‑test (binary)| –6.9905   | 5.38 e‑12| ✅ |
+| `cvv_retry_count`      | Pearson correlation      | 0.1555    | 1.79 e‑108| ✅ |
+| `velocity_score`       | Pearson correlation      | 0.0973    | 3.10 e‑43| ✅ |
+| `time_of_day_hour`     | Pearson correlation      | –0.0308   | 1.31 e‑5| ✅ |
+| `is_ai_generated_scam_attempt`| Welch t‑test (binary)| –5.0509 | 6.87 e‑7| ✅ |
+| `merchant_risk_score`  | Pearson correlation      | 0.1077    | 1.18 e‑52| ✅ |
+| `prior_disputes`       | Pearson correlation      | 0.0239    | 7.23 e‑4| ✅ |
 
-> *All images are stored locally and can be viewed via file explorer or Jupyter notebook.*
+**Non‑significant** (p > 0.05): `transaction_id`, `card_type`, `channel`, `device_type`, `distance_from_home_km`, `card_age_months`, `account_balance_usd`, `day_of_week`.
+
+### 5.1 Consolidated List of Significant Predictors  
+
+```
+amount_usd
+merchant_category
+auth_method
+is_foreign_transaction
+hours_since_last_txn
+txn_count_last_24h
+customer_age
+is_new_merchant
+used_vpn
+ip_country_mismatch
+billing_shipping_mismatch
+cvv_retry_count
+velocity_score
+time_of_day_hour
+is_ai_generated_scam_attempt
+merchant_risk_score
+prior_disputes
+```
+
+These 17 features will be the primary focus for model building.
 
 ---
 
-## 10. Conclusion & Recommendations
+## 6. Feature Engineering  
 
-This EDA reveals that the dataset is rich in predictive signals, particularly around transaction behavior, authentication methods, and user/device context. The most powerful predictors include:
+The pipeline attempted the following specifications:
 
-- **Behavioral Signals**: `cvv_retry_count`, `velocity_score`, `txn_count_last_24h`
-- **Risk Indicators**: `merchant_risk_score`, `ip_country_mismatch`, `used_vpn`
-- **Contextual Flags**: `is_foreign_transaction`, `is_new_merchant`, `is_ai_generated_scam_attempt`
+| New Feature                     | Transformation | Source Columns |
+|--------------------------------|----------------|----------------|
+| `log_amount_usd`               | log1p          | `amount_usd` |
+| `log_account_balance_usd`      | log1p          | `account_balance_usd` |
+| `amount_to_balance_ratio`      | ratio (÷)      | `amount_usd`, `account_balance_usd` |
+| `hours_distance_interaction`   | product (×)    | `hours_since_last_txn`, `distance_from_home_km` |
+| `card_age_times_velocity`      | product (×)    | `card_age_months`, `velocity_score` |
 
-### Next Steps:
-1. Implement baseline logistic regression model.
-2. Perform hyperparameter tuning using GridSearchCV.
-3. Engineer new features based on interaction patterns.
-4. Deploy ensemble models (Random Forest + XGBoost) for improved performance.
-5. Monitor model drift and retrain periodically.
+**Result** – No new columns were successfully added (engineered_features list empty). Possible causes: division‑by‑zero safeguards, duplicate column names, or pipeline error. Recommend revisiting the engineering step before model training.
 
-This dataset is well-suited for building a production-grade fraud detection system with high accuracy and interpretability.
+---
 
---- 
+## 7. Predictive‑Modeling Blueprint  
 
-*Generated by Senior Lead Data Scientist — AutoEDA Pipeline Output*
+| Aspect                     | Recommendation |
+|----------------------------|----------------|
+| **Problem Type**           | Binary Classification (`is_fraud`) |
+| **Baseline Model**         | Regularized Logistic Regression (L1/L2) |
+| **Advanced Models**        | • Random Forest Classifier  <br>• Gradient Boosting (XGBoost / LightGBM) <br>• Support Vector Classifier (SVM) |
+| **Feature Selection**      | 1. Drop high‑cardinality identifiers (`transaction_id`). <br>2. Rank features using cross‑validated permutation importance **and** mutual information. <br>3. Remove collinear features with |r| > 0.85 (none observed above threshold). |
+| **Validation Strategy**    | Stratified 5‑fold cross‑validation (preserves fraud proportion). <br>Metrics: Balanced Accuracy, Macro F1, Precision‑Recall AUC, Confusion Matrix. |
+| **Over‑fitting Mitigation**| • Apply regularization (C‑parameter for LR/SVM, L1/L2). <br>• Limit tree depth, set `min_samples_leaf` for ensemble models. <br>• Conduct hyper‑parameter search **inside** CV folds (e.g., GridSearchCV, Optuna). |
+| **Implementation Notes**   | • Encode categoricals via target encoding or frequency encoding (avoid one‑hot explosion). <br>• Scale numeric features (standard scaler or robust scaler due to skew). <br>• Consider SMOTE or class‑weighting to address 1.7 % fraud prevalence. |
+
+---
+
+## 8. Visual Artifacts (Generated PNGs)
+
+| File (path)                              | Description |
+|------------------------------------------|-------------|
+| `correlation_matrix.png`                 | Heat‑map of Pearson correlations for all numeric features (saved in `./sandbox_run`). |
+| `categorical_association_matrix.png`    | Heat‑map of Cramér’s V values for all categorical/binary pairs. |
+| `dist_*.png` (24 files)                  | Univariate distribution plots for each column (histograms / bar charts). |
+| `bivariate_*.png` (10 files)             | Bivariate visualizations of each significant predictor vs. `is_fraud` (box‑plots, violin plots, or stacked bars). |
+| `target_interactions.png`                | Interaction plot for `amount_usd` against the target (e.g., partial dependence or SHAP interaction). |
+| `eda_report.html`                        | Full HTML report (not reproduced here). |
+
+All images are stored under the sandbox run directory and are ready for inclusion in stakeholder presentations.
+
+---
+
+## 9. Recommendations & Next Steps  
+
+1. **Re‑run Feature Engineering** – Verify transformation logic (handle zeros, log‑transform only positive values) and ensure engineered columns are added to the dataframe.  
+2. **Encoding Strategy** – Apply appropriate encoding for the 12‑level `merchant_category`, 5‑level `card_type`, etc. Target or frequency encoding is preferred to keep dimensionality low.  
+3. **Class Imbalance Handling** – Experiment with class weighting in loss functions and/or oversampling techniques (SMOTE, ADASYN).  
+4. **Model Prototyping** –  
+   - Start with a regularized logistic regression baseline (quick to train, interpretable).  
+   - Progress to tree‑based ensembles (Random Forest, XGBoost) to capture non‑linear interactions, especially those hinted by the strong `txn_count_last_24h` ↔ `velocity_score` relationship.  
+5. **Evaluation** – Use stratified 5‑fold CV; report both ROC‑AUC (for completeness) and PR‑AUC (more informative for rare events).  
+6. **Explainability** – Generate SHAP values for the best model to communicate feature impact to non‑technical stakeholders (e.g., `cvv_retry_count`, `used_vpn`, `merchant_risk_score`).  
+7. **Production Checklist** – Ensure reproducible preprocessing (scalers, encoders) and version control of the final model artefacts.
+
+---
+
+### Closing Statement  
+
+The dataset is clean, well‑profiled, and contains a rich set of statistically significant predictors for fraud detection. With proper feature engineering, encoding, and a disciplined modeling pipeline (as outlined above), a high‑performing, explainable fraud classifier can be delivered within a short development cycle.

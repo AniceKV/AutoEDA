@@ -443,6 +443,10 @@ def main():
                         st.markdown("#### Distribution Asset")
                         clean_col = re.sub(r'\W+', '_', col_name).strip('_')
                         dist_img = os.path.join(eda_dir, f"dist_{clean_col}.png") if eda_dir else ""
+                        if not (dist_img and os.path.exists(dist_img)) and os.path.exists("./sandbox_run"):
+                            sandbox_candidate = os.path.join("./sandbox_run", f"dist_{clean_col}.png")
+                            if os.path.exists(sandbox_candidate):
+                                dist_img = sandbox_candidate
                             
                         if dist_img and os.path.exists(dist_img):
                             st.image(dist_img, caption=f"Distribution of {col_name}", use_container_width=True)

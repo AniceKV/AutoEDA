@@ -352,6 +352,16 @@
       "outlier_percentage": 4.78,
       "action_taken": "profile"
     },
+    "txn_count_last_24h": {
+      "q1": 2.0,
+      "q3": 4.0,
+      "iqr": 2.0,
+      "lower_bound": -1.0,
+      "upper_bound": 7.0,
+      "outlier_count": 336,
+      "outlier_percentage": 1.68,
+      "action_taken": "profile"
+    },
     "distance_from_home_km": {
       "q1": 6.3375,
       "q3": 30.82,
@@ -360,6 +370,26 @@
       "upper_bound": 67.5438,
       "outlier_count": 904,
       "outlier_percentage": 4.52,
+      "action_taken": "profile"
+    },
+    "card_age_months": {
+      "q1": 42.0,
+      "q3": 51.0,
+      "iqr": 9.0,
+      "lower_bound": 28.5,
+      "upper_bound": 64.5,
+      "outlier_count": 177,
+      "outlier_percentage": 0.89,
+      "action_taken": "profile"
+    },
+    "customer_age": {
+      "q1": 34.0,
+      "q3": 66.0,
+      "iqr": 32.0,
+      "lower_bound": -14.0,
+      "upper_bound": 114.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
     "account_balance_usd": {
@@ -372,6 +402,16 @@
       "outlier_percentage": 7.85,
       "action_taken": "profile"
     },
+    "cvv_retry_count": {
+      "q1": 0.0,
+      "q3": 0.0,
+      "iqr": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 3342,
+      "outlier_percentage": 16.71,
+      "action_taken": "profile"
+    },
     "velocity_score": {
       "q1": 10.7,
       "q3": 27.6,
@@ -380,6 +420,36 @@
       "upper_bound": 52.95,
       "outlier_count": 213,
       "outlier_percentage": 1.06,
+      "action_taken": "profile"
+    },
+    "time_of_day_hour": {
+      "q1": 6.0,
+      "q3": 18.0,
+      "iqr": 12.0,
+      "lower_bound": -12.0,
+      "upper_bound": 36.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "day_of_week": {
+      "q1": 1.0,
+      "q3": 5.0,
+      "iqr": 4.0,
+      "lower_bound": -5.0,
+      "upper_bound": 11.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "prior_disputes": {
+      "q1": 0.0,
+      "q3": 0.0,
+      "iqr": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 4915,
+      "outlier_percentage": 24.57,
       "action_taken": "profile"
     }
   },
@@ -693,6 +763,406 @@
         "merchant_risk_score": 0.108,
         "prior_disputes": 0.024,
         "is_fraud": 1.0
+      }
+    },
+    "categorical_associations": {
+      "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+      "top_correlations": [
+        {
+          "feature_1": "is_foreign_transaction",
+          "feature_2": "ip_country_mismatch",
+          "cramers_v": 0.2722
+        },
+        {
+          "feature_1": "channel",
+          "feature_2": "billing_shipping_mismatch",
+          "cramers_v": 0.1605
+        },
+        {
+          "feature_1": "channel",
+          "feature_2": "is_ai_generated_scam_attempt",
+          "cramers_v": 0.0992
+        },
+        {
+          "feature_1": "device_type",
+          "feature_2": "ip_country_mismatch",
+          "cramers_v": 0.0251
+        },
+        {
+          "feature_1": "merchant_category",
+          "feature_2": "is_new_merchant",
+          "cramers_v": 0.0215
+        },
+        {
+          "feature_1": "billing_shipping_mismatch",
+          "feature_2": "is_ai_generated_scam_attempt",
+          "cramers_v": 0.0198
+        },
+        {
+          "feature_1": "auth_method",
+          "feature_2": "is_ai_generated_scam_attempt",
+          "cramers_v": 0.0192
+        },
+        {
+          "feature_1": "device_type",
+          "feature_2": "is_ai_generated_scam_attempt",
+          "cramers_v": 0.0138
+        },
+        {
+          "feature_1": "merchant_category",
+          "feature_2": "is_ai_generated_scam_attempt",
+          "cramers_v": 0.0126
+        },
+        {
+          "feature_1": "device_type",
+          "feature_2": "used_vpn",
+          "cramers_v": 0.0112
+        }
+      ],
+      "association_matrix_text": {
+        "merchant_category": {
+          "merchant_category": 1.0,
+          "card_type": 0.0,
+          "auth_method": 0.01,
+          "channel": 0.0,
+          "device_type": 0.0,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.021,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.0,
+          "billing_shipping_mismatch": 0.0,
+          "is_ai_generated_scam_attempt": 0.013
+        },
+        "card_type": {
+          "merchant_category": 0.0,
+          "card_type": 1.0,
+          "auth_method": 0.0,
+          "channel": 0.007,
+          "device_type": 0.0,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.0,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.006,
+          "billing_shipping_mismatch": 0.0,
+          "is_ai_generated_scam_attempt": 0.0
+        },
+        "auth_method": {
+          "merchant_category": 0.01,
+          "card_type": 0.0,
+          "auth_method": 1.0,
+          "channel": 0.0,
+          "device_type": 0.0,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.009,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.0,
+          "billing_shipping_mismatch": 0.0,
+          "is_ai_generated_scam_attempt": 0.019
+        },
+        "channel": {
+          "merchant_category": 0.0,
+          "card_type": 0.007,
+          "auth_method": 0.0,
+          "channel": 1.0,
+          "device_type": 0.002,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.0,
+          "used_vpn": 0.01,
+          "ip_country_mismatch": 0.008,
+          "billing_shipping_mismatch": 0.16,
+          "is_ai_generated_scam_attempt": 0.099
+        },
+        "device_type": {
+          "merchant_category": 0.0,
+          "card_type": 0.0,
+          "auth_method": 0.0,
+          "channel": 0.002,
+          "device_type": 1.0,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.0,
+          "used_vpn": 0.011,
+          "ip_country_mismatch": 0.025,
+          "billing_shipping_mismatch": 0.0,
+          "is_ai_generated_scam_attempt": 0.014
+        },
+        "is_foreign_transaction": {
+          "merchant_category": 0.0,
+          "card_type": 0.0,
+          "auth_method": 0.0,
+          "channel": 0.0,
+          "device_type": 0.0,
+          "is_foreign_transaction": 1.0,
+          "is_new_merchant": 0.0,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.272,
+          "billing_shipping_mismatch": 0.01,
+          "is_ai_generated_scam_attempt": 0.008
+        },
+        "is_new_merchant": {
+          "merchant_category": 0.021,
+          "card_type": 0.0,
+          "auth_method": 0.009,
+          "channel": 0.0,
+          "device_type": 0.0,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 1.0,
+          "used_vpn": 0.011,
+          "ip_country_mismatch": 0.01,
+          "billing_shipping_mismatch": 0.009,
+          "is_ai_generated_scam_attempt": 0.002
+        },
+        "used_vpn": {
+          "merchant_category": 0.0,
+          "card_type": 0.0,
+          "auth_method": 0.0,
+          "channel": 0.01,
+          "device_type": 0.011,
+          "is_foreign_transaction": 0.0,
+          "is_new_merchant": 0.011,
+          "used_vpn": 1.0,
+          "ip_country_mismatch": 0.0,
+          "billing_shipping_mismatch": 0.0,
+          "is_ai_generated_scam_attempt": 0.0
+        },
+        "ip_country_mismatch": {
+          "merchant_category": 0.0,
+          "card_type": 0.006,
+          "auth_method": 0.0,
+          "channel": 0.008,
+          "device_type": 0.025,
+          "is_foreign_transaction": 0.272,
+          "is_new_merchant": 0.01,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 1.0,
+          "billing_shipping_mismatch": 0.01,
+          "is_ai_generated_scam_attempt": 0.0
+        },
+        "billing_shipping_mismatch": {
+          "merchant_category": 0.0,
+          "card_type": 0.0,
+          "auth_method": 0.0,
+          "channel": 0.16,
+          "device_type": 0.0,
+          "is_foreign_transaction": 0.01,
+          "is_new_merchant": 0.009,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.01,
+          "billing_shipping_mismatch": 1.0,
+          "is_ai_generated_scam_attempt": 0.02
+        },
+        "is_ai_generated_scam_attempt": {
+          "merchant_category": 0.013,
+          "card_type": 0.0,
+          "auth_method": 0.019,
+          "channel": 0.099,
+          "device_type": 0.014,
+          "is_foreign_transaction": 0.008,
+          "is_new_merchant": 0.002,
+          "used_vpn": 0.0,
+          "ip_country_mismatch": 0.0,
+          "billing_shipping_mismatch": 0.02,
+          "is_ai_generated_scam_attempt": 1.0
+        }
+      }
+    }
+  },
+  "categorical_associations": {
+    "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
+    "top_correlations": [
+      {
+        "feature_1": "is_foreign_transaction",
+        "feature_2": "ip_country_mismatch",
+        "cramers_v": 0.2722
+      },
+      {
+        "feature_1": "channel",
+        "feature_2": "billing_shipping_mismatch",
+        "cramers_v": 0.1605
+      },
+      {
+        "feature_1": "channel",
+        "feature_2": "is_ai_generated_scam_attempt",
+        "cramers_v": 0.0992
+      },
+      {
+        "feature_1": "device_type",
+        "feature_2": "ip_country_mismatch",
+        "cramers_v": 0.0251
+      },
+      {
+        "feature_1": "merchant_category",
+        "feature_2": "is_new_merchant",
+        "cramers_v": 0.0215
+      },
+      {
+        "feature_1": "billing_shipping_mismatch",
+        "feature_2": "is_ai_generated_scam_attempt",
+        "cramers_v": 0.0198
+      },
+      {
+        "feature_1": "auth_method",
+        "feature_2": "is_ai_generated_scam_attempt",
+        "cramers_v": 0.0192
+      },
+      {
+        "feature_1": "device_type",
+        "feature_2": "is_ai_generated_scam_attempt",
+        "cramers_v": 0.0138
+      },
+      {
+        "feature_1": "merchant_category",
+        "feature_2": "is_ai_generated_scam_attempt",
+        "cramers_v": 0.0126
+      },
+      {
+        "feature_1": "device_type",
+        "feature_2": "used_vpn",
+        "cramers_v": 0.0112
+      }
+    ],
+    "association_matrix_text": {
+      "merchant_category": {
+        "merchant_category": 1.0,
+        "card_type": 0.0,
+        "auth_method": 0.01,
+        "channel": 0.0,
+        "device_type": 0.0,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.021,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.0,
+        "billing_shipping_mismatch": 0.0,
+        "is_ai_generated_scam_attempt": 0.013
+      },
+      "card_type": {
+        "merchant_category": 0.0,
+        "card_type": 1.0,
+        "auth_method": 0.0,
+        "channel": 0.007,
+        "device_type": 0.0,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.0,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.006,
+        "billing_shipping_mismatch": 0.0,
+        "is_ai_generated_scam_attempt": 0.0
+      },
+      "auth_method": {
+        "merchant_category": 0.01,
+        "card_type": 0.0,
+        "auth_method": 1.0,
+        "channel": 0.0,
+        "device_type": 0.0,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.009,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.0,
+        "billing_shipping_mismatch": 0.0,
+        "is_ai_generated_scam_attempt": 0.019
+      },
+      "channel": {
+        "merchant_category": 0.0,
+        "card_type": 0.007,
+        "auth_method": 0.0,
+        "channel": 1.0,
+        "device_type": 0.002,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.0,
+        "used_vpn": 0.01,
+        "ip_country_mismatch": 0.008,
+        "billing_shipping_mismatch": 0.16,
+        "is_ai_generated_scam_attempt": 0.099
+      },
+      "device_type": {
+        "merchant_category": 0.0,
+        "card_type": 0.0,
+        "auth_method": 0.0,
+        "channel": 0.002,
+        "device_type": 1.0,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.0,
+        "used_vpn": 0.011,
+        "ip_country_mismatch": 0.025,
+        "billing_shipping_mismatch": 0.0,
+        "is_ai_generated_scam_attempt": 0.014
+      },
+      "is_foreign_transaction": {
+        "merchant_category": 0.0,
+        "card_type": 0.0,
+        "auth_method": 0.0,
+        "channel": 0.0,
+        "device_type": 0.0,
+        "is_foreign_transaction": 1.0,
+        "is_new_merchant": 0.0,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.272,
+        "billing_shipping_mismatch": 0.01,
+        "is_ai_generated_scam_attempt": 0.008
+      },
+      "is_new_merchant": {
+        "merchant_category": 0.021,
+        "card_type": 0.0,
+        "auth_method": 0.009,
+        "channel": 0.0,
+        "device_type": 0.0,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 1.0,
+        "used_vpn": 0.011,
+        "ip_country_mismatch": 0.01,
+        "billing_shipping_mismatch": 0.009,
+        "is_ai_generated_scam_attempt": 0.002
+      },
+      "used_vpn": {
+        "merchant_category": 0.0,
+        "card_type": 0.0,
+        "auth_method": 0.0,
+        "channel": 0.01,
+        "device_type": 0.011,
+        "is_foreign_transaction": 0.0,
+        "is_new_merchant": 0.011,
+        "used_vpn": 1.0,
+        "ip_country_mismatch": 0.0,
+        "billing_shipping_mismatch": 0.0,
+        "is_ai_generated_scam_attempt": 0.0
+      },
+      "ip_country_mismatch": {
+        "merchant_category": 0.0,
+        "card_type": 0.006,
+        "auth_method": 0.0,
+        "channel": 0.008,
+        "device_type": 0.025,
+        "is_foreign_transaction": 0.272,
+        "is_new_merchant": 0.01,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 1.0,
+        "billing_shipping_mismatch": 0.01,
+        "is_ai_generated_scam_attempt": 0.0
+      },
+      "billing_shipping_mismatch": {
+        "merchant_category": 0.0,
+        "card_type": 0.0,
+        "auth_method": 0.0,
+        "channel": 0.16,
+        "device_type": 0.0,
+        "is_foreign_transaction": 0.01,
+        "is_new_merchant": 0.009,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.01,
+        "billing_shipping_mismatch": 1.0,
+        "is_ai_generated_scam_attempt": 0.02
+      },
+      "is_ai_generated_scam_attempt": {
+        "merchant_category": 0.013,
+        "card_type": 0.0,
+        "auth_method": 0.019,
+        "channel": 0.099,
+        "device_type": 0.014,
+        "is_foreign_transaction": 0.008,
+        "is_new_merchant": 0.002,
+        "used_vpn": 0.0,
+        "ip_country_mismatch": 0.0,
+        "billing_shipping_mismatch": 0.02,
+        "is_ai_generated_scam_attempt": 1.0
       }
     }
   },

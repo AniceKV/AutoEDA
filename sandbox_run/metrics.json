@@ -1,151 +1,116 @@
 {
   "dataset_overview": {
-    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\ai_ds_job_salaries_2026.csv",
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\train.csv",
     "shape": {
-      "rows": 5000,
-      "columns": 28
+      "rows": 2000,
+      "columns": 21
     },
-    "target_column": "salary_usd",
+    "target_column": "price_range",
     "column_summary": {
-      "job_title": {
-        "dtype": "object",
+      "battery_power": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 12
+        "cardinality": 1094
       },
-      "experience_level": {
-        "dtype": "object",
+      "blue": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 5
+        "cardinality": 2
       },
-      "employment_type": {
-        "dtype": "object",
+      "clock_speed": {
+        "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 4
+        "cardinality": 26
       },
-      "company_size": {
-        "dtype": "object",
+      "dual_sim": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 3
+        "cardinality": 2
       },
-      "company_location": {
-        "dtype": "object",
+      "fc": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 12
+        "cardinality": 20
       },
-      "employee_residence": {
-        "dtype": "object",
+      "four_g": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 12
+        "cardinality": 2
       },
-      "industry": {
-        "dtype": "object",
+      "int_memory": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 63
+      },
+      "m_dep": {
+        "dtype": "float64",
         "missing_count": 0,
         "cardinality": 10
       },
-      "remote_ratio": {
+      "mobile_wt": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 3
+        "cardinality": 121
       },
-      "years_experience": {
-        "dtype": "float64",
+      "n_cores": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 230
+        "cardinality": 8
       },
-      "education_level": {
-        "dtype": "object",
+      "pc": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 5
+        "cardinality": 21
       },
-      "primary_language": {
-        "dtype": "object",
+      "px_height": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 7
+        "cardinality": 1137
       },
-      "has_ml_in_title": {
-        "dtype": "bool",
+      "px_width": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2
+        "cardinality": 1109
       },
-      "manages_people": {
-        "dtype": "bool",
+      "ram": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 2
+        "cardinality": 1562
       },
-      "team_size": {
+      "sc_h": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 15
+      },
+      "sc_w": {
         "dtype": "int64",
         "missing_count": 0,
         "cardinality": 19
       },
-      "certifications_count": {
+      "talk_time": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 9
+        "cardinality": 19
       },
-      "weekly_hours": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 344
-      },
-      "uses_ai_tools_daily": {
-        "dtype": "bool",
+      "three_g": {
+        "dtype": "int64",
         "missing_count": 0,
         "cardinality": 2
       },
-      "ai_tools_hours_per_week": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 240
-      },
-      "salary_currency": {
-        "dtype": "object",
-        "missing_count": 0,
-        "cardinality": 9
-      },
-      "salary_usd": {
+      "touch_screen": {
         "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 4928
-      },
-      "equity_offered_pct": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 684
-      },
-      "bonus_pct": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 258
-      },
-      "job_satisfaction_score": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 80
-      },
-      "interviews_to_offer": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 16
-      },
-      "switched_jobs_last_year": {
-        "dtype": "bool",
         "missing_count": 0,
         "cardinality": 2
       },
-      "upskilling_hours_per_month": {
-        "dtype": "float64",
+      "wifi": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 217
+        "cardinality": 2
       },
-      "fears_ai_automation_score": {
-        "dtype": "float64",
+      "price_range": {
+        "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 91
-      },
-      "engineered_feature": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 4999
+        "cardinality": 4
       }
     }
   },
@@ -157,190 +122,148 @@
       "Categorical/String columns use mode imputation with 'Unknown' fallback."
     ],
     "columns": {
-      "job_title": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "experience_level": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "employment_type": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "company_size": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "company_location": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "employee_residence": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "industry": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "remote_ratio": {
+      "battery_power": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "years_experience": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "education_level": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "primary_language": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "has_ml_in_title": {
-        "dtype": "bool",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "manages_people": {
-        "dtype": "bool",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "team_size": {
+      "blue": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "certifications_count": {
+      "clock_speed": {
+        "dtype": "float64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "dual_sim": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "weekly_hours": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "uses_ai_tools_daily": {
-        "dtype": "bool",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "ai_tools_hours_per_week": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "salary_currency": {
-        "dtype": "object",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "salary_usd": {
+      "fc": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "equity_offered_pct": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "bonus_pct": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "job_satisfaction_score": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "interviews_to_offer": {
+      "four_g": {
         "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "switched_jobs_last_year": {
-        "dtype": "bool",
+      "int_memory": {
+        "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "upskilling_hours_per_month": {
+      "m_dep": {
         "dtype": "float64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "fears_ai_automation_score": {
-        "dtype": "float64",
+      "mobile_wt": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "n_cores": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "pc": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "px_height": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "px_width": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "ram": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "sc_h": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "sc_w": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "talk_time": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "three_g": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "touch_screen": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "wifi": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "price_range": {
+        "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
@@ -349,1178 +272,857 @@
     }
   },
   "outlier_analysis": {
-    "remote_ratio": {
-      "q1": 0.0,
-      "q3": 100.0,
-      "iqr": 100.0,
-      "lower_bound": -150.0,
-      "upper_bound": 250.0,
+    "battery_power": {
+      "q1": 851.75,
+      "q3": 1615.25,
+      "iqr": 763.5,
+      "lower_bound": -293.5,
+      "upper_bound": 2760.5,
       "outlier_count": 0,
       "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "years_experience": {
-      "q1": 4.8,
-      "q3": 11.5,
-      "iqr": 6.7,
-      "lower_bound": -5.25,
-      "upper_bound": 21.55,
-      "outlier_count": 20,
-      "outlier_percentage": 0.4,
+    "clock_speed": {
+      "q1": 0.7,
+      "q3": 2.2,
+      "iqr": 1.5,
+      "lower_bound": -1.55,
+      "upper_bound": 4.45,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "team_size": {
-      "q1": 6.0,
-      "q3": 10.0,
-      "iqr": 4.0,
-      "lower_bound": 0.0,
-      "upper_bound": 16.0,
-      "outlier_count": 10,
-      "outlier_percentage": 0.2,
-      "action_taken": "profile"
-    },
-    "certifications_count": {
+    "fc": {
       "q1": 1.0,
-      "q3": 3.0,
-      "iqr": 2.0,
-      "lower_bound": -2.0,
-      "upper_bound": 6.0,
-      "outlier_count": 9,
-      "outlier_percentage": 0.18,
+      "q3": 7.0,
+      "iqr": 6.0,
+      "lower_bound": -8.0,
+      "upper_bound": 16.0,
+      "outlier_count": 18,
+      "outlier_percentage": 0.9,
       "action_taken": "profile"
     },
-    "weekly_hours": {
-      "q1": 40.1,
-      "q3": 48.5,
-      "iqr": 8.4,
-      "lower_bound": 27.5,
-      "upper_bound": 61.1,
-      "outlier_count": 27,
-      "outlier_percentage": 0.54,
-      "action_taken": "profile"
-    },
-    "ai_tools_hours_per_week": {
-      "q1": 3.3,
-      "q3": 12.625,
-      "iqr": 9.325,
-      "lower_bound": -10.6875,
-      "upper_bound": 26.6125,
+    "int_memory": {
+      "q1": 16.0,
+      "q3": 48.0,
+      "iqr": 32.0,
+      "lower_bound": -32.0,
+      "upper_bound": 96.0,
       "outlier_count": 0,
       "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "salary_usd": {
-      "q1": 55592.75,
-      "q3": 129657.75,
-      "iqr": 74065.0,
-      "lower_bound": -55504.75,
-      "upper_bound": 240755.25,
-      "outlier_count": 103,
-      "outlier_percentage": 2.06,
+    "m_dep": {
+      "q1": 0.2,
+      "q3": 0.8,
+      "iqr": 0.6,
+      "lower_bound": -0.7,
+      "upper_bound": 1.7,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "equity_offered_pct": {
-      "q1": 0.017,
-      "q3": 0.175,
-      "iqr": 0.158,
-      "lower_bound": -0.22,
-      "upper_bound": 0.412,
-      "outlier_count": 481,
-      "outlier_percentage": 9.62,
+    "mobile_wt": {
+      "q1": 109.0,
+      "q3": 170.0,
+      "iqr": 61.0,
+      "lower_bound": 17.5,
+      "upper_bound": 261.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "bonus_pct": {
-      "q1": 7.1,
-      "q3": 14.2,
-      "iqr": 7.1,
-      "lower_bound": -3.55,
-      "upper_bound": 24.85,
-      "outlier_count": 13,
-      "outlier_percentage": 0.26,
-      "action_taken": "profile"
-    },
-    "job_satisfaction_score": {
-      "q1": 5.8,
-      "q3": 7.6,
-      "iqr": 1.8,
-      "lower_bound": 3.1,
-      "upper_bound": 10.3,
-      "outlier_count": 21,
-      "outlier_percentage": 0.42,
-      "action_taken": "profile"
-    },
-    "interviews_to_offer": {
+    "n_cores": {
       "q1": 3.0,
       "q3": 7.0,
       "iqr": 4.0,
       "lower_bound": -3.0,
       "upper_bound": 13.0,
-      "outlier_count": 11,
-      "outlier_percentage": 0.22,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "upskilling_hours_per_month": {
-      "q1": 5.6,
-      "q3": 11.7,
-      "iqr": 6.1,
-      "lower_bound": -3.55,
-      "upper_bound": 20.85,
-      "outlier_count": 16,
-      "outlier_percentage": 0.32,
+    "pc": {
+      "q1": 5.0,
+      "q3": 15.0,
+      "iqr": 10.0,
+      "lower_bound": -10.0,
+      "upper_bound": 30.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
-    "fears_ai_automation_score": {
-      "q1": 3.7,
-      "q3": 6.0,
-      "iqr": 2.3,
-      "lower_bound": 0.25,
-      "upper_bound": 9.45,
-      "outlier_count": 24,
-      "outlier_percentage": 0.48,
+    "px_height": {
+      "q1": 282.75,
+      "q3": 947.25,
+      "iqr": 664.5,
+      "lower_bound": -714.0,
+      "upper_bound": 1944.0,
+      "outlier_count": 2,
+      "outlier_percentage": 0.1,
+      "action_taken": "profile"
+    },
+    "px_width": {
+      "q1": 874.75,
+      "q3": 1633.0,
+      "iqr": 758.25,
+      "lower_bound": -262.625,
+      "upper_bound": 2770.375,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "ram": {
+      "q1": 1207.5,
+      "q3": 3064.5,
+      "iqr": 1857.0,
+      "lower_bound": -1578.0,
+      "upper_bound": 5850.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "sc_h": {
+      "q1": 9.0,
+      "q3": 16.0,
+      "iqr": 7.0,
+      "lower_bound": -1.5,
+      "upper_bound": 26.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "sc_w": {
+      "q1": 2.0,
+      "q3": 9.0,
+      "iqr": 7.0,
+      "lower_bound": -8.5,
+      "upper_bound": 19.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "talk_time": {
+      "q1": 6.0,
+      "q3": 16.0,
+      "iqr": 10.0,
+      "lower_bound": -9.0,
+      "upper_bound": 31.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "price_range": {
+      "q1": 0.75,
+      "q3": 2.25,
+      "iqr": 1.5,
+      "lower_bound": -1.5,
+      "upper_bound": 4.5,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "engineered_feature",
-      "formula": "salary_usd / (years_experience + eps)",
-      "data_type": "float64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": -0.0572
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
       {
-        "feature_1": "years_experience",
-        "feature_2": "bonus_pct",
-        "correlation": 0.6098
+        "feature_1": "ram",
+        "feature_2": "price_range",
+        "correlation": 0.917
       },
       {
-        "feature_1": "years_experience",
-        "feature_2": "salary_usd",
-        "correlation": 0.4663
+        "feature_1": "fc",
+        "feature_2": "pc",
+        "correlation": 0.6446
       },
       {
-        "feature_1": "salary_usd",
-        "feature_2": "bonus_pct",
-        "correlation": 0.3285
+        "feature_1": "four_g",
+        "feature_2": "three_g",
+        "correlation": 0.5842
       },
       {
-        "feature_1": "years_experience",
-        "feature_2": "interviews_to_offer",
-        "correlation": 0.2902
+        "feature_1": "px_height",
+        "feature_2": "px_width",
+        "correlation": 0.5107
       },
       {
-        "feature_1": "years_experience",
-        "feature_2": "weekly_hours",
-        "correlation": 0.2607
+        "feature_1": "sc_h",
+        "feature_2": "sc_w",
+        "correlation": 0.5061
       },
       {
-        "feature_1": "years_experience",
-        "feature_2": "fears_ai_automation_score",
-        "correlation": -0.2537
+        "feature_1": "battery_power",
+        "feature_2": "price_range",
+        "correlation": 0.2007
       },
       {
-        "feature_1": "salary_usd",
-        "feature_2": "fears_ai_automation_score",
-        "correlation": -0.2414
+        "feature_1": "px_width",
+        "feature_2": "price_range",
+        "correlation": 0.1658
       },
       {
-        "feature_1": "weekly_hours",
-        "feature_2": "job_satisfaction_score",
-        "correlation": -0.2274
+        "feature_1": "px_height",
+        "feature_2": "price_range",
+        "correlation": 0.1489
       },
       {
-        "feature_1": "bonus_pct",
-        "feature_2": "interviews_to_offer",
-        "correlation": 0.2197
+        "feature_1": "px_height",
+        "feature_2": "sc_h",
+        "correlation": 0.0596
       },
       {
-        "feature_1": "years_experience",
-        "feature_2": "certifications_count",
-        "correlation": 0.2156
+        "feature_1": "battery_power",
+        "feature_2": "talk_time",
+        "correlation": 0.0525
       }
     ],
     "correlation_matrix_text": {
-      "remote_ratio": {
-        "remote_ratio": 1.0,
-        "years_experience": 0.001,
-        "team_size": 0.016,
-        "certifications_count": 0.012,
-        "weekly_hours": 0.003,
-        "ai_tools_hours_per_week": -0.003,
-        "salary_usd": 0.036,
-        "equity_offered_pct": -0.006,
-        "bonus_pct": -0.007,
-        "job_satisfaction_score": 0.201,
-        "interviews_to_offer": -0.015,
-        "upskilling_hours_per_month": 0.004,
-        "fears_ai_automation_score": -0.012
+      "battery_power": {
+        "battery_power": 1.0,
+        "blue": 0.011,
+        "clock_speed": 0.011,
+        "dual_sim": -0.042,
+        "fc": 0.033,
+        "four_g": 0.016,
+        "int_memory": -0.004,
+        "m_dep": 0.034,
+        "mobile_wt": 0.002,
+        "n_cores": -0.03,
+        "pc": 0.031,
+        "px_height": 0.015,
+        "px_width": -0.008,
+        "ram": -0.001,
+        "sc_h": -0.03,
+        "sc_w": -0.021,
+        "talk_time": 0.053,
+        "three_g": 0.012,
+        "touch_screen": -0.011,
+        "wifi": -0.008,
+        "price_range": 0.201
       },
-      "years_experience": {
-        "remote_ratio": 0.001,
-        "years_experience": 1.0,
-        "team_size": -0.01,
-        "certifications_count": 0.216,
-        "weekly_hours": 0.261,
-        "ai_tools_hours_per_week": 0.06,
-        "salary_usd": 0.466,
-        "equity_offered_pct": -0.013,
-        "bonus_pct": 0.61,
-        "job_satisfaction_score": 0.024,
-        "interviews_to_offer": 0.29,
-        "upskilling_hours_per_month": -0.133,
-        "fears_ai_automation_score": -0.254
+      "blue": {
+        "battery_power": 0.011,
+        "blue": 1.0,
+        "clock_speed": 0.021,
+        "dual_sim": 0.035,
+        "fc": 0.004,
+        "four_g": 0.013,
+        "int_memory": 0.041,
+        "m_dep": 0.004,
+        "mobile_wt": -0.009,
+        "n_cores": 0.036,
+        "pc": -0.01,
+        "px_height": -0.007,
+        "px_width": -0.042,
+        "ram": 0.026,
+        "sc_h": -0.003,
+        "sc_w": 0.001,
+        "talk_time": 0.014,
+        "three_g": -0.03,
+        "touch_screen": 0.01,
+        "wifi": -0.022,
+        "price_range": 0.021
       },
-      "team_size": {
-        "remote_ratio": 0.016,
-        "years_experience": -0.01,
-        "team_size": 1.0,
-        "certifications_count": 0.021,
-        "weekly_hours": -0.013,
-        "ai_tools_hours_per_week": -0.003,
-        "salary_usd": 0.021,
-        "equity_offered_pct": -0.006,
-        "bonus_pct": -0.012,
-        "job_satisfaction_score": 0.022,
-        "interviews_to_offer": 0.002,
-        "upskilling_hours_per_month": 0.01,
-        "fears_ai_automation_score": -0.009
+      "clock_speed": {
+        "battery_power": 0.011,
+        "blue": 0.021,
+        "clock_speed": 1.0,
+        "dual_sim": -0.001,
+        "fc": -0.0,
+        "four_g": -0.043,
+        "int_memory": 0.007,
+        "m_dep": -0.014,
+        "mobile_wt": 0.012,
+        "n_cores": -0.006,
+        "pc": -0.005,
+        "px_height": -0.015,
+        "px_width": -0.009,
+        "ram": 0.003,
+        "sc_h": -0.029,
+        "sc_w": -0.007,
+        "talk_time": -0.011,
+        "three_g": -0.046,
+        "touch_screen": 0.02,
+        "wifi": -0.024,
+        "price_range": -0.007
       },
-      "certifications_count": {
-        "remote_ratio": 0.012,
-        "years_experience": 0.216,
-        "team_size": 0.021,
-        "certifications_count": 1.0,
-        "weekly_hours": 0.051,
-        "ai_tools_hours_per_week": 0.007,
-        "salary_usd": 0.108,
-        "equity_offered_pct": 0.005,
-        "bonus_pct": 0.169,
-        "job_satisfaction_score": 0.018,
-        "interviews_to_offer": 0.074,
-        "upskilling_hours_per_month": -0.036,
-        "fears_ai_automation_score": -0.057
+      "dual_sim": {
+        "battery_power": -0.042,
+        "blue": 0.035,
+        "clock_speed": -0.001,
+        "dual_sim": 1.0,
+        "fc": -0.029,
+        "four_g": 0.003,
+        "int_memory": -0.016,
+        "m_dep": -0.022,
+        "mobile_wt": -0.009,
+        "n_cores": -0.025,
+        "pc": -0.017,
+        "px_height": -0.021,
+        "px_width": 0.014,
+        "ram": 0.041,
+        "sc_h": -0.012,
+        "sc_w": -0.017,
+        "talk_time": -0.039,
+        "three_g": -0.014,
+        "touch_screen": -0.017,
+        "wifi": 0.023,
+        "price_range": 0.017
       },
-      "weekly_hours": {
-        "remote_ratio": 0.003,
-        "years_experience": 0.261,
-        "team_size": -0.013,
-        "certifications_count": 0.051,
-        "weekly_hours": 1.0,
-        "ai_tools_hours_per_week": 0.027,
-        "salary_usd": 0.134,
-        "equity_offered_pct": -0.017,
-        "bonus_pct": 0.174,
-        "job_satisfaction_score": -0.227,
-        "interviews_to_offer": 0.078,
-        "upskilling_hours_per_month": -0.048,
-        "fears_ai_automation_score": -0.066
+      "fc": {
+        "battery_power": 0.033,
+        "blue": 0.004,
+        "clock_speed": -0.0,
+        "dual_sim": -0.029,
+        "fc": 1.0,
+        "four_g": -0.017,
+        "int_memory": -0.029,
+        "m_dep": -0.002,
+        "mobile_wt": 0.024,
+        "n_cores": -0.013,
+        "pc": 0.645,
+        "px_height": -0.01,
+        "px_width": -0.005,
+        "ram": 0.015,
+        "sc_h": -0.011,
+        "sc_w": -0.012,
+        "talk_time": -0.007,
+        "three_g": 0.002,
+        "touch_screen": -0.015,
+        "wifi": 0.02,
+        "price_range": 0.022
       },
-      "ai_tools_hours_per_week": {
-        "remote_ratio": -0.003,
-        "years_experience": 0.06,
-        "team_size": -0.003,
-        "certifications_count": 0.007,
-        "weekly_hours": 0.027,
-        "ai_tools_hours_per_week": 1.0,
-        "salary_usd": 0.08,
-        "equity_offered_pct": 0.016,
-        "bonus_pct": 0.046,
-        "job_satisfaction_score": 0.002,
-        "interviews_to_offer": 0.023,
-        "upskilling_hours_per_month": -0.026,
-        "fears_ai_automation_score": -0.068
+      "four_g": {
+        "battery_power": 0.016,
+        "blue": 0.013,
+        "clock_speed": -0.043,
+        "dual_sim": 0.003,
+        "fc": -0.017,
+        "four_g": 1.0,
+        "int_memory": 0.009,
+        "m_dep": -0.002,
+        "mobile_wt": -0.017,
+        "n_cores": -0.03,
+        "pc": -0.006,
+        "px_height": -0.019,
+        "px_width": 0.007,
+        "ram": 0.007,
+        "sc_h": 0.027,
+        "sc_w": 0.037,
+        "talk_time": -0.047,
+        "three_g": 0.584,
+        "touch_screen": 0.017,
+        "wifi": -0.018,
+        "price_range": 0.015
       },
-      "salary_usd": {
-        "remote_ratio": 0.036,
-        "years_experience": 0.466,
-        "team_size": 0.021,
-        "certifications_count": 0.108,
-        "weekly_hours": 0.134,
-        "ai_tools_hours_per_week": 0.08,
-        "salary_usd": 1.0,
-        "equity_offered_pct": -0.112,
-        "bonus_pct": 0.328,
-        "job_satisfaction_score": 0.179,
-        "interviews_to_offer": 0.155,
-        "upskilling_hours_per_month": -0.07,
-        "fears_ai_automation_score": -0.241
+      "int_memory": {
+        "battery_power": -0.004,
+        "blue": 0.041,
+        "clock_speed": 0.007,
+        "dual_sim": -0.016,
+        "fc": -0.029,
+        "four_g": 0.009,
+        "int_memory": 1.0,
+        "m_dep": 0.007,
+        "mobile_wt": -0.034,
+        "n_cores": -0.028,
+        "pc": -0.033,
+        "px_height": 0.01,
+        "px_width": -0.008,
+        "ram": 0.033,
+        "sc_h": 0.038,
+        "sc_w": 0.012,
+        "talk_time": -0.003,
+        "three_g": -0.009,
+        "touch_screen": -0.027,
+        "wifi": 0.007,
+        "price_range": 0.044
       },
-      "equity_offered_pct": {
-        "remote_ratio": -0.006,
-        "years_experience": -0.013,
-        "team_size": -0.006,
-        "certifications_count": 0.005,
-        "weekly_hours": -0.017,
-        "ai_tools_hours_per_week": 0.016,
-        "salary_usd": -0.112,
-        "equity_offered_pct": 1.0,
-        "bonus_pct": 0.0,
-        "job_satisfaction_score": -0.013,
-        "interviews_to_offer": -0.02,
-        "upskilling_hours_per_month": 0.03,
-        "fears_ai_automation_score": 0.004
+      "m_dep": {
+        "battery_power": 0.034,
+        "blue": 0.004,
+        "clock_speed": -0.014,
+        "dual_sim": -0.022,
+        "fc": -0.002,
+        "four_g": -0.002,
+        "int_memory": 0.007,
+        "m_dep": 1.0,
+        "mobile_wt": 0.022,
+        "n_cores": -0.004,
+        "pc": 0.026,
+        "px_height": 0.025,
+        "px_width": 0.024,
+        "ram": -0.009,
+        "sc_h": -0.025,
+        "sc_w": -0.018,
+        "talk_time": 0.017,
+        "three_g": -0.012,
+        "touch_screen": -0.003,
+        "wifi": -0.028,
+        "price_range": 0.001
       },
-      "bonus_pct": {
-        "remote_ratio": -0.007,
-        "years_experience": 0.61,
-        "team_size": -0.012,
-        "certifications_count": 0.169,
-        "weekly_hours": 0.174,
-        "ai_tools_hours_per_week": 0.046,
-        "salary_usd": 0.328,
-        "equity_offered_pct": 0.0,
-        "bonus_pct": 1.0,
-        "job_satisfaction_score": 0.042,
-        "interviews_to_offer": 0.22,
-        "upskilling_hours_per_month": -0.103,
-        "fears_ai_automation_score": -0.184
+      "mobile_wt": {
+        "battery_power": 0.002,
+        "blue": -0.009,
+        "clock_speed": 0.012,
+        "dual_sim": -0.009,
+        "fc": 0.024,
+        "four_g": -0.017,
+        "int_memory": -0.034,
+        "m_dep": 0.022,
+        "mobile_wt": 1.0,
+        "n_cores": -0.019,
+        "pc": 0.019,
+        "px_height": 0.001,
+        "px_width": 0.0,
+        "ram": -0.003,
+        "sc_h": -0.034,
+        "sc_w": -0.021,
+        "talk_time": 0.006,
+        "three_g": 0.002,
+        "touch_screen": -0.014,
+        "wifi": -0.0,
+        "price_range": -0.03
       },
-      "job_satisfaction_score": {
-        "remote_ratio": 0.201,
-        "years_experience": 0.024,
-        "team_size": 0.022,
-        "certifications_count": 0.018,
-        "weekly_hours": -0.227,
-        "ai_tools_hours_per_week": 0.002,
-        "salary_usd": 0.179,
-        "equity_offered_pct": -0.013,
-        "bonus_pct": 0.042,
-        "job_satisfaction_score": 1.0,
-        "interviews_to_offer": 0.015,
-        "upskilling_hours_per_month": 0.012,
-        "fears_ai_automation_score": -0.043
+      "n_cores": {
+        "battery_power": -0.03,
+        "blue": 0.036,
+        "clock_speed": -0.006,
+        "dual_sim": -0.025,
+        "fc": -0.013,
+        "four_g": -0.03,
+        "int_memory": -0.028,
+        "m_dep": -0.004,
+        "mobile_wt": -0.019,
+        "n_cores": 1.0,
+        "pc": -0.001,
+        "px_height": -0.007,
+        "px_width": 0.024,
+        "ram": 0.005,
+        "sc_h": -0.0,
+        "sc_w": 0.026,
+        "talk_time": 0.013,
+        "three_g": -0.015,
+        "touch_screen": 0.024,
+        "wifi": -0.01,
+        "price_range": 0.004
       },
-      "interviews_to_offer": {
-        "remote_ratio": -0.015,
-        "years_experience": 0.29,
-        "team_size": 0.002,
-        "certifications_count": 0.074,
-        "weekly_hours": 0.078,
-        "ai_tools_hours_per_week": 0.023,
-        "salary_usd": 0.155,
-        "equity_offered_pct": -0.02,
-        "bonus_pct": 0.22,
-        "job_satisfaction_score": 0.015,
-        "interviews_to_offer": 1.0,
-        "upskilling_hours_per_month": -0.041,
-        "fears_ai_automation_score": -0.084
+      "pc": {
+        "battery_power": 0.031,
+        "blue": -0.01,
+        "clock_speed": -0.005,
+        "dual_sim": -0.017,
+        "fc": 0.645,
+        "four_g": -0.006,
+        "int_memory": -0.033,
+        "m_dep": 0.026,
+        "mobile_wt": 0.019,
+        "n_cores": -0.001,
+        "pc": 1.0,
+        "px_height": -0.018,
+        "px_width": 0.004,
+        "ram": 0.029,
+        "sc_h": 0.005,
+        "sc_w": -0.024,
+        "talk_time": 0.015,
+        "three_g": -0.001,
+        "touch_screen": -0.009,
+        "wifi": 0.005,
+        "price_range": 0.034
       },
-      "upskilling_hours_per_month": {
-        "remote_ratio": 0.004,
-        "years_experience": -0.133,
-        "team_size": 0.01,
-        "certifications_count": -0.036,
-        "weekly_hours": -0.048,
-        "ai_tools_hours_per_week": -0.026,
-        "salary_usd": -0.07,
-        "equity_offered_pct": 0.03,
-        "bonus_pct": -0.103,
-        "job_satisfaction_score": 0.012,
-        "interviews_to_offer": -0.041,
-        "upskilling_hours_per_month": 1.0,
-        "fears_ai_automation_score": 0.041
+      "px_height": {
+        "battery_power": 0.015,
+        "blue": -0.007,
+        "clock_speed": -0.015,
+        "dual_sim": -0.021,
+        "fc": -0.01,
+        "four_g": -0.019,
+        "int_memory": 0.01,
+        "m_dep": 0.025,
+        "mobile_wt": 0.001,
+        "n_cores": -0.007,
+        "pc": -0.018,
+        "px_height": 1.0,
+        "px_width": 0.511,
+        "ram": -0.02,
+        "sc_h": 0.06,
+        "sc_w": 0.043,
+        "talk_time": -0.011,
+        "three_g": -0.031,
+        "touch_screen": 0.022,
+        "wifi": 0.052,
+        "price_range": 0.149
       },
-      "fears_ai_automation_score": {
-        "remote_ratio": -0.012,
-        "years_experience": -0.254,
-        "team_size": -0.009,
-        "certifications_count": -0.057,
-        "weekly_hours": -0.066,
-        "ai_tools_hours_per_week": -0.068,
-        "salary_usd": -0.241,
-        "equity_offered_pct": 0.004,
-        "bonus_pct": -0.184,
-        "job_satisfaction_score": -0.043,
-        "interviews_to_offer": -0.084,
-        "upskilling_hours_per_month": 0.041,
-        "fears_ai_automation_score": 1.0
+      "px_width": {
+        "battery_power": -0.008,
+        "blue": -0.042,
+        "clock_speed": -0.009,
+        "dual_sim": 0.014,
+        "fc": -0.005,
+        "four_g": 0.007,
+        "int_memory": -0.008,
+        "m_dep": 0.024,
+        "mobile_wt": 0.0,
+        "n_cores": 0.024,
+        "pc": 0.004,
+        "px_height": 0.511,
+        "px_width": 1.0,
+        "ram": 0.004,
+        "sc_h": 0.022,
+        "sc_w": 0.035,
+        "talk_time": 0.007,
+        "three_g": 0.0,
+        "touch_screen": -0.002,
+        "wifi": 0.03,
+        "price_range": 0.166
+      },
+      "ram": {
+        "battery_power": -0.001,
+        "blue": 0.026,
+        "clock_speed": 0.003,
+        "dual_sim": 0.041,
+        "fc": 0.015,
+        "four_g": 0.007,
+        "int_memory": 0.033,
+        "m_dep": -0.009,
+        "mobile_wt": -0.003,
+        "n_cores": 0.005,
+        "pc": 0.029,
+        "px_height": -0.02,
+        "px_width": 0.004,
+        "ram": 1.0,
+        "sc_h": 0.016,
+        "sc_w": 0.036,
+        "talk_time": 0.011,
+        "three_g": 0.016,
+        "touch_screen": -0.03,
+        "wifi": 0.023,
+        "price_range": 0.917
+      },
+      "sc_h": {
+        "battery_power": -0.03,
+        "blue": -0.003,
+        "clock_speed": -0.029,
+        "dual_sim": -0.012,
+        "fc": -0.011,
+        "four_g": 0.027,
+        "int_memory": 0.038,
+        "m_dep": -0.025,
+        "mobile_wt": -0.034,
+        "n_cores": -0.0,
+        "pc": 0.005,
+        "px_height": 0.06,
+        "px_width": 0.022,
+        "ram": 0.016,
+        "sc_h": 1.0,
+        "sc_w": 0.506,
+        "talk_time": -0.017,
+        "three_g": 0.012,
+        "touch_screen": -0.02,
+        "wifi": 0.026,
+        "price_range": 0.023
+      },
+      "sc_w": {
+        "battery_power": -0.021,
+        "blue": 0.001,
+        "clock_speed": -0.007,
+        "dual_sim": -0.017,
+        "fc": -0.012,
+        "four_g": 0.037,
+        "int_memory": 0.012,
+        "m_dep": -0.018,
+        "mobile_wt": -0.021,
+        "n_cores": 0.026,
+        "pc": -0.024,
+        "px_height": 0.043,
+        "px_width": 0.035,
+        "ram": 0.036,
+        "sc_h": 0.506,
+        "sc_w": 1.0,
+        "talk_time": -0.023,
+        "three_g": 0.031,
+        "touch_screen": 0.013,
+        "wifi": 0.035,
+        "price_range": 0.039
+      },
+      "talk_time": {
+        "battery_power": 0.053,
+        "blue": 0.014,
+        "clock_speed": -0.011,
+        "dual_sim": -0.039,
+        "fc": -0.007,
+        "four_g": -0.047,
+        "int_memory": -0.003,
+        "m_dep": 0.017,
+        "mobile_wt": 0.006,
+        "n_cores": 0.013,
+        "pc": 0.015,
+        "px_height": -0.011,
+        "px_width": 0.007,
+        "ram": 0.011,
+        "sc_h": -0.017,
+        "sc_w": -0.023,
+        "talk_time": 1.0,
+        "three_g": -0.043,
+        "touch_screen": 0.017,
+        "wifi": -0.03,
+        "price_range": 0.022
+      },
+      "three_g": {
+        "battery_power": 0.012,
+        "blue": -0.03,
+        "clock_speed": -0.046,
+        "dual_sim": -0.014,
+        "fc": 0.002,
+        "four_g": 0.584,
+        "int_memory": -0.009,
+        "m_dep": -0.012,
+        "mobile_wt": 0.002,
+        "n_cores": -0.015,
+        "pc": -0.001,
+        "px_height": -0.031,
+        "px_width": 0.0,
+        "ram": 0.016,
+        "sc_h": 0.012,
+        "sc_w": 0.031,
+        "talk_time": -0.043,
+        "three_g": 1.0,
+        "touch_screen": 0.014,
+        "wifi": 0.004,
+        "price_range": 0.024
+      },
+      "touch_screen": {
+        "battery_power": -0.011,
+        "blue": 0.01,
+        "clock_speed": 0.02,
+        "dual_sim": -0.017,
+        "fc": -0.015,
+        "four_g": 0.017,
+        "int_memory": -0.027,
+        "m_dep": -0.003,
+        "mobile_wt": -0.014,
+        "n_cores": 0.024,
+        "pc": -0.009,
+        "px_height": 0.022,
+        "px_width": -0.002,
+        "ram": -0.03,
+        "sc_h": -0.02,
+        "sc_w": 0.013,
+        "talk_time": 0.017,
+        "three_g": 0.014,
+        "touch_screen": 1.0,
+        "wifi": 0.012,
+        "price_range": -0.03
+      },
+      "wifi": {
+        "battery_power": -0.008,
+        "blue": -0.022,
+        "clock_speed": -0.024,
+        "dual_sim": 0.023,
+        "fc": 0.02,
+        "four_g": -0.018,
+        "int_memory": 0.007,
+        "m_dep": -0.028,
+        "mobile_wt": -0.0,
+        "n_cores": -0.01,
+        "pc": 0.005,
+        "px_height": 0.052,
+        "px_width": 0.03,
+        "ram": 0.023,
+        "sc_h": 0.026,
+        "sc_w": 0.035,
+        "talk_time": -0.03,
+        "three_g": 0.004,
+        "touch_screen": 0.012,
+        "wifi": 1.0,
+        "price_range": 0.019
+      },
+      "price_range": {
+        "battery_power": 0.201,
+        "blue": 0.021,
+        "clock_speed": -0.007,
+        "dual_sim": 0.017,
+        "fc": 0.022,
+        "four_g": 0.015,
+        "int_memory": 0.044,
+        "m_dep": 0.001,
+        "mobile_wt": -0.03,
+        "n_cores": 0.004,
+        "pc": 0.034,
+        "px_height": 0.149,
+        "px_width": 0.166,
+        "ram": 0.917,
+        "sc_h": 0.023,
+        "sc_w": 0.039,
+        "talk_time": 0.022,
+        "three_g": 0.024,
+        "touch_screen": -0.03,
+        "wifi": 0.019,
+        "price_range": 1.0
       }
     },
-    "categorical_associations": {
-      "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
-      "top_correlations": [
-        {
-          "feature_1": "company_location",
-          "feature_2": "salary_currency",
-          "cramers_v": 0.9997
-        },
-        {
-          "feature_1": "job_title",
-          "feature_2": "has_ml_in_title",
-          "cramers_v": 0.999
-        },
-        {
-          "feature_1": "employee_residence",
-          "feature_2": "salary_currency",
-          "cramers_v": 0.8786
-        },
-        {
-          "feature_1": "company_location",
-          "feature_2": "employee_residence",
-          "cramers_v": 0.8781
-        },
-        {
-          "feature_1": "experience_level",
-          "feature_2": "manages_people",
-          "cramers_v": 0.8512
-        },
-        {
-          "feature_1": "has_ml_in_title",
-          "feature_2": "uses_ai_tools_daily",
-          "cramers_v": 0.1909
-        },
-        {
-          "feature_1": "job_title",
-          "feature_2": "uses_ai_tools_daily",
-          "cramers_v": 0.1891
-        },
-        {
-          "feature_1": "experience_level",
-          "feature_2": "uses_ai_tools_daily",
-          "cramers_v": 0.0995
-        },
-        {
-          "feature_1": "manages_people",
-          "feature_2": "uses_ai_tools_daily",
-          "cramers_v": 0.0614
-        },
-        {
-          "feature_1": "industry",
-          "feature_2": "manages_people",
-          "cramers_v": 0.0418
-        }
-      ],
-      "association_matrix_text": {
-        "job_title": {
-          "job_title": 1.0,
-          "experience_level": 0.02,
-          "employment_type": 0.0,
-          "company_size": 0.0,
-          "company_location": 0.0,
-          "employee_residence": 0.019,
-          "industry": 0.0,
-          "education_level": 0.0,
-          "primary_language": 0.011,
-          "has_ml_in_title": 0.999,
-          "manages_people": 0.0,
-          "uses_ai_tools_daily": 0.189,
-          "salary_currency": 0.004,
-          "switched_jobs_last_year": 0.01
-        },
-        "experience_level": {
-          "job_title": 0.02,
-          "experience_level": 1.0,
-          "employment_type": 0.007,
-          "company_size": 0.015,
-          "company_location": 0.0,
-          "employee_residence": 0.0,
-          "industry": 0.025,
-          "education_level": 0.022,
-          "primary_language": 0.011,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.851,
-          "uses_ai_tools_daily": 0.1,
-          "salary_currency": 0.0,
-          "switched_jobs_last_year": 0.0
-        },
-        "employment_type": {
-          "job_title": 0.0,
-          "experience_level": 0.007,
-          "employment_type": 1.0,
-          "company_size": 0.014,
-          "company_location": 0.03,
-          "employee_residence": 0.03,
-          "industry": 0.0,
-          "education_level": 0.0,
-          "primary_language": 0.004,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.0,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 0.019,
-          "switched_jobs_last_year": 0.031
-        },
-        "company_size": {
-          "job_title": 0.0,
-          "experience_level": 0.015,
-          "employment_type": 0.014,
-          "company_size": 1.0,
-          "company_location": 0.041,
-          "employee_residence": 0.037,
-          "industry": 0.0,
-          "education_level": 0.008,
-          "primary_language": 0.02,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.013,
-          "uses_ai_tools_daily": 0.004,
-          "salary_currency": 0.037,
-          "switched_jobs_last_year": 0.0
-        },
-        "company_location": {
-          "job_title": 0.0,
-          "experience_level": 0.0,
-          "employment_type": 0.03,
-          "company_size": 0.041,
-          "company_location": 1.0,
-          "employee_residence": 0.878,
-          "industry": 0.0,
-          "education_level": 0.0,
-          "primary_language": 0.014,
-          "has_ml_in_title": 0.01,
-          "manages_people": 0.029,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 1.0,
-          "switched_jobs_last_year": 0.007
-        },
-        "employee_residence": {
-          "job_title": 0.019,
-          "experience_level": 0.0,
-          "employment_type": 0.03,
-          "company_size": 0.037,
-          "company_location": 0.878,
-          "employee_residence": 1.0,
-          "industry": 0.0,
-          "education_level": 0.0,
-          "primary_language": 0.0,
-          "has_ml_in_title": 0.021,
-          "manages_people": 0.007,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 0.879,
-          "switched_jobs_last_year": 0.0
-        },
-        "industry": {
-          "job_title": 0.0,
-          "experience_level": 0.025,
-          "employment_type": 0.0,
-          "company_size": 0.0,
-          "company_location": 0.0,
-          "employee_residence": 0.0,
-          "industry": 1.0,
-          "education_level": 0.021,
-          "primary_language": 0.01,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.042,
-          "uses_ai_tools_daily": 0.031,
-          "salary_currency": 0.0,
-          "switched_jobs_last_year": 0.03
-        },
-        "education_level": {
-          "job_title": 0.0,
-          "experience_level": 0.022,
-          "employment_type": 0.0,
-          "company_size": 0.008,
-          "company_location": 0.0,
-          "employee_residence": 0.0,
-          "industry": 0.021,
-          "education_level": 1.0,
-          "primary_language": 0.0,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.0,
-          "uses_ai_tools_daily": 0.012,
-          "salary_currency": 0.007,
-          "switched_jobs_last_year": 0.0
-        },
-        "primary_language": {
-          "job_title": 0.011,
-          "experience_level": 0.011,
-          "employment_type": 0.004,
-          "company_size": 0.02,
-          "company_location": 0.014,
-          "employee_residence": 0.0,
-          "industry": 0.01,
-          "education_level": 0.0,
-          "primary_language": 1.0,
-          "has_ml_in_title": 0.031,
-          "manages_people": 0.014,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 0.011,
-          "switched_jobs_last_year": 0.025
-        },
-        "has_ml_in_title": {
-          "job_title": 0.999,
-          "experience_level": 0.0,
-          "employment_type": 0.0,
-          "company_size": 0.0,
-          "company_location": 0.01,
-          "employee_residence": 0.021,
-          "industry": 0.0,
-          "education_level": 0.0,
-          "primary_language": 0.031,
-          "has_ml_in_title": 1.0,
-          "manages_people": 0.004,
-          "uses_ai_tools_daily": 0.191,
-          "salary_currency": 0.0,
-          "switched_jobs_last_year": 0.0
-        },
-        "manages_people": {
-          "job_title": 0.0,
-          "experience_level": 0.851,
-          "employment_type": 0.0,
-          "company_size": 0.013,
-          "company_location": 0.029,
-          "employee_residence": 0.007,
-          "industry": 0.042,
-          "education_level": 0.0,
-          "primary_language": 0.014,
-          "has_ml_in_title": 0.004,
-          "manages_people": 1.0,
-          "uses_ai_tools_daily": 0.061,
-          "salary_currency": 0.0,
-          "switched_jobs_last_year": 0.0
-        },
-        "uses_ai_tools_daily": {
-          "job_title": 0.189,
-          "experience_level": 0.1,
-          "employment_type": 0.0,
-          "company_size": 0.004,
-          "company_location": 0.0,
-          "employee_residence": 0.0,
-          "industry": 0.031,
-          "education_level": 0.012,
-          "primary_language": 0.0,
-          "has_ml_in_title": 0.191,
-          "manages_people": 0.061,
-          "uses_ai_tools_daily": 1.0,
-          "salary_currency": 0.0,
-          "switched_jobs_last_year": 0.0
-        },
-        "salary_currency": {
-          "job_title": 0.004,
-          "experience_level": 0.0,
-          "employment_type": 0.019,
-          "company_size": 0.037,
-          "company_location": 1.0,
-          "employee_residence": 0.879,
-          "industry": 0.0,
-          "education_level": 0.007,
-          "primary_language": 0.011,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.0,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 1.0,
-          "switched_jobs_last_year": 0.02
-        },
-        "switched_jobs_last_year": {
-          "job_title": 0.01,
-          "experience_level": 0.0,
-          "employment_type": 0.031,
-          "company_size": 0.0,
-          "company_location": 0.007,
-          "employee_residence": 0.0,
-          "industry": 0.03,
-          "education_level": 0.0,
-          "primary_language": 0.025,
-          "has_ml_in_title": 0.0,
-          "manages_people": 0.0,
-          "uses_ai_tools_daily": 0.0,
-          "salary_currency": 0.02,
-          "switched_jobs_last_year": 1.0
-        }
-      }
-    }
+    "categorical_associations": {}
   },
-  "categorical_associations": {
-    "heatmap_saved": "./sandbox_run\\categorical_association_matrix.png",
-    "top_correlations": [
-      {
-        "feature_1": "company_location",
-        "feature_2": "salary_currency",
-        "cramers_v": 0.9997
-      },
-      {
-        "feature_1": "job_title",
-        "feature_2": "has_ml_in_title",
-        "cramers_v": 0.999
-      },
-      {
-        "feature_1": "employee_residence",
-        "feature_2": "salary_currency",
-        "cramers_v": 0.8786
-      },
-      {
-        "feature_1": "company_location",
-        "feature_2": "employee_residence",
-        "cramers_v": 0.8781
-      },
-      {
-        "feature_1": "experience_level",
-        "feature_2": "manages_people",
-        "cramers_v": 0.8512
-      },
-      {
-        "feature_1": "has_ml_in_title",
-        "feature_2": "uses_ai_tools_daily",
-        "cramers_v": 0.1909
-      },
-      {
-        "feature_1": "job_title",
-        "feature_2": "uses_ai_tools_daily",
-        "cramers_v": 0.1891
-      },
-      {
-        "feature_1": "experience_level",
-        "feature_2": "uses_ai_tools_daily",
-        "cramers_v": 0.0995
-      },
-      {
-        "feature_1": "manages_people",
-        "feature_2": "uses_ai_tools_daily",
-        "cramers_v": 0.0614
-      },
-      {
-        "feature_1": "industry",
-        "feature_2": "manages_people",
-        "cramers_v": 0.0418
-      }
-    ],
-    "association_matrix_text": {
-      "job_title": {
-        "job_title": 1.0,
-        "experience_level": 0.02,
-        "employment_type": 0.0,
-        "company_size": 0.0,
-        "company_location": 0.0,
-        "employee_residence": 0.019,
-        "industry": 0.0,
-        "education_level": 0.0,
-        "primary_language": 0.011,
-        "has_ml_in_title": 0.999,
-        "manages_people": 0.0,
-        "uses_ai_tools_daily": 0.189,
-        "salary_currency": 0.004,
-        "switched_jobs_last_year": 0.01
-      },
-      "experience_level": {
-        "job_title": 0.02,
-        "experience_level": 1.0,
-        "employment_type": 0.007,
-        "company_size": 0.015,
-        "company_location": 0.0,
-        "employee_residence": 0.0,
-        "industry": 0.025,
-        "education_level": 0.022,
-        "primary_language": 0.011,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.851,
-        "uses_ai_tools_daily": 0.1,
-        "salary_currency": 0.0,
-        "switched_jobs_last_year": 0.0
-      },
-      "employment_type": {
-        "job_title": 0.0,
-        "experience_level": 0.007,
-        "employment_type": 1.0,
-        "company_size": 0.014,
-        "company_location": 0.03,
-        "employee_residence": 0.03,
-        "industry": 0.0,
-        "education_level": 0.0,
-        "primary_language": 0.004,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.0,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 0.019,
-        "switched_jobs_last_year": 0.031
-      },
-      "company_size": {
-        "job_title": 0.0,
-        "experience_level": 0.015,
-        "employment_type": 0.014,
-        "company_size": 1.0,
-        "company_location": 0.041,
-        "employee_residence": 0.037,
-        "industry": 0.0,
-        "education_level": 0.008,
-        "primary_language": 0.02,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.013,
-        "uses_ai_tools_daily": 0.004,
-        "salary_currency": 0.037,
-        "switched_jobs_last_year": 0.0
-      },
-      "company_location": {
-        "job_title": 0.0,
-        "experience_level": 0.0,
-        "employment_type": 0.03,
-        "company_size": 0.041,
-        "company_location": 1.0,
-        "employee_residence": 0.878,
-        "industry": 0.0,
-        "education_level": 0.0,
-        "primary_language": 0.014,
-        "has_ml_in_title": 0.01,
-        "manages_people": 0.029,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 1.0,
-        "switched_jobs_last_year": 0.007
-      },
-      "employee_residence": {
-        "job_title": 0.019,
-        "experience_level": 0.0,
-        "employment_type": 0.03,
-        "company_size": 0.037,
-        "company_location": 0.878,
-        "employee_residence": 1.0,
-        "industry": 0.0,
-        "education_level": 0.0,
-        "primary_language": 0.0,
-        "has_ml_in_title": 0.021,
-        "manages_people": 0.007,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 0.879,
-        "switched_jobs_last_year": 0.0
-      },
-      "industry": {
-        "job_title": 0.0,
-        "experience_level": 0.025,
-        "employment_type": 0.0,
-        "company_size": 0.0,
-        "company_location": 0.0,
-        "employee_residence": 0.0,
-        "industry": 1.0,
-        "education_level": 0.021,
-        "primary_language": 0.01,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.042,
-        "uses_ai_tools_daily": 0.031,
-        "salary_currency": 0.0,
-        "switched_jobs_last_year": 0.03
-      },
-      "education_level": {
-        "job_title": 0.0,
-        "experience_level": 0.022,
-        "employment_type": 0.0,
-        "company_size": 0.008,
-        "company_location": 0.0,
-        "employee_residence": 0.0,
-        "industry": 0.021,
-        "education_level": 1.0,
-        "primary_language": 0.0,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.0,
-        "uses_ai_tools_daily": 0.012,
-        "salary_currency": 0.007,
-        "switched_jobs_last_year": 0.0
-      },
-      "primary_language": {
-        "job_title": 0.011,
-        "experience_level": 0.011,
-        "employment_type": 0.004,
-        "company_size": 0.02,
-        "company_location": 0.014,
-        "employee_residence": 0.0,
-        "industry": 0.01,
-        "education_level": 0.0,
-        "primary_language": 1.0,
-        "has_ml_in_title": 0.031,
-        "manages_people": 0.014,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 0.011,
-        "switched_jobs_last_year": 0.025
-      },
-      "has_ml_in_title": {
-        "job_title": 0.999,
-        "experience_level": 0.0,
-        "employment_type": 0.0,
-        "company_size": 0.0,
-        "company_location": 0.01,
-        "employee_residence": 0.021,
-        "industry": 0.0,
-        "education_level": 0.0,
-        "primary_language": 0.031,
-        "has_ml_in_title": 1.0,
-        "manages_people": 0.004,
-        "uses_ai_tools_daily": 0.191,
-        "salary_currency": 0.0,
-        "switched_jobs_last_year": 0.0
-      },
-      "manages_people": {
-        "job_title": 0.0,
-        "experience_level": 0.851,
-        "employment_type": 0.0,
-        "company_size": 0.013,
-        "company_location": 0.029,
-        "employee_residence": 0.007,
-        "industry": 0.042,
-        "education_level": 0.0,
-        "primary_language": 0.014,
-        "has_ml_in_title": 0.004,
-        "manages_people": 1.0,
-        "uses_ai_tools_daily": 0.061,
-        "salary_currency": 0.0,
-        "switched_jobs_last_year": 0.0
-      },
-      "uses_ai_tools_daily": {
-        "job_title": 0.189,
-        "experience_level": 0.1,
-        "employment_type": 0.0,
-        "company_size": 0.004,
-        "company_location": 0.0,
-        "employee_residence": 0.0,
-        "industry": 0.031,
-        "education_level": 0.012,
-        "primary_language": 0.0,
-        "has_ml_in_title": 0.191,
-        "manages_people": 0.061,
-        "uses_ai_tools_daily": 1.0,
-        "salary_currency": 0.0,
-        "switched_jobs_last_year": 0.0
-      },
-      "salary_currency": {
-        "job_title": 0.004,
-        "experience_level": 0.0,
-        "employment_type": 0.019,
-        "company_size": 0.037,
-        "company_location": 1.0,
-        "employee_residence": 0.879,
-        "industry": 0.0,
-        "education_level": 0.007,
-        "primary_language": 0.011,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.0,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 1.0,
-        "switched_jobs_last_year": 0.02
-      },
-      "switched_jobs_last_year": {
-        "job_title": 0.01,
-        "experience_level": 0.0,
-        "employment_type": 0.031,
-        "company_size": 0.0,
-        "company_location": 0.007,
-        "employee_residence": 0.0,
-        "industry": 0.03,
-        "education_level": 0.0,
-        "primary_language": 0.025,
-        "has_ml_in_title": 0.0,
-        "manages_people": 0.0,
-        "uses_ai_tools_daily": 0.0,
-        "salary_currency": 0.02,
-        "switched_jobs_last_year": 1.0
-      }
-    }
-  },
+  "categorical_associations": {},
   "statistical_hypothesis_tests": {
-    "job_title": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 26.3257,
-      "p_value": 6.102568382934487e-54,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 26.3257, p = 6.1026e-54. (Statistically Significant)"
-    },
-    "experience_level": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 403.0642,
-      "p_value": 2.371922154286356e-301,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 403.0642, p = 2.3719e-301. (Statistically Significant)"
-    },
-    "employment_type": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 49.3714,
-      "p_value": 1.9445113908589575e-31,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 49.3714, p = 1.9445e-31. (Statistically Significant)"
-    },
-    "company_size": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 92.3108,
-      "p_value": 4.293307759808041e-40,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 92.3108, p = 4.2933e-40. (Statistically Significant)"
-    },
-    "company_location": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 337.3729,
-      "p_value": 0.0,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 337.3729, p = 0.0000e+00. (Statistically Significant)"
-    },
-    "employee_residence": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 220.9945,
-      "p_value": 0.0,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 220.9945, p = 0.0000e+00. (Statistically Significant)"
-    },
-    "industry": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 19.3593,
-      "p_value": 3.1818700994250643e-32,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 19.3593, p = 3.1819e-32. (Statistically Significant)"
-    },
-    "remote_ratio": {
+    "battery_power": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0364,
-      "p_value": 0.01003740278709876,
+      "statistic": 0.2007,
+      "p_value": 1.2648542392221943e-19,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.0364, p = 1.0037e-02. (Statistically Significant)"
+      "interpretation": "Pearson r = 0.2007, p = 1.2649e-19. (Statistically Significant)"
     },
-    "years_experience": {
+    "blue": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.4663,
-      "p_value": 2.261749079942623e-268,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.4663, p = 2.2617e-268. (Statistically Significant)"
-    },
-    "education_level": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 24.3014,
-      "p_value": 6.054988128091503e-20,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 24.3014, p = 6.0550e-20. (Statistically Significant)"
-    },
-    "primary_language": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 0.6435,
-      "p_value": 0.6955059147721769,
+      "statistic": 0.0206,
+      "p_value": 0.3577984898948882,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.6435, p = 6.9551e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0206, p = 3.5780e-01. (Not Significant)"
     },
-    "has_ml_in_title": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": -11.1062,
-      "p_value": 3.4579990957889665e-28,
-      "is_statistically_significant": true,
-      "interpretation": "T-statistic = -11.1062, p = 3.4580e-28. (Statistically Significant)"
-    },
-    "manages_people": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": -19.4433,
-      "p_value": 4.0499388329427746e-75,
-      "is_statistically_significant": true,
-      "interpretation": "T-statistic = -19.4433, p = 4.0499e-75. (Statistically Significant)"
-    },
-    "team_size": {
+    "clock_speed": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0213,
-      "p_value": 0.13270900394299914,
+      "statistic": -0.0066,
+      "p_value": 0.7678151230141654,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0213, p = 1.3271e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0066, p = 7.6782e-01. (Not Significant)"
     },
-    "certifications_count": {
+    "dual_sim": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.1078,
-      "p_value": 2.0750571155123875e-14,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1078, p = 2.0751e-14. (Statistically Significant)"
+      "statistic": 0.0174,
+      "p_value": 0.43556016301950534,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0174, p = 4.3556e-01. (Not Significant)"
     },
-    "weekly_hours": {
+    "fc": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.1335,
-      "p_value": 2.508094301140578e-21,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1335, p = 2.5081e-21. (Statistically Significant)"
+      "statistic": 0.022,
+      "p_value": 0.32546291239497227,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0220, p = 3.2546e-01. (Not Significant)"
     },
-    "uses_ai_tools_daily": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": -8.3208,
-      "p_value": 1.2807830792471165e-16,
-      "is_statistically_significant": true,
-      "interpretation": "T-statistic = -8.3208, p = 1.2808e-16. (Statistically Significant)"
-    },
-    "ai_tools_hours_per_week": {
+    "four_g": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0803,
-      "p_value": 1.3117796256326278e-08,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.0803, p = 1.3118e-08. (Statistically Significant)"
+      "statistic": 0.0148,
+      "p_value": 0.5091036529765821,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0148, p = 5.0910e-01. (Not Significant)"
     },
-    "salary_currency": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 454.475,
+    "int_memory": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0444,
+      "p_value": 0.04693006243458649,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0444, p = 4.6930e-02. (Statistically Significant)"
+    },
+    "m_dep": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0009,
+      "p_value": 0.9695879315854071,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0009, p = 9.6959e-01. (Not Significant)"
+    },
+    "mobile_wt": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.0303,
+      "p_value": 0.1755392510490185,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0303, p = 1.7554e-01. (Not Significant)"
+    },
+    "n_cores": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0044,
+      "p_value": 0.84412530765709,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0044, p = 8.4413e-01. (Not Significant)"
+    },
+    "pc": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0336,
+      "p_value": 0.13307358920400147,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0336, p = 1.3307e-01. (Not Significant)"
+    },
+    "px_height": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.1489,
+      "p_value": 2.227806130813118e-11,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.1489, p = 2.2278e-11. (Statistically Significant)"
+    },
+    "px_width": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.1658,
+      "p_value": 8.478968798292745e-14,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.1658, p = 8.4790e-14. (Statistically Significant)"
+    },
+    "ram": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.917,
       "p_value": 0.0,
       "is_statistically_significant": true,
-      "interpretation": "F-statistic = 454.4750, p = 0.0000e+00. (Statistically Significant)"
+      "interpretation": "Pearson r = 0.9170, p = 0.0000e+00. (Statistically Significant)"
     },
-    "equity_offered_pct": {
+    "sc_h": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.1116,
-      "p_value": 2.4988671553022422e-15,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.1116, p = 2.4989e-15. (Statistically Significant)"
+      "statistic": 0.023,
+      "p_value": 0.30420319516032523,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0230, p = 3.0420e-01. (Not Significant)"
     },
-    "bonus_pct": {
+    "sc_w": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.3285,
-      "p_value": 4.39502083660867e-126,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.3285, p = 4.3950e-126. (Statistically Significant)"
+      "statistic": 0.0387,
+      "p_value": 0.08348974201809949,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0387, p = 8.3490e-02. (Not Significant)"
     },
-    "job_satisfaction_score": {
+    "talk_time": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.1791,
-      "p_value": 2.5794319124342252e-37,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1791, p = 2.5794e-37. (Statistically Significant)"
+      "statistic": 0.0219,
+      "p_value": 0.32853745858231603,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0219, p = 3.2854e-01. (Not Significant)"
     },
-    "interviews_to_offer": {
+    "three_g": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.1551,
-      "p_value": 2.6356978607323097e-28,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1551, p = 2.6357e-28. (Statistically Significant)"
+      "statistic": 0.0236,
+      "p_value": 0.2912366163167312,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0236, p = 2.9124e-01. (Not Significant)"
     },
-    "switched_jobs_last_year": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": 2.2494,
-      "p_value": 0.0245882393217583,
-      "is_statistically_significant": true,
-      "interpretation": "T-statistic = 2.2494, p = 2.4588e-02. (Statistically Significant)"
-    },
-    "upskilling_hours_per_month": {
+    "touch_screen": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0697,
-      "p_value": 8.196247406172112e-07,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0697, p = 8.1962e-07. (Statistically Significant)"
+      "statistic": -0.0304,
+      "p_value": 0.17399179859449182,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0304, p = 1.7399e-01. (Not Significant)"
     },
-    "fears_ai_automation_score": {
+    "wifi": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.2414,
-      "p_value": 3.1327852309556366e-67,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.2414, p = 3.1328e-67. (Statistically Significant)"
+      "statistic": 0.0188,
+      "p_value": 0.40111519435551796,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0188, p = 4.0112e-01. (Not Significant)"
     },
     "significant_predictors": [
-      "job_title",
-      "experience_level",
-      "employment_type",
-      "company_size",
-      "company_location",
-      "employee_residence",
-      "industry",
-      "remote_ratio",
-      "years_experience",
-      "education_level",
-      "has_ml_in_title",
-      "manages_people",
-      "certifications_count",
-      "weekly_hours",
-      "uses_ai_tools_daily",
-      "ai_tools_hours_per_week",
-      "salary_currency",
-      "equity_offered_pct",
-      "bonus_pct",
-      "job_satisfaction_score",
-      "interviews_to_offer",
-      "switched_jobs_last_year",
-      "upskilling_hours_per_month",
-      "fears_ai_automation_score"
+      "battery_power",
+      "int_memory",
+      "px_height",
+      "px_width",
+      "ram"
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "salary_usd",
-    "problem_type": "Regression",
+    "target_definition": "price_range",
+    "problem_type": "Classification",
     "recommended_algorithms": [
-      "Regularized Linear Regression (Ridge / Lasso)",
-      "Random Forest Regressor",
-      "Gradient Boosting Regressor",
-      "Support Vector Regressor (SVR)"
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -1528,46 +1130,27 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "K-Fold Cross-Validation (5 folds)",
-      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: salary_usd (Regression). Use robust cross-validation on 5000 rows x 28 columns."
+    "executive_summary": "Target: price_range (Classification). Use robust cross-validation on 2000 rows x 21 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 5000 rows and 28 columns.",
+      "Dataset contains 2000 rows and 21 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
-      "job_title",
-      "experience_level",
-      "employment_type",
-      "company_size",
-      "company_location",
-      "employee_residence",
-      "industry",
-      "remote_ratio",
-      "years_experience",
-      "education_level",
-      "has_ml_in_title",
-      "manages_people",
-      "certifications_count",
-      "weekly_hours",
-      "uses_ai_tools_daily",
-      "ai_tools_hours_per_week",
-      "salary_currency",
-      "equity_offered_pct",
-      "bonus_pct",
-      "job_satisfaction_score",
-      "interviews_to_offer",
-      "switched_jobs_last_year",
-      "upskilling_hours_per_month",
-      "fears_ai_automation_score"
+      "battery_power",
+      "int_memory",
+      "px_height",
+      "px_width",
+      "ram"
     ]
   }
 }

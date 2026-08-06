@@ -1,259 +1,199 @@
-# Executive Summary – AI‑DS Job Salaries (2026)
-
+# Executive Summary – Mobile Phone Pricing Dataset  
 **Prepared by:** Senior Lead Data Scientist  
-**Date:** 2026‑08‑06  
+**Date:** 2026‑08‑06  
 
----  
+---
 
-## Table of Contents
-1. [Dataset Overview](#1-dataset-overview)  
-2. [Data Quality & Pre‑processing](#2-data-quality--pre‑processing)  
-   - 2.1 Missing‑value handling  
-   - 2.2 Outlier profiling  
-3. [Statistical Hypothesis Testing](#3-statistical-hypothesis-testing)  
-4. [Correlation & Categorical Association Analysis](#4-correlation--categorical-association-analysis)  
-5. [Feature Engineering](#5-feature-engineering)  
-6. [Key Visualisations](#6-key-visualisations)  
-7. [Predictive‑Modeling Blueprint](#7-predictive‑modeling-blueprint)  
-8. [Actionable Recommendations](#8-actionable-recommendations)  
-9. [Appendix – Artifact Inventory](#9-appendix--artifact-inventory)  
+## 1. Overview  
 
----  
+| Item | Detail |
+|------|--------|
+| **Dataset** | `train.csv` (2000 rows × 21 columns) |
+| **Target variable** | `price_range` (4‑class classification: 0‑3) |
+| **Primary goal** | Understand data characteristics, identify predictive features, and outline a modelling blueprint for a robust classifier. |
+| **Key findings** | • No missing values after imputation. <br>• Outlier profiling performed (action = *profile*). <br>• Five features are statistically significant predictors of price range: **battery_power, int_memory, px_height, px_width, ram**. <br>• `ram` shows an exceptionally strong linear relationship with the target (Pearson r = 0.917). <br>• No new engineered features were created (the feature‑engineering step generated 0 features). |
 
-## 1. Dataset Overview
-| Property | Value |
-|----------|-------|
-| **Source file** | `ai_ds_job_salaries_2026.csv` |
-| **Rows** | 5 000 |
-| **Columns (incl. engineered)** | 28 |
-| **Target variable** | `salary_usd` (continuous) |
-| **Problem type** | Regression |
-| **Primary domain** | Compensation for data‑science roles worldwide |
+---
 
-### Column Summary (selected numeric columns)
+## 2. Data Quality  
 
-| Column | dtype | Mean | Median | Std. Dev. | Min | Max | Skew | Kurtosis |
-|--------|-------|------|--------|-----------|-----|-----|------|----------|
-| `remote_ratio` | int64 | 43.08 | 50.0 | 41.45 | 0 | 100 | 0.26 | -1.50 |
-| `years_experience` | float64 | 8.36 | 8.1 | 4.82 | 0 | 23.7 | 0.36 | -0.34 |
-| `team_size` | int64 | 7.94 | 8.0 | 2.65 | 1 | 19 | 0.36 | 0.11 |
-| `certifications_count` | int64 | 1.82 | 2.0 | 1.34 | 0 | 8 | 0.72 | 0.38 |
-| `weekly_hours` | float64 | 44.35 | 44.4 | 6.14 | 24.4 | 67.3 | -0.03 | -0.08 |
-| `ai_tools_hours_per_week` | float64 | 8.44 | 8.5 | 5.50 | 0 | 25.2 | 0.27 | -0.82 |
-| `salary_usd` | int64 | 98 605 | 90 572 | 55 369 | 12 000 | 372 347 | 0.91 | 0.91 |
-| `equity_offered_pct` | float64 | 0.139 | 0.072 | 0.184 | 0 | 1.264 | **2.18** | **5.15** |
-| `bonus_pct` | float64 | 10.80 | 10.6 | 5.15 | 0 | 30.8 | 0.18 | -0.25 |
-| `job_satisfaction_score` | float64 | 6.69 | 6.7 | 1.36 | 1.1 | 10.0 | 0.00 | -0.07 |
-| `interviews_to_offer` | int64 | 5.23 | 5.0 | 2.41 | 1 | 16 | 0.56 | 0.16 |
-| `upskilling_hours_per_month` | float64 | 8.68 | 8.7 | 4.42 | 0 | 26.2 | 0.12 | -0.27 |
-| `fears_ai_automation_score` | float64 | 4.85 | 4.8 | 1.73 | 1 | 10 | 0.08 | -0.23 |
+### 2.1 Missing‑value handling  
 
-*Categorical columns have 0 % missing values and modest cardinalities (e.g., `job_title` – 12 unique values, `experience_level` – 5).*
+The automated pipeline applied a uniform strategy:
 
----  
+* Standardised missing string placeholders (`?`, `NA`, `N/A`, `null`) → `NaN`.  
+* Numeric columns with skewness > 1.0 or < ‑1.0 → median imputation.  
+* Numeric columns with skewness between –1.0 and 1.0 → mean imputation.  
+* Categorical/string columns → mode imputation (fallback = “Unknown”).  
 
-## 2. Data Quality & Pre‑processing  
+**Result:** All 21 columns reported **0 missing values** before and after imputation (see `imputation_res` in `agent_state.json`). No imputation was required.
 
-### 2.1 Missing‑value handling
-The automated pipeline applied a uniform missing‑value policy:
+### 2.2 Outlier profiling  
 
-| Rule | Applied to |
-|------|------------|
-| Standardise placeholders (`?`, `NA`, `N/A`, `null`) → `NaN` | All columns |
-| Numeric skew > 1 or < ‑1 → median imputation | None (no skewed numeric columns required) |
-| Numeric skew ∈ [‑1, 1] → mean imputation | None (no missing numeric values) |
-| Categorical → mode imputation, fallback `"Unknown"` | None (no missing categorical values) |
+Outlier detection was performed on every numeric column with the *profile* action (no values were removed). The most extreme case was `fc` (front‑camera count) with 18 outliers (0.9 % of rows). `px_height` had 2 outliers (0.1 %). All other columns reported 0 outliers.
 
-**Result:** No column required imputation; the dataset is complete.
+| Feature | Outlier % | Action |
+|---------|-----------|--------|
+| `fc` | 0.9 % | Profile |
+| `px_height` | 0.1 % | Profile |
+| *All others* | 0 % | Profile |
 
-### 2.2 Outlier profiling (action = *profile* – no removal)
-| Feature | IQR | Lower bound | Upper bound | Outliers (count) | % of rows |
-|---------|-----|-------------|-------------|------------------|-----------|
-| `remote_ratio` | 100 | –150 | 250 | 0 | 0 % |
-| `years_experience` | 6.7 | –5.25 | 21.55 | 20 | 0.4 % |
-| `team_size` | 4 | 0 | 16 | 10 | 0.2 % |
-| `certifications_count` | 2 | –2 | 6 | 9 | 0.18 % |
-| `weekly_hours` | 8.4 | 27.5 | 61.1 | 27 | 0.54 % |
-| `ai_tools_hours_per_week` | 9.325 | –10.69 | 26.61 | 0 | 0 % |
-| `salary_usd` | 74 065 | –55 505 | 240 755 | 103 | 2.06 % |
-| `equity_offered_pct` | 0.158 | –0.22 | 0.412 | 481 | 9.62 % |
-| `bonus_pct` | 7.1 | –3.55 | 24.85 | 13 | 0.26 % |
-| `job_satisfaction_score` | 1.8 | 3.1 | 10.3 | 21 | 0.42 % |
-| `interviews_to_offer` | 4 | –3 | 13 | 11 | 0.22 % |
-| `upskilling_hours_per_month` | 6.1 | –3.55 | 20.85 | 16 | 0.32 % |
-| `fears_ai_automation_score` | 2.3 | 0.25 | 9.45 | 24 | 0.48 % |
+---
 
-*All outliers were retained for profiling; no trimming was performed.*
+## 3. Statistical Summaries  
 
----  
+### 3.1 Central tendency & dispersion  
 
-## 3. Statistical Hypothesis Testing  
+| Feature | dtype | Cardinality | Mean | Median | Std. Dev. | Min | Max |
+|---------|-------|-------------|------|--------|-----------|-----|-----|
+| battery_power | int64 | 1094 | 1238.52 | 1226.0 | 439.42 | 501 | 1998 |
+| blue | int64 | 2 | 0.495 | 0.0 | 0.5001 | 0 | 1 |
+| clock_speed | float64 | 26 | 1.522 | 1.5 | 0.8160 | 0.5 | 3.0 |
+| dual_sim | int64 | 2 | 0.5095 | 1.0 | 0.5000 | 0 | 1 |
+| fc | int64 | 20 | 4.3095 | 3.0 | 4.3414 | 0 | 19 |
+| four_g | int64 | 2 | 0.5215 | 1.0 | 0.4997 | 0 | 1 |
+| int_memory | int64 | 63 | 32.0465 | 32.0 | 18.1457 | 2 | 64 |
+| m_dep | float64 | 10 | 0.5018 | 0.5 | 0.2884 | 0.1 | 1.0 |
+| mobile_wt | int64 | 121 | 140.25 | 141.0 | 35.3997 | 80 | 200 |
+| n_cores | int64 | 8 | 4.5205 | 4.0 | 2.2878 | 1 | 8 |
+| pc | int64 | 21 | 9.9165 | 10.0 | 6.0643 | 0 | 20 |
+| px_height | int64 | 1137 | 645.11 | 564.0 | 443.78 | 0 | 1960 |
+| px_width | int64 | 1109 | 1251.52 | 1247.0 | 432.20 | 500 | 1998 |
+| ram | int64 | 1562 | 2124.21 | 2146.5 | 1084.73 | 256 | 3998 |
+| sc_h | int64 | 15 | 12.3065 | 12.0 | 4.2132 | 5 | 19 |
+| sc_w | int64 | 19 | 5.7670 | 5.0 | 4.3564 | 0 | 18 |
+| talk_time | int64 | 19 | 11.011 | 11.0 | 5.46396 | 2 | 20 |
+| three_g | int64 | 2 | 0.7615 | 1.0 | 0.4263 | 0 | 1 |
+| touch_screen | int64 | 2 | 0.503 | 1.0 | 0.5001 | 0 | 1 |
+| wifi | int64 | 2 | 0.507 | 1.0 | 0.5001 | 0 | 1 |
+| price_range | int64 | 4 | 1.5 | 1.5 | 1.1183 | 0 | 3 |
 
-The pipeline performed appropriate tests per variable type (ANOVA for categoricals, Pearson correlation for numerics, Welch‑t for binary).  
+*Skewness and kurtosis values are available in `metadata_profile.json` – all numeric features are close to symmetric except `fc` (skew ≈ 1.02) and `px_height` (skew ≈ 0.67).*
 
-| Feature | Test | Statistic | p‑value | Significant? |
-|---------|------|-----------|---------|--------------|
-| `job_title` | One‑Way ANOVA | 26.33 | 6.10 e‑54 | ✔ |
-| `experience_level` | One‑Way ANOVA | 403.06 | 2.37 e‑301 | ✔ |
-| `employment_type` | One‑Way ANOVA | 49.37 | 1.94 e‑31 | ✔ |
-| `company_size` | One‑Way ANOVA | 92.31 | 4.29 e‑40 | ✔ |
-| `company_location` | One‑Way ANOVA | 337.37 | 0.0 | ✔ |
-| `employee_residence` | One‑Way ANOVA | 220.99 | 0.0 | ✔ |
-| `industry` | One‑Way ANOVA | 19.36 | 3.18 e‑32 | ✔ |
-| `remote_ratio` | Pearson r | 0.0364 | 1.00 e‑02 | ✔ |
-| `years_experience` | Pearson r | 0.4663 | 2.26 e‑268 | ✔ |
-| `education_level` | One‑Way ANOVA | 24.30 | 6.05 e‑20 | ✔ |
-| `primary_language` | One‑Way ANOVA | 0.6435 | 0.696 | ✘ |
-| `has_ml_in_title` | Welch t | –11.11 | 3.46 e‑28 | ✔ |
-| `manages_people` | Welch t | –19.44 | 4.05 e‑75 | ✔ |
-| `team_size` | Pearson r | 0.0213 | 0.133 | ✘ |
-| `certifications_count` | Pearson r | 0.1078 | 2.08 e‑14 | ✔ |
-| `weekly_hours` | Pearson r | 0.1335 | 2.51 e‑21 | ✔ |
-| `uses_ai_tools_daily` | Welch t | –8.321 | 1.28 e‑16 | ✔ |
-| `ai_tools_hours_per_week` | Pearson r | 0.0803 | 1.31 e‑08 | ✔ |
-| `salary_currency` | One‑Way ANOVA | 454.48 | 0.0 | ✔ |
-| `equity_offered_pct` | Pearson r | –0.1116 | 2.50 e‑15 | ✔ |
-| `bonus_pct` | Pearson r | 0.3285 | 4.40 e‑126 | ✔ |
-| `job_satisfaction_score` | Pearson r | 0.1791 | 2.58 e‑37 | ✔ |
-| `interviews_to_offer` | Pearson r | 0.1551 | 2.64 e‑28 | ✔ |
-| `switched_jobs_last_year` | Welch t | 2.249 | 2.46 e‑02 | ✔ |
-| `upskilling_hours_per_month` | Pearson r | –0.0697 | 8.20 e‑07 | ✔ |
-| `fears_ai_automation_score` | Pearson r | –0.2414 | 3.13 e‑67 | ✔ |
+### 3.2 Correlation matrix (top 10 absolute correlations)
 
-**Significant predictors (24 total):**  
-`job_title, experience_level, employment_type, company_size, company_location, employee_residence, industry, remote_ratio, years_experience, education_level, has_ml_in_title, manages_people, certifications_count, weekly_hours, uses_ai_tools_daily, ai_tools_hours_per_week, salary_currency, equity_offered_pct, bonus_pct, job_satisfaction_score, interviews_to_offer, switched_jobs_last_year, upskilling_hours_per_month, fears_ai_automation_score`.
+| Feature 1 | Feature 2 | Pearson ρ |
+|----------|-----------|-----------|
+| **ram** | **price_range** | **0.917** |
+| **fc** | **pc** | 0.645 |
+| **four_g** | **three_g** | 0.584 |
+| **px_height** | **px_width** | 0.511 |
+| **sc_h** | **sc_w** | 0.506 |
+| **battery_power** | **price_range** | 0.202 |
+| **px_width** | **price_range** | 0.166 |
+| **px_height** | **price_range** | 0.149 |
+| **px_height** | **sc_h** | 0.060 |
+| **battery_power** | **talk_time** | 0.053 |
 
----  
+*All other pairwise correlations are ≤ 0.05 in magnitude.*
 
-## 4. Correlation & Categorical Association Analysis  
+---
 
-### 4.1 Top numeric correlations (absolute value)
+## 4. Hypothesis‑Testing Results  
 
-| Rank | Feature 1 | Feature 2 | Correlation |
-|------|-----------|-----------|-------------|
-| 1 | `years_experience` | `bonus_pct` | **0.6098** |
-| 2 | `years_experience` | `salary_usd` | **0.4663** |
-| 3 | `salary_usd` | `bonus_pct` | **0.3285** |
-| 4 | `years_experience` | `interviews_to_offer` | **0.2902** |
-| 5 | `years_experience` | `weekly_hours` | **0.2607** |
-| 6 | `years_experience` | `fears_ai_automation_score` | **‑0.2537** |
-| 7 | `salary_usd` | `fears_ai_automation_score` | **‑0.2414** |
-| 8 | `weekly_hours` | `job_satisfaction_score` | **‑0.2274** |
-| 9 | `bonus_pct` | `interviews_to_offer` | **0.2197** |
-|10 | `years_experience` | `certifications_count` | **0.2156** |
+Pearson correlation tests were run for every feature against the target (`price_range`). Significance threshold α = 0.05.
 
-*All correlations are statistically significant (p < 1e‑5) except where noted.*
+| Feature | Pearson r | p‑value | Significant? |
+|---------|-----------|---------|--------------|
+| battery_power | 0.2007 | 1.26 e‑19 | **Yes** |
+| int_memory | 0.0444 | 4.69 e‑02 | **Yes** |
+| px_height | 0.1489 | 2.23 e‑11 | **Yes** |
+| px_width | 0.1658 | 8.48 e‑14 | **Yes** |
+| ram | 0.9170 | 0.0 | **Yes** |
+| all other features | – | – | No |
 
-### 4.2 Categorical association (Cramér’s V, top 5)
+**Interpretation:** The five listed features have statistically significant linear relationships with the price range and should be prioritized in any predictive model.
 
-| Rank | Feature 1 | Feature 2 | Cramér’s V |
-|------|-----------|-----------|------------|
-| 1 | `company_location` | `salary_currency` | **0.9997** |
-| 2 | `job_title` | `has_ml_in_title` | **0.999** |
-| 3 | `employee_residence` | `salary_currency` | **0.8786** |
-| 4 | `company_location` | `employee_residence` | **0.8781** |
-| 5 | `experience_level` | `manages_people` | **0.8512** |
-
-*High‑cardinality associations (e.g., location ↔ currency) suggest that currency conversion is already embedded in `salary_usd`; these columns can be dropped or encoded as a single region indicator.*
-
----  
+---
 
 ## 5. Feature Engineering  
 
-| Engineered Feature | Formula | Data type | Rationale | Correlation with target |
-|--------------------|---------|-----------|-----------|------------------------|
-| `engineered_feature` | `salary_usd / (years_experience + eps)` | float64 | Provides a “salary per year of experience” metric that may capture productivity scaling. | **‑0.0572** (weak) |
+The pipeline was instructed to create four engineered features:
 
-*Only one engineered feature was automatically generated; its low correlation suggests limited predictive value. Additional domain‑specific transformations (e.g., log‑salary, interaction of remote ratio × AI‑tool usage) are recommended.*
+| New Feature | Source Columns | Transformation |
+|-------------|----------------|----------------|
+| `log1p_battery_power` | battery_power | log(1 + x) |
+| `log1p_ram` | ram | log(1 + x) |
+| `battery_to_weight_ratio` | battery_power, mobile_wt | battery_power / mobile_wt |
+| `pc_ram_interaction` | pc, ram | product (pc × ram) |
 
----  
+**Outcome:** The `engineer_features` step reported *“Generated 0 features.”* – none of the proposed transformations were added to the final dataframe (likely due to redundancy or collinearity checks). Consequently, the current feature set remains the original 21 columns.
 
-## 6. Key Visualisations  
+---
 
-| Image File | Size (KB) | Description |
-|------------|-----------|-------------|
-| `bivariate_years_experience_vs_salary_usd.png` | 107.01 | Scatter with trend line showing strong positive relationship (r ≈ 0.47). |
-| `bivariate_bonus_pct_vs_salary_usd.png` | 85.10 | Positive linear pattern; higher bonus % aligns with higher salaries. |
-| `bivariate_remote_ratio_vs_salary_usd.png` | 86.09 | Near‑flat relationship; remote ratio has minimal impact (r ≈ 0.04). |
-| `bivariate_uses_ai_tools_daily_vs_salary_usd.png` | 79.39 | Box‑plot: daily AI‑tool users earn slightly less (Welch‑t p < 1e‑16). |
-| `bivariate_company_size_vs_salary_usd.png` | 74.41 | Salary rises with company size (small → large). |
-| `bivariate_education_level_vs_salary_usd.png` | 85.10 | Salary increases with higher education (Bachelors → Masters → PhD). |
-| `dist_salary_usd.png` | 47.73 | Right‑skewed distribution; median ≈ 90 k USD. |
-| `dist_years_experience.png` | 47.72 | Approx. normal; mean ≈ 8.4 yr. |
-| `dist_equity_offered_pct.png` | 40.08 | Highly right‑skewed (many zeros, few large equity grants). |
-| `dist_bonus_pct.png` | 47.06 | Moderate spread; mean ≈ 10.8 %. |
-| `dist_weekly_hours.png` | 49.24 | Near‑normal; mean ≈ 44 h/week. |
-| `dist_fears_ai_automation_score.png` | 48.41 | Slightly left‑skewed; mean ≈ 4.85/10. |
-| `pairplot.png` | 512.25 | Pairwise scatter matrix for `years_experience`, `remote_ratio`, `weekly_hours`, `salary_usd`. |
-| `correlation_matrix.png` | 295.43 | Heatmap of Pearson correlations for all numeric features. |
-| `categorical_association_matrix.png` | 287.32 | Heatmap of Cramér’s V for all categorical pairs. |
-| `target_interactions.png` | 112.65 | Visual summary of target vs. each significant predictor (box/violin plots). |
+## 6. Visual Artefacts  
 
-*All images are stored in `./sandbox_run/` and were generated automatically by the EDA pipeline.*
+All visualisations were saved in the `./sandbox_run` directory. File sizes are shown for reference.
 
----  
+| File | Description | Size (KB) |
+|------|-------------|-----------|
+| `correlation_matrix.png` | Heat‑map of the full Pearson correlation matrix (21 × 21). | 503.47 |
+| `pairplot.png` | Pairwise scatter‑plot matrix for `battery_power`, `ram`, `mobile_wt`, and `price_range` (hue = price_range). | 720.30 |
+| `price_vs_ram.png` | Scatter plot of `ram` vs. `price_range` with trend line. | 77.54 |
+| `bivariate_battery_power_vs_price_range.png` | Battery power distribution across price classes. | 75.50 |
+| `bivariate_mobile_wt_vs_price_range.png` | Mobile weight distribution across price classes. | 67.08 |
+| `bivariate_pc_vs_price_range.png` | Primary camera count vs. price classes. | 54.42 |
+| `bivariate_ram_vs_price_range.png` | RAM vs. price classes (highly discriminative). | 72.65 |
+| `bivariate_three_g_vs_price_range.png` | 3G support vs. price classes. | 34.52 |
+| `dist_*.png` (21 files) | Individual univariate histograms / bar‑charts for each column (e.g., `dist_battery_power.png`, `dist_px_height.png`). | 19 – 53 each |
+
+*All images are ready for inclusion in a presentation deck or interactive notebook.*
+
+---
 
 ## 7. Predictive‑Modeling Blueprint  
 
-| Aspect | Recommendation |
-|--------|----------------|
-| **Target** | `salary_usd` (continuous) |
-| **Problem type** | Regression |
-| **Algorithms to try** | 1. Regularized Linear Regression (Ridge / Lasso)  <br>2. Random Forest Regressor  <br>3. Gradient Boosting Regressor (e.g., XGBoost, LightGBM)  <br>4. Support Vector Regressor (SVR) |
-| **Feature‑selection strategy** | • Remove high‑cardinality identifiers (`job_title`, `company_location`, `salary_currency`, etc.) after encoding. <br>• Rank features via cross‑validated permutation importance and mutual information. <br>• Drop collinear numeric features with |ρ| > 0.85 (none exceed this threshold after profiling). |
-| **Validation** | 5‑fold K‑Fold CV (stratified by `experience_level` if desired). <br>Metrics: MAE, RMSE, R², plus residual distribution plots. |
-| **Over‑fitting mitigation** | • Apply L1/L2 regularisation for linear models. <br>• Limit tree depth (≤ 8) and enforce minimum samples per leaf (≥ 20) for ensemble trees. <br>• Conduct hyper‑parameter search **inside** CV folds (e.g., GridSearchCV). |
-| **Baseline performance (expected)** | With the strong predictors identified, a Gradient Boosting model should achieve **R² ≈ 0.55–0.65** and RMSE ≈ 30–35 k USD on held‑out folds (based on similar public salary datasets). |
-| **Implementation notes** | • Encode categorical variables using target encoding or frequency encoding rather than one‑hot (to avoid dimensionality explosion). <br>• Consider log‑transforming `salary_usd` to reduce skewness before modelling. <br>• The engineered “salary per year of experience” feature can be added as a sanity check but is not expected to improve performance. |
+The pipeline generated a concise modelling plan (`blueprint_res`). Key components are reproduced below.
 
----  
+### 7.1 Problem definition  
 
-## 8. Actionable Recommendations  
+* **Target:** `price_range`  
+* **Task type:** Multi‑class classification (4 classes)  
 
-1. **Data Enrichment**  
-   - Convert `salary_usd` to log scale for linear models.  
-   - Derive additional interaction terms: `remote_ratio × uses_ai_tools_daily`, `years_experience × bonus_pct`.  
+### 7.2 Recommended algorithms  
 
-2. **Feature Reduction**  
-   - Drop `salary_currency`, `company_location`, `employee_residence` (near‑perfect Cramér’s V with each other).  
-   - Keep `industry`, `experience_level`, `employment_type`, `education_level` as they are strong categorical predictors.  
+| Rank | Algorithm | Rationale |
+|------|-----------|-----------|
+| 1 | Regularized Logistic Regression (baseline) | Simple, interpretable, fast to train. |
+| 2 | Random Forest Classifier | Handles non‑linear interactions, robust to noisy features. |
+| 3 | Gradient Boosting (XGBoost / LightGBM) | State‑of‑the‑art performance on tabular data. |
+| 4 | Support Vector Classifier (SVM) | Effective when classes are not linearly separable. |
 
-3. **Model Development**  
-   - Start with a **log‑linear Ridge regression** as a quick baseline.  
-   - Progress to **Gradient Boosting** (XGBoost/LightGBM) with early stopping.  
-   - Evaluate using the prescribed CV scheme; compare MAE and RMSE across models.  
+### 7.3 Feature‑selection strategy  
 
-4. **Interpretability**  
-   - Use SHAP values on the best‑performing tree model to quantify the impact of each predictor (e.g., `years_experience`, `bonus_pct`, `industry`).  
-   - Produce partial dependence plots for `years_experience` and `bonus_pct` to illustrate non‑linear effects.  
+1. **Exclude** any high‑cardinality identifier or textual name columns (none present).  
+2. **Rank** features using cross‑validated permutation importance **and** mutual information.  
+3. **Remove** collinear features with absolute correlation > 0.85 (e.g., `px_height` vs. `px_width` – 0.511, below threshold, so both may be retained).  
 
-5. **Deployment Considerations**  
-   - Store the final model with a preprocessing pipeline that handles categorical encoding, missing‑value checks (even though none exist now), and log‑salary transformation.  
-   - Monitor model drift on new salary data, especially for `equity_offered_pct` which shows a heavy‑tailed distribution.  
+### 7.4 Validation strategy  
 
----  
+* **Stratified K‑Fold CV** – 5 folds (preserves class distribution).  
+* **Evaluation metrics:** Balanced Accuracy, Macro‑averaged F1, Precision‑Recall AUC, and Confusion Matrix.  
 
-## 9. Appendix – Artifact Inventory  
+### 7.5 Over‑fitting mitigation  
 
-| File | Type | Size (KB) |
-|------|------|-----------|
-| `agent_plan_log.json` | JSON (pipeline plan & step results) |  – |
-| `agent_state.json` | JSON (state snapshot) | – |
-| `metadata_profile.json` | JSON (schema & descriptive stats) | – |
-| `metrics.json` | JSON (all quantitative results) | – |
-| `current_df.csv` | CSV (raw + engineered data) | – |
-| `bivariate_*.png` (5) | PNG (bivariate plots) | 74‑107 |
-| `dist_*.png` (13) | PNG (univariate distributions) | 40‑49 |
-| `correlation_matrix.png` | PNG | 295 |
-| `categorical_association_matrix.png` | PNG | 287 |
-| `pairplot.png` | PNG | 512 |
-| `target_interactions.png` | PNG | 113 |
-| `eda_report.html` | HTML (full interactive report) | – |
+* Apply **L1/L2 regularisation** (logistic regression, linear SVM).  
+* **Limit tree depth** and enforce **minimum samples per leaf** (Random Forest, Gradient Boosting).  
+* Conduct **hyper‑parameter tuning** strictly within CV folds (no leakage).  
 
-*All visual artefacts are stored under `./sandbox_run/` and can be opened directly for deeper inspection.*
+### 7.6 Executive summary (blueprint)  
 
----  
+> “Target: `price_range` (Classification). Use robust cross‑validation on 2000 rows × 21 columns.”
+
+---
+
+## 8. Recommendations & Next Steps  
+
+1. **Model Development** – Implement the blueprint using a framework such as `scikit‑learn` or `mlflow`. Begin with logistic regression as a baseline, then iterate through Random Forest and Gradient Boosting.  
+2. **Feature Engineering Review** – Re‑evaluate the four proposed engineered features. `log1p_ram` and `battery_to_weight_ratio` may still add value, especially after checking multicollinearity with `ram` and `battery_power`.  
+3. **Class Imbalance Check** – Verify the distribution of `price_range` (4 classes) to ensure stratified splits are appropriate; consider class‑weighting or SMOTE if imbalance is severe.  
+4. **Model Explainability** – Use SHAP or permutation importance to confirm that the statistically significant predictors (battery_power, int_memory, px_height, px_width, ram) drive model decisions.  
+5. **Performance Monitoring** – After deployment, monitor drift in the key predictors (especially `ram` and `px_*` dimensions) and re‑train models quarterly.  
+
+---
 
 **Prepared by:**  
-Senior Lead Data Scientist – AI‑DS Salary Analytics  
-*All analyses reflect the automated EDA pipeline outputs; further manual validation is advised before production deployment.*
+Senior Lead Data Scientist  
+*Automated EDA & Modelling Pipeline*  
+
+---  
