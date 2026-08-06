@@ -256,12 +256,15 @@ def main():
                 f.write(uploaded_file.getbuffer())
             st.sidebar.success(f"File uploaded: `{uploaded_file.name}`")
     else:
-        sample_files = sorted(glob.glob("./test_data/*.csv"))
-        if sample_files:
-            chosen_sample = st.sidebar.selectbox("Select Sample Dataset", sample_files, format_func=lambda x: os.path.basename(x))
+        sample_files = [f for f in glob.glob("./test_data/*.csv") if "Titanic-Dataset.csv" in os.path.basename(f)]
+        session_files = glob.glob("./temp_uploads/*.csv")
+        all_options = sorted(sample_files + session_files)
+        
+        if all_options:
+            chosen_sample = st.sidebar.selectbox("Select Dataset", all_options, format_func=lambda x: os.path.basename(x))
             selected_csv_path = chosen_sample
         else:
-            st.sidebar.warning("No sample datasets found in `./test_data/`.")
+            st.sidebar.warning("No datasets found.")
 
     user_task_request = st.sidebar.text_area(
         "Analysis Request / LLM Prompt",
