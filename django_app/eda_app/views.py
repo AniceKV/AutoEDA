@@ -47,6 +47,8 @@ def _safe_val(v):
 
 def _session_id(request) -> str:
     """Get or create a unique session ID."""
+    if not hasattr(request, "session") or request.session is None:
+        return "default_session"
     if "pipeline_session_id" not in request.session:
         request.session["pipeline_session_id"] = str(uuid.uuid4())
     return request.session["pipeline_session_id"]
@@ -333,18 +335,21 @@ def run_pipeline(request):
 @require_GET
 def pipeline_status(request):
     """Polling endpoint: returns current pipeline state as JSON."""
-    sid = _session_id(request)
-    state = pipeline_runner.get_state(sid)
-    if not state:
-        return JsonResponse({"status": "idle", "message": "", "done": False})
+    try:
+        sid = _session_id(request)
+        state = pipeline_runner.get_state(sid)
+        if not state:
+            return JsonResponse({"status": "idle", "message": "", "done": False})
 
-    status = state.get("status", "idle")
-    return JsonResponse({
-        "status": status,
-        "message": state.get("message", ""),
-        "done": status in ("done", "error"),
-        "question": state.get("question") if status == "question" else None,
-    })
+        status = state.get("status", "idle")
+        return JsonResponse({
+            "status": status,
+            "message": state.get("message", ""),
+            "done": status in ("done", "error"),
+            "question": state.get("question") if status == "question" else None,
+        })
+    except Exception as exc:
+        return JsonResponse({"status": "idle", "message": str(exc), "done": False})
 
 
 @require_GET
@@ -358,9 +363,12 @@ def sample_datasets(request):
 @require_GET
 def pipeline_log(request):
     """Returns the current in-memory log buffer for the active session."""
-    sid = _session_id(request)
-    lines = pipeline_runner.get_log(sid)
-    return JsonResponse({"lines": lines})
+    try:
+        sid = _session_id(request)
+        lines = pipeline_runner.get_log(sid)
+        return JsonResponse({"lines": lines})
+    except Exception:
+        return JsonResponse({"lines": []})
 
 
 @require_GET

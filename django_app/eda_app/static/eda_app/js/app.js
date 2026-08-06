@@ -232,10 +232,16 @@ const StatusBar = (() => {
     setRunBtn(false);
   }
 
+  let errCount = 0;
+
   function poll() {
     fetch('/api/status/')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(data => {
+        errCount = 0;
         const status = data.status;
         const msg    = data.message || '';
 
@@ -252,21 +258,22 @@ const StatusBar = (() => {
         } else if (status === 'question') {
           stop();
           setNav('', '');
-          openQuestionModal(data.question || '');
-
         } else if (status === 'error') {
           stop();
-          setNav('error', 'Pipeline error');
-          setProgress(true, 'Error: ' + msg);
-          Toast.show('Pipeline error: ' + msg, 'error', 6000);
-          const btn = document.getElementById('run-btn');
-          if (btn) btn.disabled = false;
+          setNav('error', '⚠ Execution failed');
+          Toast.show(msg || 'Pipeline failed during execution.', 'error', 8000);
 
-        } else if (status === 'idle') {
-          stop();
+        } else {
+          setNav('', '');
+          setProgress(false, '');
         }
       })
-      .catch(() => { /* network hiccup — keep polling */ });
+      .catch(() => {
+        errCount++;
+        if (errCount > 5) {
+          stop();
+        }
+      });
   }
 
   function start() {
