@@ -28,9 +28,13 @@
     <span class="topnav-sub">Stateful Agent Pipeline · Statistical Profiling &amp; ML Blueprint</span>
   </div>
   <div class="topnav-spacer"></div>
-  <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle theme" title="Toggle Light / Dark Theme">
-    <span id="theme-toggle-icon">☀️</span>
-  </button>
+  <div class="nav-theme-toggle" title="Toggle Light / Dark Mode">
+    <span class="nav-theme-label">Light Mode</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="theme-toggle-checkbox">
+      <span class="toggle-track"></span>
+    </label>
+  </div>
   {% if pipeline_state and pipeline_state.status == 'running' %}
     <span id="nav-status" class="topnav-status running">
       <span class="pulse-dot"></span> Running pipeline…

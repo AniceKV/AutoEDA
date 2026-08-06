@@ -495,26 +495,24 @@ function initSidebarToggle() {
 
 // ── Theme Toggle module ──────────────────────────────────────
 function initThemeToggle() {
-  const btn = document.getElementById('theme-toggle-btn');
-  const icon = document.getElementById('theme-toggle-icon');
+  const checkbox = document.getElementById('theme-toggle-checkbox');
 
   function applyTheme(theme) {
     if (theme === 'light') {
       document.documentElement.setAttribute('data-theme', 'light');
-      if (icon) icon.textContent = '🌙';
+      if (checkbox) checkbox.checked = true;
     } else {
       document.documentElement.removeAttribute('data-theme');
-      if (icon) icon.textContent = '☀️';
+      if (checkbox) checkbox.checked = false;
     }
   }
 
   const savedTheme = localStorage.getItem('autoeda-theme') || 'dark';
   applyTheme(savedTheme);
 
-  if (btn) {
-    btn.addEventListener('click', () => {
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const nextTheme = isLight ? 'dark' : 'light';
+  if (checkbox) {
+    checkbox.addEventListener('change', () => {
+      const nextTheme = checkbox.checked ? 'light' : 'dark';
       localStorage.setItem('autoeda-theme', nextTheme);
       applyTheme(nextTheme);
     });
