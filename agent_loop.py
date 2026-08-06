@@ -141,6 +141,18 @@ def run_tool_based_eda(
             tools.plot_semantic_bivariate_relationships(df, output_dir=workspace_dir)
         except Exception as e:
             print(f"[agent_loop] Warning: Error pre-generating bivariate relationships: {e}")
+
+        try:
+            hyp_res = tools.run_statistical_hypothesis_tests(df, output_dir=workspace_dir)
+            agent_state["hypothesis_res"] = hyp_res
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating hypothesis tests: {e}")
+
+        try:
+            bp_res = tools.generate_predictive_blueprint(df, output_dir=workspace_dir)
+            agent_state["blueprint_res"] = bp_res
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating predictive blueprint: {e}")
         
         user_prompt = (
             f"### PRE-COMPUTED DATASET METADATA:\n"

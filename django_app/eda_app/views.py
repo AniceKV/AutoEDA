@@ -121,14 +121,45 @@ def _column_profiles(csv_path: str) -> list:
         return []
 
 
-def _load_metrics(eda_dir: str) -> dict:
+def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
     if not eda_dir:
         return {}
     path = os.path.join(eda_dir, "metrics.json")
-    if not os.path.exists(path):
-        return {}
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    metrics = {}
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                metrics = json.load(f)
+        except Exception:
+            metrics = {}
+
+    # Ensure hypothesis tests & predictive blueprint exist if CSV is present
+    if csv_path and os.path.exists(csv_path):
+        dirty = False
+        if "statistical_hypothesis_tests" not in metrics or not metrics.get("statistical_hypothesis_tests"):
+            try:
+                df = pd.read_csv(csv_path)
+                metrics["statistical_hypothesis_tests"] = tools.run_statistical_hypothesis_tests(df, output_dir=eda_dir)
+                dirty = True
+            except Exception as exc:
+                print(f"[views] Warning: On-demand hypothesis testing error: {exc}")
+
+        if "predictive_modeling_blueprint" not in metrics or not metrics.get("predictive_modeling_blueprint"):
+            try:
+                df = pd.read_csv(csv_path)
+                metrics["predictive_modeling_blueprint"] = tools.generate_predictive_blueprint(df, output_dir=eda_dir)
+                dirty = True
+            except Exception as exc:
+                print(f"[views] Warning: On-demand blueprint generation error: {exc}")
+
+        if dirty and os.path.exists(eda_dir):
+            try:
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(metrics, f, indent=2)
+            except Exception:
+                pass
+
+    return metrics
 
 
 def _load_summary(eda_dir: str) -> str:
@@ -143,7 +174,13 @@ def _load_summary(eda_dir: str) -> str:
                 import markdown as md_lib
                 return md_lib.markdown(raw, extensions=["tables", "fenced_code"])
             except Exception:
-                return f"<pre>{raw}</pre>"
+                html = raw.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                html = re.sub(r'^# (.*)$', r'<h1>\1</h1>', html, flags=re.MULTILINE)
+                html = re.sub(r'^## (.*)$', r'<h2>\1</h2>', html, flags=re.MULTILINE)
+                html = re.sub(r'^### (.*)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
+                html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
+                html = re.sub(r'`(.*?)`', r'<code>\1</code>', html)
+                return f'<div class="markdown-body">{html}</div>'
     return ""
 
 
@@ -225,7 +262,7 @@ def index(request):
             p["dist_img"] = None
 
     # --- Metrics / Blueprint ---
-    metrics = _load_metrics(eda_dir)
+    metrics = _load_metrics(eda_dir, selected_csv_path)
     blueprint = metrics.get("predictive_modeling_blueprint", {})
     hypothesis = metrics.get("statistical_hypothesis_tests", {})
     sig_predictors = hypothesis.pop("significant_predictors", [])
