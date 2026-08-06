@@ -80,6 +80,20 @@
         <textarea name="user_request" rows="5" placeholder="Describe what to analyse…">{{ default_prompt }}</textarea>
       </div>
 
+      <!-- Model & API Key (BYOK) -->
+      <div class="sidebar-section">
+        <span class="sidebar-label">LLM &amp; API Key (BYOK)</span>
+        <select name="model_name" id="model-select">
+          <option value="openrouter/free">OpenRouter Free Router (Auto)</option>
+          <option value="google/gemini-3.6-flash" selected>Google Gemini 3.6 Flash</option>
+          <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Free)</option>
+          <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free)</option>
+          <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
+          <option value="qwen/qwen-2.5-coder-32b-instruct">Qwen 2.5 Coder 32B</option>
+        </select>
+        <input type="password" name="openrouter_key" placeholder="OpenRouter API Key (optional)" autocomplete="off">
+      </div>
+
       <!-- Options -->
       <div class="sidebar-section">
         <span class="sidebar-label">Options</span>

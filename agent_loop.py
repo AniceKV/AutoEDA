@@ -14,18 +14,6 @@ from html_report_generator import generate_html_report
 
 load_dotenv(override=True)
 
-api_key = os.getenv("OPENROUTER_API_KEY")
-if not api_key:
-    raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your environment or .env file.")
-
-# Initialize OpenRouter API client
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=api_key,
-)
-
-MODEL_NAME = os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
-
 
 def parse_llm_json_plan(raw_text: str) -> List[Dict[str, Any]]:
     """
@@ -78,11 +66,25 @@ def run_tool_based_eda(
     user_request: str, 
     workspace_dir: str = "./sandbox_run", 
     generate_summary: bool = True,
-    conversation_history: Optional[List[Dict[str, Any]]] = None
+    conversation_history: Optional[List[Dict[str, Any]]] = None,
+    api_key: Optional[str] = None,
+    model_name: Optional[str] = None,
+    status_callback: Optional[Any] = None,
 ) -> Dict[str, Any]:
     """
     Agentic Tool-Based Orchestrator for AutoEDA with Multi-Turn Memory and Refinement Loop.
     """
+    effective_api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+    if not effective_api_key:
+        raise ValueError("OPENROUTER_API_KEY is missing. Provide it via UI form or set it in your environment / .env file.")
+
+    effective_model = model_name or os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
+
+    # Thread-isolated client instance
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=effective_api_key,
+    )
     if conversation_history is None:
         conversation_history = []
         
@@ -208,11 +210,23 @@ def run_tool_based_eda(
                 messages.append({"role": "user", "content": f"[DIRECT ERROR FEEDBACK]:\nYour previous tool plan failed validation with error:\n{feedback_error}\nPlease fix your JSON structure."})
             
             try:
-                response = client.chat.completions.create(
-                    model=MODEL_NAME,
-                    messages=messages,
-                    temperature=0.1
-                )
+                import time
+                api_attempts = 0
+                while api_attempts < 3:
+                    try:
+                        response = client.chat.completions.create(
+                            model=effective_model,
+                            messages=messages,
+                            temperature=0.1
+                        )
+                        break
+                    except Exception as api_err:
+                        api_attempts += 1
+                        if api_attempts >= 3:
+                            raise api_err
+                        print(f"[agent_loop] API call warning ({api_err}), retrying in {2 ** api_attempts}s...")
+                        time.sleep(2 ** api_attempts)
+
                 llm_output = response.choices[0].message.content
                 raw_plan = parse_llm_json_plan(llm_output)
                 is_valid, validation_err = validate_tool_plan(raw_plan)
@@ -224,7 +238,7 @@ def run_tool_based_eda(
                 else:
                     feedback_error = validation_err
             except Exception as e:
-                feedback_error = f"Failed to parse JSON tool plan: {str(e)}"
+                feedback_error = f"Failed to query model or parse JSON plan: {str(e)}"
             
             retry_count += 1
             

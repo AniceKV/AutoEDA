@@ -71,7 +71,9 @@ def clear_log(session_id: str):
 
 def _run(session_id: str, data_path: str, user_request: str,
          workspace_dir: str, generate_summary: bool,
-         conversation_history: list):
+         conversation_history: list,
+         api_key: Optional[str] = None,
+         model_name: Optional[str] = None):
     """
     Runs inside a daemon Thread. Imports agent_loop lazily to avoid
     importing at module load time (heavy deps).
@@ -100,6 +102,11 @@ def _run(session_id: str, data_path: str, user_request: str,
             generate_summary=generate_summary,
             conversation_history=conversation_history,
         )
+        if "api_key" in sig.parameters and api_key:
+            kwargs["api_key"] = api_key
+        if "model_name" in sig.parameters and model_name:
+            kwargs["model_name"] = model_name
+
         if "status_callback" in sig.parameters:
             def _cb(msg: str):
                 append_log(session_id, msg)
@@ -146,7 +153,9 @@ def _run(session_id: str, data_path: str, user_request: str,
 
 def launch_pipeline(session_id: str, data_path: str, user_request: str,
                     workspace_dir: str, generate_summary: bool,
-                    conversation_history: list):
+                    conversation_history: list,
+                    api_key: Optional[str] = None,
+                    model_name: Optional[str] = None):
     """Starts the pipeline in a background daemon thread."""
     set_state(session_id, {
         "status": "running",
@@ -158,7 +167,7 @@ def launch_pipeline(session_id: str, data_path: str, user_request: str,
     t = threading.Thread(
         target=_run,
         args=(session_id, data_path, user_request, workspace_dir,
-              generate_summary, conversation_history),
+              generate_summary, conversation_history, api_key, model_name),
         daemon=True,
     )
     t.start()

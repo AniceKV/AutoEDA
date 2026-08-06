@@ -308,9 +308,17 @@ def run_pipeline(request):
         if not os.path.exists(csv_path):
             return JsonResponse({"error": f"Sample file not found: {filename}"}, status=400)
 
+    # ---- Extract BYOK / Model Choice ----
+    user_api_key = request.POST.get("openrouter_key", "").strip() or None
+    user_model = request.POST.get("model_name", "").strip() or None
+
     # ---- Persist choices to session ----
     request.session["selected_csv_path"] = csv_path
     request.session["generate_summary"] = generate_summary
+    if user_api_key:
+        request.session["user_api_key"] = user_api_key
+    if user_model:
+        request.session["user_model"] = user_model
 
     workspace = _workspace_dir(sid)
     pipeline_runner.launch_pipeline(
@@ -320,6 +328,8 @@ def run_pipeline(request):
         workspace_dir=workspace,
         generate_summary=generate_summary,
         conversation_history=[],
+        api_key=user_api_key,
+        model_name=user_model,
     )
 
     return JsonResponse({"status": "running", "sid": sid})
@@ -418,6 +428,8 @@ def submit_answer(request):
 
     csv_path = request.session.get("selected_csv_path", "")
     generate_summary = request.session.get("generate_summary", True)
+    user_api_key = request.session.get("user_api_key")
+    user_model = request.session.get("user_model")
     conv_history = state.get("conversation_history", [])
     workspace = _workspace_dir(sid)
 
@@ -428,6 +440,8 @@ def submit_answer(request):
         workspace_dir=workspace,
         generate_summary=generate_summary,
         conversation_history=conv_history,
+        api_key=user_api_key,
+        model_name=user_model,
     )
     return JsonResponse({"status": "running"})
 
