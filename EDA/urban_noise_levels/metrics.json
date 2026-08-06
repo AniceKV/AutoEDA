@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\urban_noise_levels.csv",
     "shape": {
       "rows": 2000,
-      "columns": 27
+      "columns": 26
     },
     "target_column": "noise_complaints",
     "column_summary": {
@@ -136,11 +136,6 @@
         "dtype": "int64",
         "missing_count": 0,
         "cardinality": 50
-      },
-      "engineered_feature": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 1997
       }
     }
   },
@@ -337,6 +332,26 @@
     }
   },
   "outlier_analysis": {
+    "latitude": {
+      "q1": 40.5952,
+      "q3": 40.8003,
+      "iqr": 0.2051,
+      "lower_bound": 40.2876,
+      "upper_bound": 41.1079,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "longitude": {
+      "q1": -74.0746,
+      "q3": -73.8257,
+      "iqr": 0.249,
+      "lower_bound": -74.448,
+      "upper_bound": -73.4522,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
     "decibel_level": {
       "q1": 57.9079,
       "q3": 71.6476,
@@ -345,6 +360,26 @@
       "upper_bound": 92.2572,
       "outlier_count": 17,
       "outlier_percentage": 0.85,
+      "action_taken": "profile"
+    },
+    "hour": {
+      "q1": 6.0,
+      "q3": 18.0,
+      "iqr": 12.0,
+      "lower_bound": -12.0,
+      "upper_bound": 36.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
+    "day_of_week": {
+      "q1": 1.0,
+      "q3": 5.0,
+      "iqr": 4.0,
+      "lower_bound": -5.0,
+      "upper_bound": 11.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
       "action_taken": "profile"
     },
     "temperature_c": {
@@ -387,6 +422,16 @@
       "outlier_percentage": 4.6,
       "action_taken": "profile"
     },
+    "traffic_density": {
+      "q1": 2.0,
+      "q3": 4.0,
+      "iqr": 2.0,
+      "lower_bound": -1.0,
+      "upper_bound": 7.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
+    },
     "population_density": {
       "q1": 8490.5,
       "q3": 22798.0,
@@ -426,34 +471,26 @@
       "outlier_count": 0,
       "outlier_percentage": 0.0,
       "action_taken": "profile"
+    },
+    "sensor_id": {
+      "q1": 14.0,
+      "q3": 38.0,
+      "iqr": 24.0,
+      "lower_bound": -22.0,
+      "upper_bound": 74.0,
+      "outlier_count": 0,
+      "outlier_percentage": 0.0,
+      "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "engineered_feature",
-      "formula": "vehicle_count / (population_density + eps)",
-      "data_type": "float64",
-      "rationale": "High-signal feature engineering transformation",
-      "correlation_with_target": null
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a\\correlation_matrix.png",
     "top_correlations": [
       {
         "feature_1": "day_of_week",
         "feature_2": "is_weekend",
         "correlation": 0.7974
-      },
-      {
-        "feature_1": "population_density",
-        "feature_2": "engineered_feature",
-        "correlation": -0.674
-      },
-      {
-        "feature_1": "vehicle_count",
-        "feature_2": "engineered_feature",
-        "correlation": 0.1604
       },
       {
         "feature_1": "noise_complaints",
@@ -481,14 +518,24 @@
         "correlation": -0.0578
       },
       {
-        "feature_1": "near_airport",
-        "feature_2": "engineered_feature",
-        "correlation": 0.0577
-      },
-      {
         "feature_1": "holiday",
         "feature_2": "noise_complaints",
         "correlation": 0.0544
+      },
+      {
+        "feature_1": "latitude",
+        "feature_2": "near_construction",
+        "correlation": -0.0528
+      },
+      {
+        "feature_1": "near_highway",
+        "feature_2": "honking_events",
+        "correlation": 0.0521
+      },
+      {
+        "feature_1": "decibel_level",
+        "feature_2": "day_of_week",
+        "correlation": -0.0513
       }
     ],
     "correlation_matrix_text": {
@@ -517,8 +564,7 @@
         "holiday": -0.018,
         "school_zone": -0.01,
         "noise_complaints": -0.032,
-        "sensor_id": -0.002,
-        "engineered_feature": -0.018
+        "sensor_id": -0.002
       },
       "latitude": {
         "id": 0.009,
@@ -545,8 +591,7 @@
         "holiday": 0.021,
         "school_zone": 0.038,
         "noise_complaints": 0.034,
-        "sensor_id": 0.001,
-        "engineered_feature": 0.009
+        "sensor_id": 0.001
       },
       "longitude": {
         "id": -0.015,
@@ -573,8 +618,7 @@
         "holiday": -0.021,
         "school_zone": -0.005,
         "noise_complaints": 0.037,
-        "sensor_id": -0.012,
-        "engineered_feature": -0.023
+        "sensor_id": -0.012
       },
       "decibel_level": {
         "id": -0.004,
@@ -601,8 +645,7 @@
         "holiday": -0.041,
         "school_zone": 0.0,
         "noise_complaints": -0.041,
-        "sensor_id": -0.016,
-        "engineered_feature": 0.037
+        "sensor_id": -0.016
       },
       "hour": {
         "id": -0.005,
@@ -629,8 +672,7 @@
         "holiday": -0.033,
         "school_zone": -0.007,
         "noise_complaints": 0.034,
-        "sensor_id": -0.007,
-        "engineered_feature": -0.037
+        "sensor_id": -0.007
       },
       "day_of_week": {
         "id": -0.005,
@@ -657,8 +699,7 @@
         "holiday": -0.011,
         "school_zone": 0.019,
         "noise_complaints": 0.009,
-        "sensor_id": -0.004,
-        "engineered_feature": -0.02
+        "sensor_id": -0.004
       },
       "is_weekend": {
         "id": 0.025,
@@ -685,8 +726,7 @@
         "holiday": -0.013,
         "school_zone": 0.012,
         "noise_complaints": 0.025,
-        "sensor_id": 0.005,
-        "engineered_feature": -0.014
+        "sensor_id": 0.005
       },
       "temperature_c": {
         "id": 0.01,
@@ -713,8 +753,7 @@
         "holiday": 0.012,
         "school_zone": 0.03,
         "noise_complaints": -0.062,
-        "sensor_id": -0.009,
-        "engineered_feature": 0.004
+        "sensor_id": -0.009
       },
       "humidity_%": {
         "id": 0.008,
@@ -741,8 +780,7 @@
         "holiday": -0.029,
         "school_zone": -0.021,
         "noise_complaints": 0.017,
-        "sensor_id": 0.041,
-        "engineered_feature": 0.012
+        "sensor_id": 0.041
       },
       "wind_speed_kmh": {
         "id": -0.01,
@@ -769,8 +807,7 @@
         "holiday": 0.022,
         "school_zone": 0.051,
         "noise_complaints": 0.009,
-        "sensor_id": -0.045,
-        "engineered_feature": -0.019
+        "sensor_id": -0.045
       },
       "precipitation_mm": {
         "id": 0.01,
@@ -797,8 +834,7 @@
         "holiday": 0.006,
         "school_zone": -0.012,
         "noise_complaints": 0.005,
-        "sensor_id": 0.037,
-        "engineered_feature": -0.021
+        "sensor_id": 0.037
       },
       "traffic_density": {
         "id": 0.012,
@@ -825,8 +861,7 @@
         "holiday": -0.017,
         "school_zone": -0.008,
         "noise_complaints": 0.012,
-        "sensor_id": 0.006,
-        "engineered_feature": 0.005
+        "sensor_id": 0.006
       },
       "near_airport": {
         "id": -0.007,
@@ -853,8 +888,7 @@
         "holiday": 0.004,
         "school_zone": 0.005,
         "noise_complaints": 0.02,
-        "sensor_id": -0.026,
-        "engineered_feature": 0.058
+        "sensor_id": -0.026
       },
       "near_highway": {
         "id": -0.031,
@@ -881,8 +915,7 @@
         "holiday": 0.042,
         "school_zone": -0.026,
         "noise_complaints": 0.02,
-        "sensor_id": -0.008,
-        "engineered_feature": -0.012
+        "sensor_id": -0.008
       },
       "near_construction": {
         "id": -0.001,
@@ -909,8 +942,7 @@
         "holiday": 0.006,
         "school_zone": 0.014,
         "noise_complaints": -0.016,
-        "sensor_id": 0.004,
-        "engineered_feature": -0.006
+        "sensor_id": 0.004
       },
       "population_density": {
         "id": 0.019,
@@ -937,8 +969,7 @@
         "holiday": -0.031,
         "school_zone": -0.004,
         "noise_complaints": -0.008,
-        "sensor_id": -0.009,
-        "engineered_feature": -0.674
+        "sensor_id": -0.009
       },
       "park_proximity": {
         "id": -0.002,
@@ -965,8 +996,7 @@
         "holiday": -0.021,
         "school_zone": -0.004,
         "noise_complaints": 0.003,
-        "sensor_id": -0.021,
-        "engineered_feature": -0.012
+        "sensor_id": -0.021
       },
       "industrial_zone": {
         "id": -0.021,
@@ -993,8 +1023,7 @@
         "holiday": -0.012,
         "school_zone": -0.002,
         "noise_complaints": -0.072,
-        "sensor_id": -0.02,
-        "engineered_feature": -0.041
+        "sensor_id": -0.02
       },
       "vehicle_count": {
         "id": -0.008,
@@ -1021,8 +1050,7 @@
         "holiday": 0.019,
         "school_zone": 0.002,
         "noise_complaints": 0.034,
-        "sensor_id": -0.041,
-        "engineered_feature": 0.16
+        "sensor_id": -0.041
       },
       "honking_events": {
         "id": 0.027,
@@ -1049,8 +1077,7 @@
         "holiday": 0.043,
         "school_zone": 0.009,
         "noise_complaints": -0.003,
-        "sensor_id": -0.033,
-        "engineered_feature": 0.014
+        "sensor_id": -0.033
       },
       "public_event": {
         "id": 0.011,
@@ -1077,8 +1104,7 @@
         "holiday": -0.021,
         "school_zone": -0.008,
         "noise_complaints": 0.03,
-        "sensor_id": 0.013,
-        "engineered_feature": -0.009
+        "sensor_id": 0.013
       },
       "holiday": {
         "id": -0.018,
@@ -1105,8 +1131,7 @@
         "holiday": 1.0,
         "school_zone": -0.002,
         "noise_complaints": 0.054,
-        "sensor_id": -0.018,
-        "engineered_feature": 0.017
+        "sensor_id": -0.018
       },
       "school_zone": {
         "id": -0.01,
@@ -1133,8 +1158,7 @@
         "holiday": -0.002,
         "school_zone": 1.0,
         "noise_complaints": 0.003,
-        "sensor_id": -0.002,
-        "engineered_feature": 0.004
+        "sensor_id": -0.002
       },
       "noise_complaints": {
         "id": -0.032,
@@ -1161,8 +1185,7 @@
         "holiday": 0.054,
         "school_zone": 0.003,
         "noise_complaints": 1.0,
-        "sensor_id": -0.084,
-        "engineered_feature": 0.022
+        "sensor_id": -0.084
       },
       "sensor_id": {
         "id": -0.002,
@@ -1189,36 +1212,7 @@
         "holiday": -0.018,
         "school_zone": -0.002,
         "noise_complaints": -0.084,
-        "sensor_id": 1.0,
-        "engineered_feature": 0.015
-      },
-      "engineered_feature": {
-        "id": -0.018,
-        "latitude": 0.009,
-        "longitude": -0.023,
-        "decibel_level": 0.037,
-        "hour": -0.037,
-        "day_of_week": -0.02,
-        "is_weekend": -0.014,
-        "temperature_c": 0.004,
-        "humidity_%": 0.012,
-        "wind_speed_kmh": -0.019,
-        "precipitation_mm": -0.021,
-        "traffic_density": 0.005,
-        "near_airport": 0.058,
-        "near_highway": -0.012,
-        "near_construction": -0.006,
-        "population_density": -0.674,
-        "park_proximity": -0.012,
-        "industrial_zone": -0.041,
-        "vehicle_count": 0.16,
-        "honking_events": 0.014,
-        "public_event": -0.009,
-        "holiday": 0.017,
-        "school_zone": 0.004,
-        "noise_complaints": 0.022,
-        "sensor_id": 0.015,
-        "engineered_feature": 1.0
+        "sensor_id": 1.0
       }
     },
     "categorical_associations": {}
@@ -1400,13 +1394,6 @@
       "is_statistically_significant": true,
       "interpretation": "Pearson r = -0.0843, p = 1.5914e-04. (Statistically Significant)"
     },
-    "engineered_feature": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.022,
-      "p_value": 0.32652145488882656,
-      "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0220, p = 3.2652e-01. (Not Significant)"
-    },
     "significant_predictors": [
       "temperature_c",
       "industrial_zone",
@@ -1437,11 +1424,11 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: noise_complaints (Classification). Use robust cross-validation on 2000 rows x 27 columns."
+    "executive_summary": "Target: noise_complaints (Classification). Use robust cross-validation on 2000 rows x 26 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 2000 rows and 27 columns.",
+      "Dataset contains 2000 rows and 26 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [

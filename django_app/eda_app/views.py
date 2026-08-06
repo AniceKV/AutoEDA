@@ -282,47 +282,52 @@ def index(request):
 @require_POST
 def run_pipeline(request):
     """Launch the EDA pipeline in a background thread."""
-    sid = _session_id(request)
+    try:
+        sid = _session_id(request)
 
-    data_source = request.POST.get("data_source", "sample")
-    generate_summary = request.POST.get("generate_summary") == "on"
-    user_request = request.POST.get("user_request", "").strip() or (
-        "Perform complete exploratory analysis, type-safe missing value imputation, "
-        "outlier profiling, statistical hypothesis testing, semantic bivariate graphing, "
-        "and predictive blueprinting."
-    )
+        data_source = request.POST.get("data_source", "sample")
+        generate_summary = request.POST.get("generate_summary") == "on"
+        user_request = request.POST.get("user_request", "").strip() or (
+            "Perform complete exploratory analysis, type-safe missing value imputation, "
+            "outlier profiling, statistical hypothesis testing, semantic bivariate graphing, "
+            "and predictive blueprinting."
+        )
 
-    # ---- Resolve CSV path ----
-    if data_source == "upload":
-        uploaded = request.FILES.get("csv_file")
-        if not uploaded:
-            return JsonResponse({"error": "No file uploaded."}, status=400)
-        os.makedirs(settings.TEMP_UPLOADS_DIR, exist_ok=True)
-        csv_path = os.path.join(settings.TEMP_UPLOADS_DIR, uploaded.name)
-        with open(csv_path, "wb") as f:
-            for chunk in uploaded.chunks():
-                f.write(chunk)
-    else:
-        filename = request.POST.get("sample_file", "")
-        csv_path = os.path.join(settings.TEST_DATA_DIR, filename)
-        if not os.path.exists(csv_path):
-            return JsonResponse({"error": f"Sample file not found: {filename}"}, status=400)
+        # ---- Resolve CSV path ----
+        if data_source == "upload":
+            uploaded = request.FILES.get("csv_file")
+            if not uploaded:
+                return JsonResponse({"error": "No file uploaded."}, status=400)
+            os.makedirs(settings.TEMP_UPLOADS_DIR, exist_ok=True)
+            csv_path = os.path.join(settings.TEMP_UPLOADS_DIR, uploaded.name)
+            with open(csv_path, "wb") as f:
+                for chunk in uploaded.chunks():
+                    f.write(chunk)
+        else:
+            filename = request.POST.get("sample_file", "")
+            csv_path = os.path.join(settings.TEST_DATA_DIR, filename)
+            if not os.path.exists(csv_path):
+                return JsonResponse({"error": f"Sample file not found: {filename}"}, status=400)
 
-    # ---- Persist choices to session ----
-    request.session["selected_csv_path"] = csv_path
-    request.session["generate_summary"] = generate_summary
+        # ---- Persist choices to session ----
+        request.session["selected_csv_path"] = csv_path
+        request.session["generate_summary"] = generate_summary
 
-    workspace = _workspace_dir(sid)
-    pipeline_runner.launch_pipeline(
-        session_id=sid,
-        data_path=csv_path,
-        user_request=user_request,
-        workspace_dir=workspace,
-        generate_summary=generate_summary,
-        conversation_history=[],
-    )
+        workspace = _workspace_dir(sid)
+        pipeline_runner.launch_pipeline(
+            session_id=sid,
+            data_path=csv_path,
+            user_request=user_request,
+            workspace_dir=workspace,
+            generate_summary=generate_summary,
+            conversation_history=[],
+        )
 
-    return JsonResponse({"status": "running", "sid": sid})
+        return JsonResponse({"status": "running", "sid": sid})
+    except Exception as exc:
+        import traceback
+        err = f"Pipeline launch failed: {exc}"
+        return JsonResponse({"error": err, "traceback": traceback.format_exc()}, status=500)
 
 
 @require_GET
@@ -409,27 +414,30 @@ def reset_session(request):
 @require_POST
 def submit_answer(request):
     """Resume pipeline after agent asked a clarifying question."""
-    sid = _session_id(request)
-    answer = request.POST.get("answer", "").strip()
-    state = pipeline_runner.get_state(sid)
+    try:
+        sid = _session_id(request)
+        answer = request.POST.get("answer", "").strip()
+        state = pipeline_runner.get_state(sid)
 
-    if not state or state.get("status") != "question":
-        return JsonResponse({"error": "No pending question."}, status=400)
+        if not state or state.get("status") != "question":
+            return JsonResponse({"error": "No pending question."}, status=400)
 
-    csv_path = request.session.get("selected_csv_path", "")
-    generate_summary = request.session.get("generate_summary", True)
-    conv_history = state.get("conversation_history", [])
-    workspace = _workspace_dir(sid)
+        csv_path = request.session.get("selected_csv_path", "")
+        generate_summary = request.session.get("generate_summary", True)
+        conv_history = state.get("conversation_history", [])
+        workspace = _workspace_dir(sid)
 
-    pipeline_runner.launch_pipeline(
-        session_id=sid,
-        data_path=csv_path,
-        user_request=answer,
-        workspace_dir=workspace,
-        generate_summary=generate_summary,
-        conversation_history=conv_history,
-    )
-    return JsonResponse({"status": "running"})
+        pipeline_runner.launch_pipeline(
+            session_id=sid,
+            data_path=csv_path,
+            user_request=answer,
+            workspace_dir=workspace,
+            generate_summary=generate_summary,
+            conversation_history=conv_history,
+        )
+        return JsonResponse({"status": "running"})
+    except Exception as exc:
+        return JsonResponse({"error": f"Submit answer failed: {str(exc)}"}, status=500)
 
 
 def download_report(request):

@@ -1,7 +1,7 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"decibel_level\",\n        \"temperature_c\",\n        \"humidity_%\",\n        \"wind_speed_kmh\",\n        \"precipitation_mm\",\n        \"population_density\",\n        \"vehicle_count\",\n        \"honking_events\",\n        \"noise_complaints\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"new_feature\": \"log1p_decibel\",\n          \"type\": \"log1p\",\n          \"source\": \"decibel_level\"\n        },\n        {\n          \"new_feature\": \"vehicle_to_pop_ratio\",\n          \"type\": \"ratio\",\n          \"numerator\": \"vehicle_count\",\n          \"denominator\": \"population_density\"\n        },\n        {\n          \"new_feature\": \"airport_traffic_interaction\",\n          \"type\": \"interaction\",\n          \"features\": [\"near_airport\", \"traffic_density\"]\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"noise_complaints\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": null,\n      \"save_path\": \"feature_distributions.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"decibel_level\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"traffic_density\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"near_construction\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"hour\",\n          \"y\": \"noise_complaints\",\n          \"hue\": \"is_weekend\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"noise_complaints\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"latitude\",\n        \"longitude\",\n        \"decibel_level\",\n        \"hour\",\n        \"day_of_week\",\n        \"is_weekend\",\n        \"temperature_c\",\n        \"humidity_%\",\n        \"wind_speed_kmh\",\n        \"precipitation_mm\",\n        \"traffic_density\",\n        \"near_airport\",\n        \"near_highway\",\n        \"near_construction\",\n        \"population_density\",\n        \"park_proximity\",\n        \"industrial_zone\",\n        \"vehicle_count\",\n        \"honking_events\",\n        \"public_event\",\n        \"holiday\",\n        \"school_zone\",\n        \"noise_complaints\",\n        \"sensor_id\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": null,\n      \"save_path\": \"feature_distributions.png\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"noise_complaints\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"decibel_level\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"traffic_density\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"near_airport\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"public_event\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"hour\",\n          \"y\": \"noise_complaints\",\n          \"hue\": null\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"decibel_level\",\n        \"temperature_c\",\n        \"humidity_%\",\n        \"vehicle_count\",\n        \"noise_complaints\"\n      ],\n      \"hue\": null\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"precipitation_mm\",\n          \"target\": \"log_precipitation_mm\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"near_airport\",\n          \"target\": \"log_near_airport\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"near_construction\",\n          \"target\": \"log_near_construction\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"public_event\",\n          \"target\": \"log_public_event\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"holiday\",\n          \"target\": \"log_holiday\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"school_zone\",\n          \"target\": \"log_school_zone\"\n        },\n        {\n          \"operation\": \"log1p\",\n          \"source\": \"industrial_zone\",\n          \"target\": \"log_industrial_zone\"\n        },\n        {\n          \"operation\": \"ratio\",\n          \"source_numerator\": \"vehicle_count\",\n          \"source_denominator\": \"traffic_density\",\n          \"target\": \"vehicle_per_traffic\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"noise_complaints\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "impute_missing_data",
@@ -14,57 +14,39 @@
         "tool": "detect_and_handle_outliers",
         "args": {
           "columns": [
+            "latitude",
+            "longitude",
             "decibel_level",
+            "hour",
+            "day_of_week",
+            "is_weekend",
             "temperature_c",
             "humidity_%",
             "wind_speed_kmh",
             "precipitation_mm",
+            "traffic_density",
+            "near_airport",
+            "near_highway",
+            "near_construction",
             "population_density",
+            "park_proximity",
+            "industrial_zone",
             "vehicle_count",
             "honking_events",
-            "noise_complaints"
+            "public_event",
+            "holiday",
+            "school_zone",
+            "noise_complaints",
+            "sensor_id"
           ],
           "action": "profile"
-        }
-      },
-      {
-        "tool": "engineer_features",
-        "args": {
-          "feature_specs": [
-            {
-              "new_feature": "log1p_decibel",
-              "type": "log1p",
-              "source": "decibel_level"
-            },
-            {
-              "new_feature": "vehicle_to_pop_ratio",
-              "type": "ratio",
-              "numerator": "vehicle_count",
-              "denominator": "population_density"
-            },
-            {
-              "new_feature": "airport_traffic_interaction",
-              "type": "interaction",
-              "features": [
-                "near_airport",
-                "traffic_density"
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "tool": "run_statistical_hypothesis_tests",
-        "args": {
-          "target_col": "noise_complaints",
-          "alpha": 0.05
         }
       },
       {
         "tool": "plot_correlation_matrix",
         "args": {
           "save_path": "correlation_matrix.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a"
         }
       },
       {
@@ -72,7 +54,14 @@
         "args": {
           "columns": null,
           "save_path": "feature_distributions.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a"
+        }
+      },
+      {
+        "tool": "run_statistical_hypothesis_tests",
+        "args": {
+          "target_col": "noise_complaints",
+          "alpha": 0.05
         }
       },
       {
@@ -90,17 +79,85 @@
               "hue": null
             },
             {
-              "x": "near_construction",
+              "x": "near_airport",
+              "y": "noise_complaints",
+              "hue": null
+            },
+            {
+              "x": "public_event",
               "y": "noise_complaints",
               "hue": null
             },
             {
               "x": "hour",
               "y": "noise_complaints",
-              "hue": "is_weekend"
+              "hue": null
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\b427831d-1e01-400d-a790-be834174a84f"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a"
+        }
+      },
+      {
+        "tool": "plot_pairplot",
+        "args": {
+          "columns": [
+            "decibel_level",
+            "temperature_c",
+            "humidity_%",
+            "vehicle_count",
+            "noise_complaints"
+          ],
+          "hue": null,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a"
+        }
+      },
+      {
+        "tool": "engineer_features",
+        "args": {
+          "feature_specs": [
+            {
+              "operation": "log1p",
+              "source": "precipitation_mm",
+              "target": "log_precipitation_mm"
+            },
+            {
+              "operation": "log1p",
+              "source": "near_airport",
+              "target": "log_near_airport"
+            },
+            {
+              "operation": "log1p",
+              "source": "near_construction",
+              "target": "log_near_construction"
+            },
+            {
+              "operation": "log1p",
+              "source": "public_event",
+              "target": "log_public_event"
+            },
+            {
+              "operation": "log1p",
+              "source": "holiday",
+              "target": "log_holiday"
+            },
+            {
+              "operation": "log1p",
+              "source": "school_zone",
+              "target": "log_school_zone"
+            },
+            {
+              "operation": "log1p",
+              "source": "industrial_zone",
+              "target": "log_industrial_zone"
+            },
+            {
+              "operation": "ratio",
+              "source_numerator": "vehicle_count",
+              "source_denominator": "traffic_density",
+              "target": "vehicle_per_traffic"
+            }
+          ],
+          "target_col": "noise_complaints"
         }
       },
       {
@@ -117,11 +174,12 @@
     "step_results": [
       "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'id': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'latitude': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'longitude': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'datetime': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'decibel_level': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'hour': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'day_of_week': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'is_weekend': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'temperature_c': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'humidity_%': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'wind_speed_kmh': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'precipitation_mm': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'traffic_density': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'near_airport': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'near_highway': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'near_construction': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'population_density': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'park_proximity': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'industrial_zone': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'vehicle_count': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'honking_events': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'public_event': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'holiday': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'school_zone': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'noise_complaints': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'sensor_id': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
       "detect_and_handle_outliers successful. Outlier stats collected.",
-      "engineer_features successful. Generated 1 features.",
-      "run_statistical_hypothesis_tests successful. Significant predictors: ['temperature_c', 'industrial_zone', 'holiday', 'sensor_id']",
       "plot_correlation_matrix successful.",
       "plot_feature_distributions successful.",
-      "plot_semantic_bivariate_relationships successful. Count: 4",
+      "run_statistical_hypothesis_tests successful. Significant predictors: ['temperature_c', 'industrial_zone', 'holiday', 'sensor_id']",
+      "plot_semantic_bivariate_relationships successful. Count: 5",
+      "plot_pairplot successful.",
+      "engineer_features successful. Generated 0 features.",
       "generate_predictive_blueprint successful.",
       "Agent called finish_analysis. Terminating loop."
     ]

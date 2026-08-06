@@ -292,7 +292,15 @@ function initRunForm() {
     StatusBar.start();
     try {
       const resp = await fetch('/run/', { method: 'POST', body: fd });
-      const data = await resp.json();
+      const text = await resp.text();
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        if (!resp.ok) {
+          throw new Error(`Server returned HTTP ${resp.status} (${resp.statusText})`);
+        }
+      }
       if (data.error) {
         StatusBar.stop();
         Toast.show('Error: ' + data.error, 'error');
