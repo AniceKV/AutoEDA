@@ -221,21 +221,12 @@ st.markdown("""
     }
     
     /* Hide Expander Dropdown Arrow */
-    .stExpander summary svg,
-    .stExpander summary [data-testid="stExpanderToggleIcon"],
-    .stExpander summary [data-testid="stIconMaterial"],
-    .stExpander summary .material-icons {
+    .stExpander summary svg {
         display: none !important;
-        opacity: 0 !important;
-        color: transparent !important;
     }
     
-    .stExpander summary {
-        list-style-type: none;
-    }
-    
-    .stExpander summary::-webkit-details-marker {
-        display: none;
+    .stExpander div[data-testid="stExpanderToggleIcon"] {
+        display: none !important;
     }
 </style>
 """, unsafe_allow_html=True)

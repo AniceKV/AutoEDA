@@ -12,8 +12,11 @@ import PIL.Image
 PIL.Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombWarning for large EDA visual plots
 from typing import Dict, Any, List, Optional, Tuple
 
-sns.set_theme(style="whitegrid")
+import warnings
+warnings.filterwarnings("ignore", message=".*Glyph.*")
 
+sns.set_theme(style="whitegrid")
+plt.rcParams['font.sans-serif'] = ['Segoe UI Emoji', 'Meiryo', 'MS Gothic', 'Malgun Gothic', 'Arial', 'sans-serif']
 
 def _sanitize_col_name(col: str) -> str:
     """Sanitize a column name into a filesystem-safe string."""
