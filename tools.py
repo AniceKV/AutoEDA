@@ -8,6 +8,8 @@ import matplotlib
 matplotlib.use("Agg")  # Non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
+import PIL.Image
+PIL.Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombWarning for large EDA visual plots
 from typing import Dict, Any, List, Optional, Tuple
 
 sns.set_theme(style="whitegrid")
@@ -16,6 +18,21 @@ sns.set_theme(style="whitegrid")
 def _sanitize_col_name(col: str) -> str:
     """Sanitize a column name into a filesystem-safe string."""
     return re.sub(r'\W+', '_', col).strip('_')
+
+
+def _is_numeric_col(s: pd.Series) -> bool:
+    """Helper to check if a Series has numeric dtype and is not boolean."""
+    return pd.api.types.is_numeric_dtype(s) and not pd.api.types.is_bool_dtype(s)
+
+
+def _downsample_for_viz(df: pd.DataFrame, max_samples: int = 10000, random_state: int = 42) -> pd.DataFrame:
+    """Downsamples large DataFrames for rendering fast Matplotlib/Seaborn visual plots."""
+    if len(df) > max_samples:
+        print(f"[tools] Parameter Clamping: Downsampling DataFrame from {len(df)} rows to {max_samples} rows for fast visualization rendering.")
+        return df.sample(n=max_samples, random_state=random_state)
+    return df
+
+
 
 
 # =====================================================================
@@ -155,7 +172,7 @@ def impute_missing_data(
         strategy = strategy_map.get(col, "auto").lower()
         
         # PARAMETER CLAMPING: Enforce type constraints programmatically
-        if pd.api.types.is_numeric_dtype(df_imputed[col]):
+        if _is_numeric_col(df_imputed[col]):
             skew_val = float(df_imputed[col].skew()) if df_imputed[col].notnull().sum() > 2 else 0.0
             
             if strategy == "median" or (strategy == "auto" and abs(skew_val) > numeric_skew_threshold):
@@ -225,8 +242,8 @@ def detect_and_handle_outliers(
     except (ValueError, TypeError):
         iqr_mult = 1.5
 
-    raw_cols = columns or [c for c in df_out.columns if pd.api.types.is_numeric_dtype(df_out[c])]
-    target_cols = [c for c in raw_cols if c in df_out.columns and pd.api.types.is_numeric_dtype(df_out[c])]
+    raw_cols = columns or [c for c in df_out.columns if _is_numeric_col(df_out[c])]
+    target_cols = [c for c in raw_cols if c in df_out.columns and _is_numeric_col(df_out[c])]
     
     outlier_report = {}
     
@@ -285,7 +302,7 @@ def engineer_features(
     
     # Auto-generate features if specs not provided
     if not specs:
-        numeric_cols = [c for c in df_feat.columns if pd.api.types.is_numeric_dtype(df_feat[c]) and c != target_col and df_feat[c].nunique() > 2]
+        numeric_cols = [c for c in df_feat.columns if _is_numeric_col(df_feat[c]) and c != target_col and df_feat[c].nunique() > 2]
         
         # 1. Log transform skewed features
         for col in numeric_cols:
@@ -357,7 +374,7 @@ def engineer_features(
                 continue
                 
             corr_with_target = None
-            if target_col and target_col in df_feat.columns and pd.api.types.is_numeric_dtype(df_feat[target_col]):
+            if target_col and target_col in df_feat.columns and _is_numeric_col(df_feat[target_col]):
                 corr_val = df_feat[fname].corr(df_feat[target_col])
                 corr_with_target = round(float(corr_val), 4) if pd.notnull(corr_val) else None
                 
@@ -414,7 +431,7 @@ def run_statistical_hypothesis_tests(
         alpha = 0.05
 
     if not target_col or target_col not in df.columns:
-        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
         target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
 
     raw_targets = feature_cols or [c for c in df.columns if c != target_col]
@@ -423,11 +440,11 @@ def run_statistical_hypothesis_tests(
     test_results = {}
     significant_predictors = []
     
-    target_is_num = pd.api.types.is_numeric_dtype(df[target_col])
+    target_is_num = _is_numeric_col(df[target_col])
     target_cardinality = df[target_col].nunique()
     
     for col in targets_to_test:
-        col_is_num = pd.api.types.is_numeric_dtype(df[col])
+        col_is_num = _is_numeric_col(df[col])
         clean_data = df[[target_col, col]].dropna()
         if len(clean_data) < 5:
             continue
@@ -503,7 +520,7 @@ def plot_correlation_matrix(
     and extracts top positive/negative correlations.
     """
     plt.close("all")
-    target_cols = numeric_cols or [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 1]
+    target_cols = numeric_cols or [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 1]
     
     if len(target_cols) < 2:
         return {"error": "Insufficient numeric columns for correlation analysis."}
@@ -552,8 +569,8 @@ def _render_bivariate_axes(
     Shared rendering logic for bivariate plots.
     Dispatches to regplot, boxplot, or countplot based on column dtypes.
     """
-    x_is_num = pd.api.types.is_numeric_dtype(df[x_col])
-    y_is_num = pd.api.types.is_numeric_dtype(df[y_col])
+    x_is_num = _is_numeric_col(df[x_col])
+    y_is_num = _is_numeric_col(df[y_col])
 
     if x_is_num and y_is_num:
         if hue_col:
@@ -562,11 +579,17 @@ def _render_bivariate_axes(
                     scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
         ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
     elif not x_is_num and y_is_num:
-        sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
+        if hue_col:
+            sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
+        else:
+            sns.boxplot(data=df, x=x_col, y=y_col, hue=x_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
     elif x_is_num and not y_is_num:
-        sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
+        if hue_col:
+            sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
+        else:
+            sns.boxplot(data=df, x=y_col, y=x_col, hue=y_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
     else:
@@ -588,7 +611,7 @@ def plot_target_interaction(
     """
     plt.close("all")
     if not target_col or target_col not in df.columns:
-        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
         target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
 
     if not feature_col or feature_col not in df.columns or feature_col == target_col:
@@ -598,9 +621,11 @@ def plot_target_interaction(
     os.makedirs(output_dir, exist_ok=True)
     full_save_path = os.path.join(output_dir, os.path.basename(save_path))
 
+    df_viz = _downsample_for_viz(df)
+
     try:
         fig, ax = plt.subplots(figsize=(9, 6))
-        _render_bivariate_axes(ax, df, feature_col, target_col)
+        _render_bivariate_axes(ax, df_viz, feature_col, target_col)
         plt.tight_layout()
         plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
@@ -631,15 +656,17 @@ def plot_feature_distributions(
     """
     plt.close("all")
     target_cols = columns or kwargs.get("important_columns") or kwargs.get("cols") or kwargs.get("feature_cols")
-    if not target_cols:
-        target_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])][:6]
-
-    if isinstance(target_cols, str):
-        target_cols = [target_cols]
+    if not target_cols or target_cols == "all" or (isinstance(target_cols, (list, tuple)) and len(target_cols) == 0):
+        target_cols = list(df.columns)
+    elif isinstance(target_cols, str):
+        if target_cols.lower() == "all":
+            target_cols = list(df.columns)
+        else:
+            target_cols = [target_cols]
 
     valid_cols = [c for c in target_cols if c in df.columns]
     if not valid_cols:
-        valid_cols = list(df.columns[:min(6, len(df.columns))])
+        valid_cols = list(df.columns)
 
     os.makedirs(output_dir, exist_ok=True)
     saved_files = []
@@ -649,14 +676,18 @@ def plot_feature_distributions(
 
         try:
             fig, ax = plt.subplots(figsize=(6, 4))
-            if pd.api.types.is_numeric_dtype(df[col]):
+            if _is_numeric_col(df[col]):
                 sns.histplot(df[col].dropna(), kde=True, ax=ax, color="teal")
                 ax.set_title(f"Distribution: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Density / Frequency")
             else:
-                sns.countplot(x=df[col].dropna(), hue=df[col].dropna(), ax=ax, palette="Set2", legend=False)
-                ax.set_title(f"Distribution / Counts: {col}", fontsize=12, pad=10)
+                col_data = df[col].dropna()
+                if col_data.nunique() > 20:
+                    top_cats = col_data.value_counts().head(20).index
+                    col_data = col_data[col_data.isin(top_cats)]
+                sns.countplot(x=col_data, hue=col_data, ax=ax, palette="Set2", legend=False)
+                ax.set_title(f"Distribution / Top Counts: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Count")
                 ax.tick_params(axis='x', rotation=30)
@@ -700,8 +731,8 @@ def plot_semantic_bivariate_relationships(
     
     # Auto-generate top pairs if not provided by LLM
     if not pairs:
-        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
-        cat_cols = [c for c in df.columns if not pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() <= 10]
+        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
+        cat_cols = [c for c in df.columns if not _is_numeric_col(df[c]) and df[c].nunique() <= 10]
         
         if len(numeric_cols) >= 2:
             pairs.append({"x": numeric_cols[0], "y": numeric_cols[1], "rationale": "Bivariate numerical comparison"})
@@ -765,9 +796,9 @@ def plot_pairplot(
     # Select reasonable subset of numerical columns (max 4 to 5)
     raw_cols = columns or kwargs.get("feature_cols") or kwargs.get("cols") or kwargs.get("numeric_cols")
     if not raw_cols:
-        raw_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 2]
+        raw_cols = [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 2]
         
-    valid_cols = [c for c in raw_cols if c in df.columns and pd.api.types.is_numeric_dtype(df[c])]
+    valid_cols = [c for c in raw_cols if c in df.columns and _is_numeric_col(df[c])]
     
     # Clamp number of features to maximum 4-5 for clean, uncluttered visual rendering
     max_features = 4
@@ -844,7 +875,7 @@ def generate_predictive_blueprint(
     num_rows, num_cols = df.shape
     
     if target_col and target_col in df.columns:
-        if pd.api.types.is_numeric_dtype(df[target_col]) and df[target_col].nunique() > 10:
+        if _is_numeric_col(df[target_col]) and df[target_col].nunique() > 10:
             problem_type = "Regression"
         else:
             problem_type = "Classification"

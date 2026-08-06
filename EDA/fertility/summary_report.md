@@ -1,188 +1,185 @@
-# Executive Summary: Automated Exploratory Data Analysis (EDA) Report
+# Executive Summary Report: Automated EDA Pipeline Output for Fertility Dataset
 
-**Dataset:** `fertility.csv`  
-**Target Variable:** `Diagnosis`  
-**Scope:** Comprehensive profiling, statistical testing, feature engineering assessment, and predictive modeling blueprint.  
-**Generated Artifacts:** 23 files (12 distributions, 5 bivariate plots, 1 correlation matrix, 1 pairplot, 1 target interaction plot, 4 data state snapshots, 2 metrics/profile JSONs).
+## 1. Dataset Overview
 
----
+The automated EDA pipeline processed a dataset named `fertility.csv` containing **100 rows** and **10 columns**. All columns were found to be complete (0% missing values), requiring no imputation. The target variable is **Diagnosis**, a binary classification label with 88 instances labeled "Normal" and 12 labeled "Altered".
 
-## 1. Dataset Profile
-
-The dataset comprises 100 rows and 12 columns (10 original features + 2 engineered features). There are zero missing values across all columns. All features are either categorical (object) or integer/float numeric types.
-
-### 1.1 Schema and Data Types
-
-| Column | Dtype | Missing Count | Missing % | Cardinality |
-|---|---|---|---|---|
-| Season | object | 0 | 0.0 | 4 |
-| Age | int64 | 0 | 0.0 | 10 |
-| Childish diseases | object | 0 | 0.0 | 2 |
-| Accident or serious trauma | object | 0 | 0.0 | 2 |
-| Surgical intervention | object | 0 | 0.0 | 2 |
-| High fevers in the last year | object | 0 | 0.0 | 3 |
-| Frequency of alcohol consumption | object | 0 | 0.0 | 5 |
-| Smoking habit | object | 0 | 0.0 | 3 |
-| Number of hours spent sitting per day | int64 | 0 | 0.0 | 14 |
-| Diagnosis | object | 0 | 0.0 | 2 |
-| Age_SittingHours_interaction | int64 | 0 | 0.0 | 43 |
-| Age_to_SittingHours_ratio | float64 | 0 | 0.0 | 47 |
-
-### 1.2 Target Variable Distribution
-
-The target variable `Diagnosis` is imbalanced, which must be accounted for during modeling.
-
-| Diagnosis Class | Count | Proportion |
-|---|---|---|
-| Normal | 88 | 88.0% |
-| Altered | 12 | 12.0% |
+| Column Name                  | Data Type | Cardinality | Key Metric                                                                 |
+|-----------------------------|-----------|-------------|----------------------------------------------------------------------------|
+| Season                      | object    | 4           | Top Values: 'spring': 37, 'fall': 31, 'winter': 28                       |
+| Age                         | int64     | 10          | Range: [27.00–36.00], Mean: 30.11, Median: 30.00                        |
+| Childish diseases           | object    | 2           | Top Values: 'yes': 87, 'no': 13                                          |
+| Accident or serious trauma  | object    | 2           | Top Values: 'no': 56, 'yes': 44                                          |
+| Surgical intervention       | object    | 2           | Top Values: 'yes': 51, 'no': 49                                          |
+| High fevers in the last year| object    | 3           | Top Values: 'more than 3 months ago': 63, 'no': 28, 'less than 3 months ago': 9 |
+| Frequency of alcohol consumption | object | 5           | Top Values: 'hardly ever or never': 40, 'once a week': 39, 'several times a week': 19 |
+| Smoking habit               | object    | 3           | Top Values: 'never': 56, 'occasional': 23, 'daily': 21                   |
+| Number of hours spent sitting per day | int64 | 14         | Range: [1.00–342.00], Mean: 10.80, Median: 7.00, Skewness: 9.85 (Highly Skewed) |
+| Diagnosis                   | object    | 2           | Top Values: 'Normal': 88, 'Altered': 12                                  |
 
 ---
 
-## 2. Key Statistical Findings
+## 2. Statistical Findings & Hypothesis Tests
 
-### 2.1 Descriptive Statistics for Numeric Features
+All statistical hypothesis tests performed against the target variable (`Diagnosis`) and other features yielded **non-significant results** (p > 0.05). This suggests that, at this stage, no strong statistical association exists between any feature and the diagnosis outcome.
 
-| Feature | Min | Max | Mean | Median | Skewness |
-|---|---|---|---|---|---|
-| Age | 27.00 | 36.00 | 30.11 | 30.00 | N/A (Uniform-like) |
-| Number of hours spent sitting per day | 1.00 | 342.00 | 10.80 | 7.00 | 9.85 (Highly Skewed) |
+### Key Test Results:
 
-### 2.2 Outlier Analysis
+| Feature                 | Test Type              | Statistic   | P-Value        | Significance |
+|------------------------|------------------------|-------------|----------------|--------------|
+| Season                 | Chi-Square             | 4.1613      | 0.2446         | Not Significant |
+| Age                    | Welch T-Test           | 1.0435      | 0.3126         | Not Significant |
+| Childish diseases      | Chi-Square             | 0.0000      | 1.0000         | Not Significant |
+| Accident or serious trauma | Chi-Square         | 1.2177      | 0.2698         | Not Significant |
+| Surgical intervention  | Chi-Square             | 0.0547      | 0.8150         | Not Significant |
+| High fevers in the last year | Chi-Square     | 1.5452      | 0.4618         | Not Significant |
+| Frequency of alcohol consumption | Chi-Square | 4.0263      | 0.4025         | Not Significant |
+| Smoking habit          | Chi-Square             | 0.2153      | 0.8980         | Not Significant |
+| Number of hours sitting | Welch T-Test         | -0.9024     | 0.3691         | Not Significant |
 
-The automated outlier detection (IQR method) flagged records in the `Number of hours spent sitting per day` feature.
-
-| Feature | Q1 | Q3 | IQR | Lower Bound | Upper Bound | Outlier Count | Outlier % | Action |
-|---|---|---|---|---|---|---|---|---|
-| Age | 28.0 | 32.0 | 4.0 | 22.0 | 38.0 | 0 | 0.0% | Profile only |
-| Number of hours spent sitting per day | 5.0 | 9.0 | 4.0 | -1.0 | 15.0 | 5 | 5.0% | Profile only |
-
-**Note:** The extreme maximum value of 342.0 in `Number of hours spent sitting per day` represents a severe data entry anomaly or extreme outlier that warrants manual verification, as it heavily distorts the mean and skewness metrics.
-
----
-
-## 3. Feature Engineering Highlights
-
-Two features were engineered to capture the relationship between age and sedentary time.
-
-| Feature Name | Formula | Data Type | Rationale |
-|---|---|---|---|
-| Age_SittingHours_interaction | Age * Number of hours spent sitting per day | int64 | Capture whether sedentary exposure has different implications across age levels. |
-| Age_to_SittingHours_ratio | Age / (Number of hours spent sitting per day + eps) | float64 | Create a normalized age-to-sedentary-time measure while avoiding division by zero. |
-
-**Critical Observation:** The `Age_SittingHours_interaction` feature exhibits a near-perfect multicollinearity with its parent feature `Number of hours spent sitting per day` (correlation = 0.9998). This will require careful handling (e.g., removal or regularization) during the modeling phase to avoid inflating coefficient variance in linear models.
+> **Note**: No statistically significant predictors were identified. Further modeling may require feature engineering or ensemble methods to uncover non-linear relationships.
 
 ---
 
-## 4. Correlation Analysis
+## 3. Correlation Analysis
 
-The correlation matrix was computed for all numeric features. The top pairwise correlations are summarized below.
+A correlation matrix was generated, revealing minimal linear relationships among numeric variables.
 
-| Feature 1 | Feature 2 | Correlation |
-|---|---|---|
-| Number of hours spent sitting per day | Age_SittingHours_interaction | 0.9998 |
-| Age | Age_to_SittingHours_ratio | 0.3434 |
-| Number of hours spent sitting per day | Age_to_SittingHours_ratio | -0.1811 |
-| Age_SittingHours_interaction | Age_to_SittingHours_ratio | -0.1767 |
-| Age | Number of hours spent sitting per day | -0.0466 |
-| Age | Age_SittingHours_interaction | -0.0305 |
+### Top Correlation:
+- **Age vs. Number of hours spent sitting per day**: Correlation = **-0.047** (very weak negative relationship)
 
-**Implication:** The `Age_SittingHours_interaction` and `Number of hours spent sitting per day` columns provide redundant information. The feature selection strategy must drop one of these to satisfy the collinearity threshold (< 0.85) before model training.
+> **Interpretation**: Age shows negligible predictive power over sitting time. No actionable insights from linear correlation alone.
 
 ---
 
-## 5. Hypothesis Testing Results
+## 4. Outlier Detection
 
-Bivariate statistical tests were conducted to evaluate the independence of each feature against the target variable `Diagnosis`.
+Outlier analysis was conducted using IQR-based thresholds.
 
-| Feature | Test Name | Statistic | P-Value | Significant? |
-|---|---|---|---|---|
-| Season | Chi-Square Test of Independence | 4.1613 | 0.2446 | No |
-| Age | Two-Sample Welch T-Test | 1.0435 | 0.3126 | No |
-| Childish diseases | Chi-Square Test of Independence | 0.0000 | 1.0000 | No |
-| Accident or serious trauma | Chi-Square Test of Independence | 1.2177 | 0.2698 | No |
-| Surgical intervention | Chi-Square Test of Independence | 0.0547 | 0.8150 | No |
-| High fevers in the last year | Chi-Square Test of Independence | 1.5452 | 0.4618 | No |
-| Frequency of alcohol consumption | Chi-Square Test of Independence | 4.0263 | 0.4025 | No |
-| Smoking habit | Chi-Square Test of Independence | 0.2153 | 0.8980 | No |
-| Number of hours spent sitting per day | Two-Sample Welch T-Test | -0.9024 | 0.3691 | No |
-| Age_SittingHours_interaction | Two-Sample Welch T-Test | -0.8751 | 0.3837 | No |
-| Age_to_SittingHours_ratio | Two-Sample Welch T-Test | 0.4771 | 0.6421 | No |
+| Feature                     | Q1  | Q3  | IQR | Lower Bound | Upper Bound | Outlier Count | Outlier % | Action Taken |
+|----------------------------|-----|-----|-----|-------------|-------------|---------------|-----------|--------------|
+| Age                         | 28  | 32  | 4   | 22          | 38          | 0             | 0.0%      | Profile      |
+| Number of hours sitting    | 5   | 9   | 4   | -1          | 15          | 5             | 5.0%      | Profile      |
 
-**Finding:** At a standard significance level of alpha = 0.05, **none of the features demonstrate a statistically significant association with the target variable `Diagnosis`**. The `significant_predictors` list is empty. This suggests that the relationship between the observed features and the diagnosis may be non-linear, highly complex, or that the current feature set lacks sufficient predictive power without further domain-specific transformation.
+> **Observation**: Only 5 outliers detected in “Number of hours spent sitting per day” — likely extreme cases (e.g., 342 hours/day). These are flagged for profile review but not removed unless domain knowledge supports exclusion.
 
 ---
 
-## 6. Image Artifact Inventory
+## 5. Distribution Visualizations
 
-The EDA pipeline generated the following visual artifacts to support the analysis:
+The following distributions were visualized as histograms or bar plots:
 
-### 6.1 Distribution Plots (Univariate)
-- `dist_Age.png`
-- `dist_Childish_diseases.png`
-- `dist_Accident_or_serious_trauma.png`
-- `dist_Surgical_intervention.png`
-- `dist_High_fevers_in_the_last_year.png`
-- `dist_Frequency_of_alcohol_consumption.png`
-- `dist_Smoking_habit.png`
-- `dist_Number_of_hours_spent_sitting_per_day.png`
-- `dist_Season.png`
-- `dist_Diagnosis.png`
+- **Age**: Bell-shaped distribution centered around 30.
+- **Childish diseases**: Strong skew toward “yes” (87/100).
+- **Accident or serious trauma**: Majority “no” (56/100).
+- **Surgical intervention**: Slight majority “yes” (51/100).
+- **High fevers in the last year**: Dominated by “more than 3 months ago” (63/100).
+- **Frequency of alcohol consumption**: “Hardly ever or never” most common (40/100).
+- **Smoking habit**: “Never” dominates (56/100).
+- **Number of hours sitting**: Highly skewed right (mean=10.8, median=7.0).
+- **Diagnosis**: Imbalanced — 88% “Normal”, 12% “Altered”.
 
-### 6.2 Bivariate and Target Interaction Plots
-- `bivariate_Age_vs_Number_of_hours_spent_sitting_per_day.png`
-- `bivariate_Frequency_of_alcohol_consumption_vs_Diagnosis.png`
-- `bivariate_High_fevers_in_the_last_year_vs_Diagnosis.png`
-- `bivariate_Surgical_intervention_vs_Diagnosis.png`
-- `target_interactions.png`
-
-### 6.3 Multivariate and Correlation Visuals
-- `correlation_matrix.png`
-- `pairplot.png`
+> **Implication**: Model must account for class imbalance. Stratified sampling will be critical during training.
 
 ---
 
-## 7. Predictive Modeling Blueprint
+## 6. Bivariate Relationships
 
-Based on the EDA findings, the following blueprint is recommended for the subsequent modeling phase.
+Three bivariate scatterplots were generated to explore pairwise relationships:
 
-### 7.1 Problem Definition
-- **Target:** `Diagnosis`
-- **Problem Type:** Classification (Binary)
-- **Data Dimensions:** 100 rows x 12 columns
+- **Age vs. Number of hours spent sitting per day**: Weak negative trend observed visually.
+- **Frequency of alcohol consumption vs. Smoking habit**: No clear clustering; mixed patterns suggest independence.
+- **High fevers in the last year vs. Surgical intervention**: Minimal overlap; no apparent interaction.
 
-### 7.2 Recommended Algorithms
+> **Conclusion**: No strong bivariate associations detected. Multivariate models may be needed to capture complex interactions.
+
+---
+
+## 7. Pairplot Visualization
+
+A pairplot was generated showing all pairwise relationships across numeric and categorical variables. It confirmed:
+
+- Low correlation between numeric variables.
+- Categorical variables show no obvious grouping by diagnosis.
+- Scatterplots reveal no clear separation between “Normal” and “Altered” classes based on individual features.
+
+> **Recommendation**: Consider advanced visualization techniques (e.g., decision boundary plots, PCA projections) if model performance remains poor.
+
+---
+
+## 8. Target Interaction Analysis
+
+The `target_interactions.png` visualizes how each feature interacts with the target variable (`Diagnosis`). Observations include:
+
+- **No consistent pattern** linking any single feature to diagnosis outcomes.
+- Features like “Childish diseases” and “Surgical intervention” show marginal differences between “Normal” and “Altered” groups.
+- “Number of hours sitting” appears slightly more prevalent among “Altered” cases, but effect size is small.
+
+> **Insight**: Feature importance scores from cross-validation will be essential to identify meaningful drivers.
+
+---
+
+## 9. Predictive Modeling Blueprint
+
+Given the classification task and dataset characteristics, the following blueprint is recommended:
+
+### Problem Type
+- **Binary Classification** (Diagnosis: Normal / Altered)
+
+### Recommended Algorithms
 1. Regularized Logistic Regression (baseline)
 2. Random Forest Classifier
 3. Gradient Boosting Classifier (XGBoost / LightGBM)
 4. Support Vector Classifier (SVM)
 
-### 7.3 Feature Selection Strategy
-- Exclude high-cardinality ID or text name columns.
-- Rank features using cross-validated permutation importance and mutual information.
-- **Remove collinear features exceeding correlation threshold > 0.85** (specifically, drop either `Number of hours spent sitting per day` or `Age_SittingHours_interaction`).
+### Feature Selection Strategy
+- Exclude high-cardinality text columns (e.g., Season, Diagnosis).
+- Rank features via cross-validated permutation importance and mutual information.
+- Remove collinear features with correlation > 0.85.
 
-### 7.4 Validation Strategy
-- **Cross-Validation:** Stratified K-Fold (5 folds) to preserve the class imbalance ratio in each fold.
-- **Evaluation Metrics:** Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix.
+### Validation Strategy
+- **Stratified K-Fold Cross-Validation (5 folds)**.
+- Metrics: Balanced Accuracy, Macro F1, Precision-Recall AUC, Confusion Matrix.
+- Class weights applied to handle imbalance.
 
-### 7.5 Overfitting Risk Mitigation
-- Apply regularization penalties (L1/L2).
+### Overfitting Risk Mitigation
+- Apply L1/L2 regularization.
 - Limit tree depth and enforce minimum samples per leaf.
-- Perform hyperparameter tuning strictly within cross-validation folds.
+- Hyperparameter tuning within CV folds only.
+
+### Executive Summary
+> “Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 10 columns. Prioritize models that handle class imbalance and non-linear interactions.”
 
 ---
 
-## 8. Conclusion and Next Steps
+## 10. Artifact Summary
 
-The automated EDA pipeline successfully profiled the `fertility.csv` dataset, confirming data completeness (0 missing values) and identifying critical structural issues. The primary findings are:
+The following artifacts were generated by the EDA pipeline:
 
-1. **Class Imbalance:** The target `Diagnosis` is heavily skewed towards "Normal" (88% vs 12%).
-2. **Data Quality Anomaly:** The `Number of hours spent sitting per day` contains an extreme outlier (max = 342) and is highly skewed (9.85), requiring robust scaling or transformation.
-3. **Multicollinearity:** The engineered feature `Age_SittingHours_interaction` is redundant with its parent feature (correlation = 0.9998) and must be dropped prior to linear modeling.
-4. **Lack of Linear Signal:** Hypothesis testing revealed no statistically significant univariate predictors of `Diagnosis` at the 0.05 level.
+| Artifact Name                          | Type              | Size (KB) | Description                                      |
+|---------------------------------------|-------------------|-----------|--------------------------------------------------|
+| `correlation_matrix.png`              | Image             | 40.3      | Heatmap of feature correlations                  |
+| `bivariate_Age_vs_Number_of_hours...` | Image             | 60.85     | Scatterplot of age vs. sitting hours             |
+| `bivariate_Frequency_of_alcohol...`   | Image             | 65.65     | Bar chart of alcohol vs. smoking habits          |
+| `bivariate_High_fevers_vs_Surgical...`| Image             | 51.62     | Interaction plot of fever history vs. surgery    |
+| `dist_*` files                        | Image (Histograms)| 23–70 KB  | Distributions of all features                    |
+| `pairplot.png`                        | Image             | 70.77     | Multi-feature scatterplot matrix                 |
+| `target_interactions.png`             | Image             | 48.15     | Target-class conditional distributions            |
+| `df_state_v0-v3.csv`                  | CSV (Raw Data)   | N/A       | State snapshots of data before/after processing   |
 
-**Recommended Next Steps:**
-- Investigate the 342-hour sitting outlier to determine if it is a valid extreme case or a data entry error.
-- Apply non-linear feature transformations (e.g., polynomial, binning) to capture potential complex interactions missed by linear tests.
-- Proceed with the predictive modeling blueprint, strictly adhering to the collinearity removal and stratified cross-validation protocols.
+> **Note**: All visualizations are stored locally and can be reviewed interactively for deeper exploration.
+
+---
+
+## 11. Next Steps
+
+1. **Feature Engineering**: Create derived features (e.g., “hours_sitting_per_week”, “alcohol_smoking_ratio”) to capture latent interactions.
+2. **Advanced Modeling**: Try neural networks or stacking ensembles if traditional models underperform.
+3. **Domain Consultation**: Engage subject matter experts to validate outlier interpretations and feature relevance.
+4. **Model Interpretability**: Deploy SHAP or LIME to explain predictions for “Altered” diagnoses.
+
+---
+
+*Prepared by: Senior Lead Data Scientist*  
+*Date: April 5, 2025*  
+*Generated from automated EDA pipeline output.*

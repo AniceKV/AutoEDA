@@ -3,7 +3,7 @@
     "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\synthetic_credit_card_customer_behavior_dataset.csv",
     "shape": {
       "rows": 50000,
-      "columns": 30
+      "columns": 34
     },
     "target_column": "Credit_Score",
     "column_summary": {
@@ -156,6 +156,26 @@
         "dtype": "int64",
         "missing_count": 0,
         "cardinality": 402
+      },
+      "Log_Annual_Income": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 49485
+      },
+      "Log_Credit_Limit": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 4318
+      },
+      "Log_Monthly_Spending": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 49900
+      },
+      "Spending_To_Income_Ratio": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 50000
       }
     }
   },
@@ -380,16 +400,6 @@
     }
   },
   "outlier_analysis": {
-    "Age": {
-      "q1": 27.0,
-      "q3": 44.0,
-      "iqr": 17.0,
-      "lower_bound": 1.5,
-      "upper_bound": 69.5,
-      "outlier_count": 278,
-      "outlier_percentage": 0.56,
-      "action_taken": "profile"
-    },
     "Annual_Income": {
       "q1": 657774.25,
       "q3": 1663624.0,
@@ -410,16 +420,6 @@
       "outlier_percentage": 8.35,
       "action_taken": "profile"
     },
-    "Card_Age_Months": {
-      "q1": 31.0,
-      "q3": 70.0,
-      "iqr": 39.0,
-      "lower_bound": -27.5,
-      "upper_bound": 128.5,
-      "outlier_count": 1287,
-      "outlier_percentage": 2.57,
-      "action_taken": "profile"
-    },
     "Monthly_Spending": {
       "q1": 26646.49,
       "q3": 83029.965,
@@ -428,96 +428,6 @@
       "upper_bound": 167605.1775,
       "outlier_count": 4213,
       "outlier_percentage": 8.43,
-      "action_taken": "profile"
-    },
-    "Monthly_Transactions": {
-      "q1": 49.0,
-      "q3": 108.0,
-      "iqr": 59.0,
-      "lower_bound": -39.5,
-      "upper_bound": 196.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "Avg_Transaction_Value": {
-      "q1": 448.375,
-      "q3": 901.255,
-      "iqr": 452.88,
-      "lower_bound": -230.945,
-      "upper_bound": 1580.575,
-      "outlier_count": 4286,
-      "outlier_percentage": 8.57,
-      "action_taken": "profile"
-    },
-    "Online_Shopping_Spending": {
-      "q1": 2800.6975,
-      "q3": 12820.2,
-      "iqr": 10019.5025,
-      "lower_bound": -12228.5562,
-      "upper_bound": 27849.4538,
-      "outlier_count": 4045,
-      "outlier_percentage": 8.09,
-      "action_taken": "profile"
-    },
-    "Grocery_Spending": {
-      "q1": 5176.9675,
-      "q3": 20419.5675,
-      "iqr": 15242.6,
-      "lower_bound": -17686.9325,
-      "upper_bound": 43283.4675,
-      "outlier_count": 4032,
-      "outlier_percentage": 8.06,
-      "action_taken": "profile"
-    },
-    "Fuel_Spending": {
-      "q1": 2432.16,
-      "q3": 11560.7575,
-      "iqr": 9128.5975,
-      "lower_bound": -11260.7362,
-      "upper_bound": 25253.6537,
-      "outlier_count": 4176,
-      "outlier_percentage": 8.35,
-      "action_taken": "profile"
-    },
-    "Dining_Spending": {
-      "q1": 2089.5125,
-      "q3": 10381.7175,
-      "iqr": 8292.205,
-      "lower_bound": -10348.795,
-      "upper_bound": 22820.025,
-      "outlier_count": 4202,
-      "outlier_percentage": 8.4,
-      "action_taken": "profile"
-    },
-    "Travel_Spending": {
-      "q1": 1077.045,
-      "q3": 6862.7075,
-      "iqr": 5785.6625,
-      "lower_bound": -7601.4487,
-      "upper_bound": 15541.2012,
-      "outlier_count": 4315,
-      "outlier_percentage": 8.63,
-      "action_taken": "profile"
-    },
-    "Entertainment_Spending": {
-      "q1": 1570.0925,
-      "q3": 8612.79,
-      "iqr": 7042.6975,
-      "lower_bound": -8993.9538,
-      "upper_bound": 19176.8363,
-      "outlier_count": 4276,
-      "outlier_percentage": 8.55,
-      "action_taken": "profile"
-    },
-    "Utility_Bill_Spending": {
-      "q1": 2978.53,
-      "q3": 13509.5775,
-      "iqr": 10531.0475,
-      "lower_bound": -12818.0413,
-      "upper_bound": 29306.1488,
-      "outlier_count": 4056,
-      "outlier_percentage": 8.11,
       "action_taken": "profile"
     },
     "Outstanding_Balance": {
@@ -530,46 +440,6 @@
       "outlier_percentage": 9.14,
       "action_taken": "profile"
     },
-    "Statement_Balance": {
-      "q1": 82471.5275,
-      "q3": 387431.505,
-      "iqr": 304959.9775,
-      "lower_bound": -374968.4388,
-      "upper_bound": 844871.4713,
-      "outlier_count": 4592,
-      "outlier_percentage": 9.18,
-      "action_taken": "profile"
-    },
-    "Payment_Amount": {
-      "q1": 55193.2375,
-      "q3": 299100.4575,
-      "iqr": 243907.22,
-      "lower_bound": -310667.5925,
-      "upper_bound": 664961.2875,
-      "outlier_count": 4535,
-      "outlier_percentage": 9.07,
-      "action_taken": "profile"
-    },
-    "Payment_Ratio": {
-      "q1": 0.62,
-      "q3": 0.96,
-      "iqr": 0.34,
-      "lower_bound": 0.11,
-      "upper_bound": 1.47,
-      "outlier_count": 87,
-      "outlier_percentage": 0.17,
-      "action_taken": "profile"
-    },
-    "Credit_Utilization": {
-      "q1": 0.27,
-      "q3": 0.56,
-      "iqr": 0.29,
-      "lower_bound": -0.165,
-      "upper_bound": 0.995,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
     "Cash_Advance_Amount": {
       "q1": 0.0,
       "q3": 8691.82,
@@ -579,69 +449,38 @@
       "outlier_count": 9549,
       "outlier_percentage": 19.1,
       "action_taken": "profile"
-    },
-    "EMI_Count": {
-      "q1": 1.0,
-      "q3": 4.0,
-      "iqr": 3.0,
-      "lower_bound": -3.5,
-      "upper_bound": 8.5,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "International_Transactions": {
-      "q1": 0.0,
-      "q3": 2.0,
-      "iqr": 2.0,
-      "lower_bound": -3.0,
-      "upper_bound": 5.0,
-      "outlier_count": 4769,
-      "outlier_percentage": 9.54,
-      "action_taken": "profile"
-    },
-    "Reward_Points_Earned": {
-      "q1": 720.0,
-      "q3": 3767.0,
-      "iqr": 3047.0,
-      "lower_bound": -3850.5,
-      "upper_bound": 8337.5,
-      "outlier_count": 4930,
-      "outlier_percentage": 9.86,
-      "action_taken": "profile"
-    },
-    "Reward_Points_Redeemed": {
-      "q1": 0.0,
-      "q3": 731.0,
-      "iqr": 731.0,
-      "lower_bound": -1096.5,
-      "upper_bound": 1827.5,
-      "outlier_count": 5708,
-      "outlier_percentage": 11.42,
-      "action_taken": "profile"
-    },
-    "Mobile_App_Login": {
-      "q1": 20.0,
-      "q3": 44.0,
-      "iqr": 24.0,
-      "lower_bound": -16.0,
-      "upper_bound": 80.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "Credit_Score": {
-      "q1": 585.0,
-      "q3": 681.0,
-      "iqr": 96.0,
-      "lower_bound": 441.0,
-      "upper_bound": 825.0,
-      "outlier_count": 394,
-      "outlier_percentage": 0.79,
-      "action_taken": "profile"
     }
   },
-  "engineered_features": [],
+  "engineered_features": [
+    {
+      "feature_name": "Log_Annual_Income",
+      "formula": "np.log1p(Annual_Income)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": null
+    },
+    {
+      "feature_name": "Log_Credit_Limit",
+      "formula": "np.log1p(Credit_Limit)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": null
+    },
+    {
+      "feature_name": "Log_Monthly_Spending",
+      "formula": "np.log1p(Monthly_Spending)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": null
+    },
+    {
+      "feature_name": "Spending_To_Income_Ratio",
+      "formula": "Monthly_Spending / (Annual_Income + eps)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": null
+    }
+  ],
   "correlation_analysis": {
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
@@ -649,6 +488,11 @@
         "feature_1": "Outstanding_Balance",
         "feature_2": "Statement_Balance",
         "correlation": 0.9971
+      },
+      {
+        "feature_1": "Log_Annual_Income",
+        "feature_2": "Log_Credit_Limit",
+        "correlation": 0.9837
       },
       {
         "feature_1": "Monthly_Spending",
@@ -666,6 +510,16 @@
         "correlation": 0.9581
       },
       {
+        "feature_1": "Log_Annual_Income",
+        "feature_2": "Log_Monthly_Spending",
+        "correlation": 0.9556
+      },
+      {
+        "feature_1": "Log_Credit_Limit",
+        "feature_2": "Log_Monthly_Spending",
+        "correlation": 0.9496
+      },
+      {
         "feature_1": "Annual_Income",
         "feature_2": "Monthly_Spending",
         "correlation": 0.9451
@@ -679,21 +533,6 @@
         "feature_1": "Statement_Balance",
         "feature_2": "Payment_Amount",
         "correlation": 0.9359
-      },
-      {
-        "feature_1": "Outstanding_Balance",
-        "feature_2": "Payment_Amount",
-        "correlation": 0.9324
-      },
-      {
-        "feature_1": "Annual_Income",
-        "feature_2": "Reward_Points_Earned",
-        "correlation": 0.9237
-      },
-      {
-        "feature_1": "Credit_Limit",
-        "feature_2": "Statement_Balance",
-        "correlation": 0.8938
       }
     ],
     "correlation_matrix_text": {
@@ -723,7 +562,11 @@
         "Reward_Points_Earned": -0.009,
         "Reward_Points_Redeemed": -0.005,
         "Mobile_App_Login": -0.004,
-        "Credit_Score": 0.0
+        "Credit_Score": 0.0,
+        "Log_Annual_Income": -0.007,
+        "Log_Credit_Limit": -0.008,
+        "Log_Monthly_Spending": -0.007,
+        "Spending_To_Income_Ratio": -0.001
       },
       "Annual_Income": {
         "Age": -0.01,
@@ -751,7 +594,11 @@
         "Reward_Points_Earned": 0.924,
         "Reward_Points_Redeemed": 0.563,
         "Mobile_App_Login": 0.584,
-        "Credit_Score": 0.032
+        "Credit_Score": 0.032,
+        "Log_Annual_Income": 0.855,
+        "Log_Credit_Limit": 0.831,
+        "Log_Monthly_Spending": 0.82,
+        "Spending_To_Income_Ratio": 0.282
       },
       "Credit_Limit": {
         "Age": -0.011,
@@ -779,7 +626,11 @@
         "Reward_Points_Earned": 0.958,
         "Reward_Points_Redeemed": 0.584,
         "Mobile_App_Login": 0.523,
-        "Credit_Score": 0.035
+        "Credit_Score": 0.035,
+        "Log_Annual_Income": 0.783,
+        "Log_Credit_Limit": 0.778,
+        "Log_Monthly_Spending": 0.76,
+        "Spending_To_Income_Ratio": 0.292
       },
       "Card_Age_Months": {
         "Age": 0.008,
@@ -807,7 +658,11 @@
         "Reward_Points_Earned": -0.006,
         "Reward_Points_Redeemed": -0.001,
         "Mobile_App_Login": -0.005,
-        "Credit_Score": 0.052
+        "Credit_Score": 0.052,
+        "Log_Annual_Income": -0.007,
+        "Log_Credit_Limit": -0.005,
+        "Log_Monthly_Spending": -0.009,
+        "Spending_To_Income_Ratio": -0.006
       },
       "Monthly_Spending": {
         "Age": -0.009,
@@ -835,7 +690,11 @@
         "Reward_Points_Earned": 0.98,
         "Reward_Points_Redeemed": 0.605,
         "Mobile_App_Login": 0.579,
-        "Credit_Score": 0.033
+        "Credit_Score": 0.033,
+        "Log_Annual_Income": 0.79,
+        "Log_Credit_Limit": 0.774,
+        "Log_Monthly_Spending": 0.821,
+        "Spending_To_Income_Ratio": 0.486
       },
       "Monthly_Transactions": {
         "Age": -0.008,
@@ -863,7 +722,11 @@
         "Reward_Points_Earned": 0.414,
         "Reward_Points_Redeemed": 0.254,
         "Mobile_App_Login": 0.649,
-        "Credit_Score": 0.021
+        "Credit_Score": 0.021,
+        "Log_Annual_Income": 0.667,
+        "Log_Credit_Limit": 0.677,
+        "Log_Monthly_Spending": 0.71,
+        "Spending_To_Income_Ratio": 0.432
       },
       "Avg_Transaction_Value": {
         "Age": -0.005,
@@ -891,7 +754,11 @@
         "Reward_Points_Earned": 0.873,
         "Reward_Points_Redeemed": 0.542,
         "Mobile_App_Login": 0.444,
-        "Credit_Score": 0.028
+        "Credit_Score": 0.028,
+        "Log_Annual_Income": 0.663,
+        "Log_Credit_Limit": 0.643,
+        "Log_Monthly_Spending": 0.684,
+        "Spending_To_Income_Ratio": 0.393
       },
       "Online_Shopping_Spending": {
         "Age": -0.009,
@@ -919,7 +786,11 @@
         "Reward_Points_Earned": 0.76,
         "Reward_Points_Redeemed": 0.457,
         "Mobile_App_Login": 0.451,
-        "Credit_Score": 0.025
+        "Credit_Score": 0.025,
+        "Log_Annual_Income": 0.612,
+        "Log_Credit_Limit": 0.601,
+        "Log_Monthly_Spending": 0.636,
+        "Spending_To_Income_Ratio": 0.375
       },
       "Grocery_Spending": {
         "Age": -0.008,
@@ -947,7 +818,11 @@
         "Reward_Points_Earned": 0.839,
         "Reward_Points_Redeemed": 0.527,
         "Mobile_App_Login": 0.495,
-        "Credit_Score": 0.029
+        "Credit_Score": 0.029,
+        "Log_Annual_Income": 0.677,
+        "Log_Credit_Limit": 0.663,
+        "Log_Monthly_Spending": 0.703,
+        "Spending_To_Income_Ratio": 0.416
       },
       "Fuel_Spending": {
         "Age": -0.016,
@@ -975,7 +850,11 @@
         "Reward_Points_Earned": 0.751,
         "Reward_Points_Redeemed": 0.452,
         "Mobile_App_Login": 0.433,
-        "Credit_Score": 0.027
+        "Credit_Score": 0.027,
+        "Log_Annual_Income": 0.6,
+        "Log_Credit_Limit": 0.587,
+        "Log_Monthly_Spending": 0.623,
+        "Spending_To_Income_Ratio": 0.369
       },
       "Dining_Spending": {
         "Age": -0.0,
@@ -1003,7 +882,11 @@
         "Reward_Points_Earned": 0.725,
         "Reward_Points_Redeemed": 0.461,
         "Mobile_App_Login": 0.436,
-        "Credit_Score": 0.023
+        "Credit_Score": 0.023,
+        "Log_Annual_Income": 0.591,
+        "Log_Credit_Limit": 0.58,
+        "Log_Monthly_Spending": 0.615,
+        "Spending_To_Income_Ratio": 0.363
       },
       "Travel_Spending": {
         "Age": -0.005,
@@ -1031,7 +914,11 @@
         "Reward_Points_Earned": 0.647,
         "Reward_Points_Redeemed": 0.405,
         "Mobile_App_Login": 0.383,
-        "Credit_Score": 0.022
+        "Credit_Score": 0.022,
+        "Log_Annual_Income": 0.519,
+        "Log_Credit_Limit": 0.509,
+        "Log_Monthly_Spending": 0.54,
+        "Spending_To_Income_Ratio": 0.32
       },
       "Entertainment_Spending": {
         "Age": 0.002,
@@ -1059,7 +946,11 @@
         "Reward_Points_Earned": 0.696,
         "Reward_Points_Redeemed": 0.432,
         "Mobile_App_Login": 0.407,
-        "Credit_Score": 0.024
+        "Credit_Score": 0.024,
+        "Log_Annual_Income": 0.559,
+        "Log_Credit_Limit": 0.547,
+        "Log_Monthly_Spending": 0.581,
+        "Spending_To_Income_Ratio": 0.344
       },
       "Utility_Bill_Spending": {
         "Age": -0.008,
@@ -1087,7 +978,11 @@
         "Reward_Points_Earned": 0.775,
         "Reward_Points_Redeemed": 0.471,
         "Mobile_App_Login": 0.464,
-        "Credit_Score": 0.025
+        "Credit_Score": 0.025,
+        "Log_Annual_Income": 0.628,
+        "Log_Credit_Limit": 0.615,
+        "Log_Monthly_Spending": 0.653,
+        "Spending_To_Income_Ratio": 0.388
       },
       "Outstanding_Balance": {
         "Age": -0.009,
@@ -1115,7 +1010,11 @@
         "Reward_Points_Earned": 0.83,
         "Reward_Points_Redeemed": 0.52,
         "Mobile_App_Login": 0.452,
-        "Credit_Score": -0.145
+        "Credit_Score": -0.145,
+        "Log_Annual_Income": 0.678,
+        "Log_Credit_Limit": 0.674,
+        "Log_Monthly_Spending": 0.658,
+        "Spending_To_Income_Ratio": 0.254
       },
       "Statement_Balance": {
         "Age": -0.009,
@@ -1143,7 +1042,11 @@
         "Reward_Points_Earned": 0.866,
         "Reward_Points_Redeemed": 0.541,
         "Mobile_App_Login": 0.478,
-        "Credit_Score": -0.125
+        "Credit_Score": -0.125,
+        "Log_Annual_Income": 0.706,
+        "Log_Credit_Limit": 0.7,
+        "Log_Monthly_Spending": 0.692,
+        "Spending_To_Income_Ratio": 0.289
       },
       "Payment_Amount": {
         "Age": -0.01,
@@ -1171,7 +1074,11 @@
         "Reward_Points_Earned": 0.815,
         "Reward_Points_Redeemed": 0.508,
         "Mobile_App_Login": 0.45,
-        "Credit_Score": 0.031
+        "Credit_Score": 0.031,
+        "Log_Annual_Income": 0.663,
+        "Log_Credit_Limit": 0.658,
+        "Log_Monthly_Spending": 0.651,
+        "Spending_To_Income_Ratio": 0.275
       },
       "Payment_Ratio": {
         "Age": -0.001,
@@ -1199,7 +1106,11 @@
         "Reward_Points_Earned": 0.003,
         "Reward_Points_Redeemed": 0.003,
         "Mobile_App_Login": 0.008,
-        "Credit_Score": 0.767
+        "Credit_Score": 0.767,
+        "Log_Annual_Income": 0.004,
+        "Log_Credit_Limit": 0.005,
+        "Log_Monthly_Spending": 0.005,
+        "Spending_To_Income_Ratio": 0.004
       },
       "Credit_Utilization": {
         "Age": -0.002,
@@ -1227,7 +1138,11 @@
         "Reward_Points_Earned": 0.005,
         "Reward_Points_Redeemed": 0.01,
         "Mobile_App_Login": 0.004,
-        "Credit_Score": -0.599
+        "Credit_Score": -0.599,
+        "Log_Annual_Income": 0.008,
+        "Log_Credit_Limit": 0.009,
+        "Log_Monthly_Spending": 0.007,
+        "Spending_To_Income_Ratio": 0.001
       },
       "Cash_Advance_Amount": {
         "Age": -0.004,
@@ -1255,7 +1170,11 @@
         "Reward_Points_Earned": 0.401,
         "Reward_Points_Redeemed": 0.24,
         "Mobile_App_Login": 0.221,
-        "Credit_Score": -0.031
+        "Credit_Score": -0.031,
+        "Log_Annual_Income": 0.329,
+        "Log_Credit_Limit": 0.327,
+        "Log_Monthly_Spending": 0.319,
+        "Spending_To_Income_Ratio": 0.12
       },
       "EMI_Count": {
         "Age": -0.004,
@@ -1283,7 +1202,11 @@
         "Reward_Points_Earned": 0.391,
         "Reward_Points_Redeemed": 0.24,
         "Mobile_App_Login": 0.663,
-        "Credit_Score": -0.028
+        "Credit_Score": -0.028,
+        "Log_Annual_Income": 0.654,
+        "Log_Credit_Limit": 0.663,
+        "Log_Monthly_Spending": 0.694,
+        "Spending_To_Income_Ratio": 0.412
       },
       "International_Transactions": {
         "Age": -0.009,
@@ -1311,7 +1234,11 @@
         "Reward_Points_Earned": 0.665,
         "Reward_Points_Redeemed": 0.41,
         "Mobile_App_Login": 0.46,
-        "Credit_Score": 0.05
+        "Credit_Score": 0.05,
+        "Log_Annual_Income": 0.593,
+        "Log_Credit_Limit": 0.631,
+        "Log_Monthly_Spending": 0.589,
+        "Spending_To_Income_Ratio": 0.268
       },
       "Reward_Points_Earned": {
         "Age": -0.009,
@@ -1339,7 +1266,11 @@
         "Reward_Points_Earned": 1.0,
         "Reward_Points_Redeemed": 0.618,
         "Mobile_App_Login": 0.501,
-        "Credit_Score": 0.036
+        "Credit_Score": 0.036,
+        "Log_Annual_Income": 0.726,
+        "Log_Credit_Limit": 0.722,
+        "Log_Monthly_Spending": 0.746,
+        "Spending_To_Income_Ratio": 0.425
       },
       "Reward_Points_Redeemed": {
         "Age": -0.005,
@@ -1367,7 +1298,11 @@
         "Reward_Points_Earned": 0.618,
         "Reward_Points_Redeemed": 1.0,
         "Mobile_App_Login": 0.308,
-        "Credit_Score": 0.019
+        "Credit_Score": 0.019,
+        "Log_Annual_Income": 0.444,
+        "Log_Credit_Limit": 0.441,
+        "Log_Monthly_Spending": 0.458,
+        "Spending_To_Income_Ratio": 0.267
       },
       "Mobile_App_Login": {
         "Age": -0.004,
@@ -1395,7 +1330,11 @@
         "Reward_Points_Earned": 0.501,
         "Reward_Points_Redeemed": 0.308,
         "Mobile_App_Login": 1.0,
-        "Credit_Score": 0.039
+        "Credit_Score": 0.039,
+        "Log_Annual_Income": 0.753,
+        "Log_Credit_Limit": 0.762,
+        "Log_Monthly_Spending": 0.8,
+        "Spending_To_Income_Ratio": 0.487
       },
       "Credit_Score": {
         "Age": 0.0,
@@ -1423,7 +1362,139 @@
         "Reward_Points_Earned": 0.036,
         "Reward_Points_Redeemed": 0.019,
         "Mobile_App_Login": 0.039,
-        "Credit_Score": 1.0
+        "Credit_Score": 1.0,
+        "Log_Annual_Income": 0.025,
+        "Log_Credit_Limit": 0.026,
+        "Log_Monthly_Spending": 0.025,
+        "Spending_To_Income_Ratio": 0.014
+      },
+      "Log_Annual_Income": {
+        "Age": -0.007,
+        "Annual_Income": 0.855,
+        "Credit_Limit": 0.783,
+        "Card_Age_Months": -0.007,
+        "Monthly_Spending": 0.79,
+        "Monthly_Transactions": 0.667,
+        "Avg_Transaction_Value": 0.663,
+        "Online_Shopping_Spending": 0.612,
+        "Grocery_Spending": 0.677,
+        "Fuel_Spending": 0.6,
+        "Dining_Spending": 0.591,
+        "Travel_Spending": 0.519,
+        "Entertainment_Spending": 0.559,
+        "Utility_Bill_Spending": 0.628,
+        "Outstanding_Balance": 0.678,
+        "Statement_Balance": 0.706,
+        "Payment_Amount": 0.663,
+        "Payment_Ratio": 0.004,
+        "Credit_Utilization": 0.008,
+        "Cash_Advance_Amount": 0.329,
+        "EMI_Count": 0.654,
+        "International_Transactions": 0.593,
+        "Reward_Points_Earned": 0.726,
+        "Reward_Points_Redeemed": 0.444,
+        "Mobile_App_Login": 0.753,
+        "Credit_Score": 0.025,
+        "Log_Annual_Income": 1.0,
+        "Log_Credit_Limit": 0.984,
+        "Log_Monthly_Spending": 0.956,
+        "Spending_To_Income_Ratio": 0.309
+      },
+      "Log_Credit_Limit": {
+        "Age": -0.008,
+        "Annual_Income": 0.831,
+        "Credit_Limit": 0.778,
+        "Card_Age_Months": -0.005,
+        "Monthly_Spending": 0.774,
+        "Monthly_Transactions": 0.677,
+        "Avg_Transaction_Value": 0.643,
+        "Online_Shopping_Spending": 0.601,
+        "Grocery_Spending": 0.663,
+        "Fuel_Spending": 0.587,
+        "Dining_Spending": 0.58,
+        "Travel_Spending": 0.509,
+        "Entertainment_Spending": 0.547,
+        "Utility_Bill_Spending": 0.615,
+        "Outstanding_Balance": 0.674,
+        "Statement_Balance": 0.7,
+        "Payment_Amount": 0.658,
+        "Payment_Ratio": 0.005,
+        "Credit_Utilization": 0.009,
+        "Cash_Advance_Amount": 0.327,
+        "EMI_Count": 0.663,
+        "International_Transactions": 0.631,
+        "Reward_Points_Earned": 0.722,
+        "Reward_Points_Redeemed": 0.441,
+        "Mobile_App_Login": 0.762,
+        "Credit_Score": 0.026,
+        "Log_Annual_Income": 0.984,
+        "Log_Credit_Limit": 1.0,
+        "Log_Monthly_Spending": 0.95,
+        "Spending_To_Income_Ratio": 0.335
+      },
+      "Log_Monthly_Spending": {
+        "Age": -0.007,
+        "Annual_Income": 0.82,
+        "Credit_Limit": 0.76,
+        "Card_Age_Months": -0.009,
+        "Monthly_Spending": 0.821,
+        "Monthly_Transactions": 0.71,
+        "Avg_Transaction_Value": 0.684,
+        "Online_Shopping_Spending": 0.636,
+        "Grocery_Spending": 0.703,
+        "Fuel_Spending": 0.623,
+        "Dining_Spending": 0.615,
+        "Travel_Spending": 0.54,
+        "Entertainment_Spending": 0.581,
+        "Utility_Bill_Spending": 0.653,
+        "Outstanding_Balance": 0.658,
+        "Statement_Balance": 0.692,
+        "Payment_Amount": 0.651,
+        "Payment_Ratio": 0.005,
+        "Credit_Utilization": 0.007,
+        "Cash_Advance_Amount": 0.319,
+        "EMI_Count": 0.694,
+        "International_Transactions": 0.589,
+        "Reward_Points_Earned": 0.746,
+        "Reward_Points_Redeemed": 0.458,
+        "Mobile_App_Login": 0.8,
+        "Credit_Score": 0.025,
+        "Log_Annual_Income": 0.956,
+        "Log_Credit_Limit": 0.95,
+        "Log_Monthly_Spending": 1.0,
+        "Spending_To_Income_Ratio": 0.571
+      },
+      "Spending_To_Income_Ratio": {
+        "Age": -0.001,
+        "Annual_Income": 0.282,
+        "Credit_Limit": 0.292,
+        "Card_Age_Months": -0.006,
+        "Monthly_Spending": 0.486,
+        "Monthly_Transactions": 0.432,
+        "Avg_Transaction_Value": 0.393,
+        "Online_Shopping_Spending": 0.375,
+        "Grocery_Spending": 0.416,
+        "Fuel_Spending": 0.369,
+        "Dining_Spending": 0.363,
+        "Travel_Spending": 0.32,
+        "Entertainment_Spending": 0.344,
+        "Utility_Bill_Spending": 0.388,
+        "Outstanding_Balance": 0.254,
+        "Statement_Balance": 0.289,
+        "Payment_Amount": 0.275,
+        "Payment_Ratio": 0.004,
+        "Credit_Utilization": 0.001,
+        "Cash_Advance_Amount": 0.12,
+        "EMI_Count": 0.412,
+        "International_Transactions": 0.268,
+        "Reward_Points_Earned": 0.425,
+        "Reward_Points_Redeemed": 0.267,
+        "Mobile_App_Login": 0.487,
+        "Credit_Score": 0.014,
+        "Log_Annual_Income": 0.309,
+        "Log_Credit_Limit": 0.335,
+        "Log_Monthly_Spending": 0.571,
+        "Spending_To_Income_Ratio": 1.0
       }
     }
   },
@@ -1624,6 +1695,34 @@
       "is_statistically_significant": true,
       "interpretation": "Pearson r = 0.0388, p = 3.7807e-18. (Statistically Significant)"
     },
+    "Log_Annual_Income": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0247,
+      "p_value": 3.229881452102204e-08,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0247, p = 3.2299e-08. (Statistically Significant)"
+    },
+    "Log_Credit_Limit": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0264,
+      "p_value": 3.6824846456730796e-09,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0264, p = 3.6825e-09. (Statistically Significant)"
+    },
+    "Log_Monthly_Spending": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0252,
+      "p_value": 1.751903594114319e-08,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0252, p = 1.7519e-08. (Statistically Significant)"
+    },
+    "Spending_To_Income_Ratio": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.0137,
+      "p_value": 0.002265585467076429,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.0137, p = 2.2656e-03. (Statistically Significant)"
+    },
     "significant_predictors": [
       "Annual_Income",
       "Occupation",
@@ -1650,7 +1749,11 @@
       "International_Transactions",
       "Reward_Points_Earned",
       "Reward_Points_Redeemed",
-      "Mobile_App_Login"
+      "Mobile_App_Login",
+      "Log_Annual_Income",
+      "Log_Credit_Limit",
+      "Log_Monthly_Spending",
+      "Spending_To_Income_Ratio"
     ]
   },
   "predictive_modeling_blueprint": {
@@ -1676,11 +1779,11 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Credit_Score (Regression). Use robust cross-validation on 50000 rows x 30 columns."
+    "executive_summary": "Target: Credit_Score (Regression). Use robust cross-validation on 50000 rows x 34 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 50000 rows and 30 columns.",
+      "Dataset contains 50000 rows and 34 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
@@ -1709,7 +1812,11 @@
       "International_Transactions",
       "Reward_Points_Earned",
       "Reward_Points_Redeemed",
-      "Mobile_App_Login"
+      "Mobile_App_Login",
+      "Log_Annual_Income",
+      "Log_Credit_Limit",
+      "Log_Monthly_Spending",
+      "Spending_To_Income_Ratio"
     ]
   }
 }

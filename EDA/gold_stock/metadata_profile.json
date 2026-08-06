@@ -1,0 +1,90 @@
+{
+    "dataset_name": "gold_stock.csv",
+    "dimensions": {
+        "rows": 2970,
+        "columns": 6
+    },
+    "missing_values_summary": {
+        "Close": "1 (0.0%)",
+        "High": "1 (0.0%)",
+        "Low": "1 (0.0%)",
+        "Open": "1 (0.0%)",
+        "Volume": "1 (0.0%)"
+    },
+    "schema": {
+        "Price": {
+            "type": "object",
+            "cardinality": 2970,
+            "key_metric": "Top Values: '2025-12-31': 1, 'Ticker': 1, 'Date': 1"
+        },
+        "Close": {
+            "type": "object",
+            "cardinality": 2468,
+            "key_metric": "Top Values: '3.75582218170166': 9, '4.889729022979736': 8, '4.180569171905518': 7"
+        },
+        "High": {
+            "type": "object",
+            "cardinality": 2918,
+            "key_metric": "Top Values: '4.7392754554748535': 3, '4.7956953048706055': 3, '3.7915920532161964': 3"
+        },
+        "Low": {
+            "type": "object",
+            "cardinality": 2939,
+            "key_metric": "Top Values: '3.75582218170166': 3, '4.60762882232666': 3, '4.7392754554748535': 2"
+        },
+        "Open": {
+            "type": "object",
+            "cardinality": 2951,
+            "key_metric": "Top Values: '3.8452458381652836': 2, '4.7392754554748535': 2, '4.889728484639125': 2"
+        },
+        "Volume": {
+            "type": "object",
+            "cardinality": 1496,
+            "key_metric": "Top Values: '4200': 18, '4400': 17, '4800': 15"
+        }
+    },
+    "columns": [
+        {
+            "column": "Price",
+            "dtype": "object",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2970
+        },
+        {
+            "column": "Close",
+            "dtype": "object",
+            "missing_count": 1,
+            "missing_pct": 0.03,
+            "cardinality": 2468
+        },
+        {
+            "column": "High",
+            "dtype": "object",
+            "missing_count": 1,
+            "missing_pct": 0.03,
+            "cardinality": 2918
+        },
+        {
+            "column": "Low",
+            "dtype": "object",
+            "missing_count": 1,
+            "missing_pct": 0.03,
+            "cardinality": 2939
+        },
+        {
+            "column": "Open",
+            "dtype": "object",
+            "missing_count": 1,
+            "missing_pct": 0.03,
+            "cardinality": 2951
+        },
+        {
+            "column": "Volume",
+            "dtype": "object",
+            "missing_count": 1,
+            "missing_pct": 0.03,
+            "cardinality": 1496
+        }
+    ]
+}

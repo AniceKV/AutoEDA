@@ -178,26 +178,6 @@
       "outlier_percentage": 7.41,
       "action_taken": "profile"
     },
-    "SibSp": {
-      "q1": 0.0,
-      "q3": 1.0,
-      "iqr": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 46,
-      "outlier_percentage": 5.16,
-      "action_taken": "profile"
-    },
-    "Parch": {
-      "q1": 0.0,
-      "q3": 0.0,
-      "iqr": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 213,
-      "outlier_percentage": 23.91,
-      "action_taken": "profile"
-    },
     "Fare": {
       "q1": 7.9104,
       "q3": 31.0,

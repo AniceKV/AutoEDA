@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\fertility.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\fertility.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -7,24 +7,7 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: [
-  {
-    "feature_name": "Age_SittingHours_interaction",
-    "formula": "Age * Number of hours spent sitting per day",
-    "data_type": "int64",
-    "rationale": "Capture whether sedentary exposure has different implications across age levels.",
-    "correlation_with_target": null
-  },
-  {
-    "feature_name": "Age_to_SittingHours_ratio",
-    "formula": "Age / (Number of hours spent sitting per day + eps)",
-    "data_type": "float64",
-    "rationale": "Create a normalized age-to-sedentary-time measure while avoiding division by zero.",
-    "correlation_with_target": null
-  }
-]
-# Feature 'Age_SittingHours_interaction': Age * Number of hours spent sitting per day
-# Feature 'Age_to_SittingHours_ratio': Age / (Number of hours spent sitting per day + eps)
+# Engineered Features Specs: []
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -50,7 +33,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 12 columns."
+  "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 10 columns."
 }
 
 if __name__ == '__main__':

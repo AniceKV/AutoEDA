@@ -167,6 +167,8 @@ def main():
         height=100
     )
 
+    generate_summary_toggle = st.sidebar.toggle("Generate Executive Summary Report", value=True, help="Enable to generate the LLM executive summary report after pipeline completion.")
+
     run_btn = st.sidebar.button("Run AutoEDA Pipeline", type="primary", use_container_width=True)
 
     if run_btn and selected_csv_path:
@@ -174,14 +176,24 @@ def main():
             res = run_tool_based_eda(
                 data_path=selected_csv_path,
                 user_request=user_task_request,
-                workspace_dir="./sandbox_run"
+                workspace_dir="./sandbox_run",
+                generate_summary=generate_summary_toggle
             )
             st.session_state["pipeline_ran"] = True
             st.toast("Pipeline run completed successfully!")
 
-    # Resolve active dataset artifacts
-    dataset_name = extract_dataset_name("./sandbox_run") if os.path.exists("./sandbox_run") else None
-    eda_dir = os.path.join("EDA", dataset_name) if dataset_name else "./sandbox_run"
+    # Resolve active dataset artifacts strictly matching the currently selected dataset
+    current_dataset_name = os.path.splitext(os.path.basename(selected_csv_path))[0] if selected_csv_path else None
+    
+    eda_dir = None
+    if current_dataset_name:
+        candidate_eda_dir = os.path.join("EDA", current_dataset_name)
+        if os.path.exists(candidate_eda_dir):
+            eda_dir = candidate_eda_dir
+        elif os.path.exists("./sandbox_run"):
+            sandbox_ds = extract_dataset_name("./sandbox_run")
+            if sandbox_ds == current_dataset_name:
+                eda_dir = "./sandbox_run"
     
     # Check if dataset is loaded
     if selected_csv_path and os.path.exists(selected_csv_path):
@@ -190,7 +202,7 @@ def main():
         
         # High-level Dataset Metrics Bar (YData Overview Style)
         num_rows, num_cols = df_raw.shape
-        num_numeric = sum(pd.api.types.is_numeric_dtype(df_raw[c]) for c in df_raw.columns)
+        num_numeric = sum(pd.api.types.is_numeric_dtype(df_raw[c]) and not pd.api.types.is_bool_dtype(df_raw[c]) for c in df_raw.columns)
         num_cat = num_cols - num_numeric
         total_cells = num_rows * num_cols
         missing_cells = df_raw.isnull().sum().sum()
@@ -227,7 +239,7 @@ def main():
             for s in filtered_stats:
                 col_name = s["column"]
                 dtype_str = s["dtype"]
-                is_num = pd.api.types.is_numeric_dtype(df_raw[col_name])
+                is_num = pd.api.types.is_numeric_dtype(df_raw[col_name]) and not pd.api.types.is_bool_dtype(df_raw[col_name])
                 missing_cnt = s["missing_count"]
                 missing_pct_val = s["missing_pct"]
                 cardinality = s["cardinality"]
@@ -263,11 +275,9 @@ def main():
                     with v_col2:
                         st.markdown("#### Distribution Asset")
                         clean_col = re.sub(r'\W+', '_', col_name).strip('_')
-                        dist_img = os.path.join(eda_dir, f"dist_{clean_col}.png")
-                        if not os.path.exists(dist_img):
-                            dist_img = os.path.join("./sandbox_run", f"dist_{clean_col}.png")
+                        dist_img = os.path.join(eda_dir, f"dist_{clean_col}.png") if eda_dir else ""
                             
-                        if os.path.exists(dist_img):
+                        if dist_img and os.path.exists(dist_img):
                             st.image(dist_img, caption=f"Distribution of {col_name}", use_container_width=True)
                         else:
                             st.info(f"No rendered distribution PNG asset found for '{col_name}'. Run the pipeline to generate.")
@@ -277,7 +287,7 @@ def main():
         # -------------------------------------------------------------
         with t_plots:
             st.subheader("Generated Visualization Assets")
-            if os.path.exists(eda_dir):
+            if eda_dir and os.path.exists(eda_dir):
                 all_pngs = sorted(glob.glob(os.path.join(eda_dir, "*.png")))
                 
                 if all_pngs:
@@ -326,25 +336,25 @@ def main():
                 else:
                     st.info("No visual PNG assets generated yet. Click 'Run AutoEDA Pipeline' in the sidebar.")
             else:
-                st.info("Run the AutoEDA pipeline to export visual assets.")
+                st.info("Run the AutoEDA pipeline to export visual assets for this dataset.")
 
         # -------------------------------------------------------------
         # TAB 3: EXECUTIVE SUMMARY REPORT
         # -------------------------------------------------------------
         with t_summary:
-            summary_file = os.path.join(eda_dir, "summary_report.md")
-            if os.path.exists(summary_file):
+            summary_file = os.path.join(eda_dir, "summary_report.md") if eda_dir else ""
+            if summary_file and os.path.exists(summary_file):
                 with open(summary_file, "r", encoding="utf-8") as f:
                     st.markdown(f.read(), unsafe_allow_html=True)
             else:
-                st.info("Run the pipeline to generate the markdown executive summary report.")
+                st.info("Executive Summary Report was not generated for this run. Enable the 'Generate Executive Summary Report' toggle in the sidebar before running the pipeline to generate it.")
 
         # -------------------------------------------------------------
         # TAB 4: METRICS & MODELING BLUEPRINT
         # -------------------------------------------------------------
         with t_metrics:
-            metrics_file = os.path.join(eda_dir, "metrics.json")
-            if os.path.exists(metrics_file):
+            metrics_file = os.path.join(eda_dir, "metrics.json") if eda_dir else ""
+            if metrics_file and os.path.exists(metrics_file):
                 with open(metrics_file, "r", encoding="utf-8") as f:
                     metrics_json = json.load(f)
                 
@@ -400,14 +410,14 @@ def main():
                 with m_sub3:
                     st.json(metrics_json)
             else:
-                st.info("Run the pipeline to generate metrics.json.")
+                st.info("Run the pipeline to generate metrics.json for this dataset.")
 
         # -------------------------------------------------------------
         # TAB 5: GENERATED PRODUCTION CODE
         # -------------------------------------------------------------
         with t_script:
-            script_path = os.path.join(eda_dir, "generated_analysis.py")
-            if os.path.exists(script_path):
+            script_path = os.path.join(eda_dir, "generated_analysis.py") if eda_dir else ""
+            if script_path and os.path.exists(script_path):
                 st.subheader("LLM-Coded Production Feature Engineering & Predictive Blueprint Script")
                 with open(script_path, "r", encoding="utf-8") as f:
                     code_text = f.read()
@@ -419,14 +429,14 @@ def main():
                     mime="text/x-python"
                 )
             else:
-                st.info("Generated analysis script will be rendered here after running the pipeline.")
+                st.info("Generated analysis script will be rendered here after running the pipeline for this dataset.")
 
         # -------------------------------------------------------------
         # TAB 6: STATEFUL DATA VERSION CONTROL (DVC)
         # -------------------------------------------------------------
         with t_dvc:
             st.subheader("DVC Stateful Execution Memory Checkpoints")
-            dvc_files = sorted(glob.glob(os.path.join(eda_dir, "df_state_*.csv")))
+            dvc_files = sorted(glob.glob(os.path.join(eda_dir, "df_state_*.csv"))) if eda_dir and os.path.exists(eda_dir) else []
             
             if dvc_files:
                 for dvc_f in dvc_files:
@@ -436,7 +446,7 @@ def main():
                         st.markdown(f"Dimensions: `{len(df_s)}` rows x `{len(df_s.columns)}` columns")
                         st.dataframe(df_s.head(10), use_container_width=True)
             else:
-                st.info("DVC state files will appear here.")
+                st.info("DVC state files will appear here after running the pipeline for this dataset.")
     else:
         st.info("Upload a dataset or choose a sample in the sidebar to view YData-style profiling.")
 

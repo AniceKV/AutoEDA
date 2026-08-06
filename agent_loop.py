@@ -23,7 +23,7 @@ client = OpenAI(
     api_key=api_key,
 )
 
-MODEL_NAME = os.getenv("EDA_MODEL", "openai/gpt-5.6-luna-pro")
+MODEL_NAME = os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
 
 
 def parse_llm_json_plan(raw_text: str) -> List[Dict[str, Any]]:
@@ -72,7 +72,7 @@ def validate_tool_plan(plan: Any) -> Tuple[bool, Optional[str]]:
     return True, None
 
 
-def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "./sandbox_run") -> Dict[str, Any]:
+def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "./sandbox_run", generate_summary: bool = True) -> Dict[str, Any]:
     """
     Tool-Based Orchestrator for AutoEDA:
     1. Runs pre-profiler to produce metadata_profile.json
@@ -114,7 +114,7 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         "3. Include the following EDA sequence:\n"
         "   - 'impute_missing_data'\n"
         "   - 'detect_and_handle_outliers'\n"
-        "   - 'plot_feature_distributions': YOU MUST DECIDE the important columns from metadata and pass them in 'columns' (e.g. ['col1', 'col2', ...]).\n"
+        "   - 'plot_feature_distributions': Pass all dataset columns in 'columns' (or omit 'columns' to plot distributions for ALL columns in the dataset).\n"
         "   - 'engineer_features': Pass custom high-signal domain transformations in 'feature_specs'.\n"
         "   - 'run_statistical_hypothesis_tests'\n"
         "   - 'plot_correlation_matrix'\n"
@@ -277,7 +277,7 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             print(f"[agent_loop] Triggering automatic DVC state rollback...")
             df, _ = data_store.rollback()
 
-    # 5. Generate LLM-coded generated_analysis.py script containing domain feature engineering & predictive modeling blueprint
+    # 5. Generate LLM-coded generated_analysis.py script containing domain feature engineering & predictive blueprint
     print("\n4. Generating LLM-coded generated_analysis.py script...")
     script_content = [
         f"DATA_FILEPATH = r'{abs_data_path}'",
@@ -325,13 +325,19 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         output_dir=workspace_dir
     )
 
-    # 6. Generate Summary Report
-    print("6. Invoking summary_generator...")
+    # 6. Clean export target directory first to prevent stale artifact persistence
     dataset_name = extract_dataset_name(workspace_dir)
     export_dir = os.path.join("EDA", dataset_name)
+    if os.path.exists(export_dir):
+        shutil.rmtree(export_dir)
     os.makedirs(export_dir, exist_ok=True)
 
-    summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
+    # Generate Summary Report (Optional based on toggle)
+    if generate_summary:
+        print("6. Invoking summary_generator...")
+        summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
+    else:
+        print("6. Skipping summary_generator (generate_summary toggle is OFF)...")
     
     # 7. Copy all assets from sandbox_run to EDA/{dataset_name}/
     print(f"7. Exporting sandbox assets to: {export_dir}...")

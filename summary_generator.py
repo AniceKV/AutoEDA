@@ -247,7 +247,7 @@ def generate_llm_summary(data: Dict[str, Any]) -> str:
             base_url="https://openrouter.ai/api/v1" if os.getenv("OPENROUTER_API_KEY") else None,
             api_key=api_key,
         )
-        model = os.getenv("SUMMARY_MODEL", "inclusionai/ling-3.0-flash:free")
+        model = os.getenv("SUMMARY_MODEL", "google/gemini-3.6-flash")
 
         prompt = (
             "You are a Senior Lead Data Scientist summarizing the outputs of an automated Exploratory Data Analysis (EDA) pipeline.\n"

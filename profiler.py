@@ -18,33 +18,38 @@ def calculate_column_stats(df: pd.DataFrame) -> list:
         cardinality = df[col].nunique()
         
         properties = []
-        # Use pandas' official robust helper instead of numpy.issubdtype to avoid extension dtype errors
-        if pd.api.types.is_numeric_dtype(df[col]):
-            # Numeric column metrics
-            col_min = df[col].min()
-            col_max = df[col].max()
-            col_mean = df[col].mean()
-            col_std = df[col].std()
-            col_median = df[col].median()
-            col_q1 = df[col].quantile(0.25)
-            col_q3 = df[col].quantile(0.75)
-            col_iqr = col_q3 - col_q1 if pd.notnull(col_q3) and pd.notnull(col_q1) else None
-            col_skew = df[col].skew()
-            
-            # Format outputs gracefully checking for null values
-            min_str = f"{col_min:.2f}" if pd.notnull(col_min) and isinstance(col_min, (int, float, np.number)) else str(col_min)
-            max_str = f"{col_max:.2f}" if pd.notnull(col_max) and isinstance(col_max, (int, float, np.number)) else str(col_max)
-            mean_str = f"{col_mean:.2f}" if pd.notnull(col_mean) else "N/A"
-            median_str = f"{col_median:.2f}" if pd.notnull(col_median) else "N/A"
-            
-            properties.append(f"Range: [{min_str} to {max_str}]")
-            properties.append(f"Mean: {mean_str}")
-            properties.append(f"Median: {median_str}")
-            if pd.notnull(col_skew) and abs(col_skew) > 1:
-                properties.append(f"Highly Skewed ({col_skew:.2f})")
-        else:
+        # Exclude boolean types as pandas considers bool numeric, but numpy quantile fails on boolean subtract
+        is_num = pd.api.types.is_numeric_dtype(df[col]) and not pd.api.types.is_bool_dtype(df[col])
+        if is_num:
+            try:
+                # Numeric column metrics
+                col_min = df[col].min()
+                col_max = df[col].max()
+                col_mean = df[col].mean()
+                col_std = df[col].std()
+                col_median = df[col].median()
+                col_q1 = df[col].quantile(0.25)
+                col_q3 = df[col].quantile(0.75)
+                col_iqr = col_q3 - col_q1 if pd.notnull(col_q3) and pd.notnull(col_q1) else None
+                col_skew = df[col].skew()
+                
+                # Format outputs gracefully checking for null values
+                min_str = f"{col_min:.2f}" if pd.notnull(col_min) and isinstance(col_min, (int, float, np.number)) else str(col_min)
+                max_str = f"{col_max:.2f}" if pd.notnull(col_max) and isinstance(col_max, (int, float, np.number)) else str(col_max)
+                mean_str = f"{col_mean:.2f}" if pd.notnull(col_mean) and isinstance(col_mean, (int, float, np.number)) else "N/A"
+                median_str = f"{col_median:.2f}" if pd.notnull(col_median) and isinstance(col_median, (int, float, np.number)) else "N/A"
+                
+                properties.append(f"Range: [{min_str} to {max_str}]")
+                properties.append(f"Mean: {mean_str}")
+                properties.append(f"Median: {median_str}")
+                if pd.notnull(col_skew) and abs(col_skew) > 1:
+                    properties.append(f"Highly Skewed ({col_skew:.2f})")
+            except Exception:
+                is_num = False
+
+        if not is_num:
             col_min = col_max = col_mean = col_std = col_median = col_q1 = col_q3 = col_iqr = col_skew = None
-            # Categorical/Object column metrics
+            # Categorical/Object/Boolean column metrics
             top_values = df[col].value_counts().head(3).to_dict()
             val_strs = [f"'{k}': {v}" for k, v in top_values.items()]
             properties.append(f"Top Values: {', '.join(val_strs)}")

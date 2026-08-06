@@ -1,9 +1,9 @@
 {
   "dataset_overview": {
-    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\fertility.csv",
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\fertility.csv",
     "shape": {
       "rows": 100,
-      "columns": 12
+      "columns": 10
     },
     "target_column": "Diagnosis",
     "column_summary": {
@@ -56,16 +56,6 @@
         "dtype": "object",
         "missing_count": 0,
         "cardinality": 2
-      },
-      "Age_SittingHours_interaction": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 43
-      },
-      "Age_to_SittingHours_ratio": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 47
       }
     }
   },
@@ -171,80 +161,24 @@
       "action_taken": "profile"
     }
   },
-  "engineered_features": [
-    {
-      "feature_name": "Age_SittingHours_interaction",
-      "formula": "Age * Number of hours spent sitting per day",
-      "data_type": "int64",
-      "rationale": "Capture whether sedentary exposure has different implications across age levels.",
-      "correlation_with_target": null
-    },
-    {
-      "feature_name": "Age_to_SittingHours_ratio",
-      "formula": "Age / (Number of hours spent sitting per day + eps)",
-      "data_type": "float64",
-      "rationale": "Create a normalized age-to-sedentary-time measure while avoiding division by zero.",
-      "correlation_with_target": null
-    }
-  ],
+  "engineered_features": [],
   "correlation_analysis": {
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
       {
-        "feature_1": "Number of hours spent sitting per day",
-        "feature_2": "Age_SittingHours_interaction",
-        "correlation": 0.9998
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Age_to_SittingHours_ratio",
-        "correlation": 0.3434
-      },
-      {
-        "feature_1": "Number of hours spent sitting per day",
-        "feature_2": "Age_to_SittingHours_ratio",
-        "correlation": -0.1811
-      },
-      {
-        "feature_1": "Age_SittingHours_interaction",
-        "feature_2": "Age_to_SittingHours_ratio",
-        "correlation": -0.1767
-      },
-      {
         "feature_1": "Age",
         "feature_2": "Number of hours spent sitting per day",
         "correlation": -0.0466
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Age_SittingHours_interaction",
-        "correlation": -0.0305
       }
     ],
     "correlation_matrix_text": {
       "Age": {
         "Age": 1.0,
-        "Number of hours spent sitting per day": -0.047,
-        "Age_SittingHours_interaction": -0.03,
-        "Age_to_SittingHours_ratio": 0.343
+        "Number of hours spent sitting per day": -0.047
       },
       "Number of hours spent sitting per day": {
         "Age": -0.047,
-        "Number of hours spent sitting per day": 1.0,
-        "Age_SittingHours_interaction": 1.0,
-        "Age_to_SittingHours_ratio": -0.181
-      },
-      "Age_SittingHours_interaction": {
-        "Age": -0.03,
-        "Number of hours spent sitting per day": 1.0,
-        "Age_SittingHours_interaction": 1.0,
-        "Age_to_SittingHours_ratio": -0.177
-      },
-      "Age_to_SittingHours_ratio": {
-        "Age": 0.343,
-        "Number of hours spent sitting per day": -0.181,
-        "Age_SittingHours_interaction": -0.177,
-        "Age_to_SittingHours_ratio": 1.0
+        "Number of hours spent sitting per day": 1.0
       }
     }
   },
@@ -312,20 +246,6 @@
       "is_statistically_significant": false,
       "interpretation": "T-statistic = -0.9024, p = 3.6911e-01. (Not Significant)"
     },
-    "Age_SittingHours_interaction": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": -0.8751,
-      "p_value": 0.38371493201277695,
-      "is_statistically_significant": false,
-      "interpretation": "T-statistic = -0.8751, p = 3.8371e-01. (Not Significant)"
-    },
-    "Age_to_SittingHours_ratio": {
-      "test_name": "Two-Sample Welch T-Test",
-      "statistic": 0.4771,
-      "p_value": 0.6420606168037615,
-      "is_statistically_significant": false,
-      "interpretation": "T-statistic = 0.4771, p = 6.4206e-01. (Not Significant)"
-    },
     "significant_predictors": []
   },
   "predictive_modeling_blueprint": {
@@ -351,11 +271,11 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 12 columns."
+    "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 10 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 100 rows and 12 columns.",
+      "Dataset contains 100 rows and 10 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": []
