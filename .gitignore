@@ -7,7 +7,8 @@ temp_uploads/
 sandbox_run/
 tests/sandbox_test/
 tests/test_sandbox/
-.cache/
+.cache/autoeda
+./cache
 app.py
 django_app/.sessions/
 django_app/staticfiles/
