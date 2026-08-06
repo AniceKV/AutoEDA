@@ -41,8 +41,8 @@ def _downsample_for_viz(df: pd.DataFrame, max_samples: int = 10000, random_state
 class StatefulDataStore:
     """
     Manages stateful execution memory and DataFrame version control (DVC pattern).
-    Maintains checkpoints in memory using df.copy().
-    Allows automatic rollback if a tool step corrupts or invalidates the dataset.
+    Maintains checkpoints in memory using df.copy() and copy.deepcopy(agent_state).
+    Allows automatic rollback if a tool step corrupts or invalidates the dataset or metadata.
     """
     def __init__(self, workspace_dir: str = "./sandbox_run"):
         self.workspace_dir = workspace_dir
@@ -50,29 +50,37 @@ class StatefulDataStore:
         self.history: List[Dict[str, Any]] = []
         os.makedirs(self.workspace_dir, exist_ok=True)
 
-    def _make_entry(self, version: int, df: pd.DataFrame, action: str) -> dict:
-        """Build a standardized history entry dict."""
-        return {"version": version, "df": df.copy(), "rows": len(df), "cols": len(df.columns), "action": action}
+    def _make_entry(self, version: int, df: pd.DataFrame, agent_state: dict, action: str) -> dict:
+        import copy
+        return {
+            "version": version,
+            "df": df.copy(),
+            "agent_state": copy.deepcopy(agent_state),
+            "rows": len(df),
+            "cols": len(df.columns),
+            "action": action
+        }
 
-    def set_initial_state(self, df: pd.DataFrame) -> str:
+    def set_initial_state(self, df: pd.DataFrame, agent_state: dict) -> str:
         self.version = 0
-        self.history = []
-        self.history.append(self._make_entry(0, df, "initial_load"))
+        self.history = [self._make_entry(0, df, agent_state, "initial_load")]
         print(f"[DataStore] Initialized state v0 ({len(df)} rows, {len(df.columns)} cols) in memory.")
         return "memory:v0"
 
-    def save_checkpoint(self, df: pd.DataFrame, step_name: str) -> str:
+    def save_checkpoint(self, df: pd.DataFrame, agent_state: dict, step_name: str) -> str:
         if df is None or len(df) == 0 or len(df.columns) == 0:
             raise ValueError(f"Cannot checkpoint invalid or empty DataFrame after step '{step_name}'.")
         self.version += 1
-        self.history.append(self._make_entry(self.version, df, step_name))
+        self.history.append(self._make_entry(self.version, df, agent_state, step_name))
         print(f"[DataStore] Saved checkpoint v{self.version} after '{step_name}' ({len(df)} rows, {len(df.columns)} cols) in memory.")
         return f"memory:v{self.version}"
 
-    def rollback(self) -> Tuple[pd.DataFrame, int]:
+    def rollback(self) -> Tuple[pd.DataFrame, dict, int]:
+        import copy
         if len(self.history) <= 1:
             print("[DataStore] Cannot rollback further. At initial state v0.")
-            return self.history[0]["df"].copy(), 0
+            latest_state = self.history[0]
+            return latest_state["df"].copy(), copy.deepcopy(latest_state["agent_state"]), 0
         
         bad_state = self.history.pop()
         print(f"[DataStore] Rolling back from corrupted state v{bad_state['version']} ({bad_state['action']})...")
@@ -80,8 +88,9 @@ class StatefulDataStore:
         latest_state = self.history[-1]
         self.version = latest_state["version"]
         restored_df = latest_state["df"].copy()
+        restored_agent_state = copy.deepcopy(latest_state["agent_state"])
         print(f"[DataStore] Successfully rolled back to state v{self.version} ({latest_state['action']})")
-        return restored_df, self.version
+        return restored_df, restored_agent_state, self.version
 
     def purge_intermediate_states(self):
         """
@@ -624,36 +633,41 @@ def _render_bivariate_axes(
     """
     df_plot = df.copy()
     
-    # Bin numeric columns with > 15 unique values into 10 ranges max
-    for col in [x_col, y_col, hue_col]:
-        if col and col in df_plot.columns:
-            if _is_numeric_col(df_plot[col]) and df_plot[col].nunique() > 15:
-                df_plot[col] = pd.cut(df_plot[col], bins=min(10, df_plot[col].nunique())).astype(str)
-
+    # 1. Determine original types first
     x_is_num = _is_numeric_col(df_plot[x_col])
     y_is_num = _is_numeric_col(df_plot[y_col])
+    
+    # 2. Local binning specifically for categorical/mixed plots
+    def _bin_series(series):
+        if _is_numeric_col(series) and series.nunique() > 15:
+            return pd.cut(series, bins=min(10, series.nunique())).astype(str)
+        return series
 
     if x_is_num and y_is_num:
+        # Scatter/Regression Plot (Preserves raw float/int values!)
         if hue_col:
             sns.scatterplot(data=df_plot, x=x_col, y=y_col, hue=hue_col, palette="Set1", alpha=0.7, ax=ax)
         sns.regplot(data=df_plot, x=x_col, y=y_col, scatter=(hue_col is None),
                     scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
         ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
+        
     elif not x_is_num and y_is_num:
-        if hue_col:
-            sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
-        else:
-            sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=x_col, palette="Set2", legend=False, ax=ax)
+        # Bin the categorical x-axis if it is actually numeric
+        df_plot[x_col] = _bin_series(df_plot[x_col])
+        sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=hue_col if hue_col else x_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
+        
     elif x_is_num and not y_is_num:
-        if hue_col:
-            sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
-        else:
-            sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=y_col, palette="Set2", legend=False, ax=ax)
+        df_plot[y_col] = _bin_series(df_plot[y_col])
+        sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=hue_col if hue_col else y_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
+        
     else:
+        # Both categorical
+        df_plot[x_col] = _bin_series(df_plot[x_col])
+        df_plot[y_col] = _bin_series(df_plot[y_col])
         sns.countplot(data=df_plot, x=x_col, hue=y_col, palette="Set1", ax=ax)
         ax.set_title(f"Categorical: {x_col} by {y_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)

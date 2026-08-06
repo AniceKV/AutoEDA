@@ -104,16 +104,6 @@ def run_tool_based_eda(
         print("1. Running pre-profiler...")
         profile_summary = run_and_save_profile(data_path=abs_data_path, output_dir=workspace_dir)
         
-        df = pd.read_csv(abs_data_path)
-        data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
-        data_store.set_initial_state(df)
-        
-        print("1b. Pre-generating distribution plot assets for all variables...")
-        try:
-            tools.plot_feature_distributions(df, output_dir=workspace_dir)
-        except Exception as e:
-            print(f"[agent_loop] Warning: Error pre-generating distribution plots: {e}")
-        
         agent_state = {
             "target_col": None,
             "imputation_res": None,
@@ -124,6 +114,16 @@ def run_tool_based_eda(
             "hypothesis_res": None,
             "blueprint_res": None
         }
+
+        df = pd.read_csv(abs_data_path)
+        data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
+        data_store.set_initial_state(df, agent_state)
+        
+        print("1b. Pre-generating distribution plot assets for all variables...")
+        try:
+            tools.plot_feature_distributions(df, output_dir=workspace_dir)
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating distribution plots: {e}")
         
         user_prompt = (
             f"### PRE-COMPUTED DATASET METADATA:\n"
@@ -157,7 +157,7 @@ def run_tool_based_eda(
             df = pd.read_csv(abs_data_path)
             
         data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
-        data_store.set_initial_state(df)
+        data_store.set_initial_state(df, agent_state)
         
         if user_request:
             conversation_history.append({"role": "user", "content": user_request})
@@ -278,12 +278,12 @@ def run_tool_based_eda(
             try:
                 if tool_name == "impute_missing_data":
                     df, agent_state["imputation_res"] = tools.impute_missing_data(df, **args)
-                    data_store.save_checkpoint(df, "impute_missing_data")
+                    data_store.save_checkpoint(df, agent_state, "impute_missing_data")
                     step_results.append(f"impute_missing_data successful. Summary: {agent_state['imputation_res']}")
                     
                 elif tool_name == "detect_and_handle_outliers":
                     df, agent_state["outlier_res"] = tools.detect_and_handle_outliers(df, **args)
-                    data_store.save_checkpoint(df, "detect_and_handle_outliers")
+                    data_store.save_checkpoint(df, agent_state, "detect_and_handle_outliers")
                     step_results.append(f"detect_and_handle_outliers successful. Outlier stats collected.")
                     
                 elif tool_name == "engineer_features":
@@ -293,7 +293,7 @@ def run_tool_based_eda(
                     if not agent_state["engineered_res"]:
                         agent_state["engineered_res"] = []
                     agent_state["engineered_res"].extend(engineered)
-                    data_store.save_checkpoint(df, "engineer_features")
+                    data_store.save_checkpoint(df, agent_state, "engineer_features")
                     step_results.append(f"engineer_features successful. Generated {len(engineered)} features.")
                     
                 elif tool_name == "run_statistical_hypothesis_tests":
@@ -335,7 +335,7 @@ def run_tool_based_eda(
                     
             except Exception as e:
                 print(f"[agent_loop] Error executing step {idx} ({tool_name}): {e}")
-                df, _ = data_store.rollback()
+                df, agent_state, _ = data_store.rollback()
                 step_results.append(f"Error in {tool_name}: {e}. State rolled back.")
                 
         agent_plan_log.append({
