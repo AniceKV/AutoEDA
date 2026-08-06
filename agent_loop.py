@@ -13,13 +13,13 @@ from summary_generator import create_summary, extract_dataset_name
 
 load_dotenv(override=True)
 
-api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENROUTER_API_KEY")
 if not api_key:
-    raise ValueError("OPENROUTER_API_KEY or OPENAI_API_KEY is not set. Please set it in your environment or .env file.")
+    raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your environment or .env file.")
 
-# Initialize OpenAI client for OpenRouter or OpenAI
+# Initialize OpenRouter API client
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1" if os.getenv("OPENROUTER_API_KEY") else None,
+    base_url="https://openrouter.ai/api/v1",
     api_key=api_key,
 )
 

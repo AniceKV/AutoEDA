@@ -5,12 +5,12 @@ import re
 from typing import Dict, Any, List, Optional
 from dotenv import load_dotenv
 
-# Try importing OpenAI for optional LLM synthesis
+# Try importing OpenAI client module for OpenRouter API synthesis
 try:
     from openai import OpenAI
-    HAS_OPENAI = True
+    HAS_OPENROUTER = True
 except ImportError:
-    HAS_OPENAI = False
+    HAS_OPENROUTER = False
 
 load_dotenv(override=True)
 
@@ -234,17 +234,17 @@ def generate_template_summary(data: Dict[str, Any]) -> str:
 
 def generate_llm_summary(data: Dict[str, Any]) -> str:
     """
-    Uses OpenRouter / OpenAI API to synthesize an executive summary report
+    Uses OpenRouter API to synthesize an executive summary report
     from all created files (excluding generated_analysis.py).
     """
-    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        print("[summary_generator] API Key not found. Falling back to template summary.")
+        print("[summary_generator] OPENROUTER_API_KEY not found. Falling back to template summary.")
         return generate_template_summary(data)
 
     try:
         client = OpenAI(
-            base_url="https://openrouter.ai/api/v1" if os.getenv("OPENROUTER_API_KEY") else None,
+            base_url="https://openrouter.ai/api/v1",
             api_key=api_key,
         )
         model = os.getenv("SUMMARY_MODEL", "google/gemini-3.6-flash")
@@ -333,7 +333,7 @@ def create_summary(
     print(f"Found {len(data['files_scanned'])} files: {data['files_scanned']}")
     print(f"Explicitly excluded: {data['excluded_files']}")
 
-    if use_llm and HAS_OPENAI and (os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")):
+    if use_llm and HAS_OPENROUTER and os.getenv("OPENROUTER_API_KEY"):
         print("Generating summary using LLM synthesis...")
         report_md = generate_llm_summary(data)
     else:
