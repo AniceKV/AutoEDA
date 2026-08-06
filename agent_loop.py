@@ -13,7 +13,7 @@ from summary_generator import create_summary, extract_dataset_name
 
 load_dotenv(override=True)
 
-api_key =  st.secrets["OPENROUTER_API_KEY"] or api_key = os.getenv("OPENROUTER_API_KEY")
+api_key =  st.secrets["OPENROUTER_API_KEY"] or os.getenv("OPENROUTER_API_KEY")
 if not api_key:
     raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your environment or .env file.")
 
