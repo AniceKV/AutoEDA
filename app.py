@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for OpenRouter AI Design Aesthetics (Dark Obsidian, Glassmorphism, Electric Indigo Gradients)
+# Custom CSS for Modern Cyber-Minimalist Aesthetic & Zero Text Clutter Layout
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
@@ -34,12 +34,12 @@ st.markdown("""
     }
     
     .stApp {
-        background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.09) 0%, rgba(8, 11, 17, 1) 75%);
+        background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, rgba(8, 11, 17, 1) 75%);
     }
 
     .main .block-container {
-        padding-top: 1.2rem;
-        padding-bottom: 3rem;
+        padding-top: 1rem;
+        padding-bottom: 2.5rem;
         max-width: 96%;
     }
     
@@ -49,15 +49,15 @@ st.markdown("""
         border-right: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    /* OpenRouter Brand Banner Header */
+    /* Clean Header Banner */
     .openrouter-header {
         background: rgba(13, 17, 26, 0.75);
         border: 1px solid rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border-radius: 16px;
-        padding: 1.8rem 2.2rem;
-        margin-bottom: 1.8rem;
-        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        border-radius: 12px;
+        padding: 1.2rem 1.6rem;
+        margin-bottom: 1.2rem;
+        box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
         position: relative;
         overflow: hidden;
     }
@@ -72,72 +72,63 @@ st.markdown("""
         background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
     }
     
-    .openrouter-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(99, 102, 241, 0.15);
-        border: 1px solid rgba(99, 102, 241, 0.35);
-        color: #a5b4fc;
-        font-size: 0.75rem;
-        font-weight: 700;
-        padding: 0.3rem 0.8rem;
-        border-radius: 9999px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 0.8rem;
-    }
-    
     .openrouter-title {
-        font-size: 2.3rem;
+        font-size: 1.7rem;
         font-weight: 800;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
         background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin: 0;
+        line-height: 1.25;
     }
     
     .openrouter-subtitle {
         color: #94a3b8;
-        font-size: 1rem;
-        margin-top: 0.4rem;
+        font-size: 0.88rem;
+        margin-top: 0.25rem;
         font-weight: 400;
     }
     
-    /* OpenRouter Metric Cards */
+    /* Responsive Metric Cards with Zero Clipping */
     .or-metric-card {
         background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 12px;
-        padding: 1.2rem;
+        border-radius: 10px;
+        padding: 0.8rem 0.5rem;
         text-align: center;
         backdrop-filter: blur(12px);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
     }
     
     .or-metric-card:hover {
         border-color: rgba(99, 102, 241, 0.4);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.18);
+        transform: translateY(-2px);
     }
     
     .or-metric-val {
-        font-size: 1.9rem;
+        font-size: 1.45rem;
         font-weight: 800;
         background: linear-gradient(135deg, #f8fafc 0%, #c7d2fe 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .or-metric-lbl {
-        font-size: 0.75rem;
+        font-size: 0.68rem;
         font-weight: 700;
         color: #64748b;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-top: 0.3rem;
+        letter-spacing: 0.06em;
+        margin-top: 0.2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     /* Custom Badges */
@@ -145,10 +136,10 @@ st.markdown("""
         background: rgba(99, 102, 241, 0.2);
         border: 1px solid rgba(99, 102, 241, 0.4);
         color: #a5b4fc;
-        padding: 0.25rem 0.65rem;
-        border-radius: 6px;
+        padding: 0.2rem 0.55rem;
+        border-radius: 5px;
         font-weight: 700;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         letter-spacing: 0.05em;
     }
     
@@ -156,10 +147,10 @@ st.markdown("""
         background: rgba(168, 85, 247, 0.2);
         border: 1px solid rgba(168, 85, 247, 0.4);
         color: #e9d5ff;
-        padding: 0.25rem 0.65rem;
-        border-radius: 6px;
+        padding: 0.2rem 0.55rem;
+        border-radius: 5px;
         font-weight: 700;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         letter-spacing: 0.05em;
     }
     
@@ -167,28 +158,31 @@ st.markdown("""
         background: rgba(239, 68, 68, 0.2);
         border: 1px solid rgba(239, 68, 68, 0.4);
         color: #fca5a5;
-        padding: 0.25rem 0.65rem;
-        border-radius: 6px;
+        padding: 0.2rem 0.55rem;
+        border-radius: 5px;
         font-weight: 700;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         letter-spacing: 0.05em;
     }
     
-    /* OpenRouter Tabs Styling */
+    /* Responsive Tabs Bar */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
         background: rgba(13, 17, 26, 0.7);
-        padding: 6px;
-        border-radius: 12px;
+        padding: 5px;
+        border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow-x: auto;
+        flex-wrap: nowrap;
     }
     
     .stTabs [data-baseweb="tab"] {
-        height: 42px;
-        white-space: pre;
-        border-radius: 8px;
+        height: 38px;
+        padding: 0.4rem 0.85rem;
+        white-space: nowrap;
+        border-radius: 7px;
         font-weight: 600;
-        font-size: 0.88rem;
+        font-size: 0.82rem;
         color: #94a3b8;
         border: none !important;
         transition: all 0.2s ease;
@@ -198,17 +192,17 @@ st.markdown("""
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
         color: #ffffff !important;
         font-weight: 700 !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
     }
 
-    /* Streamlit Primary Button Styling */
+    /* Streamlit Primary Button */
     div.stButton > button {
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         color: white;
         font-weight: 700;
         border: none;
-        border-radius: 10px;
-        padding: 0.65rem 1.2rem;
+        border-radius: 8px;
+        padding: 0.6rem 1.1rem;
         box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         transition: all 0.2s ease;
     }
@@ -223,7 +217,7 @@ st.markdown("""
     .stExpander {
         background: rgba(15, 23, 42, 0.4) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 10px !important;
+        border-radius: 8px !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -263,7 +257,7 @@ def main():
     user_task_request = st.sidebar.text_area(
         "Analysis Request / LLM Prompt",
         value="Perform complete exploratory analysis, type-safe missing value imputation, outlier profiling, statistical hypothesis testing, semantic bivariate graphing, and predictive blueprinting.",
-        height=100
+        height=95
     )
 
     generate_summary_toggle = st.sidebar.toggle("Generate Executive Summary Report", value=True, help="Enable to generate the LLM executive summary report after pipeline completion.")
@@ -299,7 +293,7 @@ def main():
         df_raw = pd.read_csv(selected_csv_path)
         stats_list = calculate_column_stats(df_raw)
         
-        # High-level OpenRouter-Style Dataset Metrics Cards
+        # High-level Clean Dataset Metrics Cards
         num_rows, num_cols = df_raw.shape
         num_numeric = sum(pd.api.types.is_numeric_dtype(df_raw[c]) and not pd.api.types.is_bool_dtype(df_raw[c]) for c in df_raw.columns)
         num_cat = num_cols - num_numeric
@@ -316,14 +310,14 @@ def main():
         
         st.write("") # spacing
 
-        # Primary Tabs: OpenRouter UI Navigation
+        # Clean Concise Primary Tabs Bar
         t_vars, t_plots, t_summary, t_metrics, t_script, t_dvc = st.tabs([
             "Variable Profiling",
-            "Visual Gallery & Bivariate",
-            "Executive Summary Report",
-            "Metrics & Modeling Blueprint",
-            "Production Code (generated_analysis.py)",
-            "Stateful Data Version Control"
+            "Visual Gallery",
+            "Executive Summary",
+            "Metrics & Blueprint",
+            "Production Code",
+            "Data Version Control"
         ])
 
         # -------------------------------------------------------------
