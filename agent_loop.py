@@ -377,7 +377,44 @@ def run_tool_based_eda(
     for feat in (agent_state['engineered_res'] or []):
         name = feat.get("feature_name", "feat")
         formula = feat.get("formula", "custom")
-        script_content.append(f"# Feature '{name}': {formula}")
+        
+        # Safely convert logical/mathematical formulas into clean Pandas syntax
+        if "log1p" in formula or "log" in formula:
+            source_col = re.search(r'\((.*?)\)', formula).group(1) if "(" in formula else None
+            if source_col and source_col in df.columns:
+                script_content.append(f"df['{name}'] = np.log1p(df['{source_col}'].clip(lower=0))")
+            else:
+                script_content.append(f"# Feature '{name}': {formula}")
+        elif "/" in formula:
+            parts = formula.split("/")
+            if len(parts) == 2:
+                num, den = parts[0].strip(), parts[1].strip()
+                script_content.append(f"df['{name}'] = df['{num}'] / (df['{den}'].abs() + 1e-5)")
+            else:
+                script_content.append(f"# Feature '{name}': {formula}")
+        elif "*" in formula:
+            parts = formula.split("*")
+            if len(parts) == 2:
+                c1, c2 = parts[0].strip(), parts[1].strip()
+                script_content.append(f"df['{name}'] = df['{c1}'] * df['{c2}']")
+            else:
+                script_content.append(f"# Feature '{name}': {formula}")
+        elif "+" in formula:
+            parts = formula.split("+")
+            if len(parts) >= 2:
+                cols = [f"df['{p.strip()}']" for p in parts if p.strip() in df.columns]
+                if cols:
+                    script_content.append(f"df['{name}'] = {' + '.join(cols)}")
+                else:
+                    script_content.append(f"# Feature '{name}': {formula}")
+            else:
+                script_content.append(f"# Feature '{name}': {formula}")
+        elif "sum" in formula:
+            source_cols = re.search(r'\((.*?)\)', formula).group(1) if "(" in formula else ""
+            cols_list = [c.strip() for c in source_cols.split(",") if c]
+            script_content.append(f"df['{name}'] = df[{cols_list}].sum(axis=1)")
+        else:
+            script_content.append(f"# Custom feature placeholder - '{name}': {formula}")
     
     script_content.extend([
         "",
