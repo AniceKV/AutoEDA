@@ -13,10 +13,14 @@ from summary_generator import create_summary, extract_dataset_name
 
 load_dotenv(override=True)
 
-api_key =  st.secrets["OPENROUTER_API_KEY"] or os.getenv("OPENROUTER_API_KEY")
-if not api_key:
-    raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your environment or .env file.")
+try:
+    import streamlit as st
+    api_key = st.secrets.get("OPENROUTER_API_KEY")
+except Exception:
+    api_key = None
 
+if not api_key:
+    api_key = os.getenv("OPENROUTER_API_KEY")
 # Initialize OpenRouter API client
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
