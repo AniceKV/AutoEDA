@@ -17,11 +17,19 @@
 <nav class="topnav">
   <button class="nav-hamburger" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
   <a href="/" class="topnav-logo">AutoEDA</a>
+
   <div class="topnav-branding">
-    <span class="topnav-title">Autonomous Data Science</span>
-    <span class="topnav-sub">Stateful Agent Pipeline · Statistical Profiling &amp; ML Blueprint</span>
+    <span class="topnav-title">AutoEDA</span>
+    <span class="topnav-sub">Autonomous Data Science Platform</span>
   </div>
+
   <div class="topnav-spacer"></div>
+
+  <button id="theme-toggle" class="theme-toggle-btn" title="Toggle Light / Dark Theme" aria-label="Toggle theme">
+    <span id="theme-toggle-icon">🌙</span>
+    <span id="theme-toggle-text">Dark</span>
+  </button>
+
   {% if pipeline_state and pipeline_state.status == 'running' %}
     <span id="nav-status" class="topnav-status running">
       <span class="pulse-dot"></span> Running pipeline…

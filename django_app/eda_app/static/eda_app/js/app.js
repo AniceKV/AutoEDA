@@ -493,8 +493,36 @@ function initSidebarToggle() {
   if (overlay) overlay.addEventListener('click', close);
 }
 
+// ── Theme toggle (Light / Dark) ───────────────────────────────
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  const icon      = document.getElementById('theme-toggle-icon');
+  const text      = document.getElementById('theme-toggle-text');
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('autoeda-theme', theme);
+    if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+    if (text) text.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  const saved = localStorage.getItem('autoeda-theme') || 'dark';
+  setTheme(saved);
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+      Toast.show(`Switched to ${next} theme.`, 'info', 1800);
+    });
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
+
   // Primary tabs
   initTabs('.tab-btn[data-tab]', '.tab-panel[id]', 'eda-active-tab');
 
