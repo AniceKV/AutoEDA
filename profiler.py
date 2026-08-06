@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import numpy as np
+import hashlib
 
 def calculate_column_stats(df: pd.DataFrame) -> list:
     """
@@ -82,7 +83,28 @@ def run_and_save_profile(data_path: str, output_dir: str) -> dict:
     Algorithmically profiles the dataset, saves the complete structured 
     statistics (matching the LLM expectations) to JSON in the sandbox directory, 
     and returns the simplified metadata dict needed to construct the LLM prompt.
+    Includes caching based on dataset path, size, and modification time.
     """
+    try:
+        file_stat = os.stat(data_path)
+        hash_key = hashlib.md5(f"{data_path}_{file_stat.st_size}_{file_stat.st_mtime}".encode()).hexdigest()
+        cache_dir = ".cache/autoeda"
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_path = os.path.join(cache_dir, f"profile_{hash_key}.json")
+        
+        if os.path.exists(cache_path):
+            with open(cache_path, "r", encoding="utf-8") as f:
+                cached_data = json.load(f)
+            
+            os.makedirs(output_dir, exist_ok=True)
+            profile_save_path = os.path.join(output_dir, "metadata_profile.json")
+            with open(profile_save_path, "w", encoding="utf-8") as f:
+                json.dump(cached_data["full_profile"], f, indent=4)
+            print(f"Loaded cached profile from {cache_path}")
+            return cached_data["llm_context_summary"]
+    except Exception:
+        cache_path = None
+
     try:
         df = pd.read_csv(data_path)
     except Exception as e:
@@ -131,6 +153,16 @@ def run_and_save_profile(data_path: str, output_dir: str) -> dict:
     with open(profile_save_path, "w", encoding="utf-8") as f:
         json.dump(full_profile, f, indent=4)
         
+    if cache_path:
+        try:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump({
+                    "llm_context_summary": llm_context_summary,
+                    "full_profile": full_profile
+                }, f)
+        except Exception:
+            pass
+
     print(f"Programmatic profile successfully written: {profile_save_path}")
     
     return llm_context_summary

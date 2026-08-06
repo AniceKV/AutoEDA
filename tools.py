@@ -12,11 +12,8 @@ import PIL.Image
 PIL.Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombWarning for large EDA visual plots
 from typing import Dict, Any, List, Optional, Tuple
 
-import warnings
-warnings.filterwarnings("ignore", message=".*Glyph.*")
-
 sns.set_theme(style="whitegrid")
-plt.rcParams['font.sans-serif'] = ['Segoe UI Emoji', 'Meiryo', 'MS Gothic', 'Malgun Gothic', 'Arial', 'sans-serif']
+
 
 def _sanitize_col_name(col: str) -> str:
     """Sanitize a column name into a filesystem-safe string."""
@@ -44,7 +41,7 @@ def _downsample_for_viz(df: pd.DataFrame, max_samples: int = 10000, random_state
 class StatefulDataStore:
     """
     Manages stateful execution memory and DataFrame version control (DVC pattern).
-    Maintains checkpoints (df_state_v0.csv, df_state_v1.csv, ...) inside workspace_dir.
+    Maintains checkpoints in memory using df.copy().
     Allows automatic rollback if a tool step corrupts or invalidates the dataset.
     """
     def __init__(self, workspace_dir: str = "./sandbox_run"):
@@ -53,61 +50,48 @@ class StatefulDataStore:
         self.history: List[Dict[str, Any]] = []
         os.makedirs(self.workspace_dir, exist_ok=True)
 
-    def _make_entry(self, version: int, path: str, df: pd.DataFrame, action: str) -> dict:
+    def _make_entry(self, version: int, df: pd.DataFrame, action: str) -> dict:
         """Build a standardized history entry dict."""
-        return {"version": version, "path": path, "rows": len(df), "cols": len(df.columns), "action": action}
+        return {"version": version, "df": df.copy(), "rows": len(df), "cols": len(df.columns), "action": action}
 
     def set_initial_state(self, df: pd.DataFrame) -> str:
         self.version = 0
         self.history = []
-        path = os.path.join(self.workspace_dir, "df_state_v0.csv")
-        df.to_csv(path, index=False)
-        self.history.append(self._make_entry(0, path, df, "initial_load"))
-        print(f"[DataStore] Initialized state v0 ({len(df)} rows, {len(df.columns)} cols) -> {path}")
-        return path
+        self.history.append(self._make_entry(0, df, "initial_load"))
+        print(f"[DataStore] Initialized state v0 ({len(df)} rows, {len(df.columns)} cols) in memory.")
+        return "memory:v0"
 
     def save_checkpoint(self, df: pd.DataFrame, step_name: str) -> str:
         if df is None or len(df) == 0 or len(df.columns) == 0:
             raise ValueError(f"Cannot checkpoint invalid or empty DataFrame after step '{step_name}'.")
         self.version += 1
-        path = os.path.join(self.workspace_dir, f"df_state_v{self.version}.csv")
-        df.to_csv(path, index=False)
-        self.history.append(self._make_entry(self.version, path, df, step_name))
-        print(f"[DataStore] Saved checkpoint v{self.version} after '{step_name}' ({len(df)} rows, {len(df.columns)} cols) -> {path}")
-        return path
+        self.history.append(self._make_entry(self.version, df, step_name))
+        print(f"[DataStore] Saved checkpoint v{self.version} after '{step_name}' ({len(df)} rows, {len(df.columns)} cols) in memory.")
+        return f"memory:v{self.version}"
 
     def rollback(self) -> Tuple[pd.DataFrame, int]:
         if len(self.history) <= 1:
             print("[DataStore] Cannot rollback further. At initial state v0.")
-            v0_path = self.history[0]["path"]
-            return pd.read_csv(v0_path), 0
+            return self.history[0]["df"].copy(), 0
         
         bad_state = self.history.pop()
         print(f"[DataStore] Rolling back from corrupted state v{bad_state['version']} ({bad_state['action']})...")
         
         latest_state = self.history[-1]
         self.version = latest_state["version"]
-        restored_df = pd.read_csv(latest_state["path"])
-        print(f"[DataStore] Successfully rolled back to state v{self.version} ({latest_state['action']}) from {latest_state['path']}")
+        restored_df = latest_state["df"].copy()
+        print(f"[DataStore] Successfully rolled back to state v{self.version} ({latest_state['action']})")
         return restored_df, self.version
 
     def purge_intermediate_states(self):
         """
-        Deletes intermediate checkpoint CSV files to save disk space,
+        Deletes intermediate checkpoint data frames to save memory,
         keeping only the initial load (v0) and the final active version.
         """
         if len(self.history) <= 2:
             return
             
         final_state = self.history[-1]
-        for state in self.history[1:-1]:
-            path = state.get("path")
-            if path and os.path.exists(path):
-                try:
-                    os.remove(path)
-                except Exception as e:
-                    print(f"[DataStore] Warning: Could not purge file {path}: {e}")
-                    
         self.history = [self.history[0], final_state]
         print(f"[DataStore] Cleaned up intermediate states. Retained initial state (v0) and final state (v{self.version}).")
 
@@ -522,7 +506,7 @@ def plot_correlation_matrix(
     Computes Pearson correlation matrix, saves styled heatmap asset,
     and extracts top positive/negative correlations.
     """
-    plt.close("all")
+    plt.close()
     target_cols = numeric_cols or [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 1]
     
     if len(target_cols) < 2:
@@ -542,7 +526,7 @@ def plot_correlation_matrix(
         plt.close(fig)
     except Exception as e:
         print(f"[tools] Warning: Heatmap rendering error: {e}")
-        plt.close("all")
+        plt.close()
 
     # Extract top positive & negative correlation pairs
     pairs = []
@@ -572,31 +556,39 @@ def _render_bivariate_axes(
     Shared rendering logic for bivariate plots.
     Dispatches to regplot, boxplot, or countplot based on column dtypes.
     """
-    x_is_num = _is_numeric_col(df[x_col])
-    y_is_num = _is_numeric_col(df[y_col])
+    df_plot = df.copy()
+    
+    # Bin numeric columns with > 15 unique values into 10 ranges max
+    for col in [x_col, y_col, hue_col]:
+        if col and col in df_plot.columns:
+            if _is_numeric_col(df_plot[col]) and df_plot[col].nunique() > 15:
+                df_plot[col] = pd.cut(df_plot[col], bins=min(10, df_plot[col].nunique())).astype(str)
+
+    x_is_num = _is_numeric_col(df_plot[x_col])
+    y_is_num = _is_numeric_col(df_plot[y_col])
 
     if x_is_num and y_is_num:
         if hue_col:
-            sns.scatterplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set1", alpha=0.7, ax=ax)
-        sns.regplot(data=df, x=x_col, y=y_col, scatter=(hue_col is None),
+            sns.scatterplot(data=df_plot, x=x_col, y=y_col, hue=hue_col, palette="Set1", alpha=0.7, ax=ax)
+        sns.regplot(data=df_plot, x=x_col, y=y_col, scatter=(hue_col is None),
                     scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
         ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
     elif not x_is_num and y_is_num:
         if hue_col:
-            sns.boxplot(data=df, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
+            sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=hue_col, palette="Set2", ax=ax)
         else:
-            sns.boxplot(data=df, x=x_col, y=y_col, hue=x_col, palette="Set2", legend=False, ax=ax)
+            sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=x_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
     elif x_is_num and not y_is_num:
         if hue_col:
-            sns.boxplot(data=df, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
+            sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=hue_col, palette="Set2", ax=ax)
         else:
-            sns.boxplot(data=df, x=y_col, y=x_col, hue=y_col, palette="Set2", legend=False, ax=ax)
+            sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=y_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
     else:
-        sns.countplot(data=df, x=x_col, hue=y_col, palette="Set1", ax=ax)
+        sns.countplot(data=df_plot, x=x_col, hue=y_col, palette="Set1", ax=ax)
         ax.set_title(f"Categorical: {x_col} by {y_col}", fontsize=12, pad=10)
         ax.tick_params(axis='x', rotation=30)
 
@@ -612,7 +604,7 @@ def plot_target_interaction(
     Generates and saves a segmented visual plot (boxplot/violinplot/scatter)
     comparing key feature distribution against target variable.
     """
-    plt.close("all")
+    plt.close()
     if not target_col or target_col not in df.columns:
         numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
         target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
@@ -634,7 +626,7 @@ def plot_target_interaction(
         plt.close(fig)
     except Exception as e:
         print(f"[tools] Warning: Target interaction plot error: {e}")
-        plt.close("all")
+        plt.close()
 
     return {
         "plot_saved": full_save_path,
@@ -657,7 +649,7 @@ def plot_feature_distributions(
     Plots probability distributions / KDE histograms or countplots for key important columns.
     Saves each column as a separate dist_{col}.png file.
     """
-    plt.close("all")
+    plt.close()
     target_cols = columns or kwargs.get("important_columns") or kwargs.get("cols") or kwargs.get("feature_cols")
     if not target_cols or target_cols == "all" or (isinstance(target_cols, (list, tuple)) and len(target_cols) == 0):
         target_cols = list(df.columns)
@@ -702,7 +694,7 @@ def plot_feature_distributions(
             print(f"[tools] Saved distribution PNG for '{col}' to: {file_path}")
         except Exception as e:
             print(f"[tools] Warning: Error saving distribution plot for '{col}': {e}")
-            plt.close("all")
+            plt.close()
 
     return {
         "individual_plots": saved_files,
@@ -727,7 +719,7 @@ def plot_semantic_bivariate_relationships(
     - 'hue': Optional hue column name for segmentation
     - 'rationale': Semantic domain rationale for comparing these two attributes
     """
-    plt.close("all")
+    plt.close()
     os.makedirs(output_dir, exist_ok=True)
     
     pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
@@ -770,7 +762,7 @@ def plot_semantic_bivariate_relationships(
             print(f"[tools] Saved semantic bivariate plot '{x_col}' vs '{y_col}' to: {file_path}")
         except Exception as e:
             print(f"[tools] Warning: Error plotting bivariate '{x_col}' vs '{y_col}': {e}")
-            plt.close("all")
+            plt.close()
 
     return {
         "bivariate_plots_saved": saved_files,
@@ -793,7 +785,7 @@ def plot_pairplot(
     Generates a concise pairplot visualizing pairwise distributions and relationships
     across a reasonable subset of key numerical features (clamped to max 4-5 features).
     """
-    plt.close("all")
+    plt.close()
     os.makedirs(output_dir, exist_ok=True)
     
     # Select reasonable subset of numerical columns (max 4 to 5)
@@ -835,11 +827,11 @@ def plot_pairplot(
             
         grid.fig.suptitle("Pairwise Feature Relationships (Pairplot)", y=1.02, fontsize=14)
         grid.savefig(full_save_path, dpi=150, bbox_inches="tight")
-        plt.close("all")
+        plt.close()
         print(f"[tools] Pairplot successfully saved to: {full_save_path}")
     except Exception as e:
         print(f"[tools] Warning: Pairplot rendering error: {e}")
-        plt.close("all")
+        plt.close()
         
     return {
         "pairplot_saved": full_save_path,
@@ -1002,55 +994,94 @@ def compile_and_save_metrics(
 # =====================================================================
 # 9. TOOL REGISTRY CATALOG FOR LLM PROMPTING
 # =====================================================================
+from pydantic import BaseModel, Field
+
+class ImputeMissingDataArgs(BaseModel):
+    strategy_map: Optional[Dict[str, str]] = Field(default=None, description="Optional dict of {col: strategy}")
+    numeric_skew_threshold: Optional[float] = Field(default=1.0)
+
+class DetectAndHandleOutliersArgs(BaseModel):
+    columns: List[str] = Field(description="List of numeric cols")
+    action: str = Field(description="'profile' or 'cap'")
+
+class EngineerFeaturesArgs(BaseModel):
+    feature_specs: List[Dict[str, Any]] = Field(description="List of dicts defining features")
+
+class RunStatisticalHypothesisTestsArgs(BaseModel):
+    target_col: str = Field(description="Name of target column")
+    alpha: float = Field(default=0.05, description="Significance threshold (0.05)")
+
+class PlotCorrelationMatrixArgs(BaseModel):
+    save_path: str = Field(default="correlation_matrix.png")
+
+class PlotFeatureDistributionsArgs(BaseModel):
+    columns: List[str] = Field(description="List of key/important column names to plot distributions for")
+    save_path: str = Field(default="feature_distributions.png")
+
+class PlotTargetInteractionArgs(BaseModel):
+    target_col: str = Field(description="Target column name")
+    feature_col: str = Field(description="Feature column name")
+    save_path: str = Field(default="target_interactions.png")
+
+class PlotSemanticBivariateRelationshipsArgs(BaseModel):
+    bivariate_pairs: List[Dict[str, Optional[str]]] = Field(description="List of dicts [{'x': 'col1', 'y': 'col2', 'hue': 'target'}]")
+
+class PlotPairplotArgs(BaseModel):
+    columns: List[str] = Field(description="List of 3-4 key numeric features")
+    hue: Optional[str] = Field(default=None, description="Optional target/hue column")
+
+class GeneratePredictiveBlueprintArgs(BaseModel):
+    target_col: str = Field(description="Target column name")
+
 TOOL_REGISTRY = {
     "impute_missing_data": {
         "function": impute_missing_data,
         "description": "Imputes missing values using type-safe strategy (median for skewed numeric, mean for symmetric, mode for categorical).",
-        "parameters": {"strategy_map": "Optional dict of {col: strategy}"}
+        "model": ImputeMissingDataArgs
     },
     "detect_and_handle_outliers": {
         "function": detect_and_handle_outliers,
         "description": "Detects outliers via IQR method and optionally caps extreme values.",
-        "parameters": {"columns": "List of numeric cols", "action": "'profile' or 'cap'"}
+        "model": DetectAndHandleOutliersArgs
     },
     "engineer_features": {
         "function": engineer_features,
         "description": "Creates high-signal feature transformations (log1p, ratios, interactions).",
-        "parameters": {"feature_specs": "List of dicts defining features"}
+        "model": EngineerFeaturesArgs
     },
     "run_statistical_hypothesis_tests": {
         "function": run_statistical_hypothesis_tests,
         "description": "Calculates statistical significance against target variable (T-Test, ANOVA, Chi-Square, Pearson).",
-        "parameters": {"target_col": "Name of target column", "alpha": "Significance threshold (0.05)"}
+        "model": RunStatisticalHypothesisTestsArgs
     },
     "plot_correlation_matrix": {
         "function": plot_correlation_matrix,
         "description": "Generates Pearson correlation matrix heatmap PNG image asset.",
-        "parameters": {"save_path": "'correlation_matrix.png'"}
+        "model": PlotCorrelationMatrixArgs
     },
     "plot_feature_distributions": {
         "function": plot_feature_distributions,
         "description": "Plots histograms, KDE distributions, or countplots for important columns identified by the LLM (passed via 'columns' argument).",
-        "parameters": {"columns": "List of key/important column names to plot distributions for", "save_path": "'feature_distributions.png'"}
+        "model": PlotFeatureDistributionsArgs
     },
     "plot_target_interaction": {
         "function": plot_target_interaction,
         "description": "Generates segmented distribution / scatter visualization comparing key feature vs target.",
-        "parameters": {"target_col": "Target column name", "feature_col": "Feature column name", "save_path": "'target_interactions.png'"}
+        "model": PlotTargetInteractionArgs
     },
     "plot_semantic_bivariate_relationships": {
         "function": plot_semantic_bivariate_relationships,
         "description": "Plots custom X vs Y scatter/boxplot/countplot relationships dynamically selected by LLM based on semantic domain reasoning (passed via 'bivariate_pairs' list of dicts with 'x', 'y', and optional 'hue').",
-        "parameters": {"bivariate_pairs": "List of dicts [{'x': 'col1', 'y': 'col2', 'hue': 'target'}]"}
+        "model": PlotSemanticBivariateRelationshipsArgs
     },
     "plot_pairplot": {
         "function": plot_pairplot,
         "description": "Generates a concise Seaborn pairplot visualizing pairwise distributions and relationships across a reasonable subset of key numerical features (clamped to max 4-5 features).",
-        "parameters": {"columns": "List of 3-4 key numeric features", "hue": "Optional target/hue column"}
+        "model": PlotPairplotArgs
     },
     "generate_predictive_blueprint": {
         "function": generate_predictive_blueprint,
         "description": "Compiles machine learning modeling blueprint and cross-validation strategy.",
-        "parameters": {"target_col": "Target column name"}
+        "model": GeneratePredictiveBlueprintArgs
     }
 }

@@ -13,14 +13,10 @@ from summary_generator import create_summary, extract_dataset_name
 
 load_dotenv(override=True)
 
-try:
-    import streamlit as st
-    api_key = st.secrets.get("OPENROUTER_API_KEY")
-except Exception:
-    api_key = None
-
+api_key = os.getenv("OPENROUTER_API_KEY")
 if not api_key:
-    api_key = os.getenv("OPENROUTER_API_KEY")
+    raise ValueError("OPENROUTER_API_KEY is not set. Please set it in your environment or .env file.")
+
 # Initialize OpenRouter API client
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -103,7 +99,7 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     tools_catalog_str = json.dumps({
         tool_name: {
             "description": details["description"],
-            "parameters": details["parameters"]
+            "parameters": details["model"].model_json_schema()
         } for tool_name, details in tools.TOOL_REGISTRY.items()
     }, indent=2)
 
@@ -139,12 +135,13 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
     
     # 3. Query LLM for Tool Plan with Direct Error Feedback Routing
     print("2. Querying LLM for Tool Plan (with self-correction loop)...")
-    max_retries = 3
+    MAX_RETRIES = 3
     retry_count = 0
+    feedback_error = None
     tool_plan = None
-    feedback_error = ""
+    total_tokens_used = 0
 
-    while retry_count < max_retries:
+    while retry_count < MAX_RETRIES:
         current_user_prompt = user_prompt
         if feedback_error:
             current_user_prompt += (
@@ -162,6 +159,14 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
                 ],
                 temperature=0.1
             )
+            
+            if hasattr(response, "usage") and response.usage:
+                total_tokens_used += response.usage.total_tokens
+                print(f"[agent_loop] Tokens used: {response.usage.total_tokens} (Total: {total_tokens_used})")
+                if total_tokens_used > 100000:
+                    print("[agent_loop] Token limit (100k) exceeded! Aborting to prevent runaway cost.")
+                    return {"success": False, "error": "Token limit exceeded"}
+
             llm_output = response.choices[0].message.content
             raw_plan = parse_llm_json_plan(llm_output)
             is_valid, validation_err = validate_tool_plan(raw_plan)
@@ -229,6 +234,14 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
         if tool_name in _vis_tools:
             args["output_dir"] = workspace_dir
 
+        # Validate with Pydantic model to clamp arguments robustly
+        try:
+            model_class = tools.TOOL_REGISTRY[tool_name]["model"]
+            validated_args = model_class(**{k: v for k, v in args.items() if k != "output_dir"})
+            args.update(validated_args.model_dump(exclude_unset=True))
+        except Exception as e:
+            print(f"Step {idx}: Pydantic validation failed for {tool_name}, falling back to raw args. Error: {e}")
+
         print(f"Step {idx}/{len(tool_plan)}: Executing tool '{tool_name}' with args {args}...")
         
         try:
@@ -239,9 +252,6 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
             elif tool_name == "detect_and_handle_outliers":
                 df, outlier_res = tools.detect_and_handle_outliers(df, **args)
                 data_store.save_checkpoint(df, "detect_and_handle_outliers")
-
-            elif tool_name == "plot_feature_distributions":
-                dist_res = tools.plot_feature_distributions(df, **args)
                 
             elif tool_name == "engineer_features":
                 if "target_col" not in args and target_col:
@@ -253,7 +263,10 @@ def run_tool_based_eda(data_path: str, user_request: str, workspace_dir: str = "
                 if args.get("target_col"):
                     target_col = args["target_col"]
                 hypothesis_res = tools.run_statistical_hypothesis_tests(df, **args)
-                    
+                
+            elif tool_name == "plot_feature_distributions":
+                dist_res = tools.plot_feature_distributions(df, **args)
+
             elif tool_name == "plot_correlation_matrix":
                 corr_res = tools.plot_correlation_matrix(df, **args)
 
