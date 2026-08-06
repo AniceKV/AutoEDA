@@ -24,6 +24,7 @@ if AUTOEDA_ROOT not in sys.path:
     sys.path.insert(0, AUTOEDA_ROOT)
 
 from profiler import calculate_column_stats
+import tools
 from . import pipeline_runner
 
 # ─── Numeric type helper ───────────────────────────────────────────────────────
@@ -146,10 +147,24 @@ def _load_summary(eda_dir: str) -> str:
     return ""
 
 
-def _list_plot_pngs(eda_dir: str, session_id: str, dataset_name: str) -> dict:
+def _list_plot_pngs(eda_dir: str, session_id: str, dataset_name: str, csv_path: str = "") -> dict:
     """Return categorised PNG paths relative to AUTOEDA_ROOT for URL building."""
     if not eda_dir or not os.path.exists(eda_dir):
         return {"bivariate": [], "heatmaps": [], "distributions": [], "other": []}
+
+    # Ensure heatmap & pairplot exist if dataset CSV is loaded
+    if csv_path and os.path.exists(csv_path):
+        corr_img = os.path.join(eda_dir, "correlation_matrix.png")
+        pair_img = os.path.join(eda_dir, "pairplot.png")
+        if not os.path.exists(corr_img) or not os.path.exists(pair_img):
+            try:
+                df = pd.read_csv(csv_path)
+                if not os.path.exists(corr_img):
+                    tools.plot_correlation_matrix(df, output_dir=eda_dir)
+                if not os.path.exists(pair_img):
+                    tools.plot_pairplot(df, output_dir=eda_dir)
+            except Exception as exc:
+                print(f"[views] Warning: On-demand visual generation error: {exc}")
 
     all_pngs = sorted(glob.glob(os.path.join(eda_dir, "*.png")))
 
@@ -230,7 +245,7 @@ def index(request):
     summary_html = _load_summary(eda_dir)
 
     # --- Visual gallery ---
-    plots = _list_plot_pngs(eda_dir, sid, dataset_name)
+    plots = _list_plot_pngs(eda_dir, sid, dataset_name, selected_csv_path)
 
     # --- Interactive HTML report path ---
     html_report_exists = False

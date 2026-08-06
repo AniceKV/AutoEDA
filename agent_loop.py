@@ -121,11 +121,26 @@ def run_tool_based_eda(
         data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
         data_store.set_initial_state(df, agent_state)
         
-        print("1b. Pre-generating distribution plot assets for all variables...")
+        print("1b. Pre-generating visual plot assets (distributions, correlation heatmaps, pairplot, bivariate relationships)...")
         try:
             tools.plot_feature_distributions(df, output_dir=workspace_dir)
         except Exception as e:
             print(f"[agent_loop] Warning: Error pre-generating distribution plots: {e}")
+
+        try:
+            tools.plot_correlation_matrix(df, output_dir=workspace_dir)
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating correlation matrix: {e}")
+
+        try:
+            tools.plot_pairplot(df, output_dir=workspace_dir)
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating pairplot: {e}")
+
+        try:
+            tools.plot_semantic_bivariate_relationships(df, output_dir=workspace_dir)
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error pre-generating bivariate relationships: {e}")
         
         user_prompt = (
             f"### PRE-COMPUTED DATASET METADATA:\n"
