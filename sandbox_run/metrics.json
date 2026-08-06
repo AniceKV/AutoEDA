@@ -1,101 +1,71 @@
 {
   "dataset_overview": {
-    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\modified_data.csv",
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\Titanic-Dataset.csv",
     "shape": {
-      "rows": 4600,
-      "columns": 18
+      "rows": 891,
+      "columns": 12
     },
-    "target_column": "price",
+    "target_column": "Survived",
     "column_summary": {
-      "date": {
-        "dtype": "object",
-        "missing_count": 0,
-        "cardinality": 70
-      },
-      "price": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 1741
-      },
-      "bedrooms": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 10
-      },
-      "bathrooms": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 26
-      },
-      "sqft_living": {
+      "PassengerId": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 566
+        "cardinality": 891
       },
-      "sqft_lot": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 3113
-      },
-      "floors": {
-        "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 6
-      },
-      "waterfront": {
+      "Survived": {
         "dtype": "int64",
         "missing_count": 0,
         "cardinality": 2
       },
-      "view": {
+      "Pclass": {
         "dtype": "int64",
         "missing_count": 0,
-        "cardinality": 5
+        "cardinality": 3
       },
-      "condition": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 5
-      },
-      "sqft_above": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 511
-      },
-      "sqft_basement": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 207
-      },
-      "yr_built": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 115
-      },
-      "yr_renovated": {
-        "dtype": "int64",
-        "missing_count": 0,
-        "cardinality": 60
-      },
-      "street": {
+      "Name": {
         "dtype": "object",
         "missing_count": 0,
-        "cardinality": 4525
+        "cardinality": 891
       },
-      "city": {
+      "Sex": {
         "dtype": "object",
         "missing_count": 0,
-        "cardinality": 44
+        "cardinality": 2
       },
-      "statezip": {
-        "dtype": "object",
-        "missing_count": 0,
-        "cardinality": 77
-      },
-      "price_per_sqft": {
+      "Age": {
         "dtype": "float64",
         "missing_count": 0,
-        "cardinality": 4005
+        "cardinality": 88
+      },
+      "SibSp": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Parch": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Ticket": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 514
+      },
+      "Fare": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 248
+      },
+      "Cabin": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 147
+      },
+      "Embarked": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
       }
     }
   },
@@ -107,183 +77,135 @@
       "Categorical/String columns use mode imputation with 'Unknown' fallback."
     ],
     "columns": {
-      "date": {
+      "PassengerId": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Survived": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Pclass": {
+        "dtype": "int64",
+        "missing_before": 0,
+        "missing_after": 0,
+        "method": "none",
+        "fill_value": null
+      },
+      "Name": {
         "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "price": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "bedrooms": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "bathrooms": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "sqft_living": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "sqft_lot": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "floors": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "waterfront": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "view": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "condition": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "sqft_above": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "sqft_basement": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "yr_built": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "yr_renovated": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "street": {
+      "Sex": {
         "dtype": "object",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "city": {
-        "dtype": "object",
+      "Age": {
+        "dtype": "float64",
+        "missing_before": 177,
+        "missing_after": 0,
+        "method": "median",
+        "skewness": 0.39,
+        "fill_value": 28.0
+      },
+      "SibSp": {
+        "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "statezip": {
-        "dtype": "object",
+      "Parch": {
+        "dtype": "int64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
       },
-      "price_per_sqft": {
+      "Ticket": {
+        "dtype": "float64",
+        "missing_before": 230,
+        "missing_after": 0,
+        "method": "median",
+        "skewness": 5.27,
+        "fill_value": 236171.0
+      },
+      "Fare": {
         "dtype": "float64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
         "fill_value": null
+      },
+      "Cabin": {
+        "dtype": "object",
+        "missing_before": 687,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "B96 B98"
+      },
+      "Embarked": {
+        "dtype": "object",
+        "missing_before": 2,
+        "missing_after": 0,
+        "method": "mode",
+        "skewness": null,
+        "fill_value": "S"
       }
     }
   },
   "outlier_analysis": {
-    "price": {
-      "q1": 322875.0,
-      "q3": 654962.5,
-      "iqr": 332087.5,
-      "lower_bound": -175256.25,
-      "upper_bound": 1153093.75,
-      "outlier_count": 240,
-      "outlier_percentage": 5.22,
+    "Age": {
+      "q1": 22.0,
+      "q3": 35.0,
+      "iqr": 13.0,
+      "lower_bound": 2.5,
+      "upper_bound": 54.5,
+      "outlier_count": 66,
+      "outlier_percentage": 7.41,
       "action_taken": "profile"
     },
-    "sqft_living": {
-      "q1": 1460.0,
-      "q3": 2620.0,
-      "iqr": 1160.0,
-      "lower_bound": -280.0,
-      "upper_bound": 4360.0,
-      "outlier_count": 129,
-      "outlier_percentage": 2.8,
-      "action_taken": "profile"
-    },
-    "sqft_lot": {
-      "q1": 5000.75,
-      "q3": 11001.25,
-      "iqr": 6000.5,
-      "lower_bound": -4000.0,
-      "upper_bound": 20002.0,
-      "outlier_count": 541,
-      "outlier_percentage": 11.76,
-      "action_taken": "profile"
-    },
-    "sqft_above": {
-      "q1": 1190.0,
-      "q3": 2300.0,
-      "iqr": 1110.0,
-      "lower_bound": -475.0,
-      "upper_bound": 3965.0,
-      "outlier_count": 116,
-      "outlier_percentage": 2.52,
-      "action_taken": "profile"
-    },
-    "sqft_basement": {
+    "SibSp": {
       "q1": 0.0,
-      "q3": 610.0,
-      "iqr": 610.0,
-      "lower_bound": -915.0,
-      "upper_bound": 1525.0,
-      "outlier_count": 82,
-      "outlier_percentage": 1.78,
+      "q3": 1.0,
+      "iqr": 1.0,
+      "lower_bound": -1.5,
+      "upper_bound": 2.5,
+      "outlier_count": 46,
+      "outlier_percentage": 5.16,
+      "action_taken": "profile"
+    },
+    "Parch": {
+      "q1": 0.0,
+      "q3": 0.0,
+      "iqr": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "outlier_count": 213,
+      "outlier_percentage": 23.91,
+      "action_taken": "profile"
+    },
+    "Fare": {
+      "q1": 7.9104,
+      "q3": 31.0,
+      "iqr": 23.0896,
+      "lower_bound": -26.724,
+      "upper_bound": 65.6344,
+      "outlier_count": 116,
+      "outlier_percentage": 13.02,
       "action_taken": "profile"
     }
   },
@@ -292,428 +214,228 @@
     "heatmap_saved": "./sandbox_run\\correlation_matrix.png",
     "top_correlations": [
       {
-        "feature_1": "sqft_living",
-        "feature_2": "sqft_above",
-        "correlation": 0.8764
+        "feature_1": "Pclass",
+        "feature_2": "Fare",
+        "correlation": -0.5495
       },
       {
-        "feature_1": "price",
-        "feature_2": "price_per_sqft",
-        "correlation": 0.8193
+        "feature_1": "SibSp",
+        "feature_2": "Parch",
+        "correlation": 0.4148
       },
       {
-        "feature_1": "bathrooms",
-        "feature_2": "sqft_living",
-        "correlation": 0.7612
+        "feature_1": "Pclass",
+        "feature_2": "Age",
+        "correlation": -0.3399
       },
       {
-        "feature_1": "bathrooms",
-        "feature_2": "sqft_above",
-        "correlation": 0.6899
+        "feature_1": "Survived",
+        "feature_2": "Pclass",
+        "correlation": -0.3385
       },
       {
-        "feature_1": "bedrooms",
-        "feature_2": "sqft_living",
-        "correlation": 0.5949
+        "feature_1": "Survived",
+        "feature_2": "Fare",
+        "correlation": 0.2573
       },
       {
-        "feature_1": "bedrooms",
-        "feature_2": "bathrooms",
-        "correlation": 0.5459
+        "feature_1": "Pclass",
+        "feature_2": "Ticket",
+        "correlation": 0.237
       },
       {
-        "feature_1": "floors",
-        "feature_2": "sqft_above",
-        "correlation": 0.5228
+        "feature_1": "Age",
+        "feature_2": "SibSp",
+        "correlation": -0.2333
       },
       {
-        "feature_1": "bathrooms",
-        "feature_2": "floors",
-        "correlation": 0.4864
+        "feature_1": "Parch",
+        "feature_2": "Fare",
+        "correlation": 0.2162
       },
       {
-        "feature_1": "bedrooms",
-        "feature_2": "sqft_above",
-        "correlation": 0.4847
+        "feature_1": "SibSp",
+        "feature_2": "Ticket",
+        "correlation": 0.1836
       },
       {
-        "feature_1": "floors",
-        "feature_2": "yr_built",
-        "correlation": 0.4675
+        "feature_1": "Age",
+        "feature_2": "Parch",
+        "correlation": -0.1725
       }
     ],
     "correlation_matrix_text": {
-      "price": {
-        "price": 1.0,
-        "bedrooms": 0.2,
-        "bathrooms": 0.327,
-        "sqft_living": 0.43,
-        "sqft_lot": 0.05,
-        "floors": 0.151,
-        "waterfront": 0.136,
-        "view": 0.229,
-        "condition": 0.035,
-        "sqft_above": 0.368,
-        "sqft_basement": 0.21,
-        "yr_built": 0.022,
-        "yr_renovated": -0.029,
-        "price_per_sqft": 0.819
+      "PassengerId": {
+        "PassengerId": 1.0,
+        "Survived": -0.005,
+        "Pclass": -0.035,
+        "Age": 0.034,
+        "SibSp": -0.058,
+        "Parch": -0.002,
+        "Ticket": -0.064,
+        "Fare": 0.013
       },
-      "bedrooms": {
-        "price": 0.2,
-        "bedrooms": 1.0,
-        "bathrooms": 0.546,
-        "sqft_living": 0.595,
-        "sqft_lot": 0.069,
-        "floors": 0.178,
-        "waterfront": -0.003,
-        "view": 0.111,
-        "condition": 0.025,
-        "sqft_above": 0.485,
-        "sqft_basement": 0.334,
-        "yr_built": 0.142,
-        "yr_renovated": -0.061,
-        "price_per_sqft": -0.073
+      "Survived": {
+        "PassengerId": -0.005,
+        "Survived": 1.0,
+        "Pclass": -0.338,
+        "Age": -0.065,
+        "SibSp": -0.035,
+        "Parch": 0.082,
+        "Ticket": -0.105,
+        "Fare": 0.257
       },
-      "bathrooms": {
-        "price": 0.327,
-        "bedrooms": 0.546,
-        "bathrooms": 1.0,
-        "sqft_living": 0.761,
-        "sqft_lot": 0.108,
-        "floors": 0.486,
-        "waterfront": 0.076,
-        "view": 0.212,
-        "condition": -0.12,
-        "sqft_above": 0.69,
-        "sqft_basement": 0.298,
-        "yr_built": 0.463,
-        "yr_renovated": -0.216,
-        "price_per_sqft": -0.033
+      "Pclass": {
+        "PassengerId": -0.035,
+        "Survived": -0.338,
+        "Pclass": 1.0,
+        "Age": -0.34,
+        "SibSp": 0.083,
+        "Parch": 0.018,
+        "Ticket": 0.237,
+        "Fare": -0.549
       },
-      "sqft_living": {
-        "price": 0.43,
-        "bedrooms": 0.595,
-        "bathrooms": 0.761,
-        "sqft_living": 1.0,
-        "sqft_lot": 0.211,
-        "floors": 0.345,
-        "waterfront": 0.118,
-        "view": 0.311,
-        "condition": -0.063,
-        "sqft_above": 0.876,
-        "sqft_basement": 0.447,
-        "yr_built": 0.288,
-        "yr_renovated": -0.123,
-        "price_per_sqft": -0.049
+      "Age": {
+        "PassengerId": 0.034,
+        "Survived": -0.065,
+        "Pclass": -0.34,
+        "Age": 1.0,
+        "SibSp": -0.233,
+        "Parch": -0.172,
+        "Ticket": -0.125,
+        "Fare": 0.097
       },
-      "sqft_lot": {
-        "price": 0.05,
-        "bedrooms": 0.069,
-        "bathrooms": 0.108,
-        "sqft_living": 0.211,
-        "sqft_lot": 1.0,
-        "floors": 0.004,
-        "waterfront": 0.017,
-        "view": 0.074,
-        "condition": 0.001,
-        "sqft_above": 0.216,
-        "sqft_basement": 0.035,
-        "yr_built": 0.051,
-        "yr_renovated": -0.023,
-        "price_per_sqft": -0.028
+      "SibSp": {
+        "PassengerId": -0.058,
+        "Survived": -0.035,
+        "Pclass": 0.083,
+        "Age": -0.233,
+        "SibSp": 1.0,
+        "Parch": 0.415,
+        "Ticket": 0.184,
+        "Fare": 0.16
       },
-      "floors": {
-        "price": 0.151,
-        "bedrooms": 0.178,
-        "bathrooms": 0.486,
-        "sqft_living": 0.345,
-        "sqft_lot": 0.004,
-        "floors": 1.0,
-        "waterfront": 0.022,
-        "view": 0.031,
-        "condition": -0.275,
-        "sqft_above": 0.523,
-        "sqft_basement": -0.256,
-        "yr_built": 0.467,
-        "yr_renovated": -0.234,
-        "price_per_sqft": -0.01
+      "Parch": {
+        "PassengerId": -0.002,
+        "Survived": 0.082,
+        "Pclass": 0.018,
+        "Age": -0.172,
+        "SibSp": 0.415,
+        "Parch": 1.0,
+        "Ticket": 0.074,
+        "Fare": 0.216
       },
-      "waterfront": {
-        "price": 0.136,
-        "bedrooms": -0.003,
-        "bathrooms": 0.076,
-        "sqft_living": 0.118,
-        "sqft_lot": 0.017,
-        "floors": 0.022,
-        "waterfront": 1.0,
-        "view": 0.361,
-        "condition": 0.0,
-        "sqft_above": 0.079,
-        "sqft_basement": 0.098,
-        "yr_built": -0.024,
-        "yr_renovated": 0.009,
-        "price_per_sqft": 0.035
+      "Ticket": {
+        "PassengerId": -0.064,
+        "Survived": -0.105,
+        "Pclass": 0.237,
+        "Age": -0.125,
+        "SibSp": 0.184,
+        "Parch": 0.074,
+        "Ticket": 1.0,
+        "Fare": -0.091
       },
-      "view": {
-        "price": 0.229,
-        "bedrooms": 0.111,
-        "bathrooms": 0.212,
-        "sqft_living": 0.311,
-        "sqft_lot": 0.074,
-        "floors": 0.031,
-        "waterfront": 0.361,
-        "view": 1.0,
-        "condition": 0.063,
-        "sqft_above": 0.174,
-        "sqft_basement": 0.322,
-        "yr_built": -0.064,
-        "yr_renovated": 0.023,
-        "price_per_sqft": 0.043
-      },
-      "condition": {
-        "price": 0.035,
-        "bedrooms": 0.025,
-        "bathrooms": -0.12,
-        "sqft_living": -0.063,
-        "sqft_lot": 0.001,
-        "floors": -0.275,
-        "waterfront": 0.0,
-        "view": 0.063,
-        "condition": 1.0,
-        "sqft_above": -0.178,
-        "sqft_basement": 0.201,
-        "yr_built": -0.4,
-        "yr_renovated": -0.187,
-        "price_per_sqft": 0.047
-      },
-      "sqft_above": {
-        "price": 0.368,
-        "bedrooms": 0.485,
-        "bathrooms": 0.69,
-        "sqft_living": 0.876,
-        "sqft_lot": 0.216,
-        "floors": 0.523,
-        "waterfront": 0.079,
-        "view": 0.174,
-        "condition": -0.178,
-        "sqft_above": 1.0,
-        "sqft_basement": -0.039,
-        "yr_built": 0.409,
-        "yr_renovated": -0.16,
-        "price_per_sqft": -0.045
-      },
-      "sqft_basement": {
-        "price": 0.21,
-        "bedrooms": 0.334,
-        "bathrooms": 0.298,
-        "sqft_living": 0.447,
-        "sqft_lot": 0.035,
-        "floors": -0.256,
-        "waterfront": 0.098,
-        "view": 0.322,
-        "condition": 0.201,
-        "sqft_above": -0.039,
-        "sqft_basement": 1.0,
-        "yr_built": -0.162,
-        "yr_renovated": 0.043,
-        "price_per_sqft": -0.018
-      },
-      "yr_built": {
-        "price": 0.022,
-        "bedrooms": 0.142,
-        "bathrooms": 0.463,
-        "sqft_living": 0.288,
-        "sqft_lot": 0.051,
-        "floors": 0.467,
-        "waterfront": -0.024,
-        "view": -0.064,
-        "condition": -0.4,
-        "sqft_above": 0.409,
-        "sqft_basement": -0.162,
-        "yr_built": 1.0,
-        "yr_renovated": -0.321,
-        "price_per_sqft": -0.078
-      },
-      "yr_renovated": {
-        "price": -0.029,
-        "bedrooms": -0.061,
-        "bathrooms": -0.216,
-        "sqft_living": -0.123,
-        "sqft_lot": -0.023,
-        "floors": -0.234,
-        "waterfront": 0.009,
-        "view": 0.023,
-        "condition": -0.187,
-        "sqft_above": -0.16,
-        "sqft_basement": 0.043,
-        "yr_built": -0.321,
-        "yr_renovated": 1.0,
-        "price_per_sqft": 0.016
-      },
-      "price_per_sqft": {
-        "price": 0.819,
-        "bedrooms": -0.073,
-        "bathrooms": -0.033,
-        "sqft_living": -0.049,
-        "sqft_lot": -0.028,
-        "floors": -0.01,
-        "waterfront": 0.035,
-        "view": 0.043,
-        "condition": 0.047,
-        "sqft_above": -0.045,
-        "sqft_basement": -0.018,
-        "yr_built": -0.078,
-        "yr_renovated": 0.016,
-        "price_per_sqft": 1.0
+      "Fare": {
+        "PassengerId": 0.013,
+        "Survived": 0.257,
+        "Pclass": -0.549,
+        "Age": 0.097,
+        "SibSp": 0.16,
+        "Parch": 0.216,
+        "Ticket": -0.091,
+        "Fare": 1.0
       }
     }
   },
   "statistical_hypothesis_tests": {
-    "date": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 1.0113,
-      "p_value": 0.45185633485060606,
+    "PassengerId": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.005,
+      "p_value": 0.8813657768798059,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 1.0113, p = 4.5186e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0050, p = 8.8137e-01. (Not Significant)"
     },
-    "bedrooms": {
+    "Pclass": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.2003,
-      "p_value": 7.382065412349795e-43,
+      "statistic": -0.3385,
+      "p_value": 2.537047387981532e-25,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.2003, p = 7.3821e-43. (Statistically Significant)"
+      "interpretation": "Pearson r = -0.3385, p = 2.5370e-25. (Statistically Significant)"
     },
-    "bathrooms": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.3271,
-      "p_value": 3.6446269835087346e-115,
+    "Sex": {
+      "test_name": "Two-Sample Welch T-Test",
+      "statistic": 18.6718,
+      "p_value": 2.2836009226010533e-61,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.3271, p = 3.6446e-115. (Statistically Significant)"
+      "interpretation": "T-statistic = 18.6718, p = 2.2836e-61. (Statistically Significant)"
     },
-    "sqft_living": {
+    "Age": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.4304,
-      "p_value": 7.54989590427798e-207,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.4304, p = 7.5499e-207. (Statistically Significant)"
-    },
-    "sqft_lot": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.0505,
-      "p_value": 0.0006192879039218561,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.0505, p = 6.1929e-04. (Statistically Significant)"
-    },
-    "floors": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.1515,
-      "p_value": 5.187215923996609e-25,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1515, p = 5.1872e-25. (Statistically Significant)"
-    },
-    "waterfront": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.1356,
-      "p_value": 2.4568216421067873e-20,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.1356, p = 2.4568e-20. (Statistically Significant)"
-    },
-    "view": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.2285,
-      "p_value": 1.4683528987509534e-55,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.2285, p = 1.4684e-55. (Statistically Significant)"
-    },
-    "condition": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.0349,
-      "p_value": 0.017879821783282446,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.0349, p = 1.7880e-02. (Statistically Significant)"
-    },
-    "sqft_above": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.3676,
-      "p_value": 3.8082990527396874e-147,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.3676, p = 3.8083e-147. (Statistically Significant)"
-    },
-    "sqft_basement": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.2104,
-      "p_value": 3.3606614508791908e-47,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.2104, p = 3.3607e-47. (Statistically Significant)"
-    },
-    "yr_built": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": 0.0219,
-      "p_value": 0.13829333009383224,
+      "statistic": -0.0649,
+      "p_value": 0.0527606884758556,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0219, p = 1.3829e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0649, p = 5.2761e-02. (Not Significant)"
     },
-    "yr_renovated": {
+    "SibSp": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0288,
-      "p_value": 0.05100981270475135,
+      "statistic": -0.0353,
+      "p_value": 0.29224392869829435,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0288, p = 5.1010e-02. (Not Significant)"
+      "interpretation": "Pearson r = -0.0353, p = 2.9224e-01. (Not Significant)"
     },
-    "street": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 1.6047,
-      "p_value": 0.022220603584191322,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 1.6047, p = 2.2221e-02. (Statistically Significant)"
-    },
-    "city": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 13.7163,
-      "p_value": 7.543938534855021e-85,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 13.7163, p = 7.5439e-85. (Statistically Significant)"
-    },
-    "statezip": {
-      "test_name": "One-Way ANOVA",
-      "statistic": 12.7456,
-      "p_value": 1.8142863430077945e-136,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 12.7456, p = 1.8143e-136. (Statistically Significant)"
-    },
-    "price_per_sqft": {
+    "Parch": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.8193,
-      "p_value": 0.0,
+      "statistic": 0.0816,
+      "p_value": 0.014799245374727977,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.8193, p = 0.0000e+00. (Statistically Significant)"
+      "interpretation": "Pearson r = 0.0816, p = 1.4799e-02. (Statistically Significant)"
+    },
+    "Ticket": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.1054,
+      "p_value": 0.001625279821319169,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.1054, p = 1.6253e-03. (Statistically Significant)"
+    },
+    "Fare": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": 0.2573,
+      "p_value": 6.120189341924586e-15,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = 0.2573, p = 6.1202e-15. (Statistically Significant)"
+    },
+    "Cabin": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 2.7851,
+      "p_value": 1.2810870373968771e-08,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 2.7851, p = 1.2811e-08. (Statistically Significant)"
+    },
+    "Embarked": {
+      "test_name": "One-Way ANOVA",
+      "statistic": 13.3269,
+      "p_value": 1.9832394915479246e-06,
+      "is_statistically_significant": true,
+      "interpretation": "F-statistic = 13.3269, p = 1.9832e-06. (Statistically Significant)"
     },
     "significant_predictors": [
-      "bedrooms",
-      "bathrooms",
-      "sqft_living",
-      "sqft_lot",
-      "floors",
-      "waterfront",
-      "view",
-      "condition",
-      "sqft_above",
-      "sqft_basement",
-      "street",
-      "city",
-      "statezip",
-      "price_per_sqft"
+      "Pclass",
+      "Sex",
+      "Parch",
+      "Ticket",
+      "Fare",
+      "Cabin",
+      "Embarked"
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "price",
-    "problem_type": "Regression",
+    "target_definition": "Survived",
+    "problem_type": "Classification",
     "recommended_algorithms": [
-      "Regularized Linear Regression (Ridge / Lasso)",
-      "Random Forest Regressor",
-      "Gradient Boosting Regressor",
-      "Support Vector Regressor (SVR)"
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -721,36 +443,29 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "K-Fold Cross-Validation (5 folds)",
-      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: price (Regression). Use robust cross-validation on 4600 rows x 18 columns."
+    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
   },
   "extracted_insights": {
     "key_findings": [
-      "Dataset contains 4600 rows and 18 columns.",
+      "Dataset contains 891 rows and 12 columns.",
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
-      "bedrooms",
-      "bathrooms",
-      "sqft_living",
-      "sqft_lot",
-      "floors",
-      "waterfront",
-      "view",
-      "condition",
-      "sqft_above",
-      "sqft_basement",
-      "street",
-      "city",
-      "statezip",
-      "price_per_sqft"
+      "Pclass",
+      "Sex",
+      "Parch",
+      "Ticket",
+      "Fare",
+      "Cabin",
+      "Embarked"
     ]
   }
 }

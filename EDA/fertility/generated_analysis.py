@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\Titanic-Dataset.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\test_data\fertility.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -7,11 +7,20 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# Engineered Features Specs: [
+  {
+    "feature_name": "age_hours_ratio",
+    "formula": "Age / (Number of hours spent sitting per day + eps)",
+    "data_type": "float64",
+    "rationale": "High-signal feature engineering transformation",
+    "correlation_with_target": null
+  }
+]
+# Feature 'age_hours_ratio': Age / (Number of hours spent sitting per day + eps)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "Survived",
+  "target_definition": "Diagnosis",
   "problem_type": "Classification",
   "recommended_algorithms": [
     "Regularized Logistic Regression (baseline)",
@@ -33,7 +42,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+  "executive_summary": "Target: Diagnosis (Classification). Use robust cross-validation on 100 rows x 11 columns."
 }
 
 if __name__ == '__main__':

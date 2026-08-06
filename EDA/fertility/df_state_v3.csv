@@ -1,0 +1,101 @@
+Season,Age,Childish diseases,Accident or serious trauma,Surgical intervention,High fevers in the last year,Frequency of alcohol consumption,Smoking habit,Number of hours spent sitting per day,Diagnosis,age_hours_ratio
+spring,30,no,yes,yes,more than 3 months ago,once a week,occasional,16,Normal,1.8749988281257324
+spring,35,yes,no,yes,more than 3 months ago,once a week,daily,6,Altered,5.833323611127315
+spring,27,yes,no,no,more than 3 months ago,hardly ever or never,never,9,Normal,2.9999966666703703
+spring,32,no,yes,yes,more than 3 months ago,hardly ever or never,never,7,Normal,4.571422040825656
+spring,30,yes,yes,no,more than 3 months ago,once a week,never,9,Altered,3.333329629633745
+spring,30,yes,no,yes,more than 3 months ago,once a week,occasional,9,Normal,3.333329629633745
+spring,30,no,no,no,less than 3 months ago,once a week,never,8,Normal,3.7499953125058596
+spring,36,yes,yes,yes,more than 3 months ago,several times a week,never,7,Normal,5.142849795928863
+fall,30,no,no,yes,more than 3 months ago,once a week,never,5,Normal,5.9999880000240005
+fall,29,yes,no,no,more than 3 months ago,hardly ever or never,never,5,Normal,5.7999884000232
+fall,30,yes,yes,no,less than 3 months ago,once a week,occasional,6,Normal,4.999991666680556
+fall,32,yes,yes,yes,more than 3 months ago,several times a week,occasional,2,Normal,15.999920000399998
+fall,32,yes,yes,yes,more than 3 months ago,once a week,daily,5,Normal,6.399987200025601
+fall,33,yes,no,no,more than 3 months ago,hardly ever or never,never,7,Normal,4.714278979601458
+fall,35,yes,yes,yes,more than 3 months ago,several times a day,never,5,Normal,6.9999860000280005
+fall,33,yes,yes,no,more than 3 months ago,hardly ever or never,daily,9,Normal,3.6666625925971195
+fall,30,yes,no,yes,more than 3 months ago,hardly ever or never,never,7,Normal,4.285708163274053
+fall,30,yes,no,yes,more than 3 months ago,once a week,never,5,Altered,5.9999880000240005
+fall,32,yes,yes,yes,more than 3 months ago,hardly ever or never,daily,5,Normal,6.399987200025601
+fall,30,yes,no,no,more than 3 months ago,once a week,daily,7,Altered,4.285708163274053
+fall,30,no,no,yes,more than 3 months ago,once a week,never,5,Normal,5.9999880000240005
+fall,32,yes,no,no,more than 3 months ago,several times a week,occasional,5,Normal,6.399987200025601
+fall,30,yes,yes,no,more than 3 months ago,once a week,never,5,Normal,5.9999880000240005
+fall,30,yes,no,yes,less than 3 months ago,hardly ever or never,never,8,Altered,3.7499953125058596
+fall,28,yes,no,yes,more than 3 months ago,hardly ever or never,never,11,Normal,2.5454522314070624
+fall,30,yes,no,no,more than 3 months ago,hardly ever or never,never,5,Normal,5.9999880000240005
+fall,30,yes,no,yes,more than 3 months ago,several times a week,never,7,Altered,4.285708163274053
+fall,32,yes,yes,no,no,several times a week,never,7,Altered,4.571422040825656
+fall,28,no,no,yes,more than 3 months ago,hardly ever or never,never,3,Normal,9.333302222325925
+fall,30,no,no,yes,more than 3 months ago,several times a week,occasional,9,Altered,3.333329629633745
+fall,29,yes,no,yes,more than 3 months ago,hardly ever or never,never,11,Normal,2.6363612396716003
+fall,28,yes,no,no,more than 3 months ago,hardly ever or never,never,8,Normal,3.499995625005469
+fall,30,no,no,no,more than 3 months ago,hardly ever or never,never,11,Normal,2.727270247936138
+fall,28,yes,yes,yes,more than 3 months ago,once a week,occasional,8,Normal,3.499995625005469
+fall,28,yes,yes,yes,more than 3 months ago,hardly ever or never,never,11,Normal,2.5454522314070624
+winter,32,yes,yes,no,no,several times a week,never,7,Normal,4.571422040825656
+winter,32,yes,no,yes,more than 3 months ago,hardly ever or never,never,5,Normal,6.399987200025601
+winter,28,yes,no,yes,more than 3 months ago,hardly ever or never,never,11,Normal,2.5454522314070624
+winter,30,no,no,yes,more than 3 months ago,several times a week,occasional,9,Altered,3.333329629633745
+winter,30,yes,no,no,more than 3 months ago,hardly ever or never,never,6,Normal,4.999991666680556
+winter,28,yes,yes,yes,more than 3 months ago,once a week,daily,9,Normal,3.1111076543248286
+winter,28,yes,yes,no,more than 3 months ago,once a week,daily,9,Normal,3.1111076543248286
+winter,28,yes,no,yes,less than 3 months ago,once a week,daily,9,Normal,3.1111076543248286
+winter,28,yes,no,no,more than 3 months ago,hardly ever or never,never,8,Normal,3.499995625005469
+winter,28,yes,yes,no,no,hardly ever or never,occasional,6,Normal,4.6666588889018525
+winter,28,yes,no,no,no,hardly ever or never,occasional,8,Normal,3.499995625005469
+spring,28,yes,no,no,more than 3 months ago,hardly ever or never,never,11,Normal,2.5454522314070624
+spring,31,yes,yes,no,more than 3 months ago,several times a week,daily,3,Normal,10.333298889003704
+spring,30,yes,yes,yes,more than 3 months ago,once a week,never,6,Normal,4.999991666680556
+spring,32,yes,yes,yes,more than 3 months ago,several times a week,never,3,Normal,10.666631111229629
+spring,30,yes,no,yes,more than 3 months ago,once a week,never,342,Normal,0.08771929568072236
+spring,28,yes,yes,no,no,hardly ever or never,never,14,Normal,1.9999985714295918
+spring,28,yes,yes,no,more than 3 months ago,once a week,occasional,9,Normal,3.1111076543248286
+spring,28,yes,yes,yes,less than 3 months ago,once a week,occasional,3,Normal,9.333302222325925
+spring,29,yes,no,yes,more than 3 months ago,hardly ever or never,never,11,Normal,2.6363612396716003
+spring,28,yes,no,yes,more than 3 months ago,once a week,daily,3,Normal,9.333302222325925
+spring,28,yes,yes,no,more than 3 months ago,once a week,occasional,14,Normal,1.9999985714295918
+spring,30,yes,yes,yes,less than 3 months ago,hardly ever or never,never,14,Normal,2.142855612245991
+spring,28,yes,yes,no,more than 3 months ago,every day,daily,11,Normal,2.5454522314070624
+fall,28,no,no,no,no,once a week,daily,8,Normal,3.499995625005469
+fall,28,no,no,no,no,once a week,occasional,18,Normal,1.5555546913585048
+winter,30,yes,no,no,no,hardly ever or never,daily,5,Normal,5.9999880000240005
+winter,29,yes,yes,yes,more than 3 months ago,several times a week,never,7,Normal,4.142851224498251
+winter,28,yes,no,no,no,hardly ever or never,never,9,Normal,3.1111076543248286
+winter,28,yes,no,no,no,once a week,never,6,Normal,4.6666588889018525
+spring,28,no,no,yes,more than 3 months ago,hardly ever or never,never,10,Normal,2.7999972000028
+spring,27,yes,yes,no,less than 3 months ago,once a week,occasional,16,Normal,1.6874989453131592
+spring,27,yes,no,no,no,hardly ever or never,never,8,Normal,3.3749957812552736
+spring,27,yes,no,no,no,once a week,occasional,6,Normal,4.4999925000125005
+spring,27,yes,no,yes,less than 3 months ago,once a week,never,9,Normal,2.9999966666703703
+spring,27,yes,yes,no,less than 3 months ago,once a week,occasional,16,Altered,1.6874989453131592
+summer,30,yes,no,no,no,hardly ever or never,never,6,Normal,4.999991666680556
+fall,28,yes,no,no,no,several times a week,occasional,9,Normal,3.1111076543248286
+winter,27,yes,no,no,no,once a week,never,8,Normal,3.3749957812552736
+winter,28,yes,no,no,no,once a week,never,11,Normal,2.5454522314070624
+winter,32,yes,no,yes,no,hardly ever or never,daily,5,Normal,6.399987200025601
+winter,32,yes,no,yes,no,several times a week,occasional,10,Normal,3.1999968000032
+winter,31,yes,yes,yes,no,once a week,never,3,Normal,10.333298889003704
+winter,28,yes,yes,no,no,once a week,never,7,Normal,3.9999942857224493
+winter,36,yes,no,yes,no,several times a week,occasional,5,Normal,7.199985600028801
+spring,35,yes,yes,no,no,hardly ever or never,never,11,Normal,3.181815289258828
+winter,33,yes,yes,yes,no,once a week,occasional,3,Normal,10.999963333455556
+spring,35,yes,no,no,no,several times a week,never,3,Normal,11.666627777907406
+spring,33,yes,yes,yes,no,hardly ever or never,never,5,Normal,6.5999868000264
+spring,32,yes,no,no,no,hardly ever or never,daily,1,Altered,31.999680003199966
+spring,34,yes,yes,no,more than 3 months ago,several times a week,daily,6,Normal,5.666657222237963
+spring,32,yes,yes,yes,more than 3 months ago,several times a week,daily,5,Normal,6.399987200025601
+spring,32,yes,yes,yes,no,once a week,daily,5,Normal,6.399987200025601
+spring,33,yes,yes,yes,more than 3 months ago,hardly ever or never,never,6,Normal,5.499990833348612
+spring,33,yes,yes,yes,more than 3 months ago,hardly ever or never,daily,7,Normal,4.714278979601458
+spring,33,yes,yes,yes,no,once a week,never,7,Normal,4.714278979601458
+summer,32,yes,no,no,more than 3 months ago,hardly ever or never,daily,1,Normal,31.999680003199966
+summer,32,yes,yes,no,more than 3 months ago,once a week,never,7,Normal,4.571422040825656
+summer,32,yes,no,yes,more than 3 months ago,once a week,never,8,Altered,3.9999950000062503
+fall,28,yes,no,no,more than 3 months ago,several times a week,daily,9,Normal,3.1111076543248286
+winter,30,yes,no,no,more than 3 months ago,hardly ever or never,never,9,Normal,3.333329629633745
+winter,29,yes,no,no,more than 3 months ago,once a week,occasional,9,Normal,3.222218641979287
+winter,30,yes,yes,yes,more than 3 months ago,hardly ever or never,never,6,Normal,4.999991666680556
+winter,30,yes,no,yes,more than 3 months ago,hardly ever or never,occasional,3,Normal,9.999966666777777
+winter,30,no,yes,yes,more than 3 months ago,several times a week,never,3,Normal,9.999966666777777

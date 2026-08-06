@@ -1,228 +1,160 @@
 {
-    "dataset_name": "modified_data.csv",
+    "dataset_name": "Titanic-Dataset.csv",
     "dimensions": {
-        "rows": 4600,
-        "columns": 18
+        "rows": 891,
+        "columns": 12
     },
-    "missing_values_summary": {},
+    "missing_values_summary": {
+        "Age": "177 (19.9%)",
+        "Cabin": "687 (77.1%)",
+        "Embarked": "2 (0.2%)"
+    },
     "schema": {
-        "date": {
-            "type": "object",
-            "cardinality": 70,
-            "key_metric": "Top Values: '2014-06-23': 142, '2014-06-25': 131, '2014-06-26': 131"
-        },
-        "price": {
-            "type": "float64",
-            "cardinality": 1741,
-            "key_metric": "Range: [0.00 to 26590000.00] | Mean: 551962.99 | Median: 460943.46 | Highly Skewed (24.79)"
-        },
-        "bedrooms": {
-            "type": "float64",
-            "cardinality": 10,
-            "key_metric": "Range: [0.00 to 9.00] | Mean: 3.40 | Median: 3.00"
-        },
-        "bathrooms": {
-            "type": "float64",
-            "cardinality": 26,
-            "key_metric": "Range: [0.00 to 8.00] | Mean: 2.16 | Median: 2.25"
-        },
-        "sqft_living": {
+        "PassengerId": {
             "type": "int64",
-            "cardinality": 566,
-            "key_metric": "Range: [370.00 to 13540.00] | Mean: 2139.35 | Median: 1980.00 | Highly Skewed (1.72)"
+            "cardinality": 891,
+            "key_metric": "Range: [1.00 to 891.00] | Mean: 446.00 | Median: 446.00"
         },
-        "sqft_lot": {
-            "type": "int64",
-            "cardinality": 3113,
-            "key_metric": "Range: [638.00 to 1074218.00] | Mean: 14852.52 | Median: 7683.00 | Highly Skewed (11.31)"
-        },
-        "floors": {
-            "type": "float64",
-            "cardinality": 6,
-            "key_metric": "Range: [1.00 to 3.50] | Mean: 1.51 | Median: 1.50"
-        },
-        "waterfront": {
+        "Survived": {
             "type": "int64",
             "cardinality": 2,
-            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.01 | Median: 0.00 | Highly Skewed (11.68)"
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.38 | Median: 0.00"
         },
-        "view": {
+        "Pclass": {
             "type": "int64",
-            "cardinality": 5,
-            "key_metric": "Range: [0.00 to 4.00] | Mean: 0.24 | Median: 0.00 | Highly Skewed (3.34)"
+            "cardinality": 3,
+            "key_metric": "Range: [1.00 to 3.00] | Mean: 2.31 | Median: 3.00"
         },
-        "condition": {
-            "type": "int64",
-            "cardinality": 5,
-            "key_metric": "Range: [1.00 to 5.00] | Mean: 3.45 | Median: 3.00"
-        },
-        "sqft_above": {
-            "type": "int64",
-            "cardinality": 511,
-            "key_metric": "Range: [370.00 to 9410.00] | Mean: 1827.27 | Median: 1590.00 | Highly Skewed (1.49)"
-        },
-        "sqft_basement": {
-            "type": "int64",
-            "cardinality": 207,
-            "key_metric": "Range: [0.00 to 4820.00] | Mean: 312.08 | Median: 0.00 | Highly Skewed (1.64)"
-        },
-        "yr_built": {
-            "type": "int64",
-            "cardinality": 115,
-            "key_metric": "Range: [1900.00 to 2014.00] | Mean: 1970.79 | Median: 1976.00"
-        },
-        "yr_renovated": {
-            "type": "int64",
-            "cardinality": 60,
-            "key_metric": "Range: [0.00 to 2014.00] | Mean: 808.61 | Median: 0.00"
-        },
-        "street": {
+        "Name": {
             "type": "object",
-            "cardinality": 4525,
-            "key_metric": "Top Values: '2520 Mulberry Walk NE': 4, '2500 Mulberry Walk NE': 3, '11716 16th Ave NE': 2"
+            "cardinality": 891,
+            "key_metric": "Top Values: 'Dooley, Mr. Patrick': 1, 'Braund, Mr. Owen Harris': 1, 'Cumings, Mrs. John Bradley (Florence Briggs Thayer)': 1"
         },
-        "city": {
+        "Sex": {
             "type": "object",
-            "cardinality": 44,
-            "key_metric": "Top Values: 'Seattle': 1573, 'Renton': 293, 'Bellevue': 286"
+            "cardinality": 2,
+            "key_metric": "Top Values: 'male': 577, 'female': 314"
         },
-        "statezip": {
-            "type": "object",
-            "cardinality": 77,
-            "key_metric": "Top Values: 'WA 98103': 148, 'WA 98052': 135, 'WA 98117': 132"
-        },
-        "price_per_sqft": {
+        "Age": {
             "type": "float64",
-            "cardinality": 4005,
-            "key_metric": "Range: [0.00 to 22533.90] | Mean: 265.88 | Median: 243.86 | Highly Skewed (53.47)"
+            "cardinality": 88,
+            "key_metric": "Range: [0.42 to 80.00] | Mean: 29.70 | Median: 28.00"
+        },
+        "SibSp": {
+            "type": "int64",
+            "cardinality": 7,
+            "key_metric": "Range: [0.00 to 8.00] | Mean: 0.52 | Median: 0.00 | Highly Skewed (3.70)"
+        },
+        "Parch": {
+            "type": "int64",
+            "cardinality": 7,
+            "key_metric": "Range: [0.00 to 6.00] | Mean: 0.38 | Median: 0.00 | Highly Skewed (2.75)"
+        },
+        "Ticket": {
+            "type": "object",
+            "cardinality": 681,
+            "key_metric": "Top Values: '347082': 7, '1601': 7, 'CA. 2343': 7"
+        },
+        "Fare": {
+            "type": "float64",
+            "cardinality": 248,
+            "key_metric": "Range: [0.00 to 512.33] | Mean: 32.20 | Median: 14.45 | Highly Skewed (4.79)"
+        },
+        "Cabin": {
+            "type": "object",
+            "cardinality": 147,
+            "key_metric": "Top Values: 'G6': 4, 'C23 C25 C27': 4, 'B96 B98': 4"
+        },
+        "Embarked": {
+            "type": "object",
+            "cardinality": 3,
+            "key_metric": "Top Values: 'S': 644, 'C': 168, 'Q': 77"
         }
     },
     "columns": [
         {
-            "column": "date",
-            "dtype": "object",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 70
-        },
-        {
-            "column": "price",
-            "dtype": "float64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 1741
-        },
-        {
-            "column": "bedrooms",
-            "dtype": "float64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 10
-        },
-        {
-            "column": "bathrooms",
-            "dtype": "float64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 26
-        },
-        {
-            "column": "sqft_living",
+            "column": "PassengerId",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 566
+            "cardinality": 891
         },
         {
-            "column": "sqft_lot",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 3113
-        },
-        {
-            "column": "floors",
-            "dtype": "float64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 6
-        },
-        {
-            "column": "waterfront",
+            "column": "Survived",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 2
         },
         {
-            "column": "view",
+            "column": "Pclass",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 5
+            "cardinality": 3
         },
         {
-            "column": "condition",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 5
-        },
-        {
-            "column": "sqft_above",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 511
-        },
-        {
-            "column": "sqft_basement",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 207
-        },
-        {
-            "column": "yr_built",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 115
-        },
-        {
-            "column": "yr_renovated",
-            "dtype": "int64",
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "cardinality": 60
-        },
-        {
-            "column": "street",
+            "column": "Name",
             "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 4525
+            "cardinality": 891
         },
         {
-            "column": "city",
+            "column": "Sex",
             "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 44
+            "cardinality": 2
         },
         {
-            "column": "statezip",
+            "column": "Age",
+            "dtype": "float64",
+            "missing_count": 177,
+            "missing_pct": 19.87,
+            "cardinality": 88
+        },
+        {
+            "column": "SibSp",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 7
+        },
+        {
+            "column": "Parch",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 7
+        },
+        {
+            "column": "Ticket",
             "dtype": "object",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 77
+            "cardinality": 681
         },
         {
-            "column": "price_per_sqft",
+            "column": "Fare",
             "dtype": "float64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 4005
+            "cardinality": 248
+        },
+        {
+            "column": "Cabin",
+            "dtype": "object",
+            "missing_count": 687,
+            "missing_pct": 77.1,
+            "cardinality": 147
+        },
+        {
+            "column": "Embarked",
+            "dtype": "object",
+            "missing_count": 2,
+            "missing_pct": 0.22,
+            "cardinality": 3
         }
     ]
 }
