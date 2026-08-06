@@ -12,135 +12,235 @@ from profiler import calculate_column_stats
 
 # Page Configuration
 st.set_page_config(
-    page_title="AutoEDA - YData-Style Interactive Data Science Dashboard",
+    page_title="AutoEDA Pro - Autonomous Data Science Agent",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for YData-Profiling aesthetics & modern dark/light card themes
+# Custom CSS for OpenRouter AI Design Aesthetics (Dark Obsidian, Glassmorphism, Electric Indigo Gradients)
 st.markdown("""
 <style>
-    /* Global Container */
-    .main .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 3rem;
-        max-width: 95%;
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    html, body, [class*="st-"] {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Header Branding */
-    .brand-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        color: #ffffff;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        margin-bottom: 1.8rem;
+    /* Global Container Background */
+    .main {
+        background: #080b11;
+        color: #f1f5f9;
     }
-    .brand-title {
-        font-size: 2.2rem;
+    
+    .stApp {
+        background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.09) 0%, rgba(8, 11, 17, 1) 75%);
+    }
+
+    .main .block-container {
+        padding-top: 1.2rem;
+        padding-bottom: 3rem;
+        max-width: 96%;
+    }
+    
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #0b0f17 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    /* OpenRouter Brand Banner Header */
+    .openrouter-header {
+        background: rgba(13, 17, 26, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(16px);
+        border-radius: 16px;
+        padding: 1.8rem 2.2rem;
+        margin-bottom: 1.8rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .openrouter-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+    }
+    
+    .openrouter-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        color: #a5b4fc;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.8rem;
+    }
+    
+    .openrouter-title {
+        font-size: 2.3rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+        letter-spacing: -0.03em;
+        background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin: 0;
     }
-    .brand-subtitle {
+    
+    .openrouter-subtitle {
         color: #94a3b8;
         font-size: 1rem;
+        margin-top: 0.4rem;
+        font-weight: 400;
+    }
+    
+    /* OpenRouter Metric Cards */
+    .or-metric-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 1.2rem;
+        text-align: center;
+        backdrop-filter: blur(12px);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .or-metric-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.18);
+    }
+    
+    .or-metric-val {
+        font-size: 1.9rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #f8fafc 0%, #c7d2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .or-metric-lbl {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         margin-top: 0.3rem;
     }
     
-    /* Metric Cards */
-    .metric-box {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 1.2rem;
-        text-align: center;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .metric-box:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    }
-    .metric-val {
-        font-size: 1.8rem;
+    /* Custom Badges */
+    .or-badge-numeric {
+        background: rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        color: #a5b4fc;
+        padding: 0.25rem 0.65rem;
+        border-radius: 6px;
         font-weight: 700;
-        color: #0f172a;
-    }
-    .metric-lbl {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #64748b;
-        text-transform: uppercase;
+        font-size: 0.72rem;
         letter-spacing: 0.05em;
     }
     
-    /* Variable Card (YData Profiling Style) */
-    .var-card {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-left: 5px solid #3b82f6;
-        border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1.2rem;
-    }
-    .badge-numeric {
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 0.25rem 0.6rem;
+    .or-badge-categorical {
+        background: rgba(168, 85, 247, 0.2);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #e9d5ff;
+        padding: 0.25rem 0.65rem;
         border-radius: 6px;
         font-weight: 700;
-        font-size: 0.75rem;
-    }
-    .badge-categorical {
-        background: #fef3c7;
-        color: #92400e;
-        padding: 0.25rem 0.6rem;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.75rem;
-    }
-    .badge-missing {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 0.25rem 0.6rem;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
     }
     
-    /* Tab Headers */
+    .or-badge-missing {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        padding: 0.25rem 0.65rem;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+    }
+    
+    /* OpenRouter Tabs Styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 6px;
-        border-bottom: 2px solid #e2e8f0;
+        gap: 8px;
+        background: rgba(13, 17, 26, 0.7);
+        padding: 6px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
     }
+    
     .stTabs [data-baseweb="tab"] {
-        padding: 0.6rem 1.2rem;
+        height: 42px;
+        white-space: pre;
+        border-radius: 8px;
         font-weight: 600;
-        border-radius: 8px 8px 0 0;
+        font-size: 0.88rem;
+        color: #94a3b8;
+        border: none !important;
+        transition: all 0.2s ease;
     }
+    
     .stTabs [aria-selected="true"] {
-        background-color: #3b82f6 !important;
-        color: white !important;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Streamlit Primary Button Styling */
+    div.stButton > button {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        padding: 0.65rem 1.2rem;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.2s ease;
+    }
+    
+    div.stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+
+    /* Expanders */
+    .stExpander {
+        background: rgba(15, 23, 42, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 10px !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 def main():
-    # Brand Top Banner
+    # OpenRouter AI Top Branding Header
     st.markdown("""
-    <div class="brand-header">
-        <div class="brand-title">AutoEDA Pro Dashboard</div>
-        <div class="brand-subtitle">Autonomous Tool-Based Data Science Agent | YData-Style Variable Profiling & Statistical Insights</div>
+    <div class="openrouter-header">
+        <div class="openrouter-badge">⚡ OpenRouter AI Engine • AutoEDA v3.6</div>
+        <div class="openrouter-title">Autonomous Tool-Based Data Science Platform</div>
+        <div class="openrouter-subtitle">Stateful Agent Pipeline • Algorithmic Profiling & Statistical Modeling Blueprint</div>
     </div>
     """, unsafe_allow_html=True)
 
     # Sidebar Controls
-    st.sidebar.header("Execution Setup")
+    st.sidebar.header("Agent Execution Parameters")
     data_source = st.sidebar.radio("Data Input Mode", ["Sample Datasets", "Upload Custom CSV"])
     
     selected_csv_path = None
@@ -200,7 +300,7 @@ def main():
         df_raw = pd.read_csv(selected_csv_path)
         stats_list = calculate_column_stats(df_raw)
         
-        # High-level Dataset Metrics Bar (YData Overview Style)
+        # High-level OpenRouter-Style Dataset Metrics Cards
         num_rows, num_cols = df_raw.shape
         num_numeric = sum(pd.api.types.is_numeric_dtype(df_raw[c]) and not pd.api.types.is_bool_dtype(df_raw[c]) for c in df_raw.columns)
         num_cat = num_cols - num_numeric
@@ -209,15 +309,15 @@ def main():
         missing_pct = round((missing_cells / total_cells * 100), 2) if total_cells > 0 else 0.0
         
         c1, c2, c3, c4, c5 = st.columns(5)
-        c1.markdown(f'<div class="metric-box"><div class="metric-val">{num_rows:,}</div><div class="metric-lbl">Number of Rows</div></div>', unsafe_allow_html=True)
-        c2.markdown(f'<div class="metric-box"><div class="metric-val">{num_cols:,}</div><div class="metric-lbl">Number of Cols</div></div>', unsafe_allow_html=True)
-        c3.markdown(f'<div class="metric-box"><div class="metric-val">{num_numeric}</div><div class="metric-lbl">Numeric Variables</div></div>', unsafe_allow_html=True)
-        c4.markdown(f'<div class="metric-box"><div class="metric-val">{num_cat}</div><div class="metric-lbl">Categorical Variables</div></div>', unsafe_allow_html=True)
-        c5.markdown(f'<div class="metric-box"><div class="metric-val">{missing_pct}%</div><div class="metric-lbl">Missing Cells</div></div>', unsafe_allow_html=True)
+        c1.markdown(f'<div class="or-metric-card"><div class="or-metric-val">{num_rows:,}</div><div class="or-metric-lbl">Total Rows</div></div>', unsafe_allow_html=True)
+        c2.markdown(f'<div class="or-metric-card"><div class="or-metric-val">{num_cols:,}</div><div class="or-metric-lbl">Total Columns</div></div>', unsafe_allow_html=True)
+        c3.markdown(f'<div class="or-metric-card"><div class="or-metric-val">{num_numeric}</div><div class="or-metric-lbl">Numeric Variables</div></div>', unsafe_allow_html=True)
+        c4.markdown(f'<div class="or-metric-card"><div class="or-metric-val">{num_cat}</div><div class="or-metric-lbl">Categorical Variables</div></div>', unsafe_allow_html=True)
+        c5.markdown(f'<div class="or-metric-card"><div class="or-metric-val">{missing_pct}%</div><div class="or-metric-lbl">Missing Cells</div></div>', unsafe_allow_html=True)
         
         st.write("") # spacing
 
-        # Primary Tabs: YData-Profiling Experience
+        # Primary Tabs: OpenRouter UI Navigation
         t_vars, t_plots, t_summary, t_metrics, t_script, t_dvc = st.tabs([
             "Variable Profiling",
             "Visual Gallery & Bivariate",
@@ -228,7 +328,7 @@ def main():
         ])
 
         # -------------------------------------------------------------
-        # TAB 1: VARIABLE PROFILING (YData Profiling Style Per-Column Cards)
+        # TAB 1: VARIABLE PROFILING
         # -------------------------------------------------------------
         with t_vars:
             st.subheader("Individual Variable Deep-Dive")
@@ -250,9 +350,9 @@ def main():
                     with v_col1:
                         st.markdown("#### Statistics Overview")
                         if is_num:
-                            st.markdown('<span class="badge-numeric">NUMERIC</span>', unsafe_allow_html=True)
+                            st.markdown('<span class="or-badge-numeric">NUMERIC</span>', unsafe_allow_html=True)
                             if missing_cnt > 0:
-                                st.markdown(f' <span class="badge-missing">MISSING ({missing_cnt})</span>', unsafe_allow_html=True)
+                                st.markdown(f' <span class="or-badge-missing">MISSING ({missing_cnt})</span>', unsafe_allow_html=True)
                             
                             stat_df = pd.DataFrame({
                                 "Metric": ["Mean", "Std Dev", "Median", "Min", "Max", "Q1 (25%)", "Q3 (75%)", "IQR", "Skewness"],
@@ -263,9 +363,9 @@ def main():
                             })
                             st.table(stat_df.dropna())
                         else:
-                            st.markdown('<span class="badge-categorical">CATEGORICAL</span>', unsafe_allow_html=True)
+                            st.markdown('<span class="or-badge-categorical">CATEGORICAL</span>', unsafe_allow_html=True)
                             if missing_cnt > 0:
-                                st.markdown(f' <span class="badge-missing">MISSING ({missing_cnt})</span>', unsafe_allow_html=True)
+                                st.markdown(f' <span class="or-badge-missing">MISSING ({missing_cnt})</span>', unsafe_allow_html=True)
                             
                             top_vals = df_raw[col_name].value_counts().head(5).reset_index()
                             top_vals.columns = [col_name, "Frequency"]
