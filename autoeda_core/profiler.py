@@ -10,7 +10,7 @@ def is_non_distributional_column(col_name: str, series: Optional[pd.Series] = No
     """
     Determines if a column lacks meaningful univariate distribution properties.
     Excludes unique IDs, spatial coordinates (latitude, longitude), timestamps/dates,
-    and sequential row index identifiers from univariate distribution plot generation.
+    sampling weights (e.g. fnlwgt), and high-cardinality non-informative key columns (e.g. Ticket).
     """
     col_clean = str(col_name).strip().lower()
     
@@ -25,11 +25,11 @@ def is_non_distributional_column(col_name: str, series: Optional[pd.Series] = No
         if re.match(pattern, col_clean):
             return True
             
-    # 2. Identifier / Key column name patterns
+    # 2. Identifier / Key / Sampling Weight column name patterns
     id_patterns = [
-        r"^(id|uuid|guid|pk|index|row_id|row_num|code|hash|ssn)$",
-        r".*(_id|_uuid|_guid|_pk|_code|_hash|_index|_number|_no)$",
-        r"^(id_|uuid_|guid_|pk_|index_).*"
+        r"^(id|uuid|guid|pk|index|row_id|row_num|code|hash|ssn|fnlwgt|ticket|ticket_num|ticket_no|passengerid|name|member_id)$",
+        r".*(_id|_uuid|_guid|_pk|_code|_hash|_index|_number|_no|_weight|_wt)$",
+        r"^(id_|uuid_|guid_|pk_|index_|ticket_).*"
     ]
     for pattern in id_patterns:
         if re.match(pattern, col_clean):
@@ -60,11 +60,15 @@ def is_non_distributional_column(col_name: str, series: Optional[pd.Series] = No
             if len(diffs) > 0 and (diffs == 1).all():
                 return True
 
-        # High cardinality ratio check (e.g., >98% unique non-float values)
+        # High cardinality non-float / string check (e.g. >25% unique or >50 distinct categories)
         if len(s) > 20:
             uniq_ratio = s.nunique() / len(s)
-            if uniq_ratio > 0.98 and not pd.api.types.is_float_dtype(s):
-                return True
+            if not pd.api.types.is_float_dtype(s):
+                if uniq_ratio > 0.30 or (not pd.api.types.is_numeric_dtype(s) and s.nunique() > 50):
+                    return True
+            elif uniq_ratio > 0.50 and s.nunique() > 500:
+                if any(kw in col_clean for kw in ["id", "wt", "weight", "code", "fnlwgt"]):
+                    return True
 
     return False
 
