@@ -1,0 +1,15 @@
+[
+  {
+    "loop": 1,
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "plan": [
+      {
+        "tool": "finish_analysis",
+        "args": {}
+      }
+    ],
+    "step_results": [
+      "Agent called finish_analysis. Terminating loop."
+    ]
+  }
+]

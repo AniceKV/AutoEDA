@@ -1,0 +1,253 @@
+{
+    "dataset_name": "adult_test-selected-columns.csv",
+    "dimensions": {
+        "rows": 924,
+        "columns": 10
+    },
+    "missing_values_summary": {
+        "Age": "924 (100.0%)",
+        "Workclass": "924 (100.0%)",
+        "fnlwgt": "924 (100.0%)",
+        "Education": "924 (100.0%)",
+        "Education_Num": "924 (100.0%)",
+        "Martial_Status": "924 (100.0%)",
+        "Occupation": "924 (100.0%)",
+        "Relationship": "924 (100.0%)",
+        "Race": "924 (100.0%)",
+        "Sex": "924 (100.0%)"
+    },
+    "schema": {
+        "Age": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Workclass": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "fnlwgt": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Education": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Education_Num": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Martial_Status": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Occupation": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Relationship": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Race": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        },
+        "Sex": {
+            "type": "float64",
+            "cardinality": 0,
+            "key_metric": "Range: [nan to nan] | Mean: N/A | Median: N/A"
+        }
+    },
+    "columns": [
+        {
+            "column": "Age",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Workclass",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "fnlwgt",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Education",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Education_Num",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Martial_Status",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Occupation",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Relationship",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Race",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Sex",
+            "dtype": "float64",
+            "missing_count": 924,
+            "missing_pct": 100.0,
+            "cardinality": 0,
+            "unique_pct": 0.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        }
+    ]
+}

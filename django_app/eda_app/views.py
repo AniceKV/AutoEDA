@@ -133,6 +133,12 @@ def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
         except Exception:
             metrics = {}
 
+    # Fallback to current_df.csv inside eda_dir if csv_path is missing/invalid
+    if (not csv_path or not os.path.exists(csv_path)) and eda_dir:
+        fallback = os.path.join(eda_dir, "current_df.csv")
+        if os.path.exists(fallback):
+            csv_path = fallback
+
     # Ensure hypothesis tests & predictive blueprint exist if CSV is present
     if csv_path and os.path.exists(csv_path):
         dirty = False
@@ -163,33 +169,30 @@ def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
 
 
 def _load_summary(eda_dir: str) -> str:
+    """Return summary_report.md converted to HTML or plain preview."""
     if not eda_dir:
         return ""
-    for name in ("summary_report.md", "executive_summary.md"):
-        path = os.path.join(eda_dir, name)
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                raw = f.read()
-            try:
-                import markdown as md_lib
-                return md_lib.markdown(raw, extensions=["tables", "fenced_code"])
-            except Exception:
-                html = raw.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-                html = re.sub(r'^# (.*)$', r'<h1>\1</h1>', html, flags=re.MULTILINE)
-                html = re.sub(r'^## (.*)$', r'<h2>\1</h2>', html, flags=re.MULTILINE)
-                html = re.sub(r'^### (.*)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-                html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
-                html = re.sub(r'`(.*?)`', r'<code>\1</code>', html)
-                return f'<div class="markdown-body">{html}</div>'
-    return ""
+    path = os.path.join(eda_dir, "summary_report.md")
+    if not os.path.exists(path):
+        return ""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            md_content = f.read()
+        import markdown
+        return markdown.markdown(md_content, extensions=["tables", "fenced_code"])
+    except ImportError:
+        with open(path, "r", encoding="utf-8") as f:
+            return f"<pre>{f.read()}</pre>"
+    except Exception:
+        return ""
 
 
-def _list_plot_pngs(eda_dir: str, session_id: str, dataset_name: str, csv_path: str = "") -> dict:
-    """Return categorised PNG paths relative to AUTOEDA_ROOT for URL building."""
+def _list_plot_pngs(eda_dir: str | None, sid: str, dataset_name: str, csv_path: str = "") -> dict:
+    """Return dict of PNG relative paths grouped by type."""
     if not eda_dir or not os.path.exists(eda_dir):
         return {"bivariate": [], "heatmaps": [], "distributions": [], "other": []}
 
-    # Ensure heatmap & pairplot exist if dataset CSV is loaded
+    # Ensure baseline plots exist if missing
     if csv_path and os.path.exists(csv_path):
         corr_img = os.path.join(eda_dir, "correlation_matrix.png")
         pair_img = os.path.join(eda_dir, "pairplot.png")
@@ -265,18 +268,72 @@ def index(request):
     metrics = _load_metrics(eda_dir, selected_csv_path)
     blueprint = metrics.get("predictive_modeling_blueprint", {})
     hypothesis = metrics.get("statistical_hypothesis_tests", {})
-    sig_predictors = hypothesis.pop("significant_predictors", [])
-    hyp_rows = [
-        {
+
+    sig_predictors = list(hypothesis.get("significant_predictors", []))
+    hyp_rows = []
+
+    # 1. Parse per-feature dictionary entries if present
+    for k, v in hypothesis.items():
+        if k in ("significant_predictors", "ranked_significant_details", "target_col") or not isinstance(v, dict):
+            continue
+        stat = v.get("statistic")
+        if stat is not None and isinstance(stat, (int, float)):
+            stat_val = round(float(stat), 4)
+        else:
+            stat_val = stat if stat is not None else "N/A"
+
+        p_val = v.get("p_value", "N/A")
+        if isinstance(p_val, (int, float)):
+            p_val_fmt = f"{p_val:.4e}" if p_val < 0.0001 else str(round(p_val, 6))
+        else:
+            p_val_fmt = str(p_val)
+
+        is_sig = v.get("is_statistically_significant", False)
+        test_name = v.get("test_name") or v.get("test") or "Hypothesis Test"
+        interpretation = v.get("interpretation", "")
+
+        hyp_rows.append({
             "feature": k,
-            "test": v.get("test_name", "N/A"),
-            "statistic": round(v.get("statistic", 0), 4),
-            "p_value": v.get("p_value", "N/A"),
-            "significant": v.get("is_statistically_significant", False),
-            "interpretation": v.get("interpretation", ""),
-        }
-        for k, v in hypothesis.items() if isinstance(v, dict)
-    ]
+            "test": test_name,
+            "statistic": stat_val,
+            "p_value": p_val_fmt,
+            "significant": is_sig,
+            "interpretation": interpretation,
+        })
+
+    # 2. Fall back to ranked_significant_details if hyp_rows is empty
+    if not hyp_rows and isinstance(hypothesis.get("ranked_significant_details"), list):
+        for item in hypothesis.get("ranked_significant_details", []):
+            if isinstance(item, dict):
+                feat = item.get("feature", "N/A")
+                test_name = item.get("test") or item.get("test_name") or "Statistical Test"
+                stat = item.get("statistic") if item.get("statistic") is not None else item.get("effect_size", "N/A")
+                if isinstance(stat, (int, float)):
+                    stat_val = round(float(stat), 4)
+                else:
+                    stat_val = stat
+                p_val = item.get("p_value", "N/A")
+                if isinstance(p_val, (int, float)):
+                    p_val_fmt = f"{p_val:.4e}" if p_val < 0.0001 else str(round(p_val, 6))
+                else:
+                    p_val_fmt = str(p_val)
+                is_sig = item.get("is_statistically_significant", True)
+                interpretation = item.get("interpretation", "")
+
+                hyp_rows.append({
+                    "feature": feat,
+                    "test": test_name,
+                    "statistic": stat_val,
+                    "p_value": p_val_fmt,
+                    "significant": is_sig,
+                    "interpretation": interpretation,
+                })
+
+    # If sig_predictors wasn't explicit, infer from hyp_rows
+    if not sig_predictors and hyp_rows:
+        sig_predictors = [r["feature"] for r in hyp_rows if r.get("significant")]
+
+    has_hypothesis_tests = bool(hypothesis and (hyp_rows or sig_predictors or "target_col" in hypothesis))
 
     # --- Executive summary ---
     summary_html = _load_summary(eda_dir)
@@ -315,6 +372,7 @@ def index(request):
         "blueprint": blueprint,
         "hyp_rows": hyp_rows,
         "sig_predictors": sig_predictors,
+        "has_hypothesis_tests": has_hypothesis_tests,
         "metrics_json": json.dumps(metrics, indent=2),
         "summary_html": summary_html,
         "plots": plots,

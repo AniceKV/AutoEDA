@@ -1,0 +1,107 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\adult_test-selected-columns.csv",
+    "shape": {
+      "rows": 924,
+      "columns": 10
+    },
+    "target_column": null,
+    "column_summary": {
+      "Age": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Workclass": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "fnlwgt": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Education": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Education_Num": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Martial_Status": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Occupation": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Relationship": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Race": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      },
+      "Sex": {
+        "dtype": "float64",
+        "missing_count": 924,
+        "cardinality": 0
+      }
+    }
+  },
+  "imputation_summary": {
+    "status": "Imputation completed"
+  },
+  "outlier_analysis": {},
+  "engineered_features": [],
+  "correlation_analysis": {},
+  "categorical_associations": [],
+  "statistical_hypothesis_tests": {},
+  "predictive_modeling_blueprint": {
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
+    "recommended_algorithms": [
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Evaluate Silhouette Score and Inertia elbow curve"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 924 rows x 10 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 924 rows and 10 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": []
+  },
+  "pipeline_validation": {
+    "is_consistent": true,
+    "warnings": [],
+    "validated_target": null,
+    "statistically_significant_count": 0,
+    "engineered_features_count": 0
+  }
+}

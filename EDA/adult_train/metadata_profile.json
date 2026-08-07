@@ -1,0 +1,361 @@
+{
+    "dataset_name": "adult_train.csv",
+    "dimensions": {
+        "rows": 32561,
+        "columns": 15
+    },
+    "missing_values_summary": {
+        "Workclass": "1836 (5.6%)",
+        "Occupation": "1843 (5.7%)",
+        "Country": "583 (1.8%)"
+    },
+    "schema": {
+        "Age": {
+            "type": "int64",
+            "cardinality": 73,
+            "key_metric": "Range: [17.00 to 90.00] | Mean: 38.58 | Median: 37.00"
+        },
+        "Workclass": {
+            "type": "str",
+            "cardinality": 8,
+            "key_metric": "Top Values: ' Private': 22696, ' Self-emp-not-inc': 2541, ' Local-gov': 2093"
+        },
+        "fnlwgt": {
+            "type": "int64",
+            "cardinality": 21648,
+            "key_metric": "Range: [12285.00 to 1484705.00] | Mean: 189778.37 | Median: 178356.00 | Highly Skewed (1.45)"
+        },
+        "Education": {
+            "type": "str",
+            "cardinality": 16,
+            "key_metric": "Top Values: ' HS-grad': 10501, ' Some-college': 7291, ' Bachelors': 5355"
+        },
+        "Education_Num": {
+            "type": "int64",
+            "cardinality": 16,
+            "key_metric": "Range: [1.00 to 16.00] | Mean: 10.08 | Median: 10.00"
+        },
+        "Martial_Status": {
+            "type": "str",
+            "cardinality": 7,
+            "key_metric": "Top Values: ' Married-civ-spouse': 14976, ' Never-married': 10683, ' Divorced': 4443"
+        },
+        "Occupation": {
+            "type": "str",
+            "cardinality": 14,
+            "key_metric": "Top Values: ' Prof-specialty': 4140, ' Craft-repair': 4099, ' Exec-managerial': 4066"
+        },
+        "Relationship": {
+            "type": "str",
+            "cardinality": 6,
+            "key_metric": "Top Values: ' Husband': 13193, ' Not-in-family': 8305, ' Own-child': 5068"
+        },
+        "Race": {
+            "type": "str",
+            "cardinality": 5,
+            "key_metric": "Top Values: ' White': 27816, ' Black': 3124, ' Asian-Pac-Islander': 1039"
+        },
+        "Sex": {
+            "type": "str",
+            "cardinality": 2,
+            "key_metric": "Top Values: ' Male': 21790, ' Female': 10771"
+        },
+        "Capital_Gain": {
+            "type": "int64",
+            "cardinality": 119,
+            "key_metric": "Range: [0.00 to 99999.00] | Mean: 1077.65 | Median: 0.00 | Highly Skewed (11.95)"
+        },
+        "Capital_Loss": {
+            "type": "int64",
+            "cardinality": 92,
+            "key_metric": "Range: [0.00 to 4356.00] | Mean: 87.30 | Median: 0.00 | Highly Skewed (4.59)"
+        },
+        "Hours_per_week": {
+            "type": "int64",
+            "cardinality": 94,
+            "key_metric": "Range: [1.00 to 99.00] | Mean: 40.44 | Median: 40.00"
+        },
+        "Country": {
+            "type": "str",
+            "cardinality": 41,
+            "key_metric": "Top Values: ' United-States': 29170, ' Mexico': 643, ' Philippines': 198"
+        },
+        "Target": {
+            "type": "str",
+            "cardinality": 2,
+            "key_metric": "Top Values: ' <=50K': 24720, ' >50K': 7841"
+        }
+    },
+    "columns": [
+        {
+            "column": "Age",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 73,
+            "unique_pct": 0.22,
+            "mean": 38.58164675532078,
+            "median": 37.0,
+            "std": 13.640432553581341,
+            "min": 17.0,
+            "max": 90.0,
+            "q1": 28.0,
+            "q3": 48.0,
+            "iqr": 20.0,
+            "skew": 0.5587433694130484,
+            "kurtosis": -0.16612745957143948
+        },
+        {
+            "column": "Workclass",
+            "dtype": "str",
+            "missing_count": 1836,
+            "missing_pct": 5.64,
+            "cardinality": 8,
+            "unique_pct": 0.02,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "fnlwgt",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 21648,
+            "unique_pct": 66.48,
+            "mean": 189778.36651208502,
+            "median": 178356.0,
+            "std": 105549.97769702224,
+            "min": 12285.0,
+            "max": 1484705.0,
+            "q1": 117827.0,
+            "q3": 237051.0,
+            "iqr": 119224.0,
+            "skew": 1.4469800945789821,
+            "kurtosis": 6.2188109781537975
+        },
+        {
+            "column": "Education",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 16,
+            "unique_pct": 0.05,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Education_Num",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 16,
+            "unique_pct": 0.05,
+            "mean": 10.0806793403151,
+            "median": 10.0,
+            "std": 2.5727203320673877,
+            "min": 1.0,
+            "max": 16.0,
+            "q1": 9.0,
+            "q3": 12.0,
+            "iqr": 3.0,
+            "skew": -0.3116758679102297,
+            "kurtosis": 0.6234440747629248
+        },
+        {
+            "column": "Martial_Status",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 7,
+            "unique_pct": 0.02,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Occupation",
+            "dtype": "str",
+            "missing_count": 1843,
+            "missing_pct": 5.66,
+            "cardinality": 14,
+            "unique_pct": 0.04,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Relationship",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 6,
+            "unique_pct": 0.02,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Race",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5,
+            "unique_pct": 0.02,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Sex",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.01,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Capital_Gain",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 119,
+            "unique_pct": 0.37,
+            "mean": 1077.6488437087312,
+            "median": 0.0,
+            "std": 7385.292084840338,
+            "min": 0.0,
+            "max": 99999.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "iqr": 0.0,
+            "skew": 11.953847687699804,
+            "kurtosis": 154.7994378542534
+        },
+        {
+            "column": "Capital_Loss",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 92,
+            "unique_pct": 0.28,
+            "mean": 87.303829734959,
+            "median": 0.0,
+            "std": 402.9602186489997,
+            "min": 0.0,
+            "max": 4356.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "iqr": 0.0,
+            "skew": 4.594629121679695,
+            "kurtosis": 20.376801713412213
+        },
+        {
+            "column": "Hours_per_week",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 94,
+            "unique_pct": 0.29,
+            "mean": 40.437455852092995,
+            "median": 40.0,
+            "std": 12.347428681731843,
+            "min": 1.0,
+            "max": 99.0,
+            "q1": 40.0,
+            "q3": 45.0,
+            "iqr": 5.0,
+            "skew": 0.227642536804501,
+            "kurtosis": 2.9166867960020677
+        },
+        {
+            "column": "Country",
+            "dtype": "str",
+            "missing_count": 583,
+            "missing_pct": 1.79,
+            "cardinality": 41,
+            "unique_pct": 0.13,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Target",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.01,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        }
+    ]
+}

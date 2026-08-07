@@ -471,7 +471,7 @@
           <tr>
             <th>Feature</th>
             <th>Test</th>
-            <th>Statistic</th>
+            <th>Statistic / Effect Size</th>
             <th>p-value</th>
             <th>Significant</th>
           </tr>
@@ -482,7 +482,7 @@
             <td class="mono">{{ row.feature }}</td>
             <td>{{ row.test }}</td>
             <td class="mono">{{ row.statistic }}</td>
-            <td class="mono">{{ row.p_value|floatformat:6 }}</td>
+            <td class="mono">{{ row.p_value }}</td>
             <td>
               {% if row.significant %}
                 <span class="badge badge-sig">Yes</span>
@@ -495,6 +495,8 @@
         </tbody>
       </table>
     </div>
+    {% elif has_hypothesis_tests %}
+    <div class="empty-state"><p>Hypothesis tests executed. No statistically significant predictors found at α = 0.05.</p></div>
     {% else %}
     <div class="empty-state"><p>No hypothesis test results available. Run the pipeline first.</p></div>
     {% endif %}

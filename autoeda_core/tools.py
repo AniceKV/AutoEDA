@@ -805,27 +805,32 @@ def _render_bivariate_axes(
         sns.regplot(data=df_plot, x=x_col, y=y_col, scatter=(hue_col is None),
                     scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
         ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
-        
+        ax.tick_params(axis='x', rotation=90)
+        ax.tick_params(axis='y', rotation=0)
+
     elif not x_is_num and y_is_num:
         # Bin the categorical x-axis if it is actually numeric
         df_plot[x_col] = _bin_series(df_plot[x_col])
         sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=hue_col if hue_col else x_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=30)
-        
+        ax.tick_params(axis='x', rotation=90)
+        ax.tick_params(axis='y', rotation=0)
+
     elif x_is_num and not y_is_num:
         df_plot[y_col] = _bin_series(df_plot[y_col])
         sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=hue_col if hue_col else y_col, palette="Set2", legend=False, ax=ax)
         ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=30)
-        
+        ax.tick_params(axis='x', rotation=90)
+        ax.tick_params(axis='y', rotation=0)
+
     else:
         # Both categorical
         df_plot[x_col] = _bin_series(df_plot[x_col])
         df_plot[y_col] = _bin_series(df_plot[y_col])
         sns.countplot(data=df_plot, x=x_col, hue=y_col, palette="Set1", ax=ax)
         ax.set_title(f"Categorical: {x_col} by {y_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=30)
+        ax.tick_params(axis='x', rotation=90)
+        ax.tick_params(axis='y', rotation=0)
 
 
 def plot_target_interaction(
@@ -897,9 +902,14 @@ def plot_feature_distributions(
         else:
             target_cols = [target_cols]
 
-    valid_cols = [c for c in target_cols if c in df.columns and not is_non_distributional_column(c, df[c])]
+    if columns:
+        valid_cols = [c for c in target_cols if c in df.columns]
+    else:
+        valid_cols = [c for c in target_cols if c in df.columns and not is_non_distributional_column(c, df[c])]
+        if not valid_cols:
+            valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
     if not valid_cols:
-        valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+        valid_cols = list(df.columns)
 
     out_dir = kwargs.get("output_dir") or output_dir
     os.makedirs(out_dir, exist_ok=True)
@@ -921,6 +931,8 @@ def plot_feature_distributions(
                 ax.set_title(f"Numeric Distribution: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Density / Frequency")
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
             else:
                 # Categorical, boolean, or low-cardinality discrete numeric features get Count Plot
                 if n_unique > 20:
@@ -935,7 +947,8 @@ def plot_feature_distributions(
                 ax.set_title(f"Categorical Count Plot: {col}", fontsize=12, pad=10)
                 ax.set_xlabel(col)
                 ax.set_ylabel("Count")
-                ax.tick_params(axis='x', rotation=30)
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
 
                 # Annotate count bars with exact numeric counts
                 if len(ax.containers) > 0:
@@ -1154,7 +1167,7 @@ def plot_correlation_matrix(
     fig, ax = plt.subplots(figsize=(max(6, len(numeric_cols) * 0.8), max(5, len(numeric_cols) * 0.7)))
     sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", vmin=-1, vmax=1, ax=ax, cbar=True)
     ax.set_title("Pearson Correlation Heatmap", fontsize=14, pad=12)
-    plt.xticks(rotation=45, ha="right")
+    plt.xticks(rotation=90, ha="center")
     plt.yticks(rotation=0)
 
     try:
@@ -1264,19 +1277,24 @@ def plot_semantic_bivariate_relationships(
                 sns.scatterplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set1", alpha=0.7)
                 sns.regplot(data=clean_df, x=x_col, y=y_col, scatter=False, ax=ax, color="#ef4444")
                 ax.set_title(f"{x_col} vs {y_col}", fontsize=11, pad=10)
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
             elif not x_is_num and y_is_num:
                 sns.boxplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
                 ax.set_title(f"{y_col} distribution across {x_col}", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=30)
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
             elif x_is_num and not y_is_num:
                 sns.boxplot(data=clean_df, x=y_col, y=x_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
                 ax.set_title(f"{x_col} distribution across {y_col}", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=30)
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
             else:
                 ct = pd.crosstab(clean_df[x_col], clean_df[y_col], normalize="index")
                 ct.plot(kind="bar", stacked=True, ax=ax, colormap="viridis")
                 ax.set_title(f"{x_col} vs {y_col} (Proportion)", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=30)
+                ax.tick_params(axis='x', rotation=90)
+                ax.tick_params(axis='y', rotation=0)
                 
             plt.tight_layout()
             plt.savefig(file_path, dpi=150, bbox_inches="tight")
