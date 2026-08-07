@@ -6,6 +6,8 @@ import pandas as pd
 import scipy.stats as stats
 import matplotlib
 matplotlib.use("Agg")  # Non-interactive backend
+import matplotlib.style as mplstyle
+mplstyle.use("fast")  # Apply performance-oriented fast style sheet globally
 import matplotlib.pyplot as plt
 import seaborn as sns
 import PIL.Image

@@ -435,7 +435,7 @@ def dataset_preview(request):
         return JsonResponse({"error": "No dataset selected.", "rows": [], "columns": []}, status=200)
 
     try:
-        df = pd.read_csv(csv_path, nrows=50)
+        df = pd.read_csv(csv_path, nrows=50, encoding_errors="replace")
         # Determine column dtypes
         col_info = []
         for col in df.columns:
@@ -455,7 +455,12 @@ def dataset_preview(request):
         for _, row in df.iterrows():
             rows.append({col: (None if pd.isna(v) else _safe_val(v)) for col, v in row.items()})
 
-        total_rows = sum(1 for _ in open(csv_path, encoding="utf-8")) - 1  # minus header
+        try:
+            with open(csv_path, "rb") as f:
+                total_rows = max(0, sum(1 for _ in f) - 1)
+        except Exception:
+            total_rows = len(rows)
+
         return JsonResponse({
             "columns": col_info,
             "rows": rows,

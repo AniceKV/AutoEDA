@@ -1,210 +1,178 @@
-# Executive Summary – Titanic Survival Prediction (Auto‑EDA)
+# Executive Summary – Titanic Survival EDA  
 
-**Prepared by:** Senior Lead Data Scientist  
-**Date:** 2026‑08‑06  
-
----
-
-## 1. Executive Overview
-The automated EDA pipeline processed the classic **Titanic** passenger dataset (891 rows × 13 columns) to produce a complete statistical portrait, missing‑value handling, outlier profiling, feature‑engineering, and a predictive‑modeling blueprint for the binary target **`Survived`**.  
-
-Key take‑aways:
-
-| Item | Insight |
-|------|---------|
-| **Target** | `Survived` – binary classification (0 = did not survive, 1 = survived) |
-| **Significant predictors** | `Pclass`, `Sex`, `Age`, `Parch`, `Ticket`, `Fare`, `Cabin`, `Embarked`, engineered log‑Fare feature |
-| **Imputation** | Mean imputation for `Age`; mode imputation for `Cabin` and `Embarked` |
-| **Outliers** | Detected (profile‑only) in `Age`, `Fare`, `SibSp`, `Parch`; no removal performed |
-| **Feature engineering** | Log‑1p transformation of `Fare` → `engineered_feature` (high correlation with `Fare` and `Survived`) |
-| **Recommended models** | Logistic Regression (baseline), Random Forest, Gradient Boosting (XGBoost / LightGBM), Support Vector Classifier |
-| **Validation** | Stratified 5‑fold CV with balanced‑accuracy, macro‑F1, PR‑AUC, confusion matrix |
-
-The following sections detail each component of the analysis.
+**Prepared for:** Data Science Leadership  
+**Date:** 2026‑08‑07  
 
 ---
 
-## 2. Dataset Overview
-| Property | Value |
-|----------|-------|
-| **Source file** | `Titanic-Dataset.csv` |
-| **Rows** | 891 |
-| **Columns (including engineered)** | 13 |
-| **Target column** | `Survived` |
-| **Data types** | 5 numeric (`PassengerId`, `Survived`, `Pclass`, `Age`, `SibSp`, `Parch`, `Fare`, `engineered_feature`) and 5 categorical (`Name`, `Sex`, `Ticket`, `Cabin`, `Embarked`) |
+## 1. Overview  
 
-### Column Summary (selected)
+| Item                     | Value |
+|--------------------------|-------|
+| Dataset name             | `Titanic‑Dataset.csv` |
+| Rows (observations)      | 891 |
+| Columns (features)       | 12 |
+| Target column            | **Survived** (binary classification) |
+| Primary analysis tools   | Automated EDA pipeline (imputation, outlier profiling, visualisation, hypothesis testing, feature‑engineering, modelling blueprint) |
+| Final status             | All planned steps executed; no new engineered features were added (the pipeline generated 0 features). |
 
-| Column | dtype | Cardinality | Missing % | Key metric |
-|--------|-------|-------------|----------|------------|
-| `PassengerId` | int64 | 891 | 0.0 | Range [1‑891], Mean 446 |
-| `Survived` | int64 | 2 | 0.0 | Mean 0.38 |
-| `Pclass` | int64 | 3 | 0.0 | Mean 2.31 |
-| `Sex` | object | 2 | 0.0 | Male 577, Female 314 |
-| `Age` | float64 | 88 | 19.9 | Mean 29.70, Median 28 |
-| `Cabin` | object | 147 | 77.1 | Mode `B96 B98` |
-| `Embarked` | object | 3 | 0.2 | Mode `S` |
-| `Fare` | float64 | 248 | 0.0 | Mean 32.20, Median 14.45 |
-| `engineered_feature` | float64 | 248 | 0.0 | = log1p(`Fare`) |
+The pipeline produced a full set of artefacts (plots, JSON summaries, HTML report) that are referenced throughout this document.
 
 ---
 
-## 3. Missing‑Value Handling & Imputation
-The pipeline applied a rule‑based imputation strategy:
+## 2. Data Quality  
 
-| Column | Missing before | Imputation method | Fill value |
-|--------|----------------|-------------------|------------|
-| `Age` | 177 (19.9 %) | Mean (skewness 0.39) | 29.6991 |
-| `Cabin` | 687 (77.1 %) | Mode | `B96 B98` |
-| `Embarked` | 2 (0.2 %) | Mode | `S` |
-| All others | 0 | – | – |
+### 2.1 Missing‑value Summary  
 
-*Numeric columns with modest skewness (|skew| ≤ 1) used mean imputation; highly skewed numeric columns would have used median (none required). Categorical columns used mode with a fallback to `"Unknown"`.*
+| Column   | Missing count | Missing % | Imputation method | Fill value |
+|----------|---------------|----------|-------------------|------------|
+| Age      | 177           | 19.9 %   | Mean (skewness = 0.39) | 29.6991 |
+| Cabin    | 687           | 77.1 %   | Mode               | `B96 B98` |
+| Embarked | 2             | 0.2 %    | Mode               | `S` |
+| All other columns | 0 | 0 % | – | – |
 
----
+*Imputation rules applied*  
 
-## 4. Outlier Profiling
-Outliers were **profiled only** (no removal). Summary:
+1. Standardised missing string placeholders (`?`, `NA`, `N/A`, `null`) → `NaN`.  
+2. Numeric columns with |skew| > 1 → median imputation (none required).  
+3. Numeric columns with |skew| ≤ 1 → mean imputation (used for **Age**).  
+4. Categorical columns → mode imputation, fallback to `"Unknown"` (used for **Cabin**, **Embarked**).  
 
-| Feature | Q1 | Q3 | IQR | Lower bound | Upper bound | Outliers % |
-|---------|----|----|-----|-------------|-------------|-----------|
-| `Age` | 22.0 | 35.0 | 13.0 | 2.5 | 54.5 | 7.41 % |
-| `Fare` | 7.9104 | 31.0 | 23.0896 | –26.724 | 65.6344 | 13.02 % |
-| `SibSp` | 0.0 | 1.0 | 1.0 | –1.5 | 2.5 | 5.16 % |
-| `Parch` | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 23.91 % |
+### 2.2 Outlier Profiling (action = *profile only*)  
 
-*The high outlier percentage for `Parch` reflects the large number of passengers with zero parents/children aboard.*
+| Column | Q1 | Q3 | IQR | Lower bound | Upper bound | Outliers (count) | Outlier % |
+|--------|----|----|-----|-------------|-------------|------------------|----------|
+| Age    | 22.0 | 35.0 | 13.0 | 2.5 | 54.5 | 66 | 7.41 % |
+| SibSp  | 0.0 | 1.0 | 1.0 | –1.5 | 2.5 | 46 | 5.16 % |
+| Parch  | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 213 | 23.91 % |
+| Fare   | 7.9104 | 31.0 | 23.0896 | –26.724 | 65.6344 | 116 | 13.02 % |
 
----
-
-## 5. Feature Engineering
-**Engineered Feature:**  
-
-| Feature | Formula | Data type | Rationale |
-|---------|---------|-----------|-----------|
-| `engineered_feature` | `np.log1p(Fare)` | float64 | Captures non‑linear relationship of fare with survival; reduces skewness of `Fare`. |
-
-Correlation of the engineered feature:
-
-| Pair | Correlation |
-|------|-------------|
-| `Fare` ↔ `engineered_feature` | **0.7875** |
-| `Survived` ↔ `engineered_feature` | **0.3299** |
-| `Pclass` ↔ `engineered_feature` | **‑0.661** |
-
-The engineered feature is strongly linked to both the original `Fare` and the target, justifying its inclusion.
+No automatic removal or capping was performed; the pipeline recorded the statistics for analyst review.
 
 ---
 
-## 6. Correlation & Categorical Association Analysis
-### 6.1 Top Numeric Correlations (|ρ| > 0.30)
+## 3. Visual Exploration  
 
-| Feature 1 | Feature 2 | Correlation |
-|-----------|-----------|-------------|
-| `Fare` | `engineered_feature` | 0.7875 |
-| `Pclass` | `engineered_feature` | –0.661 |
-| `Pclass` | `Fare` | –0.5495 |
-| `SibSp` | `Parch` | 0.4148 |
-| `Survived` | `Pclass` | –0.3385 |
-| `Parch` | `engineered_feature` | 0.3322 |
-| `Pclass` | `Age` | –0.3313 |
-| `Survived` | `engineered_feature` | 0.3299 |
-| `SibSp` | `engineered_feature` | 0.3185 |
-| `Survived` | `Fare` | 0.2573 |
+All visual artefacts are stored in the sandbox directory. Below is a short description of each file; the actual images can be opened directly from the file system.
 
-*All correlations are computed on the imputed dataset (including engineered feature).*
+| Plot type | File name | Content |
+|-----------|-----------|---------|
+| **Univariate distributions** | `dist_PassengerId.png` | Histogram of passenger IDs (uniform, serves as index). |
+| | `dist_Survived.png` | Bar chart of survival counts (≈38 % survived). |
+| | `dist_Pclass.png` | Bar chart of ticket class distribution (1st, 2nd, 3rd). |
+| | `dist_Name.png` | Word‑cloud / frequency of passenger names (high cardinality). |
+| | `dist_Sex.png` | Bar chart of gender (≈65 % male). |
+| | `dist_Age.png` | Kernel density of age (right‑skewed, mean ≈ 29.7). |
+| | `dist_SibSp.png` | Histogram of siblings/spouses aboard. |
+| | `dist_Parch.png` | Histogram of parents/children aboard. |
+| | `dist_Ticket.png` | Frequency of ticket strings (high cardinality). |
+| | `dist_Fare.png` | Distribution of fare (highly right‑skewed, long tail). |
+| | `dist_Cabin.png` | Bar chart of cabin assignments (many missing). |
+| | `dist_Embarked.png` | Bar chart of embarkation ports (S = 64 %, C = 19 %, Q = 9 %). |
+| **Correlation matrix** | `correlation_matrix.png` | Heat‑map of Pearson correlations for numeric variables. |
+| **Categorical association matrix** | `categorical_association_matrix.png` | Cramér’s V heat‑map for categorical pairs (only **Sex‑Embarked** shows modest association). |
+| **Bivariate relationships (target vs. feature)** | `bivariate_Sex_vs_Survived.png`, `bivariate_Pclass_vs_Survived.png`, `bivariate_Age_vs_Survived.png`, `bivariate_Fare_vs_Survived.png`, `bivariate_Embarked_vs_Survived.png`, `bivariate_FamilySize_vs_Survived.png`, `bivariate_IsAlone_vs_Survived.png` | Box‑/violin‑plots or bar‑charts illustrating how each feature relates to survival. |
+| **Pairwise scatter matrix** | `pairplot.png` | Seaborn pair‑plot for `Age`, `Fare`, `SibSp`, `Parch` coloured by **Survived**. |
 
-### 6.2 Categorical Association (Cramér’s V)
+*Note:* The pipeline attempted to engineer four new features (`FamilySize`, `IsAlone`, `AgeClassInteraction`, `LogFare`) but reported **0 features generated** – likely because the specifications were not applied due to a configuration issue.
+
+---
+
+## 4. Correlation & Association  
+
+### 4.1 Top Pearson Correlations (numeric)  
+
+| Rank | Feature 1 | Feature 2 | Correlation |
+|------|-----------|-----------|-------------|
+| 1 | Pclass | Fare | **‑0.5495** |
+| 2 | SibSp | Parch | **0.4148** |
+| 3 | Survived | Pclass | **‑0.3385** |
+| 4 | Pclass | Age | **‑0.3313** |
+| 5 | Survived | Fare | **0.2573** |
+| 6 | Age | SibSp | **‑0.2326** |
+| 7 | Parch | Fare | **0.2162** |
+| 8 | Age | Parch | **‑0.1792** |
+| 9 | SibSp | Fare | **0.1597** |
+|10 | Age | Fare | **0.0916** |
+
+Interpretation: Higher class (1 = first) is associated with higher fare (negative correlation because class numbers decrease with higher status). Lower class and lower fare are modestly linked to lower survival probability.
+
+### 4.2 Categorical Association (Cramér’s V)  
 
 | Feature 1 | Feature 2 | Cramér’s V |
 |-----------|-----------|------------|
-| `Sex` | `Embarked` | 0.1107 |
+| Sex | Embarked | **0.1107** |
 
-The low association indicates that `Sex` and `Embarked` are largely independent, but both remain useful predictors (see hypothesis testing).
-
----
-
-## 7. Statistical Hypothesis Testing
-A suite of tests evaluated each predictor’s relationship with the target (`Survived`). Significance threshold: α = 0.05.
-
-| Feature | Test | Statistic | p‑value | Significant? | Interpretation |
-|---------|------|-----------|---------|--------------|----------------|
-| `PassengerId` | Pearson r | –0.0050 | 0.8814 | No | No predictive signal |
-| `Pclass` | Pearson r | –0.3385 | 2.54e‑25 | **Yes** | Strong negative association |
-| `Sex` | Welch t‑test | 18.6718 | 2.28e‑61 | **Yes** | Large difference between genders |
-| `Age` | Pearson r | –0.0698 | 0.0372 | **Yes** | Small negative effect |
-| `SibSp` | Pearson r | –0.0353 | 0.2922 | No | Not predictive |
-| `Parch` | Pearson r | 0.0816 | 0.0148 | **Yes** | Small positive effect |
-| `Ticket` | One‑Way ANOVA | 3.0276 | 3.31e‑13 | **Yes** | Ticket groups differ in survival |
-| `Fare` | Pearson r | 0.2573 | 6.12e‑15 | **Yes** | Higher fare → higher survival |
-| `Cabin` | One‑Way ANOVA | 2.7851 | 1.28e‑08 | **Yes** | Cabin categories differ |
-| `Embarked` | One‑Way ANOVA | 13.3269 | 1.98e‑06 | **Yes** | Port of embarkation matters |
-| `engineered_feature` | Pearson r | 0.3299 | 4.65e‑24 | **Yes** | Log‑Fare captures survival signal |
-
-**Significant predictors (9 total):** `Pclass`, `Sex`, `Age`, `Parch`, `Ticket`, `Fare`, `Cabin`, `Embarked`, `engineered_feature`.
+The association is weak, indicating that gender distribution across ports is roughly uniform.
 
 ---
 
-## 8. Predictive Modeling Blueprint
-The pipeline generated a concise modeling plan:
+## 5. Statistical Hypothesis Testing  
+
+All tests used a significance level α = 0.05. Results are summarised below.
+
+| Feature | Test type | Statistic | p‑value | Significant? | Interpretation |
+|---------|-----------|-----------|---------|--------------|----------------|
+| PassengerId | Pearson correlation | –0.0050 | 0.8814 | No | No linear relationship with survival. |
+| Pclass | Pearson correlation | –0.3385 | 2.54e‑25 | Yes | Strong negative association (higher class → higher survival). |
+| Sex | Welch two‑sample t‑test | 18.6718 | 2.28e‑61 | Yes | Survival differs dramatically by gender. |
+| Age | Pearson correlation | –0.0698 | 0.0372 | Yes | Slight negative trend (younger passengers survive slightly more). |
+| SibSp | Pearson correlation | –0.0353 | 0.2922 | No | No significant effect. |
+| Parch | Pearson correlation | 0.0816 | 0.0148 | Yes | Small positive effect. |
+| Ticket | One‑way ANOVA | 3.0276 | 3.31e‑13 | Yes | Ticket identifier carries predictive signal (likely proxy for class/price). |
+| Fare | Pearson correlation | 0.2573 | 6.12e‑15 | Yes | Higher fare → higher survival. |
+| Cabin | One‑way ANOVA | 2.7851 | 1.28e‑08 | Yes | Cabin information (even after imputation) is predictive. |
+| Embarked | One‑way ANOVA | 13.3269 | 1.98e‑06 | Yes | Port of embarkation influences survival. |
+
+**Significant predictors** (8 total): `Pclass`, `Sex`, `Age`, `Parch`, `Ticket`, `Fare`, `Cabin`, `Embarked`.
+
+---
+
+## 6. Feature Engineering  
+
+The pipeline was instructed to create the following features:
+
+| New feature | Definition |
+|-------------|------------|
+| FamilySize | `SibSp + Parch + 1` |
+| IsAlone    | `FamilySize == 1` |
+| AgeClassInteraction | `Age * Pclass` |
+| LogFare    | `log1p(Fare)` |
+
+**Result:** No new columns were added to the dataframe (`engineered_res` is empty). This suggests a mis‑configuration in the feature‑generation step; the specifications were parsed but not executed. Analysts may wish to manually add these features before modelling.
+
+---
+
+## 7. Predictive‑Modeling Blueprint  
 
 | Aspect | Recommendation |
 |--------|----------------|
-| **Problem type** | Binary Classification (`Survived`) |
-| **Baseline algorithm** | Regularized Logistic Regression |
-| **Advanced algorithms** | Random Forest, Gradient Boosting (XGBoost / LightGBM), Support Vector Classifier |
-| **Feature selection** | 1. Drop high‑cardinality identifiers (`PassengerId`, `Name`, `Ticket` unless encoded). 2. Rank features via cross‑validated permutation importance & mutual information. 3. Remove collinear features with |ρ| > 0.85 (e.g., `Fare` vs. `engineered_feature`). |
-| **Validation strategy** | Stratified 5‑fold CV; evaluate **Balanced Accuracy**, **Macro F1**, **Precision‑Recall AUC**, and **Confusion Matrix**. |
-| **Overfitting mitigation** | • L1/L2 regularization (logistic regression, SVM).<br>• Tree depth limits & minimum samples per leaf (RF, GB).<br>• Hyper‑parameter tuning confined to inner CV folds. |
-| **Execution environment** | 891 rows × 13 columns – fits comfortably in memory; no distributed computing required. |
-| **Executive summary** | Use robust cross‑validation on the full dataset; start with logistic regression as a baseline, then explore ensemble methods for potential performance gains. |
+| **Problem type** | Binary classification (`Survived`). |
+| **Baseline algorithm** | Regularized Logistic Regression (e.g., L2‑penalised). |
+| **Strong candidates** | Random Forest, Gradient Boosting (XGBoost / LightGBM), Support Vector Classifier. |
+| **Feature‑selection strategy** | 1. Drop high‑cardinality identifiers (`PassengerId`, `Name`, `Ticket` unless engineered). 2. Rank features with cross‑validated permutation importance and mutual information. 3. Remove collinear numeric features with |r| > 0.85 (none exceed this threshold). |
+| **Validation** | Stratified K‑Fold (k = 5) to preserve class balance. Evaluate: Balanced Accuracy, Macro‑averaged F1, Precision‑Recall AUC, Confusion Matrix. |
+| **Over‑fitting mitigation** | • Apply L1/L2 regularisation (logistic regression, linear SVM). • Limit tree depth, set `min_samples_leaf` for tree‑based models. • Perform hyper‑parameter search *inside* each CV fold (no data leakage). |
+| **Data‑pre‑processing for modelling** | • Imputed numeric values (Age, Cabin, Embarked) as described. • Encode categorical variables (`Sex`, `Embarked`, `Pclass`) via one‑hot or ordinal encoding. • Consider scaling numeric features (Age, Fare) for linear models. |
+| **Next steps** | 1. Verify and manually create the engineered features listed in §6. 2. Run a quick baseline logistic regression to establish a performance floor. 3. Iterate with tree‑based ensembles, tuning depth and regularisation. 4. Compare models on the chosen metrics and select the best trade‑off between interpretability and accuracy. |
 
 ---
 
-## 9. Visual Artifacts (PNG files)
-All visualizations are saved in the sandbox run directory. Below is a brief description of each artifact; the actual images can be opened from the indicated paths.
+## 8. Key Take‑aways & Recommendations  
 
-| File | Description |
-|------|-------------|
-| `bivariate_Embarked_vs_Fare.png` | Scatter/box plot of `Fare` across `Embarked` categories, colored by `Survived`. |
-| `bivariate_Pclass_vs_Fare.png` | Relationship between passenger class and fare, with survival hue. |
-| `bivariate_Sex_vs_Age.png` | Age distribution split by gender and survival status. |
-| `categorical_association_matrix.png` | Heatmap of Cramér’s V for categorical pairs (only `Sex`‑`Embarked` shown). |
-| `correlation_matrix.png` | Full Pearson correlation heatmap for numeric features (incl. engineered). |
-| `dist_*.png` (Age, Fare, etc.) | Univariate histograms / bar charts for each listed column. |
-| `pairplot.png` | Pairwise scatter/box plots for `Age`, `Fare`, `Pclass`, `SibSp` colored by `Survived`. |
-| `target_interactions.png` | Visual of `Survived` vs. `Fare` (including engineered feature) to illustrate interaction. |
+1. **Data quality** – Missing values are limited to `Age`, `Cabin`, and `Embarked`; the chosen imputation strategies are appropriate.  
+2. **Predictive power** – Eight features show statistically significant relationships with survival; `Sex` and `Pclass` are the strongest.  
+3. **Feature engineering** – The intended engineered features were not created; adding them (especially `FamilySize` and `IsAlone`) is likely to improve model performance.  
+4. **Modeling** – A regularised logistic regression provides a solid baseline; tree‑based ensembles are expected to capture non‑linear interactions (e.g., between `Fare` and `Pclass`).  
+5. **Validation** – Stratified 5‑fold CV with balanced metrics will give reliable estimates given the modest dataset size (891 rows).  
 
-*All images are under 210 KB, suitable for inclusion in reports or dashboards.*
+**Action items for the data‑science team**  
 
----
+- Manually implement the four engineered features and re‑run the pipeline or incorporate them directly into the modelling stage.  
+- Conduct an initial baseline experiment (logistic regression) and record performance metrics.  
+- Explore feature importance using permutation importance to confirm the statistical findings.  
+- Document any additional data‑driven insights (e.g., interaction effects) before final model deployment.
 
-## 10. Recommendations & Next Steps
-1. **Data Preparation**  
-   - Encode categorical variables (`Sex`, `Embarked`, `Cabin`) using appropriate schemes (e.g., one‑hot or target encoding).  
-   - Consider dimensionality reduction for high‑cardinality `Ticket` if retained.  
+---  
 
-2. **Model Development**  
-   - Implement the baseline logistic regression with L2 regularization; record baseline metrics.  
-   - Sequentially train Random Forest and Gradient Boosting models, applying the feature‑selection strategy to avoid multicollinearity (e.g., drop either `Fare` or `engineered_feature`).  
-
-3. **Model Evaluation**  
-   - Use the prescribed stratified 5‑fold CV; compare models on balanced accuracy and macro‑F1.  
-   - Plot ROC and PR curves; examine confusion matrices for class‑imbalance handling.  
-
-4. **Hyper‑parameter Tuning**  
-   - Conduct grid/random search within the CV folds (e.g., `max_depth`, `n_estimators`, `learning_rate`).  
-
-5. **Interpretability**  
-   - Generate SHAP or permutation‑importance plots to confirm that the statistically significant predictors identified earlier retain importance in the final model.  
-
-6. **Deployment Considerations**  
-   - Since the dataset is small, a lightweight model (logistic regression or shallow tree ensemble) will be fast to serve.  
-   - Ensure reproducibility by persisting the imputation and encoding pipelines alongside the trained model.  
-
----
-
-**Prepared by:**  
-Senior Lead Data Scientist – Auto‑EDA Project  
-
-*All analyses are derived from the automatically generated artifacts listed above; no manual code modifications were performed.*
+*All artefacts referenced above are available in the sandbox directory `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\3392c3f0-ec75-44c4-8042-d6c83df85c4b`.*
