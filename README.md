@@ -6,128 +6,129 @@
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> 🚀 **Live Demo Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
+**Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
 ---
 
-**AutoEDA** is a state-of-the-art, autonomous, tool-based data science platform. Powered by an LLM agent execution loop, AutoEDA performs statistical dataset profiling, automated hypothesis testing, dynamic bivariate visual gallery creation, predictive machine learning blueprinting, and interactive standalone HTML report generation.
+## Overview
+
+**AutoEDA** is an autonomous, tool-based exploratory data analysis and statistical modeling platform. Powered by an LLM-guided agent refinement loop, AutoEDA performs statistical dataset profiling, automated hypothesis testing with effect-size ranking, semantic bivariate graph generation, predictive machine learning blueprinting, and interactive standalone HTML report generation.
 
 ---
 
-## 🌟 Key Highlights
+## System Capabilities
 
-- 🌐 **Live Web Platform:** Hosted and production-ready at [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/).
-- 🤖 **Autonomous Agent Pipeline:** Multi-step reasoning loop that profiles datasets, executes domain tools, runs statistical tests, and pauses for clarification if user instructions are ambiguous.
-- 🌓 **Invertible Light / Dark Minimalist UI:** Includes a persistent, white-to-charcoal monochrome design system with a live Light/Dark mode toggle switch that seamlessly inverts both page components and embedded Plotly charts.
-- 🔄 **Stateful Data Store & DVC Pattern:** In-memory dataset version control (`v0`, `v1`, ...) with automatic rollback to the last valid checkpoint if a transformation corrupts data integrity.
-- 📊 **Automated Hypothesis Testing:** Dispatches Pearson Correlation, Chi-Square Independence, Welch T-Test, and One-Way ANOVA tests at $\alpha = 0.05$ to discover statistically significant predictors.
-- 📄 **Interactive Profile Report Generator:** Produces self-contained, Plotly-powered single-page HTML reports (`eda_report.html`) complete with responsive tabs, quality alerts, and offline download support.
-- 🧠 **Predictive ML Blueprinting:** Formulates target-aware model recommendations (Classification, Regression, Clustering), cross-validation schemes, feature engineering specs, and overfitting mitigations.
+- **Autonomous Agent Execution Loop:** Multi-step reasoning pipeline that profiles datasets, dispatches domain tools, conducts hypothesis tests, and handles ambiguous user instructions.
+- **Executive Summary Integration:** Synthesizes an executive summary (`summary_report.md`) prior to report generation and embeds it directly as the primary tab within the interactive HTML report (`eda_report.html`).
+- **Non-Distributional Feature Filtering:** Automatically detects and excludes sequential identifiers (IDs, UUIDs), spatial coordinates (latitude/longitude), and timestamps from univariate distribution plotting to reduce execution overhead.
+- **Statistical Hypothesis Testing with Effect Size Ranking:** Dispatches Pearson Correlation, Chi-Square Independence, Welch T-Test, and One-Way ANOVA tests at $\alpha = 0.05$, ranking significant predictors by effect size (Cohen's $d$, Eta-squared $\eta^2$, Cramér's V, $|r|$).
+- **Dynamic Semantic Feature Synthesis:** Generates domain-driven feature names (e.g., `total_math_score_reading_score_writing_score`, `fare_per_class`, `log_income`) with fuzzy column matching and flexible operation aliases (`sum`, `ratio`, `product`, `diff`, `mean`).
+- **Invertible Light/Dark UI Theme:** White-to-charcoal monochrome design system with a live toggle switch that inverts page UI elements and embedded Plotly visual assets.
+- **Stateful DataStore & Version Control:** In-memory dataset version control (`v0`, `v1`, ...) with automatic state checkpointing and rollback capabilities.
 
 ---
 
-## 📊 Comprehensive Statistical Metrics Computed
+## Statistical Profile & Metrics Summary
 
-AutoEDA computes granular statistical metrics across tabular datasets:
+AutoEDA computes comprehensive statistical profiles across tabular datasets:
 
 ### 1. Dataset Integrity & Overview
 | Metric | Description |
 | :--- | :--- |
-| **Dimensions** | Total observation count ($N$) and feature count ($P$) |
-| **Variable Breakdown** | Numeric vs. Categorical vs. Boolean vs. Datetime columns |
-| **Cell Completeness** | Missing value count and total missing cell percentage |
-| **Data Quality Alerts** | Automated warnings for high missingness (> 20%), zero variance (constant columns), and high collinearity ($\|r\| \ge 0.85$) |
+| **Dimensions** | Observation count ($N$) and feature count ($P$) |
+| **Variable Types** | Numeric, Categorical, Boolean, Datetime classification |
+| **Cell Completeness** | Missing value counts and total missing cell percentage |
+| **Quality Alerts** | Automated warnings for missingness (> 20%), zero variance, and collinearity ($\|r\| \ge 0.85$) |
 
-### 2. Numerical Variable Statistics
-For continuous and discrete numeric features:
+### 2. Numerical Feature Profile
 | Metric | Description |
 | :--- | :--- |
 | **Central Tendency** | Mean, Median (50th percentile) |
 | **Dispersion & Range** | Minimum, Maximum, Standard Deviation ($\sigma$) |
 | **Quartiles & IQR** | $Q_1$ (25%), $Q_3$ (75%), Interquartile Range ($IQR = Q_3 - Q_1$) |
-| **Shape Metrics** | Skewness (flags highly skewed distributions where $\|skew\| \ge 1.0$), Kurtosis |
-| **Completeness & Uniqueness** | Missing count & percentage, Cardinality (distinct values), Unique percentage |
+| **Distribution Shape** | Skewness (flags $\|skew\| \ge 1.0$), Kurtosis |
+| **Cardinality** | Missing count, Uniqueness percentage, Distinct value count |
 
-### 3. Categorical & Discrete Variable Statistics
-For object, string, boolean, and low-cardinality features:
+### 3. Categorical & Discrete Feature Profile
 | Metric | Description |
 | :--- | :--- |
-| **Cardinality** | Total distinct level count |
-| **Frequency Table** | Top 5 most frequent levels with exact counts and dataset percentages |
-| **Categorical Associations** | Cramér's V association coefficients for categorical feature pairs |
+| **Cardinality** | Distinct level count |
+| **Frequency Table** | Top 5 most frequent levels with counts and percentages |
+| **Categorical Associations** | Cramér's V association matrix for categorical feature pairs |
 
-### 4. Hypothesis Testing Matrix ($\alpha = 0.05$)
-Automated statistical tests dispatched against target variables:
-| Target & Feature Pair | Applied Test | Metrics Returned |
+### 4. Hypothesis Testing & Effect Size Ranking ($\alpha = 0.05$)
+| Feature Pair | Applied Test | Effect Size Metric |
 | :--- | :--- | :--- |
-| **Numeric Target + Numeric Feature** | Pearson Correlation Test | Correlation coefficient ($r$), $p$-value, Significance flag |
-| **Categorical Target + Categorical Feature** | Chi-Square Independence Test | Chi-square statistic ($\chi^2$), $dof$, $p$-value |
-| **Binary Target + Numeric Feature** | Two-Sample Welch T-Test | $t$-statistic, $p$-value, Significance flag |
-| **Multiclass Target + Numeric Feature** | One-Way ANOVA | $F$-statistic, $p$-value, Significance flag |
+| **Numeric Target + Numeric Feature** | Pearson Correlation Test | Absolute Pearson $\|r\|$ |
+| **Categorical Target + Categorical Feature** | Chi-Square Independence Test | Cramér's V ($V$) |
+| **Binary Target + Numeric Feature** | Two-Sample Welch T-Test | Cohen's $d$ |
+| **Multiclass Target + Numeric Feature** | One-Way ANOVA | Eta-squared ($\eta^2$) |
 
 ---
 
-## 🛠️ Tool Registry Catalog
+## Core Tool Catalog
 
-The autonomous agent executes tool functions defined in `tools.py`:
+The autonomous agent selects and executes functions defined in `autoeda_core/tools.py`:
 
-1. `impute_missing_data`: Type-safe missing value imputation (symmetric numeric $\rightarrow$ mean, skewed numeric $\rightarrow$ median, categorical $\rightarrow$ mode).
-2. `detect_and_handle_outliers`: Detects outliers using IQR bounds and optionally caps extreme values.
-3. `engineer_features`: Creates high-signal domain features (`log1p` for skewed features, interaction products, ratio metrics).
-4. `run_statistical_hypothesis_tests`: Dispatches hypothesis tests against target columns.
-5. `plot_correlation_matrix`: Renders Pearson correlation heatmaps and Cramér's V categorical association matrices.
-6. `plot_feature_distributions`: Renders distribution plots (KDE histograms & countplots).
-7. `plot_semantic_bivariate_relationships`: Renders domain scatter plots, box plots, and bar charts.
-8. `plot_target_interaction`: Generates feature vs. target interaction plots.
-9. `plot_pairplot`: Renders concise Seaborn pairplots across primary numerical attributes.
-10. `generate_predictive_blueprint`: Compiles machine learning model strategies and validation plans.
-11. `ask_clarifying_question`: Pauses execution to solicit user feedback when instructions are ambiguous.
-12. `finish_analysis`: Finalizes pipeline execution once exploratory objectives are met.
+1. `impute_missing_data`: Imputes missing values using type-safe strategies (median for skewed numeric, mean for symmetric, mode for categorical).
+2. `detect_and_handle_outliers`: Detects outliers via IQR bounds and optionally caps extreme values.
+3. `engineer_features`: Creates domain feature transformations (`log1p`, ratios, product interactions, sums, differences, averages) with dynamic semantic naming.
+4. `run_statistical_hypothesis_tests`: Dispatches hypothesis tests against target columns and ranks significant features by effect size.
+5. `plot_correlation_matrix`: Renders Pearson correlation heatmaps and Cramér's V association matrices.
+6. `plot_feature_distributions`: Renders univariate KDE histograms and count plots for non-identifier features.
+7. `plot_semantic_bivariate_relationships`: Renders domain scatter plots, box plots, and bar charts based on semantic reasoning.
+8. `plot_target_interaction`: Generates segmented feature vs. target interaction plots.
+9. `plot_pairplot`: Renders Seaborn pairplots across primary numerical attributes.
+10. `generate_predictive_blueprint`: Compiles machine learning model recommendations, cross-validation strategies, and feature selection plans.
+11. `ask_clarifying_question`: Pauses execution to solicit user clarification when instructions or target columns are ambiguous.
+12. `finish_analysis`: Finalizes pipeline execution once exploratory objectives are satisfied.
 
 ---
 
-## 🏗️ Project Architecture
+## Project Structure
 
 ```
 AutoEDA/
-├── django_app/                 # Full Django Production Web Application
-│   ├── autoeda/                # Django project configuration (settings, URLs, WSGI)
-│   ├── eda_app/                # Main application app (views, templates, static assets)
+├── autoeda_core/               # Core Analytical Engine & Agent Modules
+│   ├── agent_loop.py           # Stateful LLM agent execution loop & orchestrator
+│   ├── profiler.py             # Algorithmic dataset profiler & non-distributional filter
+│   ├── html_report_generator.py# Plotly JS interactive HTML report & markdown renderer
+│   ├── summary_generator.py    # Executive summary synthesizer
+│   ├── tools.py                # Tool registry, DVC DataStore, & effect size calculators
+│   └── executor.py             # Task execution interface
+├── django_app/                 # Production Django Web Application
+│   ├── autoeda/                # Django project configuration
+│   ├── eda_app/                # Main application (views, templates, static assets)
 │   │   ├── static/eda_app/
-│   │   │   ├── css/main.css    # Invertible dark/light minimalist theme stylesheet
-│   │   │   └── js/app.js       # Live pipeline polling & theme toggle handler
+│   │   │   ├── css/main.css    # Invertible dark/light monochrome stylesheet
+│   │   │   └── js/app.js       # Live pipeline polling & theme toggle script
 │   │   └── templates/eda_app/
-│   │       ├── base.html       # Top navigation, sidebar, and layout template
+│   │       ├── base.html       # Top navigation and sidebar template
 │   │       └── index.html      # Multi-tab dashboard & metric views
 │   └── manage.py               # Django CLI management script
-├── agent_loop.py               # Stateful LLM agent execution loop & orchestrator
-├── profiler.py                 # Algorithmic statistical dataset profiler
-├── html_report_generator.py    # Plotly JS interactive dark/light HTML report generator
-├── summary_generator.py        # Markdown executive summary synthesizer
-├── tools.py                    # Tool registry, DVC DataStore, & parameter clamping
-├── executor.py                 # Task execution interface
+├── test_data/                  # Sample CSV datasets
 ├── requirements.txt            # Python dependencies
-├── Dockerfile                  # Production container definition
-├── test_data/                  # Sample CSV datasets (e.g. Titanic, Housing, Spotify)
-└── EDA/                        # Generated output artifacts grouped by dataset
+├── Dockerfile                  # Container deployment specification
+└── EDA/                        # Generated output artifacts grouped by dataset name
     └── <dataset_name>/
         ├── metadata_profile.json
         ├── metrics.json
+        ├── summary_report.md
         ├── eda_report.html
         └── *.png
 ```
 
 ---
 
-## ⚙️ Local Installation & Development
+## Local Setup & Development
 
-### 1. Clone the Repository
+### 1. Clone Repository
 ```bash
 git clone https://github.com/AniceKV/AutoEDA.git
 cd AutoEDA
 ```
 
-### 2. Set Up Virtual Environment
+### 2. Environment Setup
 - **Windows (PowerShell):**
   ```powershell
   python -m venv .venv
@@ -144,15 +145,14 @@ cd AutoEDA
 pip install -r requirements.txt
 ```
 
-### 4. Set Up Environment Variables
+### 4. Environment Variables
 Create a `.env` file in the project root:
 ```env
 OPENROUTER_API_KEY=your_openrouter_api_key_here
 EDA_MODEL=google/gemini-2.5-flash
 ```
 
-### 5. Launch the Web Application
-Run the Django development server:
+### 5. Run Web Server
 ```bash
 python django_app/manage.py runserver 8000
 ```
@@ -160,19 +160,19 @@ Open `http://127.0.0.1:8000/` in your browser.
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
-The application is configured for one-click production deployment on **Railway**, **Render**, or **Docker**:
+Build and run using Docker:
 
 ```bash
 docker build -t autoeda .
 docker run -p 8000:8000 --env-file .env autoeda
 ```
 
-Live Application: [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
+Production Deployment: [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
 ---
 
-## 📜 License
+## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).

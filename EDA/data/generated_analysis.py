@@ -11,13 +11,12 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "Survived",
-  "problem_type": "Classification",
+  "target_definition": "Undefined (Unsupervised)",
+  "problem_type": "Unsupervised / Exploratory",
   "recommended_algorithms": [
-    "Regularized Logistic Regression (baseline)",
-    "Random Forest Classifier",
-    "Gradient Boosting Classifier (XGBoost / LightGBM)",
-    "Support Vector Classifier (SVM)"
+    "K-Means Clustering",
+    "Hierarchical Agglomerative Clustering",
+    "Principal Component Analysis (PCA) for Dimensionality Reduction"
   ],
   "feature_selection_strategy": [
     "Exclude high-cardinality ID or text name columns",
@@ -25,15 +24,14 @@ predictive_blueprint = {
     "Remove collinear features exceeding correlation threshold > 0.85"
   ],
   "validation_strategy": [
-    "Stratified K-Fold Cross-Validation (5 folds)",
-    "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    "Evaluate Silhouette Score and Inertia elbow curve"
   ],
   "overfitting_risk_mitigation": [
     "Apply regularization penalties (L1/L2)",
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+  "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 891 rows x 12 columns."
 }
 
 if __name__ == '__main__':

@@ -34,8 +34,8 @@
       },
       "Age": {
         "dtype": "float64",
-        "missing_count": 0,
-        "cardinality": 89
+        "missing_count": 177,
+        "cardinality": 88
       },
       "SibSp": {
         "dtype": "int64",
@@ -59,155 +59,20 @@
       },
       "Cabin": {
         "dtype": "str",
-        "missing_count": 0,
+        "missing_count": 687,
         "cardinality": 147
       },
       "Embarked": {
         "dtype": "str",
-        "missing_count": 0,
+        "missing_count": 2,
         "cardinality": 3
       }
     }
   },
   "imputation_summary": {
-    "rules_applied": [
-      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
-      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
-      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
-      "Categorical/String columns use mode imputation with 'Unknown' fallback."
-    ],
-    "columns": {
-      "PassengerId": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Survived": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Pclass": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Name": {
-        "dtype": "str",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Sex": {
-        "dtype": "str",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Age": {
-        "dtype": "float64",
-        "missing_before": 177,
-        "missing_after": 0,
-        "method": "mean",
-        "skewness": 0.39,
-        "fill_value": 29.69911764705882
-      },
-      "SibSp": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Parch": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Ticket": {
-        "dtype": "str",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Fare": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "Cabin": {
-        "dtype": "str",
-        "missing_before": 687,
-        "missing_after": 0,
-        "method": "mode",
-        "skewness": null,
-        "fill_value": "B96 B98"
-      },
-      "Embarked": {
-        "dtype": "str",
-        "missing_before": 2,
-        "missing_after": 0,
-        "method": "mode",
-        "skewness": null,
-        "fill_value": "S"
-      }
-    }
+    "status": "Imputation completed"
   },
-  "outlier_analysis": {
-    "Age": {
-      "q1": 22.0,
-      "q3": 35.0,
-      "iqr": 13.0,
-      "lower_bound": 2.5,
-      "upper_bound": 54.5,
-      "outlier_count": 66,
-      "outlier_percentage": 7.41,
-      "action_taken": "profile"
-    },
-    "SibSp": {
-      "q1": 0.0,
-      "q3": 1.0,
-      "iqr": 1.0,
-      "lower_bound": -1.5,
-      "upper_bound": 2.5,
-      "outlier_count": 46,
-      "outlier_percentage": 5.16,
-      "action_taken": "profile"
-    },
-    "Parch": {
-      "q1": 0.0,
-      "q3": 0.0,
-      "iqr": 0.0,
-      "lower_bound": 0.0,
-      "upper_bound": 0.0,
-      "outlier_count": 213,
-      "outlier_percentage": 23.91,
-      "action_taken": "profile"
-    },
-    "Fare": {
-      "q1": 7.9104,
-      "q3": 31.0,
-      "iqr": 23.0896,
-      "lower_bound": -26.724,
-      "upper_bound": 65.6344,
-      "outlier_count": 116,
-      "outlier_percentage": 13.02,
-      "action_taken": "profile"
-    }
-  },
+  "outlier_analysis": {},
   "engineered_features": [],
   "correlation_analysis": {},
   "categorical_associations": {},
@@ -238,11 +103,11 @@
     },
     "Age": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0698,
-      "p_value": 0.03721708372685049,
-      "effect_size": 0.0698,
+      "statistic": -0.0772,
+      "p_value": 0.039124654013482245,
+      "effect_size": 0.0772,
       "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0698, |r| = 0.0698, p = 3.7217e-02. (Statistically Significant)"
+      "interpretation": "Pearson r = -0.0772, |r| = 0.0772, p = 3.9125e-02. (Statistically Significant)"
     },
     "SibSp": {
       "test_name": "Pearson Correlation Test",
@@ -278,26 +143,25 @@
     },
     "Cabin": {
       "test_name": "One-Way ANOVA",
-      "statistic": 2.7851,
-      "p_value": 1.281087037396532e-08,
-      "effect_size": 0.1442,
-      "is_statistically_significant": true,
-      "interpretation": "F-statistic = 2.7851, Eta-squared = 0.1442, p = 1.2811e-08. (Statistically Significant)"
+      "statistic": 1.2576,
+      "p_value": 0.20536412826970402,
+      "effect_size": 0.4982,
+      "is_statistically_significant": false,
+      "interpretation": "F-statistic = 1.2576, Eta-squared = 0.4982, p = 2.0536e-01. (Not Significant)"
     },
     "Embarked": {
       "test_name": "One-Way ANOVA",
-      "statistic": 13.3269,
-      "p_value": 1.9832394915475582e-06,
-      "effect_size": 0.0291,
+      "statistic": 13.6053,
+      "p_value": 1.514339014291324e-06,
+      "effect_size": 0.0298,
       "is_statistically_significant": true,
-      "interpretation": "F-statistic = 13.3269, Eta-squared = 0.0291, p = 1.9832e-06. (Statistically Significant)"
+      "interpretation": "F-statistic = 13.6053, Eta-squared = 0.0298, p = 1.5143e-06. (Statistically Significant)"
     },
     "significant_predictors": [
       "Sex",
       "Ticket",
       "Pclass",
       "Fare",
-      "Cabin",
       "Parch",
       "Age",
       "Embarked"
@@ -324,35 +188,29 @@
         "p_value": 6.1201893419245854e-15
       },
       {
-        "feature": "Cabin",
-        "effect_size": 0.1442,
-        "p_value": 1.281087037396532e-08
-      },
-      {
         "feature": "Parch",
         "effect_size": 0.0816,
         "p_value": 0.014799245374728003
       },
       {
         "feature": "Age",
-        "effect_size": 0.0698,
-        "p_value": 0.03721708372685049
+        "effect_size": 0.0772,
+        "p_value": 0.039124654013482245
       },
       {
         "feature": "Embarked",
-        "effect_size": 0.0291,
-        "p_value": 1.9832394915475582e-06
+        "effect_size": 0.0298,
+        "p_value": 1.514339014291324e-06
       }
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "Survived",
-    "problem_type": "Classification",
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
     "recommended_algorithms": [
-      "Regularized Logistic Regression (baseline)",
-      "Random Forest Classifier",
-      "Gradient Boosting Classifier (XGBoost / LightGBM)",
-      "Support Vector Classifier (SVM)"
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -360,15 +218,14 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Stratified K-Fold Cross-Validation (5 folds)",
-      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+      "Evaluate Silhouette Score and Inertia elbow curve"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Survived (Classification). Use robust cross-validation on 891 rows x 12 columns."
+    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 891 rows x 12 columns."
   },
   "extracted_insights": {
     "key_findings": [
@@ -380,7 +237,6 @@
       "Ticket",
       "Pclass",
       "Fare",
-      "Cabin",
       "Parch",
       "Age",
       "Embarked"
