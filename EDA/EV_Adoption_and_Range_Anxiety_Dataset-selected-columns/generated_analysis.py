@@ -6,8 +6,8 @@ import json
 
 df = pd.read_csv(DATA_FILEPATH)
 
-# --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# --- 1. Derived Domain Attributes & Composite Metrics ---
+# Derived Domain Metrics Specs: []
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {

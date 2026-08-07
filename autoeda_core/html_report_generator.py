@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import base64
 import pandas as pd
 import numpy as np
@@ -8,6 +9,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from jinja2 import Template
 from typing import Dict, Any, List, Optional
+from .profiler import is_non_distributional_column
 
 pio.templates.default = "plotly_dark"
 
@@ -543,6 +545,28 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 0.85rem;
             color: var(--text-muted);
         }
+
+        /* Executive Summary Section */
+        .summary-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        .summary-h1 { font-size: 1.45rem; font-weight: 800; margin-top: 1.2rem; margin-bottom: 1rem; color: var(--text-main); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .summary-h2 { font-size: 1.2rem; font-weight: 700; margin-top: 1.4rem; margin-bottom: 0.75rem; color: var(--text-main); }
+        .summary-h3 { font-size: 1.05rem; font-weight: 600; margin-top: 1.1rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        .summary-h4 { font-size: 0.95rem; font-weight: 600; margin-top: 0.9rem; margin-bottom: 0.4rem; color: var(--text-muted); }
+        .summary-list { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+        .summary-list li { margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .summary-box p { margin-bottom: 1rem; color: var(--text-main); font-size: 0.92rem; }
+        .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.85rem; }
+        .summary-table th, .summary-table td { padding: 8px 12px; border: 1px solid var(--border-color); text-align: left; }
+        .summary-table th { background: var(--bg-card-hover); font-weight: 700; }
+        .summary-code { background: var(--bg-card-hover); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
+        .summary-inline-code { background: var(--bg-card-hover); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -572,17 +596,28 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         <!-- Nav Tabs -->
         <nav class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('overview')">Overview & Data Quality</button>
+            <button class="tab-btn active" onclick="switchTab('summary')">Executive Summary</button>
+            <button class="tab-btn" onclick="switchTab('overview')">Overview & Data Quality</button>
             <button class="tab-btn" onclick="switchTab('reasoning')">Agent Plan & Execution Reasoning</button>
             <button class="tab-btn" onclick="switchTab('variables')">Variable Profiles</button>
             <button class="tab-btn" onclick="switchTab('interactions')">Bivariate Relationships</button>
             <button class="tab-btn" onclick="switchTab('correlations')">Correlation Analysis</button>
-            <button class="tab-btn" onclick="switchTab('features')">Feature Engineering Specs</button>
+            <button class="tab-btn" onclick="switchTab('features')">Derived Domain Metrics</button>
             <button class="tab-btn" onclick="switchTab('blueprint')">Predictive Modeling Strategy</button>
         </nav>
 
-        <!-- TAB 1: OVERVIEW -->
-        <div id="overview" class="tab-content active">
+        <!-- TAB 1: EXECUTIVE SUMMARY -->
+        <div id="summary" class="tab-content active">
+            <div class="summary-box">
+                <div class="section-title" style="font-size: 1.2rem; margin-bottom: 1.25rem;">
+                    Executive Summary & Synthesis Report
+                </div>
+                {{ executive_summary_html|safe }}
+            </div>
+        </div>
+
+        <!-- TAB 2: OVERVIEW -->
+        <div id="overview" class="tab-content">
             <div class="grid-4">
                 <div class="metric-card">
                     <div class="metric-lbl">Total Observations</div>
@@ -633,7 +668,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- TAB 2: AGENT REASONING -->
+        <!-- TAB 3: AGENT REASONING -->
         <div id="reasoning" class="tab-content">
             <div class="alerts-container">
                 <div class="section-title">Agent Plan & Tool Execution Trajectory</div>
@@ -649,61 +684,51 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                                 <span class="tag tag-type">{{ step.status }}</span>
                             </div>
                             {% if step.rationale %}
-                            <div class="step-rationale">
-                                <strong>Agent Rationale:</strong> {{ step.rationale }}
+                            <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; font-style: italic;">
+                                "{{ step.rationale }}"
                             </div>
                             {% endif %}
-                            <div class="step-code">Arguments: {{ step.args_json }}
-Result Summary: {{ step.result }}</div>
+                            <div class="step-args">Args: {{ step.args_json }}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-main); margin-top: 6px; background: var(--bg-card-hover); padding: 8px 10px; border-radius: 6px;">
+                                Result: {{ step.result }}
+                            </div>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="timeline-step">
-                            <div class="step-header"><span class="step-title">Single Execution Plan</span></div>
-                            <div class="step-rationale">Standard automated exploratory pipeline executed.</div>
-                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">No agent execution trajectory recorded.</div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: VARIABLES PROFILING -->
+        <!-- TAB 4: VARIABLE PROFILES -->
         <div id="variables" class="tab-content">
-            <input type="text" id="var-search-input" class="var-search" placeholder="Search variables by name or data type..." onkeyup="filterVariables()">
-
-            {% for col in columns_profile %}
-            <div class="var-card" data-var-name="{{ col.column|lower }}" data-var-type="{{ col.dtype|lower }}">
-                <div class="var-header">
-                    <div class="var-name">{{ col.column }}</div>
-                    <div class="var-tags">
-                        <span class="tag tag-type">{{ col.dtype }}</span>
-                        <span class="tag tag-miss">Missing: {{ col.missing_count }} ({{ col.missing_pct }}%)</span>
-                        <span class="tag tag-uniq">Unique: {{ col.cardinality }} ({{ col.unique_pct }}%)</span>
+            <input type="text" class="var-search" id="varSearchInput" placeholder="Filter variables by name or property..." onkeyup="filterVariables()">
+            <div id="variablesContainer">
+                {% for col in columns_profile %}
+                <div class="var-card" data-var-name="{{ col.column }}">
+                    <div class="var-card-header">
+                        <div class="var-title">
+                            <h3>{{ col.column }}</h3>
+                            <span class="var-type-badge">{{ col.dtype }}</span>
+                        </div>
+                        <div class="var-meta">
+                            <span>Missing: {{ col.missing_count }} ({{ col.missing_pct }}%)</span>
+                            <span>Cardinality: {{ col.cardinality }} ({{ col.unique_pct }}%)</span>
+                        </div>
                     </div>
+                    {% if col.mean is not none %}
+                    <div class="grid-4" style="margin-bottom: 1rem;">
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Mean: <strong>{{ col.mean }}</strong></div>
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Median: <strong>{{ col.median }}</strong></div>
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Std: <strong>{{ col.std }}</strong></div>
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Skew: <strong>{{ col.skew }}</strong></div>
+                    </div>
+                    {% endif %}
+                    <div id="var-chart-{{ loop.index }}" class="var-chart"></div>
                 </div>
-                <div class="var-body">
-                    <div>
-                        <table class="stats-table">
-                            <tr><td class="stats-lbl">Distinct Values</td><td class="stats-val">{{ col.cardinality }}</td></tr>
-                            <tr><td class="stats-lbl">Missing Count</td><td class="stats-val">{{ col.missing_count }}</td></tr>
-                            <tr><td class="stats-lbl">Missing Percentage</td><td class="stats-val">{{ col.missing_pct }}%</td></tr>
-                            {% if col.mean is not none %}
-                            <tr><td class="stats-lbl">Mean</td><td class="stats-val">{{ col.mean }}</td></tr>
-                            <tr><td class="stats-lbl">Median</td><td class="stats-val">{{ col.median }}</td></tr>
-                            <tr><td class="stats-lbl">Std Deviation</td><td class="stats-val">{{ col.std }}</td></tr>
-                            <tr><td class="stats-lbl">Min / Max</td><td class="stats-val">{{ col.min }} / {{ col.max }}</td></tr>
-                            <tr><td class="stats-lbl">IQR (Q1 / Q3)</td><td class="stats-val">{{ col.iqr }} ({{ col.q1 }} / {{ col.q3 }})</td></tr>
-                            <tr><td class="stats-lbl">Skewness</td><td class="stats-val">{{ col.skew }}</td></tr>
-                            <tr><td class="stats-lbl">Kurtosis</td><td class="stats-val">{{ col.kurtosis }}</td></tr>
-                            {% endif %}
-                        </table>
-                    </div>
-                    <div>
-                        <div id="var-chart-{{ loop.index }}" style="height: 240px; width: 100%;"></div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
 
         <!-- TAB 4: INTERACTIONS & BIVARIATE -->
@@ -767,20 +792,20 @@ Result Summary: {{ step.result }}</div>
             {% endif %}
         </div>
 
-        <!-- TAB 6: ENGINEERED FEATURES -->
+        <!-- TAB 7: DERIVED DOMAIN METRICS -->
         <div id="features" class="tab-content">
             <div class="blueprint-box">
-                <div class="section-title">LLM-Engineered Feature Specifications</div>
+                <div class="section-title">Derived Domain Attributes & Composite Metrics</div>
                 {% if engineered_features %}
                     {% for feat in engineered_features %}
                     <div class="blueprint-item">
-                        <div class="blueprint-key">Feature: <code>{{ feat.feature_name }}</code></div>
+                        <div class="blueprint-key">Derived Metric: <code>{{ feat.feature_name }}</code></div>
                         <div class="blueprint-val"><strong>Formula / Method:</strong> <code>{{ feat.formula or feat.method or 'Custom' }}</code></div>
                         <div class="blueprint-val"><strong>Stated Rationale:</strong> {{ feat.rationale or feat.purpose or 'Enhance predictive signal' }}</div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="blueprint-val">No custom domain features engineered during this run.</div>
+                    <div class="blueprint-val">No custom derived domain metrics synthesized during this run.</div>
                 {% endif %}
             </div>
         </div>
@@ -1040,6 +1065,16 @@ def build_variable_chart(df: Optional[pd.DataFrame], col_name: str, col_info: Op
             fig.update_layout(**layout)
             return json.loads(pio.to_json(fig))
 
+        if is_non_distributional_column(col_name, df[col_name]):
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"Univariate distribution skipped for identifier / spatial coordinate '{col_name}'",
+                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                font=dict(size=12, color="#94a3b8")
+            )
+            fig.update_layout(**layout)
+            return json.loads(pio.to_json(fig))
+
         is_bool = pd.api.types.is_bool_dtype(s)
         is_num = pd.api.types.is_numeric_dtype(s) and not is_bool
         n_unique = s.nunique()
@@ -1103,10 +1138,122 @@ def build_variable_chart(df: Optional[pd.DataFrame], col_name: str, col_info: Op
         return json.loads(pio.to_json(fig))
 
 
+def render_markdown_to_html(md_text: str) -> str:
+    """Converts Markdown into styled HTML for embedding in HTML profile report."""
+    if not md_text or not md_text.strip():
+        return "<p style='color: var(--text-muted); font-style: italic;'>No executive summary report available.</p>"
+
+    import html
+    lines = md_text.splitlines()
+    html_lines = []
+    in_list = False
+    in_table = False
+    in_code_block = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Code block handling
+        if stripped.startswith("```"):
+            if in_code_block:
+                html_lines.append("</code></pre>")
+                in_code_block = False
+            else:
+                html_lines.append("<pre class='summary-code'><code>")
+                in_code_block = True
+            continue
+
+        if in_code_block:
+            html_lines.append(html.escape(line))
+            continue
+
+        # Close list if line is not a bullet
+        if in_list and not (stripped.startswith("- ") or stripped.startswith("* ") or re.match(r'^\d+\.\s', stripped)):
+            html_lines.append("</ul>")
+            in_list = False
+
+        # Close table if line is not a table row
+        if in_table and not (stripped.startswith("|") and stripped.endswith("|")):
+            html_lines.append("</tbody></table></div>")
+            in_table = False
+
+        if not stripped:
+            continue
+
+        # Table rows
+        if stripped.startswith("|") and stripped.endswith("|"):
+            cells = [c.strip() for c in stripped.split("|")[1:-1]]
+            # Check if separator line (|---|---|)
+            if all(set(c).issubset({'-', ':', ' '}) for c in cells):
+                continue
+            
+            if not in_table:
+                html_lines.append("<div class='table-responsive'><table class='summary-table'><thead><tr>")
+                for cell in cells:
+                    html_lines.append(f"<th>{html.escape(cell)}</th>")
+                html_lines.append("</tr></thead><tbody>")
+                in_table = True
+            else:
+                html_lines.append("<tr>")
+                for cell in cells:
+                    html_lines.append(f"<td>{html.escape(cell)}</td>")
+                html_lines.append("</tr>")
+            continue
+
+        # Headings
+        if stripped.startswith("# "):
+            html_lines.append(f"<h1 class='summary-h1'>{html.escape(stripped[2:])}</h1>")
+        elif stripped.startswith("## "):
+            html_lines.append(f"<h2 class='summary-h2'>{html.escape(stripped[3:])}</h2>")
+        elif stripped.startswith("### "):
+            html_lines.append(f"<h3 class='summary-h3'>{html.escape(stripped[4:])}</h3>")
+        elif stripped.startswith("#### "):
+            html_lines.append(f"<h4 class='summary-h4'>{html.escape(stripped[5:])}</h4>")
+        elif stripped.startswith("- ") or stripped.startswith("* "):
+            if not in_list:
+                html_lines.append("<ul class='summary-list'>")
+                in_list = True
+            html_lines.append(f"<li>{html.escape(stripped[2:])}</li>")
+        elif re.match(r'^\d+\.\s', stripped):
+            if not in_list:
+                html_lines.append("<ol class='summary-list'>")
+                in_list = True
+            txt = re.sub(r'^\d+\.\s', '', stripped)
+            html_lines.append(f"<li>{html.escape(txt)}</li>")
+        else:
+            html_lines.append(f"<p>{html.escape(stripped)}</p>")
+
+    if in_list:
+        html_lines.append("</ul>")
+    if in_table:
+        html_lines.append("</tbody></table></div>")
+    if in_code_block:
+        html_lines.append("</code></pre>")
+
+    res = "\n".join(html_lines)
+    # Format bold, italic, code
+    res = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', res)
+    res = re.sub(r'\*(.*?)\*', r'<em>\1</em>', res)
+    res = re.sub(r'`(.*?)`', r'<code class="summary-inline-code">\1</code>', res)
+    return res
+
+
 def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Optional[str] = None, data_path: Optional[str] = None) -> str:
     """
     Main entry point to read workspace metadata and generate a complete self-contained HTML profile report.
     """
+    # 0. Load Executive Summary Report
+    summary_path = os.path.join(workspace_dir, "summary_report.md")
+    executive_summary_md = ""
+    if os.path.exists(summary_path):
+        try:
+            with open(summary_path, "r", encoding="utf-8") as f:
+                executive_summary_md = f.read()
+        except Exception as e:
+            print(f"[html_report_generator] Warning loading summary_report.md: {e}")
+
+    executive_summary_html = render_markdown_to_html(executive_summary_md)
+
     # 1. Load Profile metadata
     profile_path = os.path.join(workspace_dir, "metadata_profile.json")
     if os.path.exists(profile_path):
@@ -1293,6 +1440,7 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
         dataset_name=dataset_name,
         generation_time=pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"),
         dimensions=dimensions,
+        executive_summary_html=executive_summary_html,
         target_column=target_column,
         total_missing=total_missing,
         missing_pct=missing_pct,

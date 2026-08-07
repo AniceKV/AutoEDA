@@ -11,7 +11,7 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "type",
+  "target_definition": "rating",
   "problem_type": "Classification",
   "recommended_algorithms": [
     "Regularized Logistic Regression (baseline)",
@@ -33,7 +33,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: type (Classification). Use robust cross-validation on 8807 rows x 12 columns."
+  "executive_summary": "Target: rating (Classification). Use robust cross-validation on 8807 rows x 12 columns."
 }
 
 if __name__ == '__main__':

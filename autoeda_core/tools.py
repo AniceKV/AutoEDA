@@ -13,6 +13,7 @@ import seaborn as sns
 import PIL.Image
 PIL.Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombWarning for large EDA visual plots
 from typing import Dict, Any, List, Optional, Tuple
+from .profiler import is_non_distributional_column
 
 sns.set_theme(style="whitegrid")
 
@@ -280,6 +281,28 @@ def detect_and_handle_outliers(
 # =====================================================================
 # 3. HIGH-SIGNAL FEATURE ENGINEERING TOOL
 # =====================================================================
+def _find_matching_col(requested: Optional[str], df_columns: List[str]) -> Optional[str]:
+    """Helper to match column names flexibly across case, spaces, and underscores."""
+    if not requested or not isinstance(requested, str):
+        return None
+    if requested in df_columns:
+        return requested
+    
+    clean_req = re.sub(r'[\s_]+', '', requested.strip().lower())
+    for col in df_columns:
+        clean_col = re.sub(r'[\s_]+', '', col.strip().lower())
+        if clean_req == clean_col:
+            return col
+            
+    # Substring match (e.g. "math" -> "math_score" or "math score")
+    for col in df_columns:
+        clean_col = re.sub(r'[\s_]+', '', col.strip().lower())
+        if clean_req in clean_col or clean_col in clean_req:
+            return col
+            
+    return None
+
+
 def engineer_features(
     df: pd.DataFrame,
     feature_specs: Optional[List[Dict[str, Any]]] = None,
@@ -288,15 +311,18 @@ def engineer_features(
 ) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
     """
     Creates high-signal domain features safely.
-    Auto-detects common transformations if feature_specs is empty:
-    - Log transforms for right-skewed variables (skew > 1.5)
-    - Interaction features for strongly correlated pairs
-    - Ratio features
+    Supports auto-generation and flexible LLM specification formats (sum/add, product, ratio, log, diff, mean).
     """
     df_feat = df.copy()
     engineered_summary = []
     
-    specs = feature_specs or []
+    raw_specs = feature_specs or kwargs.get("specs") or kwargs.get("features") or kwargs.get("engineered_features") or kwargs.get("feature_list") or kwargs.get("feature_specs") or []
+    if isinstance(raw_specs, dict):
+        specs = [raw_specs]
+    elif isinstance(raw_specs, list):
+        specs = raw_specs
+    else:
+        specs = []
     
     # Auto-generate features if specs not provided
     if not specs:
@@ -324,25 +350,65 @@ def engineer_features(
             })
 
     for spec in specs:
-        fname = spec.get("name", "engineered_feature")
-        ftype = spec.get("type", "custom").lower()
-        rationale = spec.get("rationale", "High-signal feature engineering transformation")
+        if not isinstance(spec, dict):
+            continue
+
+        ftype = str(spec.get("type") or spec.get("transformation") or spec.get("operation") or "custom").lower()
+        rationale = spec.get("rationale") or spec.get("description") or "High-signal feature engineering transformation"
         
-        # Extract column references gracefully regardless of key names used by LLM
-        cols = spec.get("columns") or spec.get("source_cols") or []
-        scol = spec.get("source_col") or spec.get("column") or (cols[0] if cols else None)
+        # Extract column references gracefully
+        raw_cols = spec.get("columns") or spec.get("source_cols") or spec.get("source_columns") or spec.get("features") or spec.get("input_cols") or spec.get("input_columns") or spec.get("cols") or []
+        if isinstance(raw_cols, str):
+            raw_cols = [c.strip() for c in raw_cols.split(",") if c.strip()]
+            
+        raw_scol = spec.get("source_col") or spec.get("column") or (raw_cols[0] if raw_cols else None)
+        
+        # Resolve requested column names to actual dataframe column names
+        df_cols_list = list(df_feat.columns)
+        cols = []
+        for c in raw_cols:
+            matched = _find_matching_col(c, df_cols_list)
+            if matched and matched not in cols:
+                cols.append(matched)
+                
+        scol = _find_matching_col(raw_scol, df_cols_list) if raw_scol else (cols[0] if cols else None)
+
+        # Dynamic Semantic Feature Naming (avoid generic 'engineered_feature')
+        fname = spec.get("name") or spec.get("feature_name") or spec.get("target")
+        if not fname or fname == "engineered_feature":
+            if ftype in ["sum", "add", "addition", "total", "plus", "aggregate", "combine", "cumulative"]:
+                fname = f"total_{'_'.join(cols[:3])}" if cols else "composite_total"
+            elif ftype in ["ratio", "division", "divide", "div"]:
+                num_raw = spec.get("numerator") or (raw_cols[0] if len(raw_cols) >= 1 else None)
+                den_raw = spec.get("denominator") or (raw_cols[1] if len(raw_cols) >= 2 else None)
+                num = _find_matching_col(num_raw, df_cols_list) if num_raw else None
+                den = _find_matching_col(den_raw, df_cols_list) if den_raw else None
+                fname = f"{num}_per_{den}" if (num and den) else "composite_ratio"
+            elif ftype in ["product", "interaction", "multiply", "mult", "multiplication", "times"]:
+                fname = f"{cols[0]}_x_{cols[1]}" if len(cols) >= 2 else "composite_interaction"
+            elif ftype in ["log1p", "log", "logarithm", "log_transform"]:
+                fname = f"log_{scol}" if scol else "log_transformed_feature"
+            elif ftype in ["difference", "subtraction", "subtract", "minus", "sub"]:
+                fname = f"{cols[0]}_minus_{cols[1]}" if len(cols) >= 2 else "composite_diff"
+            elif ftype in ["mean", "average", "avg"]:
+                fname = f"avg_{'_'.join(cols[:3])}" if cols else "composite_average"
+            else:
+                fname = "derived_domain_metric"
         
         try:
-            if ftype in ["log1p", "log"]:
+            if ftype in ["log1p", "log", "logarithm", "log_transform"]:
                 if scol and scol in df_feat.columns:
                     df_feat[fname] = np.log1p(np.maximum(0, pd.to_numeric(df_feat[scol], errors="coerce").fillna(0)))
                     formula = f"np.log1p({scol})"
                 else:
                     continue
                 
-            elif ftype == "ratio":
-                num = spec.get("numerator") or (cols[0] if len(cols) >= 1 else None)
-                den = spec.get("denominator") or (cols[1] if len(cols) >= 2 else None)
+            elif ftype in ["ratio", "division", "divide", "div"]:
+                num_raw = spec.get("numerator") or (raw_cols[0] if len(raw_cols) >= 1 else None)
+                den_raw = spec.get("denominator") or (raw_cols[1] if len(raw_cols) >= 2 else None)
+                num = _find_matching_col(num_raw, df_cols_list) if num_raw else None
+                den = _find_matching_col(den_raw, df_cols_list) if den_raw else None
+                
                 if num and den and num in df_feat.columns and den in df_feat.columns:
                     den_series = pd.to_numeric(df_feat[den], errors="coerce").fillna(0)
                     num_series = pd.to_numeric(df_feat[num], errors="coerce").fillna(0)
@@ -351,7 +417,7 @@ def engineer_features(
                 else:
                     continue
                     
-            elif ftype in ["product", "interaction", "multiply"]:
+            elif ftype in ["product", "interaction", "multiply", "mult", "multiplication", "times"]:
                 if len(cols) >= 2 and all(c in df_feat.columns for c in cols[:2]):
                     c1_series = pd.to_numeric(df_feat[cols[0]], errors="coerce").fillna(0)
                     c2_series = pd.to_numeric(df_feat[cols[1]], errors="coerce").fillna(0)
@@ -360,14 +426,30 @@ def engineer_features(
                 else:
                     continue
                     
-            elif ftype == "sum":
+            elif ftype in ["sum", "add", "addition", "total", "plus", "aggregate", "combine", "cumulative"]:
                 valid_cols = [c for c in cols if c in df_feat.columns]
                 if valid_cols:
                     df_feat[fname] = df_feat[valid_cols].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
                     formula = f"sum({', '.join(valid_cols)})"
                 else:
                     continue
-                
+
+            elif ftype in ["difference", "subtraction", "subtract", "minus", "sub"]:
+                if len(cols) >= 2 and all(c in df_feat.columns for c in cols[:2]):
+                    c1_series = pd.to_numeric(df_feat[cols[0]], errors="coerce").fillna(0)
+                    c2_series = pd.to_numeric(df_feat[cols[1]], errors="coerce").fillna(0)
+                    df_feat[fname] = c1_series - c2_series
+                    formula = f"{cols[0]} - {cols[1]}"
+                else:
+                    continue
+
+            elif ftype in ["mean", "average", "avg"]:
+                valid_cols = [c for c in cols if c in df_feat.columns]
+                if valid_cols:
+                    df_feat[fname] = df_feat[valid_cols].apply(pd.to_numeric, errors="coerce").fillna(0).mean(axis=1)
+                    formula = f"mean({', '.join(valid_cols)})"
+                else:
+                    continue
             else:
                 continue
                 
@@ -392,20 +474,31 @@ def engineer_features(
 # =====================================================================
 # 4. HYPOTHESIS TESTING & STATISTICAL SIGNIFICANCE TOOL (ROBUST)
 # =====================================================================
-def _run_group_test(groups: list) -> Optional[Tuple[str, float, float, str]]:
+def _run_group_test(groups: list) -> Optional[Tuple[str, float, float, float, str]]:
     """
     Shared helper: filters groups with < 2 samples, then dispatches to
     Welch T-Test (2 groups) or One-Way ANOVA (3+ groups).
-    Returns (test_name, statistic, p_value, interpretation) or None if insufficient groups.
+    Returns (test_name, statistic, p_value, effect_size, interpretation) or None if insufficient groups.
     """
     groups = [g for g in groups if len(g) >= 2]
     if len(groups) < 2:
         return None
     if len(groups) == 2:
-        t_stat, p_val = stats.ttest_ind(groups[0], groups[1], equal_var=False)
-        return "Two-Sample Welch T-Test", float(t_stat), p_val, f"T-statistic = {t_stat:.4f}, p = {p_val:.4e}."
+        g1, g2 = groups[0], groups[1]
+        t_stat, p_val = stats.ttest_ind(g1, g2, equal_var=False)
+        std_pooled = np.sqrt((np.var(g1, ddof=1) + np.var(g2, ddof=1)) / 2.0)
+        cohens_d = abs(np.mean(g1) - np.mean(g2)) / (std_pooled + 1e-8)
+        effect_size = round(float(min(1.0, cohens_d / 2.0)), 4)
+        return "Two-Sample Welch T-Test", float(t_stat), float(p_val), effect_size, f"T-statistic = {t_stat:.4f}, Cohen's d = {cohens_d:.4f}, p = {p_val:.4e}."
+    
     f_stat, p_val = stats.f_oneway(*groups)
-    return "One-Way ANOVA", float(f_stat), p_val, f"F-statistic = {f_stat:.4f}, p = {p_val:.4e}."
+    all_vals = np.concatenate(groups)
+    grand_mean = np.mean(all_vals)
+    ss_total = np.sum((all_vals - grand_mean) ** 2)
+    ss_between = sum(len(g) * (np.mean(g) - grand_mean) ** 2 for g in groups)
+    eta_sq = (ss_between / ss_total) if ss_total > 0 else 0.0
+    effect_size = round(float(eta_sq), 4)
+    return "One-Way ANOVA", float(f_stat), float(p_val), effect_size, f"F-statistic = {f_stat:.4f}, Eta-squared = {eta_sq:.4f}, p = {p_val:.4e}."
 
 
 def run_statistical_hypothesis_tests(
@@ -417,10 +510,7 @@ def run_statistical_hypothesis_tests(
 ) -> Dict[str, Any]:
     """
     Automates statistical significance testing against target_col with defensive parameter clamping.
-    - Numerical Target + Numerical Feature: Pearson Correlation test
-    - Categorical Target + Categorical Feature: Chi-Square Test
-    - Binary Target + Numerical Feature: Two-Sample T-test / Mann-Whitney U
-    - Multiclass Target + Numerical Feature: One-way ANOVA
+    Ranks statistically significant features by effect size.
     """
     # Parameter Clamping for alpha
     try:
@@ -436,10 +526,9 @@ def run_statistical_hypothesis_tests(
     targets_to_test = [c for c in raw_targets if c in df.columns and c != target_col]
     
     test_results = {}
-    significant_predictors = []
+    significant_items = []
     
     target_is_num = _is_numeric_col(df[target_col])
-    target_cardinality = df[target_col].nunique()
     
     for col in targets_to_test:
         col_is_num = _is_numeric_col(df[col])
@@ -453,7 +542,8 @@ def run_statistical_hypothesis_tests(
                 r_val, p_val = stats.pearsonr(clean_data[target_col], clean_data[col])
                 test_name = "Pearson Correlation Test"
                 statistic = float(r_val)
-                interpretation = f"Pearson r = {r_val:.4f}, p = {p_val:.4e}."
+                effect_size = round(abs(float(r_val)), 4)
+                interpretation = f"Pearson r = {r_val:.4f}, |r| = {effect_size}, p = {p_val:.4e}."
                 
             elif not target_is_num and not col_is_num:
                 # Chi-Square Test of Independence
@@ -461,7 +551,11 @@ def run_statistical_hypothesis_tests(
                 chi2, p_val, dof, ex = stats.chi2_contingency(contingency)
                 test_name = "Chi-Square Test of Independence"
                 statistic = float(chi2)
-                interpretation = f"Chi2 = {chi2:.4f}, dof = {dof}, p = {p_val:.4e}."
+                n = contingency.sum().sum()
+                min_dim = min(contingency.shape[0] - 1, contingency.shape[1] - 1)
+                cramers_v = np.sqrt(chi2 / (n * min_dim)) if (n > 0 and min_dim > 0) else 0.0
+                effect_size = round(float(cramers_v), 4)
+                interpretation = f"Chi2 = {chi2:.4f}, Cramér's V = {effect_size:.4f}, p = {p_val:.4e}."
                 
             elif not target_is_num and col_is_num:
                 # Feature is Numerical, Target is Categorical
@@ -469,25 +563,26 @@ def run_statistical_hypothesis_tests(
                 result = _run_group_test(groups)
                 if result is None:
                     continue
-                test_name, statistic, p_val, interpretation = result
+                test_name, statistic, p_val, effect_size, interpretation = result
             else:
                 # Target is Numerical, Feature is Categorical
                 groups = [group[target_col].dropna().values for name, group in clean_data.groupby(col)]
                 result = _run_group_test(groups)
                 if result is None:
                     continue
-                test_name, statistic, p_val, interpretation = result
+                test_name, statistic, p_val, effect_size, interpretation = result
                     
             p_val_float = float(p_val) if pd.notnull(p_val) else 1.0
             is_sig = p_val_float < alpha
             
             if is_sig:
-                significant_predictors.append(col)
+                significant_items.append({"feature": col, "effect_size": effect_size, "p_value": p_val_float})
                 
             test_results[col] = {
                 "test_name": test_name,
                 "statistic": round(statistic, 4),
                 "p_value": p_val_float,
+                "effect_size": effect_size,
                 "is_statistically_significant": is_sig,
                 "interpretation": interpretation + (" (Statistically Significant)" if is_sig else " (Not Significant)")
             }
@@ -496,11 +591,15 @@ def run_statistical_hypothesis_tests(
                 "test_name": "Hypothesis Test",
                 "error": str(e),
                 "p_value": 1.0,
+                "effect_size": 0.0,
                 "is_statistically_significant": False,
                 "interpretation": f"Could not perform test: {e}"
             }
 
-    test_results["significant_predictors"] = significant_predictors
+    # Rank significant features by effect size descending
+    significant_items.sort(key=lambda x: x["effect_size"], reverse=True)
+    test_results["significant_predictors"] = [item["feature"] for item in significant_items]
+    test_results["ranked_significant_details"] = significant_items
     return test_results
 
 
@@ -742,9 +841,9 @@ def plot_feature_distributions(
         else:
             target_cols = [target_cols]
 
-    valid_cols = [c for c in target_cols if c in df.columns]
+    valid_cols = [c for c in target_cols if c in df.columns and not is_non_distributional_column(c, df[c])]
     if not valid_cols:
-        valid_cols = list(df.columns)
+        valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
 
     os.makedirs(output_dir, exist_ok=True)
     saved_files = []
@@ -1118,7 +1217,7 @@ class PlotCorrelationMatrixArgs(BaseModel):
     save_path: str = Field(default="correlation_matrix.png")
 
 class PlotFeatureDistributionsArgs(BaseModel):
-    columns: Optional[List[str]] = Field(default=None, description="Optional list of column names to plot distributions for. Pass empty or omit to plot all columns.")
+    columns: Optional[List[str]] = Field(default=None, description="Optional list of column names to plot distributions for. Excludes IDs, coordinates (latitude, longitude), timestamps, and index keys.")
     save_path: str = Field(default="feature_distributions.png")
 
 class PlotTargetInteractionArgs(BaseModel):

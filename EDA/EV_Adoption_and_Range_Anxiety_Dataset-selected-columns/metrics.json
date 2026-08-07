@@ -204,250 +204,83 @@
     }
   },
   "engineered_features": [],
-  "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3392c3f0-ec75-44c4-8042-d6c83df85c4b\\correlation_matrix.png",
-    "top_correlations": [
-      {
-        "feature_1": "Charging_Stations_Near_Home",
-        "feature_2": "Charging_Stations_Near_Work",
-        "correlation": 0.4808
-      },
-      {
-        "feature_1": "Daily_Commute_km",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.027
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Daily_Commute_km",
-        "correlation": -0.0136
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Annual_Income_USD",
-        "correlation": -0.0115
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": -0.0081
-      },
-      {
-        "feature_1": "Daily_Commute_km",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0074
-      },
-      {
-        "feature_1": "Annual_Income_USD",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0047
-      },
-      {
-        "feature_1": "Number_of_Cars_Owned",
-        "feature_2": "Charging_Stations_Near_Home",
-        "correlation": 0.0043
-      },
-      {
-        "feature_1": "Annual_Income_USD",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": 0.0042
-      },
-      {
-        "feature_1": "Age",
-        "feature_2": "Number_of_Cars_Owned",
-        "correlation": -0.0033
-      }
-    ],
-    "correlation_matrix_text": {
-      "Age": {
-        "Age": 1.0,
-        "Annual_Income_USD": -0.011,
-        "Daily_Commute_km": -0.014,
-        "Number_of_Cars_Owned": -0.003,
-        "Charging_Stations_Near_Home": -0.008,
-        "Charging_Stations_Near_Work": -0.002
-      },
-      "Annual_Income_USD": {
-        "Age": -0.011,
-        "Annual_Income_USD": 1.0,
-        "Daily_Commute_km": 0.002,
-        "Number_of_Cars_Owned": 0.004,
-        "Charging_Stations_Near_Home": 0.005,
-        "Charging_Stations_Near_Work": 0.003
-      },
-      "Daily_Commute_km": {
-        "Age": -0.014,
-        "Annual_Income_USD": 0.002,
-        "Daily_Commute_km": 1.0,
-        "Number_of_Cars_Owned": -0.007,
-        "Charging_Stations_Near_Home": 0.027,
-        "Charging_Stations_Near_Work": 0.003
-      },
-      "Number_of_Cars_Owned": {
-        "Age": -0.003,
-        "Annual_Income_USD": 0.004,
-        "Daily_Commute_km": -0.007,
-        "Number_of_Cars_Owned": 1.0,
-        "Charging_Stations_Near_Home": 0.004,
-        "Charging_Stations_Near_Work": 0.0
-      },
-      "Charging_Stations_Near_Home": {
-        "Age": -0.008,
-        "Annual_Income_USD": 0.005,
-        "Daily_Commute_km": 0.027,
-        "Number_of_Cars_Owned": 0.004,
-        "Charging_Stations_Near_Home": 1.0,
-        "Charging_Stations_Near_Work": 0.481
-      },
-      "Charging_Stations_Near_Work": {
-        "Age": -0.002,
-        "Annual_Income_USD": 0.003,
-        "Daily_Commute_km": 0.003,
-        "Number_of_Cars_Owned": 0.0,
-        "Charging_Stations_Near_Home": 0.481,
-        "Charging_Stations_Near_Work": 1.0
-      }
-    },
-    "categorical_associations": {
-      "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3392c3f0-ec75-44c4-8042-d6c83df85c4b\\categorical_association_matrix.png",
-      "top_correlations": [
-        {
-          "feature_1": "Gender",
-          "feature_2": "City_Type",
-          "cramers_v": 0.0
-        },
-        {
-          "feature_1": "Gender",
-          "feature_2": "Current_Car_Type",
-          "cramers_v": 0.0
-        },
-        {
-          "feature_1": "City_Type",
-          "feature_2": "Current_Car_Type",
-          "cramers_v": 0.0
-        }
-      ],
-      "association_matrix_text": {
-        "Gender": {
-          "Gender": 1.0,
-          "City_Type": 0.0,
-          "Current_Car_Type": 0.0
-        },
-        "City_Type": {
-          "Gender": 0.0,
-          "City_Type": 1.0,
-          "Current_Car_Type": 0.0
-        },
-        "Current_Car_Type": {
-          "Gender": 0.0,
-          "City_Type": 0.0,
-          "Current_Car_Type": 1.0
-        }
-      }
-    }
-  },
-  "categorical_associations": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\3392c3f0-ec75-44c4-8042-d6c83df85c4b\\categorical_association_matrix.png",
-    "top_correlations": [
-      {
-        "feature_1": "Gender",
-        "feature_2": "City_Type",
-        "cramers_v": 0.0
-      },
-      {
-        "feature_1": "Gender",
-        "feature_2": "Current_Car_Type",
-        "cramers_v": 0.0
-      },
-      {
-        "feature_1": "City_Type",
-        "feature_2": "Current_Car_Type",
-        "cramers_v": 0.0
-      }
-    ],
-    "association_matrix_text": {
-      "Gender": {
-        "Gender": 1.0,
-        "City_Type": 0.0,
-        "Current_Car_Type": 0.0
-      },
-      "City_Type": {
-        "Gender": 0.0,
-        "City_Type": 1.0,
-        "Current_Car_Type": 0.0
-      },
-      "Current_Car_Type": {
-        "Gender": 0.0,
-        "City_Type": 0.0,
-        "Current_Car_Type": 1.0
-      }
-    }
-  },
+  "correlation_analysis": {},
+  "categorical_associations": {},
   "statistical_hypothesis_tests": {
     "Buyer_ID": {
       "test_name": "Chi-Square Test of Independence",
       "statistic": 30000.0,
       "p_value": 0.49402828612531213,
+      "effect_size": 1.0,
       "is_statistically_significant": false,
-      "interpretation": "Chi2 = 30000.0000, dof = 29997, p = 4.9403e-01. (Not Significant)"
+      "interpretation": "Chi2 = 30000.0000, Cram\u00e9r's V = 1.0000, p = 4.9403e-01. (Not Significant)"
     },
     "Age": {
       "test_name": "One-Way ANOVA",
       "statistic": 1.8102,
       "p_value": 0.14292203091567546,
+      "effect_size": 0.0005,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 1.8102, p = 1.4292e-01. (Not Significant)"
+      "interpretation": "F-statistic = 1.8102, Eta-squared = 0.0005, p = 1.4292e-01. (Not Significant)"
     },
     "Gender": {
       "test_name": "Chi-Square Test of Independence",
       "statistic": 1.0359,
       "p_value": 0.9842155472839936,
+      "effect_size": 0.0072,
       "is_statistically_significant": false,
-      "interpretation": "Chi2 = 1.0359, dof = 6, p = 9.8422e-01. (Not Significant)"
+      "interpretation": "Chi2 = 1.0359, Cram\u00e9r's V = 0.0072, p = 9.8422e-01. (Not Significant)"
     },
     "Annual_Income_USD": {
       "test_name": "One-Way ANOVA",
       "statistic": 2.0844,
       "p_value": 0.09999021137220938,
+      "effect_size": 0.0006,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 2.0844, p = 9.9990e-02. (Not Significant)"
+      "interpretation": "F-statistic = 2.0844, Eta-squared = 0.0006, p = 9.9990e-02. (Not Significant)"
     },
     "City_Type": {
       "test_name": "Chi-Square Test of Independence",
       "statistic": 1.544,
       "p_value": 0.9565204353246848,
+      "effect_size": 0.0088,
       "is_statistically_significant": false,
-      "interpretation": "Chi2 = 1.5440, dof = 6, p = 9.5652e-01. (Not Significant)"
+      "interpretation": "Chi2 = 1.5440, Cram\u00e9r's V = 0.0088, p = 9.5652e-01. (Not Significant)"
     },
     "Daily_Commute_km": {
       "test_name": "One-Way ANOVA",
       "statistic": 0.2122,
       "p_value": 0.8879743220005236,
+      "effect_size": 0.0001,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.2122, p = 8.8797e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.2122, Eta-squared = 0.0001, p = 8.8797e-01. (Not Significant)"
     },
     "Number_of_Cars_Owned": {
       "test_name": "One-Way ANOVA",
       "statistic": 0.0629,
       "p_value": 0.9794037019919568,
+      "effect_size": 0.0,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.0629, p = 9.7940e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.0629, Eta-squared = 0.0000, p = 9.7940e-01. (Not Significant)"
     },
     "Charging_Stations_Near_Home": {
       "test_name": "One-Way ANOVA",
       "statistic": 0.2881,
       "p_value": 0.8340050169355036,
+      "effect_size": 0.0001,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.2881, p = 8.3401e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.2881, Eta-squared = 0.0001, p = 8.3401e-01. (Not Significant)"
     },
     "Charging_Stations_Near_Work": {
       "test_name": "One-Way ANOVA",
       "statistic": 0.1864,
       "p_value": 0.9056881658408111,
+      "effect_size": 0.0001,
       "is_statistically_significant": false,
-      "interpretation": "F-statistic = 0.1864, p = 9.0569e-01. (Not Significant)"
+      "interpretation": "F-statistic = 0.1864, Eta-squared = 0.0001, p = 9.0569e-01. (Not Significant)"
     },
-    "significant_predictors": []
+    "significant_predictors": [],
+    "ranked_significant_details": []
   },
   "predictive_modeling_blueprint": {
     "target_definition": "Current_Car_Type",

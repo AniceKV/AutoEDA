@@ -185,20 +185,20 @@ def generate_template_summary(data: Dict[str, Any]) -> str:
 
     lines.append("\n---\n")
 
-    # 4. Feature Engineering
+    # 4. Derived Domain Attributes & Composite Metrics
     engineered = metrics.get("engineered_features", [])
-    lines.append("## 4. Engineered Features")
+    lines.append("## 4. Derived Domain Attributes & Composite Metrics")
     if isinstance(engineered, list) and engineered:
         for item in engineered:
             if isinstance(item, dict):
-                fname = item.get("feature_name", "Feature")
+                fname = item.get("feature_name", "Derived Metric")
                 formula = item.get("formula", item.get("method", "Custom transformation"))
                 purpose = item.get("rationale", item.get("purpose", "Enhance predictive signal"))
                 lines.append(f"- **`{fname}`**: Formula: `{formula}` | Purpose: {purpose}")
             else:
                 lines.append(f"- {item}")
     else:
-        lines.append("No custom engineered features recorded.")
+        lines.append("No custom derived domain metrics recorded.")
 
     lines.append("\n---\n")
 

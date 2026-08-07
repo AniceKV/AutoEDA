@@ -120,18 +120,6 @@ def run_tool_based_eda(
         df = pd.read_csv(abs_data_path)
         data_store = tools.StatefulDataStore(workspace_dir=workspace_dir)
         data_store.set_initial_state(df, agent_state)
-        
-        print("1b. Pre-generating visual plot assets concurrently via parallel_plotter (distributions, correlation heatmaps, bivariate relationships)...")
-        try:
-            from .parallel_plotter import batch_render_pipeline_plots
-            target_col = agent_state.get("target_col") or ""
-            batch_render_pipeline_plots(
-                df=df,
-                target_column=target_col,
-                output_directory=workspace_dir
-            )
-        except Exception as e:
-            print(f"[agent_loop] Warning: Error in parallel batch plotting: {e}")
 
         try:
             hyp_res = tools.run_statistical_hypothesis_tests(df, output_dir=workspace_dir)
@@ -150,7 +138,9 @@ def run_tool_based_eda(
             f"{json.dumps(profile_summary, indent=2)}\n\n"
             f"### USER TASK:\n"
             f"{user_request}\n\n"
-            "Analyze the dataset based on the request. Use tools to plot distributions, relationships, engineer features, etc. "
+            "Analyze the dataset based on the request. Focus heavily on generating bivariate graphs, target interactions, and pairwise feature plots "
+            "('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') to uncover key feature correlations, trends, and domain insights. "
+            "Also use tools to engineer features, profile missing values, and run hypothesis tests. "
             "If the request is ambiguous, use 'ask_clarifying_question'. When finished, call 'finish_analysis'."
         )
         conversation_history.append({"role": "user", "content": user_prompt})
@@ -201,7 +191,9 @@ def run_tool_based_eda(
         "4. You can execute multiple tools in a single plan.\n"
         "5. After executing tools, you will receive feedback with the results. If you need to explore further, output another tool plan.\n"
         "6. If you have completed the analysis or the user's request, you MUST call 'finish_analysis' to conclude the loop.\n"
-        "7. Do NOT output conversational preambles."
+        "7. Do NOT output conversational preambles.\n"
+        "8. Do NOT request univariate distribution plots ('plot_feature_distributions') for identifier columns (ID, UUID, index, key), spatial coordinates (latitude, longitude), or timestamps, as they lack univariate distribution signal.\n"
+        "9. BIVARIATE GRAPH PRIORITY: Bivariate relationships and pairwise interactions are critical for discovering key feature correlations, trend lines, and domain insights. Always prioritize plotting semantic bivariate graphs ('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') for key feature pairs, target variable relationships, and high-signal numerical/categorical interactions."
     )
     
     # 2. Agentic Refinement Loop
@@ -326,7 +318,7 @@ def run_tool_based_eda(
                         agent_state["engineered_res"] = []
                     agent_state["engineered_res"].extend(engineered)
                     data_store.save_checkpoint(df, agent_state, "engineer_features")
-                    step_results.append(f"engineer_features successful. Generated {len(engineered)} features.")
+                    step_results.append(f"engineer_features successful. Synthesized {len(engineered)} derived domain metrics.")
                     
                 elif tool_name == "run_statistical_hypothesis_tests":
                     if args.get("target_col"):
@@ -403,8 +395,8 @@ def run_tool_based_eda(
         "",
         "df = pd.read_csv(DATA_FILEPATH)",
         "",
-        "# --- 1. LLM-Coded Feature Engineering ---",
-        f"# Engineered Features Specs: {json.dumps(agent_state['engineered_res'] or [], indent=2)}"
+        "# --- 1. Derived Domain Attributes & Composite Metrics ---",
+        f"# Derived Domain Metrics Specs: {json.dumps(agent_state['engineered_res'] or [], indent=2)}"
     ]
     for feat in (agent_state['engineered_res'] or []):
         name = feat.get("feature_name", "feat")
@@ -482,12 +474,12 @@ def run_tool_based_eda(
         shutil.rmtree(export_dir)
     os.makedirs(export_dir, exist_ok=True)
 
-    print("\n6. Generating interactive HTML profile report (eda_report.html)...")
-    generate_html_report(workspace_dir=workspace_dir)
-
     if generate_summary:
-        print("7. Invoking summary_generator...")
+        print("\n6. Invoking summary_generator to synthesize Executive Summary...")
         summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
+
+    print("\n7. Generating interactive HTML profile report (eda_report.html) with Executive Summary...")
+    generate_html_report(workspace_dir=workspace_dir)
     
     print(f"8. Exporting sandbox assets to: {export_dir}...")
     copied_files = []

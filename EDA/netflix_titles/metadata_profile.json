@@ -14,37 +14,37 @@
     },
     "schema": {
         "show_id": {
-            "type": "object",
+            "type": "str",
             "cardinality": 8807,
-            "key_metric": "Top Values: 's8807': 1, 's1': 1, 's2': 1"
+            "key_metric": "Top Values: 's1': 1, 's2': 1, 's3': 1"
         },
         "type": {
-            "type": "object",
+            "type": "str",
             "cardinality": 2,
             "key_metric": "Top Values: 'Movie': 6131, 'TV Show': 2676"
         },
         "title": {
-            "type": "object",
+            "type": "str",
             "cardinality": 8807,
-            "key_metric": "Top Values: 'Zubaan': 1, 'Dick Johnson Is Dead': 1, 'Blood & Water': 1"
+            "key_metric": "Top Values: 'Dick Johnson Is Dead': 1, 'Blood & Water': 1, 'Ganglands': 1"
         },
         "director": {
-            "type": "object",
+            "type": "str",
             "cardinality": 4528,
             "key_metric": "Top Values: 'Rajiv Chilaka': 19, 'Ra\u00fal Campos, Jan Suter': 18, 'Suhas Kadav': 16"
         },
         "cast": {
-            "type": "object",
+            "type": "str",
             "cardinality": 7692,
             "key_metric": "Top Values: 'David Attenborough': 19, 'Vatsal Dubey, Julie Tejwani, Rupa Bhimani, Jigna Bhardwaj, Rajesh Kava, Mousam, Swapnil': 14, 'Samuel West': 10"
         },
         "country": {
-            "type": "object",
+            "type": "str",
             "cardinality": 748,
             "key_metric": "Top Values: 'United States': 2818, 'India': 972, 'United Kingdom': 419"
         },
         "date_added": {
-            "type": "object",
+            "type": "str",
             "cardinality": 1767,
             "key_metric": "Top Values: 'January 1, 2020': 109, 'November 1, 2019': 89, 'March 1, 2018': 75"
         },
@@ -54,110 +54,242 @@
             "key_metric": "Range: [1925.00 to 2021.00] | Mean: 2014.18 | Median: 2017.00 | Highly Skewed (-3.45)"
         },
         "rating": {
-            "type": "object",
+            "type": "str",
             "cardinality": 17,
             "key_metric": "Top Values: 'TV-MA': 3207, 'TV-14': 2160, 'TV-PG': 863"
         },
         "duration": {
-            "type": "object",
+            "type": "str",
             "cardinality": 220,
             "key_metric": "Top Values: '1 Season': 1793, '2 Seasons': 425, '3 Seasons': 199"
         },
         "listed_in": {
-            "type": "object",
+            "type": "str",
             "cardinality": 514,
             "key_metric": "Top Values: 'Dramas, International Movies': 362, 'Documentaries': 359, 'Stand-Up Comedy': 334"
         },
         "description": {
-            "type": "object",
+            "type": "str",
             "cardinality": 8775,
-            "key_metric": "Top Values: 'Paranormal activity at a lush, abandoned property alarms a group eager to redevelop the site, but the eerie events may not be as unearthly as they think.': 4, 'A surly septuagenarian gets another chance at her 20s after having her photo snapped at a studio that magically takes 50 years off her life.': 3, 'Multiple women report their husbands as missing but when it appears they are looking for the same man, a police officer traces their cryptic connection.': 3"
+            "key_metric": "Top Values: 'Paranormal activity at a lush, abandoned property alarms a group eager to redevelop the site, but the eerie events may not be as unearthly as they think.': 4, 'Challenged to compose 100 songs before he can marry the girl he loves, a tortured but passionate singer-songwriter embarks on a poignant musical journey.': 3, 'Multiple women report their husbands as missing but when it appears they are looking for the same man, a police officer traces their cryptic connection.': 3"
         }
     },
     "columns": [
         {
             "column": "show_id",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 8807
+            "cardinality": 8807,
+            "unique_pct": 100.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "type",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 2
+            "cardinality": 2,
+            "unique_pct": 0.02,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "title",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 8807
+            "cardinality": 8807,
+            "unique_pct": 100.0,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "director",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 2634,
             "missing_pct": 29.91,
-            "cardinality": 4528
+            "cardinality": 4528,
+            "unique_pct": 51.41,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "cast",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 825,
             "missing_pct": 9.37,
-            "cardinality": 7692
+            "cardinality": 7692,
+            "unique_pct": 87.34,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "country",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 831,
             "missing_pct": 9.44,
-            "cardinality": 748
+            "cardinality": 748,
+            "unique_pct": 8.49,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "date_added",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 10,
             "missing_pct": 0.11,
-            "cardinality": 1767
+            "cardinality": 1767,
+            "unique_pct": 20.06,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "release_year",
             "dtype": "int64",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 74
+            "cardinality": 74,
+            "unique_pct": 0.84,
+            "mean": 2014.1801975701146,
+            "median": 2017.0,
+            "std": 8.819312130833966,
+            "min": 1925.0,
+            "max": 2021.0,
+            "q1": 2013.0,
+            "q3": 2019.0,
+            "iqr": 6.0,
+            "skew": -3.4465650403316013,
+            "kurtosis": 16.232225648417078
         },
         {
             "column": "rating",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 4,
             "missing_pct": 0.05,
-            "cardinality": 17
+            "cardinality": 17,
+            "unique_pct": 0.19,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "duration",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 3,
             "missing_pct": 0.03,
-            "cardinality": 220
+            "cardinality": 220,
+            "unique_pct": 2.5,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "listed_in",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 514
+            "cardinality": 514,
+            "unique_pct": 5.84,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         },
         {
             "column": "description",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
-            "cardinality": 8775
+            "cardinality": 8775,
+            "unique_pct": 99.64,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
         }
     ]
 }

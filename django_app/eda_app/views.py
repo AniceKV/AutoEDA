@@ -324,9 +324,21 @@ def index(request):
         "agent_question": agent_question,
         "sample_csvs": sample_csvs,
         "default_prompt": (
-            "Perform complete exploratory analysis, type-safe missing value imputation, "
-            "outlier profiling, statistical hypothesis testing, semantic bivariate graphing, "
-            "and predictive blueprinting."
+            "Perform a complete exploratory analysis of this dataset, with primary emphasis "
+            "on bivariate relationships between variables.\n\n"
+            "The target/outcome of interest is <column name — fill this in>.\n\n"
+            "Bivariate analysis (primary focus):\n"
+            "- Generate semantically meaningful pairwise plots — pick pairs based on "
+            "domain logic, not just the first numeric columns. Include a short rationale "
+            "for each pair before plotting it.\n"
+            "- Cover feature-vs-target relationships as well as feature-vs-feature "
+            "relationships where a plausible interaction or confound exists.\n"
+            "- Run statistical significance tests of each feature against <target column>, "
+            "using the appropriate test per variable-type pairing. Report which are "
+            "significant at alpha=0.05, ranked by effect size.\n\n"
+            "Also perform, at normal depth: type-safe missing value imputation, outlier "
+            "profiling, and predictive blueprinting for <target column> — but keep these "
+            "secondary to the bivariate/relationship analysis above."
         ),
         "generate_summary": request.session.get("generate_summary", True),
     }
@@ -342,9 +354,21 @@ def run_pipeline(request):
         data_source = request.POST.get("data_source", "sample")
         generate_summary = request.POST.get("generate_summary") == "on"
         user_request = request.POST.get("user_request", "").strip() or (
-            "Perform complete exploratory analysis, type-safe missing value imputation, "
-            "outlier profiling, statistical hypothesis testing, semantic bivariate graphing, "
-            "and predictive blueprinting."
+            "Perform a complete exploratory analysis of this dataset, with primary emphasis "
+            "on bivariate relationships between variables.\n\n"
+            "The target/outcome of interest is <column name — fill this in>.\n\n"
+            "Bivariate analysis (primary focus):\n"
+            "- Generate semantically meaningful pairwise plots — pick pairs based on "
+            "domain logic, not just the first numeric columns. Include a short rationale "
+            "for each pair before plotting it.\n"
+            "- Cover feature-vs-target relationships as well as feature-vs-feature "
+            "relationships where a plausible interaction or confound exists.\n"
+            "- Run statistical significance tests of each feature against <target column>, "
+            "using the appropriate test per variable-type pairing. Report which are "
+            "significant at alpha=0.05, ranked by effect size.\n\n"
+            "Also perform, at normal depth: type-safe missing value imputation, outlier "
+            "profiling, and predictive blueprinting for <target column> — but keep these "
+            "secondary to the bivariate/relationship analysis above."
         )
 
         # ---- Resolve CSV path ----

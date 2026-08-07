@@ -26,12 +26,12 @@
             "key_metric": "Range: [1.00 to 3.00] | Mean: 2.31 | Median: 3.00"
         },
         "Name": {
-            "type": "object",
+            "type": "str",
             "cardinality": 891,
-            "key_metric": "Top Values: 'Dooley, Mr. Patrick': 1, 'Braund, Mr. Owen Harris': 1, 'Cumings, Mrs. John Bradley (Florence Briggs Thayer)': 1"
+            "key_metric": "Top Values: 'Braund, Mr. Owen Harris': 1, 'Cumings, Mrs. John Bradley (Florence Briggs Thayer)': 1, 'Heikkinen, Miss. Laina': 1"
         },
         "Sex": {
-            "type": "object",
+            "type": "str",
             "cardinality": 2,
             "key_metric": "Top Values: 'male': 577, 'female': 314"
         },
@@ -51,7 +51,7 @@
             "key_metric": "Range: [0.00 to 6.00] | Mean: 0.38 | Median: 0.00 | Highly Skewed (2.75)"
         },
         "Ticket": {
-            "type": "object",
+            "type": "str",
             "cardinality": 681,
             "key_metric": "Top Values: '347082': 7, '1601': 7, 'CA. 2343': 7"
         },
@@ -61,12 +61,12 @@
             "key_metric": "Range: [0.00 to 512.33] | Mean: 32.20 | Median: 14.45 | Highly Skewed (4.79)"
         },
         "Cabin": {
-            "type": "object",
+            "type": "str",
             "cardinality": 147,
             "key_metric": "Top Values: 'G6': 4, 'C23 C25 C27': 4, 'B96 B98': 4"
         },
         "Embarked": {
-            "type": "object",
+            "type": "str",
             "cardinality": 3,
             "key_metric": "Top Values: 'S': 644, 'C': 168, 'Q': 77"
         }
@@ -128,7 +128,7 @@
         },
         {
             "column": "Name",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 891,
@@ -146,7 +146,7 @@
         },
         {
             "column": "Sex",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 2,
@@ -218,7 +218,7 @@
         },
         {
             "column": "Ticket",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 0,
             "missing_pct": 0.0,
             "cardinality": 681,
@@ -254,7 +254,7 @@
         },
         {
             "column": "Cabin",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 687,
             "missing_pct": 77.1,
             "cardinality": 147,
@@ -272,7 +272,7 @@
         },
         {
             "column": "Embarked",
-            "dtype": "object",
+            "dtype": "str",
             "missing_count": 2,
             "missing_pct": 0.22,
             "cardinality": 3,

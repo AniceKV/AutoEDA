@@ -50,7 +50,7 @@
 
   <!-- ─── SIDEBAR ──────────────────────────────────────────── -->
   <aside class="sidebar" id="sidebar">
-    <form id="run-form" method="post" action="/run/" enctype="multipart/form-data">
+    <form id="run-form" method="post" action="/run/" enctype="multipart/form-data" autocomplete="off">
       {% csrf_token %}
 
       <!-- Dataset -->
@@ -90,7 +90,7 @@
       <!-- Prompt -->
       <div class="sidebar-section">
         <span class="sidebar-label">Analysis Prompt</span>
-        <textarea name="user_request" rows="5" placeholder="Describe what to analyse…">{{ default_prompt }}</textarea>
+        <textarea name="user_request" id="user-request-input" rows="5" placeholder="Describe what to analyse…" autocomplete="off">{{ default_prompt }}</textarea>
       </div>
 
       <!-- Options -->

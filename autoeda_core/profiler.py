@@ -1,8 +1,73 @@
 import os
 import json
+import re
 import pandas as pd
 import numpy as np
 import hashlib
+from typing import Optional
+
+def is_non_distributional_column(col_name: str, series: Optional[pd.Series] = None) -> bool:
+    """
+    Determines if a column lacks meaningful univariate distribution properties.
+    Excludes unique IDs, spatial coordinates (latitude, longitude), timestamps/dates,
+    and sequential row index identifiers from univariate distribution plot generation.
+    """
+    col_clean = str(col_name).strip().lower()
+    
+    # 1. Spatial Coordinate column patterns
+    coord_patterns = [
+        r"^(latitude|longitude|lat|lng|lon)$",
+        r".*_(latitude|longitude|lat|lng|lon)$",
+        r"^(latitude|longitude|lat|lng|lon)_.*",
+        r".*(coord|coordinates|location_lat|location_lng|geo_lat|geo_lon).*"
+    ]
+    for pattern in coord_patterns:
+        if re.match(pattern, col_clean):
+            return True
+            
+    # 2. Identifier / Key column name patterns
+    id_patterns = [
+        r"^(id|uuid|guid|pk|index|row_id|row_num|code|hash|ssn)$",
+        r".*(_id|_uuid|_guid|_pk|_code|_hash|_index|_number|_no)$",
+        r"^(id_|uuid_|guid_|pk_|index_).*"
+    ]
+    for pattern in id_patterns:
+        if re.match(pattern, col_clean):
+            return True
+            
+    # 3. Temporal / Timestamp column patterns
+    time_patterns = [
+        r"^(date|time|timestamp|created_at|updated_at|datetime)$",
+        r".*(_date|_time|_timestamp|_at)$"
+    ]
+    for pattern in time_patterns:
+        if re.match(pattern, col_clean):
+            return True
+
+    # 4. Data Series Heuristics (if series data provided)
+    if series is not None:
+        s = series.dropna()
+        if len(s) == 0:
+            return True
+            
+        # Check datetime dtype
+        if pd.api.types.is_datetime64_any_dtype(s):
+            return True
+            
+        # Strictly sequential integer index check (e.g. 1, 2, 3, 4 ... N)
+        if pd.api.types.is_numeric_dtype(s) and len(s) > 10:
+            diffs = s.diff().dropna()
+            if len(diffs) > 0 and (diffs == 1).all():
+                return True
+
+        # High cardinality ratio check (e.g., >98% unique non-float values)
+        if len(s) > 20:
+            uniq_ratio = s.nunique() / len(s)
+            if uniq_ratio > 0.98 and not pd.api.types.is_float_dtype(s):
+                return True
+
+    return False
+
 
 def calculate_column_stats(df: pd.DataFrame) -> list:
     """

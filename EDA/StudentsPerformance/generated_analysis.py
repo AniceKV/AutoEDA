@@ -6,12 +6,21 @@ import json
 
 df = pd.read_csv(DATA_FILEPATH)
 
-# --- 1. LLM-Coded Feature Engineering ---
-# Engineered Features Specs: []
+# --- 1. Derived Domain Attributes & Composite Metrics ---
+# Derived Domain Metrics Specs: [
+  {
+    "feature_name": "overall_score",
+    "formula": "mean(math score, reading score, writing score)",
+    "data_type": "float64",
+    "rationale": "High-signal feature engineering transformation",
+    "correlation_with_target": null
+  }
+]
+# Custom feature placeholder - 'overall_score': mean(math score, reading score, writing score)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "writing score",
+  "target_definition": "overall_score",
   "problem_type": "Regression",
   "recommended_algorithms": [
     "Regularized Linear Regression (Ridge / Lasso)",
@@ -33,7 +42,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: writing score (Regression). Use robust cross-validation on 1000 rows x 8 columns."
+  "executive_summary": "Target: overall_score (Regression). Use robust cross-validation on 1000 rows x 9 columns."
 }
 
 if __name__ == '__main__':
