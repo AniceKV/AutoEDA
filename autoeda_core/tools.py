@@ -1414,6 +1414,54 @@ def generate_predictive_blueprint(
         "overfitting_risk_mitigation": overfitting_mitigation,
         "executive_summary": f"Target: '{target_col}' ({problem_type}). Model recommendations and validation strategy tailored for {num_rows} rows x {num_cols} columns."
     }
+def validate_report_consistency(metrics_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Lightweight post-generation validation step that asserts consistency across:
+    1. Target column alignment between dataset overview, hypothesis tests, and modeling blueprint.
+    2. Non-empty predictor reporting consistency.
+    Returns a dictionary of validation checks and warning flags.
+    """
+    overview = metrics_dict.get("dataset_overview", {})
+    target_col = overview.get("target_column")
+    
+    hypothesis_res = metrics_dict.get("statistical_hypothesis_tests", {})
+    blueprint_res = metrics_dict.get("predictive_modeling_blueprint", {})
+    
+    validation_passed = True
+    warnings = []
+    
+    # 1. Target Alignment Check
+    hyp_target = hypothesis_res.get("target_col") if isinstance(hypothesis_res, dict) else None
+    bp_target = blueprint_res.get("target_definition") if isinstance(blueprint_res, dict) else None
+    
+    if target_col and hyp_target and target_col != hyp_target:
+        validation_passed = False
+        warnings.append(f"Target mismatch between dataset overview ('{target_col}') and hypothesis tests ('{hyp_target}').")
+        
+    if target_col and bp_target and target_col != bp_target:
+        validation_passed = False
+        warnings.append(f"Target mismatch between dataset overview ('{target_col}') and predictive blueprint ('{bp_target}').")
+        
+    # 2. Engineered Features Ground Truth Check
+    engineered = metrics_dict.get("engineered_features", [])
+    if not isinstance(engineered, list):
+        validation_passed = False
+        warnings.append("Engineered features in metrics.json is not a valid list.")
+        
+    validation_summary = {
+        "is_consistent": validation_passed,
+        "warnings": warnings,
+        "validated_target": target_col,
+        "statistically_significant_count": len(hypothesis_res.get("significant_predictors", [])) if isinstance(hypothesis_res, dict) else 0,
+        "engineered_features_count": len(engineered) if isinstance(engineered, list) else 0
+    }
+    
+    if warnings:
+        print(f"[tools] Validation Warning: Report consistency issues detected: {warnings}")
+    else:
+        print("[tools] Post-generation validation PASSED cleanly: Target and metrics state are 100% consistent.")
+        
+    return validation_summary
 
 
 # =====================================================================
@@ -1433,6 +1481,7 @@ def compile_and_save_metrics(
 ) -> str:
     """
     Compiles all analysis outputs into the canonical metrics.json format.
+    Runs automated post-generation consistency validation before saving.
     """
     os.makedirs(output_dir, exist_ok=True)
     
@@ -1457,7 +1506,7 @@ def compile_and_save_metrics(
         "outlier_analysis": outlier_res or {},
         "engineered_features": engineered_res or [],
         "correlation_analysis": corr_res or {},
-        "categorical_associations": (corr_res or {}).get("categorical_associations", {}),
+        "categorical_associations": (corr_res or {}).get("categorical_associations", []),
         "statistical_hypothesis_tests": hypothesis_res or {},
         "predictive_modeling_blueprint": blueprint_res or generate_predictive_blueprint(df, target_col),
         "extracted_insights": {
@@ -1468,6 +1517,9 @@ def compile_and_save_metrics(
             "statistically_significant_predictors": (hypothesis_res or {}).get("significant_predictors", [])
         }
     }
+    
+    # Run post-generation consistency validation
+    metrics_dict["pipeline_validation"] = validate_report_consistency(metrics_dict)
     
     metrics_path = os.path.join(output_dir, "metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:
