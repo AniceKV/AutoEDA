@@ -515,11 +515,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         /* Blueprint Table & Section */
         .blueprint-box {
+            position: relative;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+        }
+
+        .system-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            margin-bottom: 12px;
         }
 
         .blueprint-item {
@@ -813,6 +828,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <!-- TAB 7: PREDICTIVE BLUEPRINT -->
         <div id="blueprint" class="tab-content">
             <div class="blueprint-box">
+                <div class="system-badge">Automated Pipeline Asset</div>
                 <div class="section-title">Predictive Modeling Strategy Blueprint</div>
                 {% if predictive_blueprint %}
                     {% for key, val in predictive_blueprint.items() %}
@@ -1002,12 +1018,12 @@ def compute_alerts(profile: Dict[str, Any], corr_matrix: Optional[pd.DataFrame] 
             })
 
         # 4. High Cardinality Alert
-        if unique_pct > 80.0 and cardinality > 50 and not dtype.startswith("float"):
+        if (unique_pct >= 25.0 and cardinality > 50 and not dtype.startswith("float")) or is_non_distributional_column(name):
             alerts.append({
                 "column": name,
                 "type": "High Cardinality",
                 "level": "notice",
-                "message": f"Very high cardinality ({cardinality} distinct values, {unique_pct}% unique)."
+                "message": f"High cardinality feature ({cardinality} distinct values, {unique_pct}% unique). Excluded from ANOVA hypothesis testing."
             })
 
     # 5. Correlation Alerts
