@@ -994,6 +994,31 @@ def _cramers_v(x, y):
     return float(np.sqrt(phi2corr / min_dim)) if min_dim > 0 else 0.0
 
 
+def _correlation_ratio(categories, measurements):
+    """
+    Calculates Correlation Ratio (eta) between a categorical and numeric feature.
+    eta = sqrt( SS_between / SS_total )
+    Returns 1.0 for perfect deterministic/ordinal duplicate encodings (e.g. education vs educational-num).
+    """
+    try:
+        clean_data = pd.DataFrame({'cat': categories, 'num': measurements}).dropna()
+        if len(clean_data) < 5 or clean_data['cat'].nunique() <= 1:
+            return 0.0
+        
+        overall_mean = clean_data['num'].mean()
+        total_ss = np.sum((clean_data['num'] - overall_mean) ** 2)
+        if total_ss == 0:
+            return 0.0
+        
+        category_means = clean_data.groupby('cat')['num'].agg(['mean', 'count'])
+        between_ss = np.sum(category_means['count'] * ((category_means['mean'] - overall_mean) ** 2))
+        
+        eta = np.sqrt(between_ss / total_ss)
+        return float(np.clip(eta, 0.0, 1.0))
+    except Exception:
+        return 0.0
+
+
 def plot_correlation_matrix(
     df: pd.DataFrame,
     save_path: str = "correlation_matrix.png",
@@ -1002,6 +1027,7 @@ def plot_correlation_matrix(
 ) -> Dict[str, Any]:
     """
     Generates a correlation matrix heatmap for numeric features and association matrix for categorical features.
+    Detects cross-type redundant duplicate pairs (e.g. education vs educational-num) using Correlation Ratio (eta).
     Excludes non-distributional columns (IDs, coordinates, timestamps).
     """
     plt.close()
@@ -1054,10 +1080,25 @@ def plot_correlation_matrix(
                         "cramers_v": round(v, 4)
                     })
 
+    # Cross-type redundancy detection (Categorical vs Numeric pairs, e.g. education vs educational-num)
+    cross_type_redundant_pairs = []
+    for c_col in cat_cols:
+        for n_col in numeric_cols:
+            if c_col == n_col: continue
+            eta_val = _correlation_ratio(df[c_col], df[n_col])
+            if eta_val >= 0.85:
+                cross_type_redundant_pairs.append({
+                    "categorical_feature": c_col,
+                    "numeric_feature": n_col,
+                    "correlation_ratio_eta": round(eta_val, 4),
+                    "interpretation": f"High cross-type redundancy between '{c_col}' and '{n_col}' (Eta = {eta_val:.4f})."
+                })
+
     return {
         "correlation_heatmap_saved": full_save_path,
         "high_correlation_pairs": high_corr_pairs,
-        "categorical_associations": cat_assoc
+        "categorical_associations": cat_assoc,
+        "cross_type_redundant_pairs": cross_type_redundant_pairs
     }
 
 
