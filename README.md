@@ -1,4 +1,4 @@
-# AutoEDA 🤖 — Stateful Agentic Exploratory Data Analysis & Predictive Modeling
+# AutoEDA — Stateful Agentic Exploratory Data Analysis & Predictive Modeling
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-autoeda--fjgz.onrender.com-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://autoeda-fjgz.onrender.com/)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -16,7 +16,7 @@ By shifting from unstable, raw Python script generation to **Structured JSON Too
 
 ---
 
-## 🏗️ Architectural Overview
+## Architectural Overview
 
 The core system isolates the LLM's reasoning loop from the raw execution environment, using programmatic checkpoints and client-side charting to achieve production stability and near-zero server-side latency.
 
@@ -52,7 +52,7 @@ The core system isolates the LLM's reasoning loop from the raw execution environ
             └─────────────────────────────┘
 ```
 
-### 🌟 Key Design Innovations
+### Key Design Innovations
 
 1. **Stateful Rollback Safety Net (`StatefulDataStore`)**: Before executing any tool-plan step, the database takes a sequence-labeled checkpoint (`v0`, `v1`, etc.) via **deep-copy isolation**. If a step throws a mathematical or datatype exception, the stateful store instantly rolls back the active dataset and metadata to the last stable version and feeds the error traceback back to the LLM for self-correction.
 2. **Decoupled Graphics Engine (Client-Side HTML/JS Charting)**: Rather than running heavy server-side Matplotlib/Seaborn drawing loops that choke the server CPU, spike memory, and output rigid PNGs, the backend processes raw data into compact mathematical summaries (correlation matrices, 1D bin counts, and downsampled coordinates). These are exported as a tiny JSON package (`metrics.json`) and rendered dynamically on the client's web-engine using CDNs like **Plotly.js** or **Chart.js** with full interactive panning, zooming, and hover tooltips.
@@ -60,7 +60,7 @@ The core system isolates the LLM's reasoning loop from the raw execution environ
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```directory
 AutoEDA/
@@ -87,7 +87,7 @@ AutoEDA/
 
 ---
 
-## 📈 Performance & Scaling Benchmarks
+## Performance & Scaling Benchmarks
 
 The decoupled state and client-side charting architecture have been aggressively benchmarked under real-world constraints, displaying exceptional stability and throughput.
 
@@ -122,9 +122,9 @@ We evaluated the resilience of **AutoEDA's** rollback recovery engine against na
 
 ---
 
-## ⚖️ Comparative Landscape: AutoEDA vs. Market Alternatives
+## Comparative Landscape: AutoEDA vs. Market Alternatives
 
-| Feature Profile | Traditional Auto-EDA (ydata, Sweetviz) | Naive AI Coding Agents | AutoEDA Pro 🤖 |
+| Feature Profile | Traditional Auto-EDA (ydata, Sweetviz) | Naive AI Coding Agents | AutoEDA Pro |
 | :--- | :--- | :--- | :--- |
 | **Adaptability** | None (Static, rigid outputs) | High (Writes custom script files) | **High (Generates customized JSON plans)** |
 | **State Protection** | Yes (Read-only operations) | None (In-place dataframe corruption) | **Yes (Deep-copy checkpoint boundaries)** |
@@ -135,7 +135,7 @@ We evaluated the resilience of **AutoEDA's** rollback recovery engine against na
 
 ---
 
-## 🚀 Execution & Deployment
+## Execution & Deployment
 
 ### 1. Installation
 Clone the repository and install all required python libraries:
@@ -187,14 +187,4 @@ docker build -t autoeda .
 docker run -p 8000:8000 --env-file .env autoeda
 ```
 
----
 
-## 🎓 Academic Credentials & Engineering DNA
-
-This project proves that **disciplined system constraints, structured action boundaries, and performance decoupling** can extract deterministic, expert-level performance from compact LLMs.
-
-The architectural principles within **AutoEDA** inherit engineering patterns validated across multiple major projects:
-*   **Inter IIT Tech 2025 (Applied ML Engineer):** Designed cycle-consistent feedback structures and OpenCV parameter-clamped routines using Gemma-12B, keeping tool execution latency under 500ms on complex image sets.
-*   **Scriptorium:** Trained and deployed a 19M-parameter GPT-style Decoder transformer from scratch incorporating RoPE embeddings and KV caching.
-*   **CorVigil:** Implemented lightweight statistical modeling pipelines, sustaining an 87% cardiovascular abnormality recall benchmark with sub-300ms inference responses.
-*   **Competitive Programming Rigor:** Systematically engineered around extreme edge cases, data boundaries, and algorithmic optimizations, reflecting a problem-solving baseline of **600+ problems solved** across LeetCode and Codeforces.
