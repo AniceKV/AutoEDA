@@ -5,7 +5,7 @@
       "rows": 1000,
       "columns": 9
     },
-    "target_column": "total_score",
+    "target_column": "avg_math score_reading score_writing score",
     "column_summary": {
       "gender": {
         "dtype": "str",
@@ -47,8 +47,8 @@
         "missing_count": 0,
         "cardinality": 77
       },
-      "total_score": {
-        "dtype": "int64",
+      "avg_math score_reading score_writing score": {
+        "dtype": "float64",
         "missing_count": 0,
         "cardinality": 194
       }
@@ -118,8 +118,8 @@
         "method": "none",
         "fill_value": null
       },
-      "total_score": {
-        "dtype": "int64",
+      "avg_math score_reading score_writing score": {
+        "dtype": "float64",
         "missing_before": 0,
         "missing_after": 0,
         "method": "none",
@@ -157,23 +157,13 @@
       "outlier_count": 5,
       "outlier_percentage": 0.5,
       "action_taken": "profile"
-    },
-    "total_score": {
-      "q1": 175.0,
-      "q3": 233.0,
-      "iqr": 58.0,
-      "lower_bound": 88.0,
-      "upper_bound": 320.0,
-      "outlier_count": 6,
-      "outlier_percentage": 0.6,
-      "action_taken": "profile"
     }
   },
   "engineered_features": [
     {
-      "feature_name": "total_score",
-      "formula": "sum(math score, reading score, writing score)",
-      "data_type": "int64",
+      "feature_name": "avg_math score_reading score_writing score",
+      "formula": "mean(math score, reading score, writing score)",
+      "data_type": "float64",
       "rationale": "High-signal feature engineering transformation",
       "correlation_with_target": null
     }
@@ -184,7 +174,7 @@
     "gender": {
       "test_name": "Two-Sample Welch T-Test",
       "statistic": 4.1789,
-      "p_value": 3.186197563875281e-05,
+      "p_value": 3.18619756387529e-05,
       "effect_size": 0.1321,
       "is_statistically_significant": true,
       "interpretation": "T-statistic = 4.1789, Cohen's d = 0.2642, p = 3.1862e-05. (Statistically Significant)"
@@ -200,7 +190,7 @@
     "parental level of education": {
       "test_name": "One-Way ANOVA",
       "statistic": 10.7531,
-      "p_value": 4.381046480940965e-10,
+      "p_value": 4.3810464809409217e-10,
       "effect_size": 0.0513,
       "is_statistically_significant": true,
       "interpretation": "F-statistic = 10.7531, Eta-squared = 0.0513, p = 4.3810e-10. (Statistically Significant)"
@@ -208,7 +198,7 @@
     "lunch": {
       "test_name": "Two-Sample Welch T-Test",
       "statistic": -9.3232,
-      "p_value": 1.5829690427303578e-19,
+      "p_value": 1.5829690427303217e-19,
       "effect_size": 0.3121,
       "is_statistically_significant": true,
       "interpretation": "T-statistic = -9.3232, Cohen's d = 0.6243, p = 1.5830e-19. (Statistically Significant)"
@@ -216,7 +206,7 @@
     "test preparation course": {
       "test_name": "Two-Sample Welch T-Test",
       "statistic": 8.5945,
-      "p_value": 4.426725271318303e-17,
+      "p_value": 4.426725271318682e-17,
       "effect_size": 0.28,
       "is_statistically_significant": true,
       "interpretation": "T-statistic = 8.5945, Cohen's d = 0.5601, p = 4.4267e-17. (Statistically Significant)"
@@ -274,22 +264,22 @@
       {
         "feature": "lunch",
         "effect_size": 0.3121,
-        "p_value": 1.5829690427303578e-19
+        "p_value": 1.5829690427303217e-19
       },
       {
         "feature": "test preparation course",
         "effect_size": 0.28,
-        "p_value": 4.426725271318303e-17
+        "p_value": 4.426725271318682e-17
       },
       {
         "feature": "gender",
         "effect_size": 0.1321,
-        "p_value": 3.186197563875281e-05
+        "p_value": 3.18619756387529e-05
       },
       {
         "feature": "parental level of education",
         "effect_size": 0.0513,
-        "p_value": 4.381046480940965e-10
+        "p_value": 4.3810464809409217e-10
       },
       {
         "feature": "race/ethnicity",
@@ -319,7 +309,7 @@
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 9 columns."
   },
   "extracted_insights": {
     "key_findings": [

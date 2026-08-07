@@ -9,14 +9,14 @@ df = pd.read_csv(DATA_FILEPATH)
 # --- 1. Derived Domain Attributes & Composite Metrics ---
 # Derived Domain Metrics Specs: [
   {
-    "feature_name": "total_score",
-    "formula": "sum(math score, reading score, writing score)",
-    "data_type": "int64",
+    "feature_name": "avg_math score_reading score_writing score",
+    "formula": "mean(math score, reading score, writing score)",
+    "data_type": "float64",
     "rationale": "High-signal feature engineering transformation",
     "correlation_with_target": null
   }
 ]
-df['total_score'] = df[['math score', 'reading score', 'writing score']].sum(axis=1)
+# Custom feature placeholder - 'avg_math score_reading score_writing score': mean(math score, reading score, writing score)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -40,7 +40,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+  "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 9 columns."
 }
 
 if __name__ == '__main__':

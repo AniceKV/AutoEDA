@@ -1,13 +1,14 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        { \"x\": \"Age\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Gender\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Annual_Income_USD\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"City_Type\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Daily_Commute_km\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Number_of_Cars_Owned\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Charging_Stations_Near_Home\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Charging_Stations_Near_Work\", \"y\": \"Current_Car_Type\", \"hue\": null },\n        { \"x\": \"Age\", \"y\": \"Annual_Income_USD\", \"hue\": null },\n        { \"x\": \"Age\", \"y\": \"Daily_Commute_km\", \"hue\": null },\n        { \"x\": \"Annual_Income_USD\", \"y\": \"Daily_Commute_km\", \"hue\": null },\n        { \"x\": \"Number_of_Cars_Owned\", \"y\": \"Charging_Stations_Near_Home\", \"hue\": null }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"feature_col\": \"Annual_Income_USD\",\n      \"save_path\": \"target_interaction_income.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"feature_col\": \"Age\",\n      \"save_path\": \"target_interaction_age.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\"\n      ],\n      \"hue\": \"Current_Car_Type\"\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Annual_Income_USD\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\"\n      ],\n      \"hue\": null\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Age\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Gender\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Daily_Commute_km\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Number_of_Cars_Owned\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Daily_Commute_km\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Number_of_Cars_Owned\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"hue\": null\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"Annual_Income_USD\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "impute_missing_data",
         "args": {
           "strategy_map": null,
-          "numeric_skew_threshold": 1.0
+          "numeric_skew_threshold": 1.0,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -21,100 +22,23 @@
             "Charging_Stations_Near_Home",
             "Charging_Stations_Near_Work"
           ],
-          "action": "profile"
+          "action": "profile",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
         "tool": "run_statistical_hypothesis_tests",
         "args": {
-          "target_col": "Current_Car_Type",
-          "alpha": 0.05
+          "target_col": "Annual_Income_USD",
+          "alpha": 0.05,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
-        "tool": "plot_semantic_bivariate_relationships",
+        "tool": "plot_correlation_matrix",
         "args": {
-          "bivariate_pairs": [
-            {
-              "x": "Age",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Gender",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Annual_Income_USD",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "City_Type",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Daily_Commute_km",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Number_of_Cars_Owned",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Charging_Stations_Near_Home",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Charging_Stations_Near_Work",
-              "y": "Current_Car_Type",
-              "hue": null
-            },
-            {
-              "x": "Age",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Age",
-              "y": "Daily_Commute_km",
-              "hue": null
-            },
-            {
-              "x": "Annual_Income_USD",
-              "y": "Daily_Commute_km",
-              "hue": null
-            },
-            {
-              "x": "Number_of_Cars_Owned",
-              "y": "Charging_Stations_Near_Home",
-              "hue": null
-            }
-          ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\bf9d3248-450f-4d6e-a17f-0f99a7af2f5f"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "Current_Car_Type",
-          "feature_col": "Annual_Income_USD",
-          "save_path": "target_interaction_income.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\bf9d3248-450f-4d6e-a17f-0f99a7af2f5f"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "Current_Car_Type",
-          "feature_col": "Age",
-          "save_path": "target_interaction_age.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\bf9d3248-450f-4d6e-a17f-0f99a7af2f5f"
+          "save_path": "correlation_matrix.png",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -126,14 +50,68 @@
             "Daily_Commute_km",
             "Number_of_Cars_Owned"
           ],
-          "hue": "Current_Car_Type",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\bf9d3248-450f-4d6e-a17f-0f99a7af2f5f"
+          "hue": null,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+        }
+      },
+      {
+        "tool": "plot_semantic_bivariate_relationships",
+        "args": {
+          "bivariate_pairs": [
+            {
+              "x": "Age",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "Gender",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "City_Type",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "Daily_Commute_km",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "Number_of_Cars_Owned",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "Charging_Stations_Near_Home",
+              "y": "Annual_Income_USD",
+              "hue": null
+            },
+            {
+              "x": "Age",
+              "y": "Daily_Commute_km",
+              "hue": null
+            },
+            {
+              "x": "Number_of_Cars_Owned",
+              "y": "Charging_Stations_Near_Work",
+              "hue": null
+            },
+            {
+              "x": "Charging_Stations_Near_Home",
+              "y": "Charging_Stations_Near_Work",
+              "hue": null
+            }
+          ],
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
         "tool": "generate_predictive_blueprint",
         "args": {
-          "target_col": "Current_Car_Type"
+          "target_col": "Annual_Income_USD",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -145,10 +123,9 @@
       "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'Buyer_ID': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Gender': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Annual_Income_USD': {'dtype': 'float64', 'missing_before': 178, 'missing_after': 0, 'method': 'mean', 'skewness': 0.31, 'fill_value': 85378.48584809611}, 'City_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Daily_Commute_km': {'dtype': 'float64', 'missing_before': 181, 'missing_after': 0, 'method': 'mean', 'skewness': 0.34, 'fill_value': 41.10541806701294}, 'Number_of_Cars_Owned': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Current_Car_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Home': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Work': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
       "detect_and_handle_outliers successful. Outlier stats collected.",
       "run_statistical_hypothesis_tests successful. Significant predictors: []",
-      "plot_semantic_bivariate_relationships successful. Count: 12",
-      "plot_target_interaction successful.",
-      "plot_target_interaction successful.",
+      "plot_correlation_matrix successful.",
       "plot_pairplot successful.",
+      "plot_semantic_bivariate_relationships successful. Count: 9",
       "generate_predictive_blueprint successful.",
       "Agent called finish_analysis. Terminating loop."
     ]

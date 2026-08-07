@@ -1257,12 +1257,12 @@ def finish_analysis(df: pd.DataFrame, **kwargs) -> Dict[str, Any]:
 TOOL_REGISTRY = {
     "impute_missing_data": {
         "function": impute_missing_data,
-        "description": "Imputes missing values using type-safe strategy (median for skewed numeric, mean for symmetric, mode for categorical).",
+        "description": "Imputes missing values using type-safe strategy. SKIP this tool if user requests relationship-focused analysis or skipping imputation.",
         "model": ImputeMissingDataArgs
     },
     "detect_and_handle_outliers": {
         "function": detect_and_handle_outliers,
-        "description": "Detects outliers via IQR method and optionally caps extreme values.",
+        "description": "Detects outliers via IQR method. SKIP this tool if user requests relationship-focused analysis or skipping outlier handling.",
         "model": DetectAndHandleOutliersArgs
     },
     "engineer_features": {
@@ -1272,7 +1272,7 @@ TOOL_REGISTRY = {
     },
     "run_statistical_hypothesis_tests": {
         "function": run_statistical_hypothesis_tests,
-        "description": "Calculates statistical significance against target variable (T-Test, ANOVA, Chi-Square, Pearson).",
+        "description": "Calculates statistical significance against target variable (T-Test, ANOVA, Chi-Square, Pearson). Ranks significant features by effect size.",
         "model": RunStatisticalHypothesisTestsArgs
     },
     "plot_correlation_matrix": {
@@ -1282,7 +1282,7 @@ TOOL_REGISTRY = {
     },
     "plot_feature_distributions": {
         "function": plot_feature_distributions,
-        "description": "Plots histograms, KDE distributions, or countplots for important columns identified by the LLM (passed via 'columns' argument).",
+        "description": "Plots univariate histograms, KDE distributions, or countplots. SKIP THIS TOOL if the user requested relationship-focused or bivariate-only analysis.",
         "model": PlotFeatureDistributionsArgs
     },
     "plot_target_interaction": {
@@ -1292,7 +1292,7 @@ TOOL_REGISTRY = {
     },
     "plot_semantic_bivariate_relationships": {
         "function": plot_semantic_bivariate_relationships,
-        "description": "Plots custom X vs Y scatter/boxplot/countplot relationships dynamically selected by LLM based on semantic domain reasoning (passed via 'bivariate_pairs' list of dicts with 'x', 'y', and optional 'hue').",
+        "description": "Plots custom X vs Y scatter/boxplot/countplot relationships dynamically selected by LLM based on semantic domain reasoning (passed via 'bivariate_pairs' list of dicts with 'x', 'y', optional 'hue', and 'rationale').",
         "model": PlotSemanticBivariateRelationshipsArgs
     },
     "plot_pairplot": {
@@ -1302,7 +1302,7 @@ TOOL_REGISTRY = {
     },
     "generate_predictive_blueprint": {
         "function": generate_predictive_blueprint,
-        "description": "Compiles machine learning modeling blueprint and cross-validation strategy.",
+        "description": "Compiles machine learning modeling blueprint and cross-validation strategy. SKIP this tool if user requested relationship-focused analysis or skipping blueprinting.",
         "model": GeneratePredictiveBlueprintArgs
     },
     "ask_clarifying_question": {
