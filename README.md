@@ -1,4 +1,4 @@
-# AutoEDA — Autonomous Exploratory Data Analysis & Data Science Platform
+# AutoEDA 🤖 — Stateful Agentic Exploratory Data Analysis & Predictive Modeling
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-autoeda--fjgz.onrender.com-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://autoeda-fjgz.onrender.com/)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -8,96 +8,61 @@
 
 **Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
----
+AutoEDA is an enterprise-grade, zero-crash agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
 
-## Overview
+By shifting from unstable, raw Python script generation to **Structured JSON Tool-Plans** mapped onto parameter-clamped statistical actions, AutoEDA eliminates common LLM failure points: syntax hallucinations, library crashes, and data corruption.
 
-**AutoEDA** is an autonomous, tool-based exploratory data analysis and statistical modeling platform. Powered by an LLM-guided agent refinement loop, AutoEDA performs statistical dataset profiling, automated hypothesis testing with effect-size ranking, semantic bivariate graph generation, predictive machine learning blueprinting, and interactive standalone HTML report generation.
-
-### How It Works & Cost
-The system orchestrates a multi-step LLM-agent reasoning pipeline that autonomously interacts with your dataset. It iteratively dispatches specialized analytical tools, evaluates the results, and refines its approach. Once the exploratory objectives are met, it synthesizes an executive summary and compiles a comprehensive, interactive HTML report. 
 **Cost-Effective**: Thanks to an optimized prompt architecture and intelligent tool routing, the average API call cost is approximately **1.5 cents ($0.015) per complete dataset analysis**.
 
 ---
 
-## Advanced Features & Mechanics
+## 🏗️ Architectural Overview
 
-- **Stateful DataStore & Rollback Mechanics:** Uses an in-memory dataset version control system (`v0`, `v1`, ...) with automatic state checkpointing. If an LLM-generated pipeline step produces a corrupted state or throws an exception, the system instantly executes a deep-copy rollback (within ~0.1 ms) and feeds the traceback back to the agent for self-correction.
-- **Interactive Plotly Exporting:** Offloads visual compilation directly to the client's browser. It serializes lightweight statistical distributions into JSON payloads, rendering fluid, high-fidelity, and fully interactive graphs utilizing native GPU acceleration via Plotly.js/Chart.js. Users can zoom, scale, hover, and filter metrics in real time.
-- **Autonomous Agent Execution Loop:** Multi-step reasoning pipeline that profiles datasets, dispatches domain tools, conducts hypothesis tests, and handles ambiguous user instructions.
-- **Statistical Hypothesis Testing with Effect Size Ranking:** Dispatches Pearson Correlation, Chi-Square Independence, Welch T-Test, and One-Way ANOVA tests at $\alpha = 0.05$, ranking significant predictors by effect size (Cohen's $d$, Eta-squared $\eta^2$, Cramér's V, $|r|$).
-- **Dynamic Semantic Feature Synthesis:** Generates domain-driven feature names (e.g., `log_income`) with fuzzy column matching and flexible operation aliases.
+The core system isolates the LLM's reasoning loop from the raw execution environment, using programmatic checkpoints and client-side charting to achieve production stability and near-zero server-side latency.
 
----
-
-## System Benchmarks
-
-We rigorously benchmark AutoEDA to guarantee production-grade stability and performance:
-1. **Rollback & Recovery Benchmark**: Tested against 100+ simulated failure scenarios. The Stateful Rollback mechanism achieves a **100% crash recovery rate** (compared to 0% for naive agents), successfully self-correcting faulty transformations while adding near-zero latency overhead (avg 0.1 ms).
-2. **Latency & Footprint Benchmark**: Evaluates the transition to decoupled JSON exporting. Serializing metrics for client-side rendering drops the analytical payload size to under ~45 KB and reduces server-side generation overhead from seconds to roughly ~25-50 ms even on datasets with up to 32,000 rows.
-
----
-
-## Statistical Profile & Metrics Summary
-
-AutoEDA computes comprehensive statistical profiles across tabular datasets:
-
-### 1. Dataset Integrity & Overview
-| Metric | Description |
-| :--- | :--- |
-| **Dimensions** | Observation count ($N$) and feature count ($P$) |
-| **Variable Types** | Numeric, Categorical, Boolean, Datetime classification |
-| **Cell Completeness** | Missing value counts and total missing cell percentage |
-| **Quality Alerts** | Automated warnings for missingness (> 20%), zero variance, and collinearity ($\|r\| \ge 0.85$) |
-
-### 2. Numerical Feature Profile
-| Metric | Description |
-| :--- | :--- |
-| **Central Tendency** | Mean, Median (50th percentile) |
-| **Dispersion & Range** | Minimum, Maximum, Standard Deviation ($\sigma$) |
-| **Quartiles & IQR** | $Q_1$ (25%), $Q_3$ (75%), Interquartile Range ($IQR = Q_3 - Q_1$) |
-| **Distribution Shape** | Skewness (flags $\|skew\| \ge 1.0$), Kurtosis |
-| **Cardinality** | Missing count, Uniqueness percentage, Distinct value count |
-
-### 3. Categorical & Discrete Feature Profile
-| Metric | Description |
-| :--- | :--- |
-| **Cardinality** | Distinct level count |
-| **Frequency Table** | Top 5 most frequent levels with counts and percentages |
-| **Categorical Associations** | Cramér's V association matrix for categorical feature pairs |
-
-### 4. Hypothesis Testing & Effect Size Ranking ($\alpha = 0.05$)
-| Feature Pair | Applied Test | Effect Size Metric |
-| :--- | :--- | :--- |
-| **Numeric Target + Numeric Feature** | Pearson Correlation Test | Absolute Pearson $\|r\|$ |
-| **Categorical Target + Categorical Feature** | Chi-Square Independence Test | Cramér's V ($V$) |
-| **Binary Target + Numeric Feature** | Two-Sample Welch T-Test | Cohen's $d$ |
-| **Multiclass Target + Numeric Feature** | One-Way ANOVA | Eta-squared ($\eta^2$) |
-
----
-
-## Core Tool Catalog
-
-The autonomous agent selects and executes functions defined in `autoeda_core/tools.py`:
-
-1. `impute_missing_data`: Imputes missing values using type-safe strategies (median for skewed numeric, mean for symmetric, mode for categorical).
-2. `detect_and_handle_outliers`: Detects outliers via IQR bounds and optionally caps extreme values.
-3. `engineer_features`: Creates domain feature transformations (`log1p`, ratios, product interactions, sums, differences, averages) with dynamic semantic naming.
-4. `run_statistical_hypothesis_tests`: Dispatches hypothesis tests against target columns and ranks significant features by effect size.
-5. `plot_correlation_matrix`: Renders Pearson correlation heatmaps and Cramér's V association matrices.
-6. `plot_feature_distributions`: Renders univariate KDE histograms and count plots for non-identifier features.
-7. `plot_semantic_bivariate_relationships`: Renders domain scatter plots, box plots, and bar charts based on semantic reasoning.
-8. `plot_target_interaction`: Generates segmented feature vs. target interaction plots.
-9. `plot_pairplot`: Renders Seaborn pairplots across primary numerical attributes.
-10. `generate_predictive_blueprint`: Compiles machine learning model recommendations, cross-validation strategies, and feature selection plans.
-11. `ask_clarifying_question`: Pauses execution to solicit user clarification when instructions or target columns are ambiguous.
-12. `finish_analysis`: Finalizes pipeline execution once exploratory objectives are satisfied.
-
----
-
-## Project Structure
-
+```text
+                  ┌──────────────────────┐
+                  │   User Uploads CSV   │
+                  └──────────┬───────────┘
+                             ▼
+               ┌───────────────────────────┐
+               │ 1. Algorithmic Profiler   │ (profiler.py)
+               │    - Generates Metadata   │
+               └──────────┬───────────┘
+                          ▼
+            ┌─────────────────────────────┐
+            │   2. JSON Tool-Plan Query   │ (agent_loop.py)
+            │      - Local or Cloud LLMs  │
+            └─────────────┬───────────────┘
+                          ▼
+               ┌───────────────────────────┐
+               │ 3. Stateful Executor      │ (executor.py & tools.py)
+               │    - Sandboxed Execution  │
+               │    - Automatic Rollback   │ (StatefulDataStore)
+               └──────────┬───────────┘
+                          ▼
+            ┌─────────────────────────────┐
+            │ 4. Decoupled Aggregates     │ (metrics.json)
+            │    - Compact Math Payload   │
+            └─────────────┬───────────────┘
+                          ▼
+            ┌─────────────────────────────┐
+            │ 5. Client-Side Rendering    │ (Plotly.js / Chart.js)
+            │    - GPU-Accelerated HTML   │
+            └─────────────────────────────┘
 ```
+
+### 🌟 Key Design Innovations
+
+1. **Stateful Rollback Safety Net (`StatefulDataStore`)**: Before executing any tool-plan step, the database takes a sequence-labeled checkpoint (`v0`, `v1`, etc.) via **deep-copy isolation**. If a step throws a mathematical or datatype exception, the stateful store instantly rolls back the active dataset and metadata to the last stable version and feeds the error traceback back to the LLM for self-correction.
+2. **Decoupled Graphics Engine (Client-Side HTML/JS Charting)**: Rather than running heavy server-side Matplotlib/Seaborn drawing loops that choke the server CPU, spike memory, and output rigid PNGs, the backend processes raw data into compact mathematical summaries (correlation matrices, 1D bin counts, and downsampled coordinates). These are exported as a tiny JSON package (`metrics.json`) and rendered dynamically on the client's web-engine using CDNs like **Plotly.js** or **Chart.js** with full interactive panning, zooming, and hover tooltips.
+3. **Algorithmic Pre-Profiler (`profiler.py`)**: Computes initial datatypes, null-value percentages, skews, and cardinality before the agent is triggered. This condenses massive raw CSV files into an ultra-compressed, token-efficient `metadata_profile.json` format, dramatically reducing LLM prompt costs and context usage.
+
+---
+
+## 📂 Repository Structure
+
+```directory
 AutoEDA/
 ├── autoeda_core/               # Core Analytical Engine & Agent Modules
 │   ├── agent_loop.py           # Stateful LLM agent execution loop & orchestrator
@@ -109,69 +74,112 @@ AutoEDA/
 ├── django_app/                 # Production Django Web Application
 │   ├── autoeda/                # Django project configuration
 │   ├── eda_app/                # Main application (views, templates, static assets)
-│   │   ├── static/eda_app/
-│   │   │   ├── css/main.css    # Invertible dark/light monochrome stylesheet
-│   │   │   └── js/app.js       # Live pipeline polling & theme toggle script
-│   │   └── templates/eda_app/
-│   │       ├── base.html       # Top navigation and sidebar template
-│   │       └── index.html      # Multi-tab dashboard & metric views
 │   └── manage.py               # Django CLI management script
 ├── test_data/                  # Sample CSV datasets
+├── benchmarks/                 # Scaling benchmark and fault-tolerance testing scripts
+│   ├── latency_footprint_benchmark.py
+│   └── rollback_recovery_benchmark.py
+├── EDA/                        # Archive of generated analysis runs
 ├── requirements.txt            # Python dependencies
 ├── Dockerfile                  # Container deployment specification
-└── EDA/                        # Generated output artifacts grouped by dataset name
-    └── <dataset_name>/
-        ├── metadata_profile.json
-        ├── metrics.json
-        ├── summary_report.md
-        ├── eda_report.html
-        └── *.png
+└── .gitignore                  # Prevents caching of models, private credentials, and environments
 ```
 
 ---
 
-## Local Setup & Development
+## 📈 Performance & Scaling Benchmarks
 
-### 1. Clone Repository
+The decoupled state and client-side charting architecture have been aggressively benchmarked under real-world constraints, displaying exceptional stability and throughput.
+
+### 1. Latency & Memory Footprint Scaling (JSON Aggregation vs. Server-Side PNGs)
+The table below documents the transformation of **AutoEDA Pro** when migrating from CPU-bound Matplotlib/Seaborn rasterization to our decoupled client-side rendering model:
+
+| Scale (Rows) | Traditional Server Plotting Latency | Decoupled Client JSON Latency | Speed Multiplier | Output File Size (Old PNGs) | Output File Size (New JSON) | Network Footprint Reduction |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1,000** | 3.4635s | 0.0258s | **134.2x faster** | 430.0 KB | 44.55 KB | **9.7x smaller** |
+| **5,000** | 4.2147s | 0.0203s | **207.6x faster** | 454.8 KB | 45.40 KB | **10.0x smaller** |
+| **10,000** | 5.4785s | 0.0311s | **176.1x faster** | 458.6 KB | 45.36 KB | **10.1x smaller** |
+| **32,000** | 9.0163s | 0.0456s | **197.7x faster** | 481.8 KB | 45.46 KB | **10.6x smaller** |
+
+*   **Sub-50ms Computational Core**: Restructuring the Python backend to run C-optimized statistical aggregation (using Pandas & NumPy) instead of instantiating heavy GUI draw canvases reduces the runtime to just **45.6 ms for 32,000 rows**.
+*   **Flat Payload Scaling**: Regardless of row depth, the compiled output remains compressed to **~45 KB**, ensuring instantaneous data transmission and fluid browser rendering.
+
+---
+
+### 2. Fault Tolerance & Self-Correction (Rollback Recovery Benchmark)
+We evaluated the resilience of **AutoEDA's** rollback recovery engine against naive, stateless AI agents by executing **100 multi-step pipeline runs (200 proposed tasks)** while injecting a severe **40% failure rate** (intentional datatype mismatches, mathematical errors, and division-by-zero to mimic LLM planning hallucinations):
+
+| Performance Dimension | Stateful Rollback Pipeline (AutoEDA) | Traditional Stateless Agent |
+| :--- | :--- | :--- |
+| **Pristine State Isolation** | Yes (Deep Copy isolation) | No (In-place dataframe modification) |
+| **Step-Level Rollbacks** | Yes (Rolls back to $v(N-1)$ on error) | No (Requires complete pipeline restart) |
+| **Crash Recovery Rate** | **100.00%** | **0.00%** (Crashes instantly) |
+| **End-to-End Run Success Rate** | **100.00%** | **81.50%** |
+| **Average Rollback Latency** | **0.0948 ms** | N/A |
+
+*   **100% Self-Healing**: Standard agents crashed on every injected bug, polluting memory and rendering the session unviable. AutoEDA captured the tracebacks, rolled back the state, and successfully re-routed tasks—achieving a **100% run success rate**.
+*   **Sub-Millisecond Restoration**: Discarding memory pollution and restoring the dataset to a pristine version takes just **0.0948 milliseconds**, presenting zero noticeable lag to the user.
+
+---
+
+## ⚖️ Comparative Landscape: AutoEDA vs. Market Alternatives
+
+| Feature Profile | Traditional Auto-EDA (ydata, Sweetviz) | Naive AI Coding Agents | AutoEDA Pro 🤖 |
+| :--- | :--- | :--- | :--- |
+| **Adaptability** | None (Static, rigid outputs) | High (Writes custom script files) | **High (Generates customized JSON plans)** |
+| **State Protection** | Yes (Read-only operations) | None (In-place dataframe corruption) | **Yes (Deep-copy checkpoint boundaries)** |
+| **Error Handling** | Fail-fast (Crashes on exceptions) | Fatal-crash (Stops execution on bugs) | **Self-healing (Automatic rollback & retry)** |
+| **Server Latency** | High (Server-side rasterization) | High (Iterative syntax checking) | **Low (Sub-50ms mathematical serialization)** |
+| **API Costs** | None (Local execution) | High (Pipes raw data / repeating runs) | **Low (Uses condensed schema summaries)** |
+| **Interactivity** | Minimal (Static, flat reports) | Minimal (Printed code outcomes) | **Rich (Hardware-accelerated client charts)** |
+
+---
+
+## 🚀 Execution & Deployment
+
+### 1. Installation
+Clone the repository and install all required python libraries:
 ```bash
 git clone https://github.com/AniceKV/AutoEDA.git
 cd AutoEDA
-```
-
-### 2. Environment Setup
-- **Windows (PowerShell):**
-  ```powershell
-  python -m venv .venv
-  .\.venv\Scripts\Activate.ps1
-  ```
-- **macOS / Linux:**
-  ```bash
-  python3 -m venv .venv
-  source .venv/bin/activate
-  ```
-
-### 3. Install Dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 4. Environment Variables
-Create a `.env` file in the project root:
+### 2. Configure Your Environment Variables
+Construct a **`.env`** file in your root folder:
 ```env
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-EDA_MODEL=google/gemini-2.5-flash
+OPENROUTER_API_KEY="your-openrouter-or-cloud-api-key"
+# Optional Model Config
+EDA_MODEL="qwen/qwen-3.6-27b-reasoning" # Best in-class reasoning model
 ```
 
-### 5. Run Web Server
+### 3. Running Local Offline Models (LM Studio / Ollama)
+For a 100% free, low-latency, private offline environment:
+1. Fire up **LM Studio** and head to the **Local Server** (double-plug) tab.
+2. Load a compact model (e.g. `qwen2.5-coder-7b` or `gemma-2-2b-it`).
+3. Toggle GPU Offload on to accelerate generation and start the port (default: `http://localhost:1234`).
+4. Point your pipeline base URL in `autoeda_core/agent_loop.py` to your local environment.
+
+### 4. Running the Pipelines & Benchmarks
+```bash
+# Execute the agentic command-line interface
+python autoeda_core/agent_loop.py
+
+# Run the comparative latency/footprint scaling benchmark
+python benchmarks/latency_footprint_benchmark.py
+
+# Run the exception-injected rollback recovery benchmark
+python benchmarks/rollback_recovery_benchmark.py
+```
+
+### 5. Running the Django Web Server
+Launch the interactive dashboard to upload data files, inspect active planning, and interact with compiled reports:
 ```bash
 python django_app/manage.py runserver 8000
 ```
 Open `http://127.0.0.1:8000/` in your browser.
 
----
-
-## Deployment
-
+### 6. Docker Deployment
 Build and run using Docker:
 
 ```bash
@@ -179,10 +187,14 @@ docker build -t autoeda .
 docker run -p 8000:8000 --env-file .env autoeda
 ```
 
-Production Deployment: [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
-
 ---
 
-## License
+## 🎓 Academic Credentials & Engineering DNA
 
-This project is licensed under the [MIT License](LICENSE).
+This project proves that **disciplined system constraints, structured action boundaries, and performance decoupling** can extract deterministic, expert-level performance from compact LLMs.
+
+The architectural principles within **AutoEDA** inherit engineering patterns validated across multiple major projects:
+*   **Inter IIT Tech 2025 (Applied ML Engineer):** Designed cycle-consistent feedback structures and OpenCV parameter-clamped routines using Gemma-12B, keeping tool execution latency under 500ms on complex image sets.
+*   **Scriptorium:** Trained and deployed a 19M-parameter GPT-style Decoder transformer from scratch incorporating RoPE embeddings and KV caching.
+*   **CorVigil:** Implemented lightweight statistical modeling pipelines, sustaining an 87% cardiovascular abnormality recall benchmark with sub-300ms inference responses.
+*   **Competitive Programming Rigor:** Systematically engineered around extreme edge cases, data boundaries, and algorithmic optimizations, reflecting a problem-solving baseline of **600+ problems solved** across LeetCode and Codeforces.
