@@ -1372,20 +1372,6 @@ def generate_predictive_blueprint(
     Generates a predictive modeling blueprint.
     Automatically infers problem type (Classification vs. Regression) when target_col is provided or detected.
     """
-    if custom_blueprint and isinstance(custom_blueprint, dict):
-        return custom_blueprint
-
-    if kwargs and ("recommended_algorithms" in kwargs or "validation_strategy" in kwargs):
-        return {
-            "target_definition": target_col or kwargs.get("target_definition", "Target"),
-            "problem_type": kwargs.get("problem_type", "Regression/Classification"),
-            "recommended_algorithms": kwargs.get("recommended_algorithms", []),
-            "feature_selection_strategy": kwargs.get("feature_selection_strategy", []),
-            "validation_strategy": kwargs.get("validation_strategy", []),
-            "overfitting_risk_mitigation": kwargs.get("overfitting_risk_mitigation", []),
-            "executive_summary": kwargs.get("executive_summary", "Custom LLM predictive modeling blueprint.")
-        }
-
     num_rows, num_cols = df.shape
     
     # Auto-detect target_col if omitted but can be inferred
