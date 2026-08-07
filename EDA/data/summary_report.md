@@ -1,62 +1,81 @@
-# Executive Data Science Summary: Titanic Survival Analysis
+# Executive Summary: Exploratory Data Analysis Report
 
 ## 1. Project Overview
-This report summarizes the automated Exploratory Data Analysis (EDA) performed on the Titanic dataset (891 observations, 12 features). The primary objective was to identify key drivers of passenger survival and establish a robust predictive modeling blueprint.
+This report summarizes the automated Exploratory Data Analysis (EDA) and statistical profiling conducted on the dataset. The primary objective was to identify key drivers of the target variable **Survived** and establish a robust blueprint for predictive modeling.
 
-## 2. Data Profile & Quality Assessment
-The dataset consists of a mix of numerical, categorical, and text-based features. 
+### Dataset Dimensions
+*   **Total Observations:** 891
+*   **Total Features:** 12
+*   **Target Variable:** Survived (Binary Classification)
 
-### 2.1 Metadata Summary
-| Metric | Value |
-|:---|:---|
-| Total Rows | 891 |
-| Total Columns | 12 |
-| Target Variable | Survived (Binary) |
-| Missing Values | Age (19.9%), Cabin (77.1%), Embarked (0.2%) |
+---
 
-### 2.2 Feature Distributions
-*   **Target (Survived):** The dataset is imbalanced, with a mean survival rate of approximately 38.4%.
-*   **Demographics:** The majority of passengers were male (577 vs. 314 female). Age follows a near-normal distribution with a mean of 29.7 years, though it contains significant missingness.
-*   **Socio-Economic:** Pclass is dominated by 3rd class passengers. Fare is highly right-skewed (Skew: 4.79), indicating a small number of very high-paying passengers.
+## 2. Data Quality & Preprocessing
+The automated pipeline performed comprehensive data cleaning and imputation to ensure statistical integrity.
 
-## 3. Statistical Insights & Correlations
-Statistical testing and association analysis reveal strong drivers for the target variable `Survived`.
+### Imputation Summary
+| Column | Missing (Before) | Imputation Method | Fill Value |
+|:-------|:-----------------|:------------------|:-----------|
+| Age | 177 (19.9%) | Median | 28.0 |
+| Cabin | 687 (77.1%) | Mode | 'B96 B98' |
+| Embarked | 2 (0.2%) | Constant | 'Unknown' |
 
-### 3.1 Key Predictors (Ranked by Significance)
-| Feature | Test Type | Effect Size | P-Value | Interpretation |
-|:---|:---|:---|:---|:---|
-| Sex | ANOVA | 372.4057 | 1.41e-69 | Large Effect |
-| Embarked | ANOVA | 13.6053 | 1.51e-06 | Large Effect |
-| Pclass | Pearson | 0.3385 | 2.54e-25 | Moderate Correlation |
-| Fare | Pearson | 0.2573 | 6.12e-15 | Weak Correlation |
+**Note:** Missing string placeholders (e.g., '?', 'NA') were standardized to NaN prior to imputation. Numeric columns with low skewness used mean imputation, while highly skewed columns (like Age) utilized median values.
 
-### 3.2 Categorical Associations (Cramer's V)
-*   **Sex vs. Survived:** 0.5426 (Large association), confirming the "women and children first" protocol.
-*   **Pclass vs. Survived:** 0.3367 (Medium association), indicating socio-economic status was a significant survival factor.
+---
 
-## 4. Feature Engineering
+## 3. Feature Engineering
 **No custom derived domain metrics synthesized during this run.** 
-While the agent proposed features such as `FamilySize` and `IsAlone`, the execution log confirms that 0 derived metrics were successfully integrated into the final dataset during the automated loop.
+While the initial plan suggested the creation of 'FamilySize' and 'IsAlone', the final execution metrics confirm that 0 derived features were added to the final dataset used for statistical testing.
 
-## 5. Visual Artifact Analysis
-The following visualizations were generated to support the analysis:
-*   **`correlation_matrix.png`**: Illustrates linear relationships; highlights the inverse relationship between Pclass and Fare.
-*   **`bivariate_Sex_vs_Age.png`**: Visualizes the age distribution of survivors across genders.
-*   **`bivariate_Pclass_vs_Fare.png`**: Confirms ticket price clustering within classes and its impact on survival.
-*   **`dist_Fare.png`**: Highlights the extreme skewness and outliers in the pricing data.
-*   **`pairplot.png`**: Provides a multi-dimensional view of interactions between Age, Fare, and family-related variables (SibSp/Parch).
+---
+
+## 4. Key Predictors (by Effect Size)
+Statistical hypothesis testing (ANOVA and Pearson Correlation) was conducted to identify features with significant predictive power regarding survival.
+
+### Top 5 Key Predictors
+| Rank | Feature | Test Type | Effect Size | Label | P-Value |
+|:-----|:--------|:----------|:------------|:------|:--------|
+| 1 | Sex | ANOVA | 0.5434 | Large Effect | 1.41e-69 |
+| 2 | Pclass | Pearson | 0.3385 | Moderate | 2.54e-25 |
+| 3 | Fare | Pearson | 0.2573 | Weak | 6.12e-15 |
+| 4 | Embarked | ANOVA | 0.1825 | Large Effect | 1.34e-06 |
+| 5 | Parch | Pearson | 0.0816 | Negligible | 0.0148 |
+
+**Statistical Note:** All predictors listed above are statistically significant (p < 0.05). 'Sex' and 'Pclass' represent the most critical drivers of survival outcomes.
+
+---
+
+## 5. Visual Insights & Artifacts
+The following visualizations were generated to support the statistical findings:
+
+*   **Target Interactions (`target_interactions.png`):** Highlights the strong relationship between Sex/Pclass and Survival rates.
+*   **Bivariate Analysis:**
+    *   `bivariate_Age_vs_Survived.png`: Explores the "women and children first" protocol.
+    *   `bivariate_Pclass_vs_Fare.png`: Confirms the expected correlation between higher socio-economic status (lower Pclass) and higher fares.
+*   **Distribution Profiles:** Individual plots (e.g., `dist_Fare.png`, `dist_Age.png`) reveal significant right-skewness in Fare (4.79) and SibSp (3.70).
+*   **Correlation Matrix (`correlation_matrix.png`):** Provides a heatmap of all numerical and categorical associations (Cramer's V).
+
+---
 
 ## 6. Predictive Modeling Blueprint
-Based on the data profile and statistical findings, the following strategy is recommended for the binary classification of `Survived`.
+Based on the data profile and target distribution, the following strategy is recommended for model development.
 
-### 6.1 Recommended Algorithms
+### Strategy Overview
+*   **Problem Type:** Binary Classification
+*   **Target:** Survived
+
+### Recommended Algorithms
 1.  **Regularized Logistic Regression:** To establish a baseline.
-2.  **Random Forest Classifier:** To capture non-linear interactions (e.g., Age and Sex).
-3.  **Gradient Boosting (XGBoost/LightGBM):** For optimal predictive performance.
-4.  **Support Vector Classifier (SVM):** To explore high-dimensional boundary separation.
+2.  **Random Forest Classifier:** To capture non-linear interactions.
+3.  **Gradient Boosting (XGBoost/LightGBM):** For maximum predictive performance.
+4.  **Support Vector Classifier (SVM):** For high-dimensional boundary separation.
 
-### 6.2 Strategy & Validation
-*   **Feature Selection:** Exclude high-cardinality columns (`PassengerId`, `Name`, `Ticket`). Use permutation importance to rank remaining features.
-*   **Validation:** 5-Fold Stratified Cross-Validation to maintain target class proportions.
-*   **Metrics:** Focus on Balanced Accuracy and Macro F1-Score due to the class imbalance.
-*   **Risk Mitigation:** Apply L1/L2 regularization and limit tree depth to prevent overfitting on the relatively small sample size (891 rows).
+### Feature Selection & Validation
+*   **Selection:** Exclude high-cardinality identifiers (PassengerId, Name, Ticket). Rank remaining features using permutation importance.
+*   **Validation:** 5-Fold Stratified Cross-Validation.
+*   **Metrics:** Balanced Accuracy, Macro F1-Score, and Precision-Recall AUC (due to potential class imbalances).
+*   **Overfitting Mitigation:** Apply L1/L2 regularization and strictly limit tree depth in ensemble methods.
+
+---
+**End of Report**

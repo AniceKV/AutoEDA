@@ -490,7 +490,7 @@ def run_tool_based_eda(
 
     if generate_summary:
         print("\n6. Invoking summary_generator to synthesize Executive Summary...")
-        summary_text = create_summary(directory_path=workspace_dir, use_llm=True, dataset_name=dataset_name)
+        summary_text = create_summary(directory_path=workspace_dir, use_llm=False, dataset_name=dataset_name)
 
     print("\n7. Generating interactive HTML profile report (eda_report.html) with Executive Summary...")
     generate_html_report(workspace_dir=workspace_dir)

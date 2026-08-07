@@ -371,7 +371,7 @@ def extract_dataset_name(target_dir: str) -> str:
 def create_summary(
     directory_path: str = "./sandbox_run",
     output_filename: str = "summary_report.md",
-    use_llm: bool = True,
+    use_llm: bool = False,
     dataset_name: Optional[str] = None
 ) -> str:
     """
