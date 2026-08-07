@@ -905,6 +905,40 @@ def plot_feature_distributions(
     }
 
 
+def _interpret_effect_size(test_name: str, val: float) -> str:
+    """
+    Translates numerical effect sizes (Pearson r, Cramér's V, Cohen's d, Eta-squared)
+    into standard qualitative descriptors (Small, Medium, Large).
+    """
+    try:
+        v = abs(float(val))
+    except (ValueError, TypeError):
+        return "Unknown effect"
+        
+    test_clean = str(test_name).lower()
+    if "pearson" in test_clean or "correlation" in test_clean:
+        if v < 0.1: return "Negligible correlation"
+        if v < 0.3: return "Weak correlation"
+        if v < 0.5: return "Moderate correlation"
+        return "Strong correlation"
+    elif "chi" in test_clean or "cramer" in test_clean:
+        if v < 0.1: return "Negligible association"
+        if v < 0.3: return "Small association"
+        if v < 0.5: return "Medium association"
+        return "Large association"
+    elif "t-test" in test_clean or "welch" in test_clean or "cohen" in test_clean:
+        if v < 0.2: return "Negligible effect"
+        if v < 0.5: return "Small effect"
+        if v < 0.8: return "Medium effect"
+        return "Large effect"
+    else:
+        # ANOVA / F-test / Eta-squared / general
+        if v < 0.01: return "Negligible effect"
+        if v < 0.06: return "Small effect"
+        if v < 0.14: return "Medium effect"
+        return "Large effect"
+
+
 # =====================================================================
 # 4. STATISTICAL ANALYSIS: HYPOTHESIS TESTING TOOL
 # =====================================================================
@@ -916,7 +950,7 @@ def run_statistical_hypothesis_tests(
 ) -> Dict[str, Any]:
     """
     Performs statistical significance tests based on data types.
-    Returns ranked significant predictors.
+    Returns ranked significant predictors with qualitative effect size interpretations.
     """
     if target_col not in df.columns:
         return {"error": f"Target column '{target_col}' not found."}
@@ -934,7 +968,10 @@ def run_statistical_hypothesis_tests(
         s1 = df[col].dropna()
         s2 = df[target_col].dropna()
         
-        # Intersection to ensure valid comparison
+        # Exclude near-unique categorical columns (e.g. Ticket) to avoid fitting noise in ANOVA/Chi2
+        if not col_is_num and (df[col].nunique() > 50 or (len(df) > 20 and df[col].nunique() / len(df) > 0.25)):
+            continue
+
         common_idx = s1.index.intersection(s2.index)
         if len(common_idx) < 30: continue
         
@@ -944,26 +981,31 @@ def run_statistical_hypothesis_tests(
         try:
             if col_is_num and target_is_num:
                 corr, p = stats.pearsonr(data_col, data_target)
+                eff = abs(corr)
+                label = _interpret_effect_size("Pearson Correlation", eff)
                 if p < alpha:
-                    significant_items.append({"feature": col, "test": "Pearson Correlation", "effect_size": abs(corr), "p_value": p})
+                    significant_items.append({"feature": col, "test": "Pearson Correlation", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": p})
             elif not col_is_num and target_is_num:
                 groups = [group.values for name, group in data_target.groupby(data_col)]
                 if len(groups) > 1:
                     f_val, p = stats.f_oneway(*groups)
+                    label = _interpret_effect_size("ANOVA", f_val)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": f_val, "p_value": p})
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(f_val, 4), "effect_size_label": label, "p_value": p})
             elif col_is_num and not target_is_num:
                 groups = [group.values for name, group in data_col.groupby(data_target)]
                 if len(groups) > 1:
                     f_val, p = stats.f_oneway(*groups)
+                    label = _interpret_effect_size("ANOVA", f_val)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": f_val, "p_value": p})
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(f_val, 4), "effect_size_label": label, "p_value": p})
             else:
                 contingency = pd.crosstab(data_col, data_target)
                 if contingency.size > 0:
                     chi2, p, _, _ = stats.chi2_contingency(contingency)
+                    label = _interpret_effect_size("Chi-Square", chi2)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "Chi-Square", "effect_size": chi2, "p_value": p})
+                        significant_items.append({"feature": col, "test": "Chi-Square", "effect_size": round(chi2, 4), "effect_size_label": label, "p_value": p})
         except Exception:
             continue
             
@@ -1050,7 +1092,8 @@ def plot_correlation_matrix(
                 high_corr_pairs.append({
                     "feature_1": cols[i],
                     "feature_2": cols[j],
-                    "correlation": round(float(val), 4)
+                    "correlation": round(float(val), 4),
+                    "interpretation": _interpret_effect_size("Pearson", val)
                 })
 
     fig, ax = plt.subplots(figsize=(max(6, len(numeric_cols) * 0.8), max(5, len(numeric_cols) * 0.7)))
@@ -1073,12 +1116,12 @@ def plot_correlation_matrix(
         for i in range(len(cat_cols)):
             for j in range(i + 1, len(cat_cols)):
                 v = _cramers_v(df[cat_cols[i]], df[cat_cols[j]])
-                if v >= 0.1:
-                    cat_assoc.append({
-                        "feature_1": cat_cols[i],
-                        "feature_2": cat_cols[j],
-                        "cramers_v": round(v, 4)
-                    })
+                cat_assoc.append({
+                    "feature_1": cat_cols[i],
+                    "feature_2": cat_cols[j],
+                    "cramers_v": round(v, 4),
+                    "interpretation": _interpret_effect_size("Cramer", v)
+                })
 
     # Cross-type redundancy detection (Categorical vs Numeric pairs, e.g. education vs educational-num)
     cross_type_redundant_pairs = []
