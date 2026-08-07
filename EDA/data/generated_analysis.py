@@ -21,18 +21,10 @@ df = pd.read_csv(DATA_FILEPATH)
     "data_type": "bool",
     "rationale": "Indicator for passengers traveling without family.",
     "correlation_with_target": null
-  },
-  {
-    "feature_name": "HasCabin",
-    "formula": "Cabin.notnull()",
-    "data_type": "bool",
-    "rationale": "Binary indicator for whether a cabin number was recorded, often linked to socio-economic status.",
-    "correlation_with_target": null
   }
 ]
 df['FamilySize'] = df['SibSp'] + df['Parch']
 # Custom feature placeholder - 'IsAlone': FamilySize == 1
-# Custom feature placeholder - 'HasCabin': Cabin.notnull()
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {

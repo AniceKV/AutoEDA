@@ -554,7 +554,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btns.forEach(btn => btn.addEventListener('click', () => {
       btns.forEach(b => b.classList.toggle('active', b === btn));
-      panels.forEach(p => p.classList.toggle('active', p.dataset.subtab === btn.dataset.subtab));
+      panels.forEach(p => {
+        const isActive = (p.dataset.subtab === btn.dataset.subtab);
+        p.classList.toggle('active', isActive);
+        if (isActive && window.Plotly) {
+          setTimeout(() => {
+            p.querySelectorAll('.js-plotly-plot').forEach(el => {
+              try { Plotly.Plots.resize(el); } catch(e) {}
+            });
+          }, 30);
+        }
+      });
     }));
     if (btns[0]) btns[0].click();
   });

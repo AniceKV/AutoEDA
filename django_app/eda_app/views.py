@@ -139,9 +139,10 @@ def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
         if os.path.exists(fallback):
             csv_path = fallback
 
-    # Ensure hypothesis tests & predictive blueprint exist if CSV is present
-    if csv_path and os.path.exists(csv_path):
+    # Ensure hypothesis tests, predictive blueprint, and interactive HTML report exist if CSV is present
+    if csv_path and os.path.exists(csv_path) and eda_dir:
         dirty = False
+        html_report_path = os.path.join(eda_dir, "eda_report.html")
         if "statistical_hypothesis_tests" not in metrics or not metrics.get("statistical_hypothesis_tests"):
             try:
                 df = pd.read_csv(csv_path)
@@ -157,6 +158,17 @@ def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
                 dirty = True
             except Exception as exc:
                 print(f"[views] Warning: On-demand blueprint generation error: {exc}")
+
+        if not os.path.exists(html_report_path) or not metrics.get("visual_distributions"):
+            try:
+                df = pd.read_csv(csv_path)
+                tools.compile_and_save_metrics(df, dataset_path=csv_path, output_dir=eda_dir)
+                from autoeda_core.html_report_generator import generate_html_report
+                generate_html_report(workspace_dir=eda_dir)
+                with open(path, "r", encoding="utf-8") as f:
+                    metrics = json.load(f)
+            except Exception as exc:
+                print(f"[views] Warning: On-demand html report generation error: {exc}")
 
         if dirty and os.path.exists(eda_dir):
             try:
@@ -251,10 +263,16 @@ def index(request):
     # --- Column profiles ---
     profiles = _column_profiles(selected_csv_path) if selected_csv_path and os.path.exists(selected_csv_path) else []
 
-    # --- Sanitise column names for dist PNG lookup ---
+    # --- Metrics / Blueprint ---
+    metrics = _load_metrics(eda_dir, selected_csv_path)
+    blueprint = metrics.get("predictive_modeling_blueprint", {})
+    hypothesis = metrics.get("statistical_hypothesis_tests", {})
+    visual_dists = metrics.get("visual_distributions", {})
+
+    # --- Sanitise column names and attach distribution info ---
     for p in profiles:
         p["safe_name"] = re.sub(r'\W+', '_', p["column"]).strip('_')
-        # Attempt to find dist PNG relative path
+        p["dist_info"] = visual_dists.get(p["column"])
         if eda_dir:
             dist_path = os.path.join(eda_dir, f"dist_{p['safe_name']}.png")
             if os.path.exists(dist_path):
@@ -263,11 +281,6 @@ def index(request):
                 p["dist_img"] = None
         else:
             p["dist_img"] = None
-
-    # --- Metrics / Blueprint ---
-    metrics = _load_metrics(eda_dir, selected_csv_path)
-    blueprint = metrics.get("predictive_modeling_blueprint", {})
-    hypothesis = metrics.get("statistical_hypothesis_tests", {})
 
     sig_predictors = list(hypothesis.get("significant_predictors", []))
     hyp_rows = []
@@ -582,38 +595,44 @@ def submit_answer(request):
 
 
 def download_report(request):
-    """Stream the eda_report.html as a file download."""
+    """Stream the eda_report.pdf as a PDF file download."""
     sid = _session_id(request)
-    dataset_name = os.path.splitext(os.path.basename(
-        request.session.get("selected_csv_path", "")
-    ))[0]
+    csv_path = request.session.get("selected_csv_path", "")
+    dataset_name = os.path.splitext(os.path.basename(csv_path))[0] if csv_path else "dataset"
     eda_dir = _resolve_eda_dir(sid, dataset_name)
     if not eda_dir:
         return HttpResponse("Report not found.", status=404)
 
-    report_path = os.path.join(eda_dir, "eda_report.html")
-    if not os.path.exists(report_path):
-        return HttpResponse("Report not found.", status=404)
+    pdf_path = os.path.join(eda_dir, "eda_report.pdf")
+    if not os.path.exists(pdf_path):
+        try:
+            from autoeda_core.pdf_report_generator import generate_pdf_report
+            generate_pdf_report(workspace_dir=eda_dir)
+        except Exception as exc:
+            print(f"[views] PDF report generation failed: {exc}")
+
+    if not os.path.exists(pdf_path):
+        return HttpResponse("PDF report not found and could not be generated.", status=404)
 
     response = FileResponse(
-        open(report_path, "rb"),
-        content_type="text/html",
+        open(pdf_path, "rb"),
+        content_type="application/pdf",
         as_attachment=True,
-        filename=f"eda_report_{dataset_name}.html",
+        filename=f"eda_report_{dataset_name}.pdf",
     )
     return response
 
 
 @xframe_options_sameorigin
 def serve_artifact(request, artifact_path: str):
-    """Safely serve generated artifact files (PNGs, HTML) from AUTOEDA_ROOT."""
+    """Safely serve generated artifact files (PNGs, HTML, PDF) from AUTOEDA_ROOT."""
     # Prevent path traversal
     safe_path = os.path.normpath(os.path.join(AUTOEDA_ROOT, artifact_path))
     if not safe_path.startswith(AUTOEDA_ROOT):
         return HttpResponse("Forbidden.", status=403)
 
     ext = os.path.splitext(safe_path)[1].lower()
-    ALLOWED_ARTIFACT_EXTENSIONS = {".png", ".jpg", ".jpeg", ".svg", ".html"}
+    ALLOWED_ARTIFACT_EXTENSIONS = {".png", ".jpg", ".jpeg", ".svg", ".html", ".pdf"}
     if ext not in ALLOWED_ARTIFACT_EXTENSIONS:
         return HttpResponse("Forbidden.", status=403)
 

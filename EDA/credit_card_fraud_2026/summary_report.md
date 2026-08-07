@@ -1,215 +1,210 @@
-# Executive Summary – Credit‑Card Fraud Detection (2026)
-
-**Dataset**: `credit_card_fraud_2026.csv`  
-**Rows / Columns**: 20 000 × 26  
-**Target**: `is_fraud` (binary classification) – fraud rate ≈ 1.7 % (mean = 0.01695)  
-
-The automated EDA pipeline completed data profiling, outlier detection, correlation & categorical association analysis, statistical hypothesis testing, and produced a predictive‑modeling blueprint. No missing values were found; outlier profiling was performed (no removal). Feature‑engineering steps were attempted but did **not** generate new columns (all specifications failed to create features). The following sections synthesize the key quantitative findings and actionable recommendations for model development.
+# Executive EDA & Dataset Summary Report
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\tests\benchmark_sandbox\credit_card_fraud_2026`
+**Processed Files:** `metadata_profile.json`, `metrics.json`
+**Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
 ---
 
-## 1. Dataset Overview  
-
-| Item                              | Value |
-|-----------------------------------|-------|
-| Total rows                        | 20 000 |
-| Total columns                     | 26 |
-| Target column                     | `is_fraud` |
-| Fraud prevalence (mean)           | 0.01695 (≈ 1.7 %) |
-| Numeric columns (high‑skew)       | `amount_usd`, `account_balance_usd`, `hours_since_last_txn`, `distance_from_home_km`, `prior_disputes` |
-| Categorical columns (cardinality) | `merchant_category` (12), `card_type` (5), `auth_method` (5), `channel` (5), `device_type` (8) |
-| Boolean columns                   | 7 (e.g., `is_foreign_transaction`, `used_vpn`) |
-
-### 1.1 Key Numeric Summaries  
-
-| Feature                | Mean   | Median | Std‑Dev | Min   | Max      | Skew   | Kurtosis |
-|------------------------|--------|--------|---------|-------|----------|--------|----------|
-| `amount_usd`           | 132.42 | 57.51  | 256.96  | 1.00  | 6 872.69 | 7.21   | 87.55    |
-| `hours_since_last_txn` | 8.95   | 6.21   | 8.84    | 0.01  | 87.05    | 1.89   | 5.05     |
-| `distance_from_home_km`| 22.14  | 15.50  | 22.12   | 0.00  | 216.19   | 2.03   | 6.24     |
-| `account_balance_usd`  | 3 316.66| 2 007.68| 4 350.72| 52.05 | 127 125.86| 5.63   | 70.30    |
-| `cvv_retry_count`      | 0.18   | 0.00   | 0.42    | 0     | 3        | 2.29   | 5.06     |
-| `velocity_score`       | 19.81  | 18.80  | 12.37   | 0.00  | 74.40    | 0.54   | 0.17     |
-| `customer_age`         | 49.67  | 50.00  | 18.49   | 18    | 81       | -0.01  | -1.19    |
-| `prior_disputes`       | 0.28   | 0.00   | 0.53    | 0     | 4        | 1.88   | 3.48     |
-
-*All categorical and boolean columns have 0 % missing values.*
+## 1. Dataset Overview
+- **Dataset Identifier:** `credit_card_fraud_2026.csv`
+- **Dimensions:** `20000` rows x `26` columns
+- **Target Variable:** `Not Specified`
+- **Data Quality:** No missing values detected in raw profile.
 
 ---
 
-## 2. Data Quality  
-
-### 2.1 Missing‑Value Handling  
-- No missing entries detected across any column.  
-- Imputation rules were defined (median for highly skewed numerics, mean for near‑normal, mode for categoricals) but were not applied because the dataset is complete.
-
-### 2.2 Outlier Profiling (action = *profile*)  
-
-| Feature                | IQR   | Lower Bound | Upper Bound | Outliers | % of rows |
-|------------------------|-------|-------------|-------------|----------|-----------|
-| `amount_usd`           | 105.52| –132.04     | 290.03      | 2 061    | 10.3 % |
-| `hours_since_last_txn` | 9.84  | –12.17      | 27.20       | 955      | 4.8 % |
-| `txn_count_last_24h`   | 2.00  | –1.0        | 7.0         | 336      | 1.7 % |
-| `distance_from_home_km`| 24.48 | –30.39      | 67.54       | 904      | 4.5 % |
-| `card_age_months`      | 9.00  | 28.5        | 64.5        | 177      | 0.9 % |
-| `account_balance_usd`  | 2 924.98| –3 368.33   | 8 331.59    | 1 569    | 7.9 % |
-| `cvv_retry_count`      | 0.00  | 0.0         | 0.0         | 3 342    | 16.7 % |
-| `velocity_score`       | 16.90 | –14.65      | 52.95       | 213      | 1.1 % |
-| `prior_disputes`       | 0.00  | 0.0         | 0.0         | 4 915    | 24.6 % |
-
-*No rows were removed; outliers were retained for modeling.*
-
----
-
-## 3. Correlation Analysis  
-
-| Feature Pair                     | Pearson r |
-|----------------------------------|-----------|
-| `txn_count_last_24h` & `velocity_score` | **0.6224** |
-| `hours_since_last_txn` & `velocity_score`| **‑0.2655** |
-| `cvv_retry_count` & `is_fraud`   | **0.1555** |
-| `merchant_risk_score` & `is_fraud`| **0.1077** |
-| `velocity_score` & `is_fraud`    | **0.0973** |
-| `amount_usd` & `merchant_risk_score`| **0.0971** |
-| `txn_count_last_24h` & `is_fraud`| **0.0599** |
-| `time_of_day_hour` & `is_fraud`  | **‑0.0308** |
-| `hours_since_last_txn` & `is_fraud`| **‑0.0288** |
-| `amount_usd` & `is_fraud`        | **0.0250** |
-
-*All correlations are modest; the strongest linear relationship is between transaction count in the last 24 h and the velocity score (r ≈ 0.62).*
+## 1.5 Full Column Statistics
+| Column | Type | Missing % | Unique % | Mean | Median | Std | Skew | Kurtosis |
+|---|---|---|---|---|---|---|---|---|
+| `transaction_id` | `int64` | 0.0% | 100.0% | 10000.5 | 10000.5 | 5773.65 | 0.0 | -1.2 |
+| `amount_usd` | `float64` | 0.0% | 63.91% | 132.42 | 57.51 | 256.96 | 7.21 | 87.55 |
+| `merchant_category` | `str` | 0.0% | 0.06% | N/A | N/A | N/A | N/A | N/A |
+| `card_type` | `str` | 0.0% | 0.03% | N/A | N/A | N/A | N/A | N/A |
+| `auth_method` | `str` | 0.0% | 0.03% | N/A | N/A | N/A | N/A | N/A |
+| `channel` | `str` | 0.0% | 0.03% | N/A | N/A | N/A | N/A | N/A |
+| `device_type` | `str` | 0.0% | 0.04% | N/A | N/A | N/A | N/A | N/A |
+| `is_foreign_transaction` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `hours_since_last_txn` | `float64` | 0.0% | 16.48% | 8.95 | 6.21 | 8.84 | 1.89 | 5.05 |
+| `txn_count_last_24h` | `int64` | 0.0% | 0.07% | 3.19 | 3.0 | 1.78 | 0.55 | 0.24 |
+| `distance_from_home_km` | `float64` | 0.0% | 30.61% | 22.14 | 15.5 | 22.12 | 2.03 | 6.24 |
+| `card_age_months` | `int64` | 0.0% | 0.26% | 46.94 | 47.0 | 6.77 | 0.12 | -0.01 |
+| `customer_age` | `int64` | 0.0% | 0.32% | 49.67 | 50.0 | 18.49 | -0.01 | -1.19 |
+| `account_balance_usd` | `float64` | 0.0% | 98.15% | 3316.66 | 2007.68 | 4350.72 | 5.63 | 70.3 |
+| `is_new_merchant` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `used_vpn` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `ip_country_mismatch` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `billing_shipping_mismatch` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `cvv_retry_count` | `int64` | 0.0% | 0.02% | 0.18 | 0.0 | 0.42 | 2.29 | 5.06 |
+| `velocity_score` | `float64` | 0.0% | 3.17% | 19.81 | 18.8 | 12.37 | 0.54 | 0.17 |
+| `time_of_day_hour` | `int64` | 0.0% | 0.12% | 11.53 | 12.0 | 6.93 | -0.01 | -1.21 |
+| `day_of_week` | `int64` | 0.0% | 0.03% | 3.0 | 3.0 | 2.0 | 0.01 | -1.25 |
+| `is_ai_generated_scam_attempt` | `bool` | 0.0% | 0.01% | N/A | N/A | N/A | N/A | N/A |
+| `merchant_risk_score` | `float64` | 0.0% | 4.7% | 37.4 | 35.7 | 17.06 | 0.57 | 0.44 |
+| `prior_disputes` | `int64` | 0.0% | 0.03% | 0.28 | 0.0 | 0.53 | 1.88 | 3.48 |
+| `is_fraud` | `int64` | 0.0% | 0.01% | 0.02 | 0.0 | 0.13 | 7.48 | 54.03 |
 
 ---
 
-## 4. Categorical Association (Cramér’s V)  
-
-| Categorical Pair                     | Cramér’s V |
-|--------------------------------------|------------|
-| `is_foreign_transaction` & `ip_country_mismatch` | **0.2722** |
-| `channel` & `billing_shipping_mismatch`          | **0.1605** |
-| `channel` & `is_ai_generated_scam_attempt`      | **0.0992** |
-| `device_type` & `ip_country_mismatch`           | **0.0251** |
-| `merchant_category` & `is_new_merchant`         | **0.0215** |
-| `billing_shipping_mismatch` & `is_ai_generated_scam_attempt` | **0.0198** |
-| `auth_method` & `is_ai_generated_scam_attempt` | **0.0192** |
-| `device_type` & `is_ai_generated_scam_attempt`| **0.0138** |
-| `merchant_category` & `is_ai_generated_scam_attempt`| **0.0126** |
-| `device_type` & `used_vpn`                     | **0.0112** |
-
-*The strongest association is between foreign‑transaction flag and IP‑country mismatch (V ≈ 0.27).*
+## 2. Data Imputation & Preprocessing
+- **status:** Imputation completed
 
 ---
 
-## 5. Statistical Hypothesis Testing  
-
-All tests were performed at α = 0.05.  
-
-| Feature                | Test Type                | Statistic | p‑value | Significant? |
-|------------------------|--------------------------|-----------|---------|--------------|
-| `amount_usd`           | Pearson correlation      | 0.0250    | 4.17 e‑4| ✅ |
-| `merchant_category`   | One‑Way ANOVA            | 11.0278   | 1.16 e‑20| ✅ |
-| `auth_method`          | One‑Way ANOVA            | 33.2641   | 1.07 e‑27| ✅ |
-| `is_foreign_transaction`| Welch t‑test (binary)   | –6.6283   | 4.99 e‑11| ✅ |
-| `hours_since_last_txn` | Pearson correlation      | –0.0288   | 4.64 e‑5| ✅ |
-| `txn_count_last_24h`   | Pearson correlation      | 0.0599    | 2.38 e‑17| ✅ |
-| `customer_age`         | Pearson correlation      | 0.0195    | 5.71 e‑3| ✅ |
-| `is_new_merchant`      | Welch t‑test (binary)    | –8.2423   | 2.09 e‑16| ✅ |
-| `used_vpn`             | Welch t‑test (binary)    | –5.9316   | 3.56 e‑9| ✅ |
-| `ip_country_mismatch`  | Welch t‑test (binary)    | –8.2095   | 5.72 e‑16| ✅ |
-| `billing_shipping_mismatch`| Welch t‑test (binary)| –6.9905   | 5.38 e‑12| ✅ |
-| `cvv_retry_count`      | Pearson correlation      | 0.1555    | 1.79 e‑108| ✅ |
-| `velocity_score`       | Pearson correlation      | 0.0973    | 3.10 e‑43| ✅ |
-| `time_of_day_hour`     | Pearson correlation      | –0.0308   | 1.31 e‑5| ✅ |
-| `is_ai_generated_scam_attempt`| Welch t‑test (binary)| –5.0509 | 6.87 e‑7| ✅ |
-| `merchant_risk_score`  | Pearson correlation      | 0.1077    | 1.18 e‑52| ✅ |
-| `prior_disputes`       | Pearson correlation      | 0.0239    | 7.23 e‑4| ✅ |
-
-**Non‑significant** (p > 0.05): `transaction_id`, `card_type`, `channel`, `device_type`, `distance_from_home_km`, `card_age_months`, `account_balance_usd`, `day_of_week`.
-
-### 5.1 Consolidated List of Significant Predictors  
-
-```
-amount_usd
-merchant_category
-auth_method
-is_foreign_transaction
-hours_since_last_txn
-txn_count_last_24h
-customer_age
-is_new_merchant
-used_vpn
-ip_country_mismatch
-billing_shipping_mismatch
-cvv_retry_count
-velocity_score
-time_of_day_hour
-is_ai_generated_scam_attempt
-merchant_risk_score
-prior_disputes
-```
-
-These 17 features will be the primary focus for model building.
+## 3. Outlier Analysis (IQR Method)
+No numeric outlier statistics reported.
 
 ---
 
-## 6. Feature Engineering  
-
-The pipeline attempted the following specifications:
-
-| New Feature                     | Transformation | Source Columns |
-|--------------------------------|----------------|----------------|
-| `log_amount_usd`               | log1p          | `amount_usd` |
-| `log_account_balance_usd`      | log1p          | `account_balance_usd` |
-| `amount_to_balance_ratio`      | ratio (÷)      | `amount_usd`, `account_balance_usd` |
-| `hours_distance_interaction`   | product (×)    | `hours_since_last_txn`, `distance_from_home_km` |
-| `card_age_times_velocity`      | product (×)    | `card_age_months`, `velocity_score` |
-
-**Result** – No new columns were successfully added (engineered_features list empty). Possible causes: division‑by‑zero safeguards, duplicate column names, or pipeline error. Recommend revisiting the engineering step before model training.
+## 4. Derived Domain Attributes & Composite Metrics
+No custom derived domain metrics synthesized during this run.
 
 ---
 
-## 7. Predictive‑Modeling Blueprint  
-
-| Aspect                     | Recommendation |
-|----------------------------|----------------|
-| **Problem Type**           | Binary Classification (`is_fraud`) |
-| **Baseline Model**         | Regularized Logistic Regression (L1/L2) |
-| **Advanced Models**        | • Random Forest Classifier  <br>• Gradient Boosting (XGBoost / LightGBM) <br>• Support Vector Classifier (SVM) |
-| **Feature Selection**      | 1. Drop high‑cardinality identifiers (`transaction_id`). <br>2. Rank features using cross‑validated permutation importance **and** mutual information. <br>3. Remove collinear features with |r| > 0.85 (none observed above threshold). |
-| **Validation Strategy**    | Stratified 5‑fold cross‑validation (preserves fraud proportion). <br>Metrics: Balanced Accuracy, Macro F1, Precision‑Recall AUC, Confusion Matrix. |
-| **Over‑fitting Mitigation**| • Apply regularization (C‑parameter for LR/SVM, L1/L2). <br>• Limit tree depth, set `min_samples_leaf` for ensemble models. <br>• Conduct hyper‑parameter search **inside** CV folds (e.g., GridSearchCV, Optuna). |
-| **Implementation Notes**   | • Encode categoricals via target encoding or frequency encoding (avoid one‑hot explosion). <br>• Scale numeric features (standard scaler or robust scaler due to skew). <br>• Consider SMOTE or class‑weighting to address 1.7 % fraud prevalence. |
+## 5. Statistical Hypothesis Testing & Key Predictors
+No statistically significant predictors identified.
 
 ---
 
-## 8. Visual Artifacts (Generated PNGs)
-
-| File (path)                              | Description |
-|------------------------------------------|-------------|
-| `correlation_matrix.png`                 | Heat‑map of Pearson correlations for all numeric features (saved in `./sandbox_run`). |
-| `categorical_association_matrix.png`    | Heat‑map of Cramér’s V values for all categorical/binary pairs. |
-| `dist_*.png` (24 files)                  | Univariate distribution plots for each column (histograms / bar charts). |
-| `bivariate_*.png` (10 files)             | Bivariate visualizations of each significant predictor vs. `is_fraud` (box‑plots, violin plots, or stacked bars). |
-| `target_interactions.png`                | Interaction plot for `amount_usd` against the target (e.g., partial dependence or SHAP interaction). |
-| `eda_report.html`                        | Full HTML report (not reproduced here). |
-
-All images are stored under the sandbox run directory and are ready for inclusion in stakeholder presentations.
+## 6. Redundancy & Multicollinearity Analysis
+No high-correlation or cross-type redundant feature pairs detected (threshold: |r| or Eta >= 0.85).
 
 ---
 
-## 9. Recommendations & Next Steps  
-
-1. **Re‑run Feature Engineering** – Verify transformation logic (handle zeros, log‑transform only positive values) and ensure engineered columns are added to the dataframe.  
-2. **Encoding Strategy** – Apply appropriate encoding for the 12‑level `merchant_category`, 5‑level `card_type`, etc. Target or frequency encoding is preferred to keep dimensionality low.  
-3. **Class Imbalance Handling** – Experiment with class weighting in loss functions and/or oversampling techniques (SMOTE, ADASYN).  
-4. **Model Prototyping** –  
-   - Start with a regularized logistic regression baseline (quick to train, interpretable).  
-   - Progress to tree‑based ensembles (Random Forest, XGBoost) to capture non‑linear interactions, especially those hinted by the strong `txn_count_last_24h` ↔ `velocity_score` relationship.  
-5. **Evaluation** – Use stratified 5‑fold CV; report both ROC‑AUC (for completeness) and PR‑AUC (more informative for rare events).  
-6. **Explainability** – Generate SHAP values for the best model to communicate feature impact to non‑technical stakeholders (e.g., `cvv_retry_count`, `used_vpn`, `merchant_risk_score`).  
-7. **Production Checklist** – Ensure reproducible preprocessing (scalers, encoders) and version control of the final model artefacts.
+## 7. Generated Visual Artifacts
+No PNG/SVG image assets found in directory.
 
 ---
 
-### Closing Statement  
+## 8. Categorical Associations (Cramer's V)
+| Feature 1 | Feature 2 | Cramer's V |
+|---|---|---|
+| `merchant_category` | `card_type` | 0.0 |
+| `merchant_category` | `auth_method` | 0.0105 |
+| `merchant_category` | `channel` | 0.0 |
+| `merchant_category` | `device_type` | 0.0 |
+| `merchant_category` | `is_foreign_transaction` | 0.0 |
+| `merchant_category` | `is_new_merchant` | 0.0215 |
+| `merchant_category` | `used_vpn` | 0.0 |
+| `merchant_category` | `ip_country_mismatch` | 0.0 |
+| `merchant_category` | `billing_shipping_mismatch` | 0.0 |
+| `merchant_category` | `cvv_retry_count` | 0.0 |
+| `merchant_category` | `day_of_week` | 0.0 |
+| `merchant_category` | `is_ai_generated_scam_attempt` | 0.0126 |
+| `merchant_category` | `prior_disputes` | 0.0 |
+| `merchant_category` | `is_fraud` | 0.074 |
+| `card_type` | `auth_method` | 0.0 |
+| `card_type` | `channel` | 0.0072 |
+| `card_type` | `device_type` | 0.0 |
+| `card_type` | `is_foreign_transaction` | 0.0 |
+| `card_type` | `is_new_merchant` | 0.0 |
+| `card_type` | `used_vpn` | 0.0 |
+| `card_type` | `ip_country_mismatch` | 0.0058 |
+| `card_type` | `billing_shipping_mismatch` | 0.0 |
+| `card_type` | `cvv_retry_count` | 0.0 |
+| `card_type` | `day_of_week` | 0.0057 |
+| `card_type` | `is_ai_generated_scam_attempt` | 0.0 |
+| `card_type` | `prior_disputes` | 0.0062 |
+| `card_type` | `is_fraud` | 0.0048 |
+| `auth_method` | `channel` | 0.0 |
+| `auth_method` | `device_type` | 0.0 |
+| `auth_method` | `is_foreign_transaction` | 0.0 |
+| `auth_method` | `is_new_merchant` | 0.0089 |
+| `auth_method` | `used_vpn` | 0.0 |
+| `auth_method` | `ip_country_mismatch` | 0.0 |
+| `auth_method` | `billing_shipping_mismatch` | 0.0 |
+| `auth_method` | `cvv_retry_count` | 0.0 |
+| `auth_method` | `day_of_week` | 0.0 |
+| `auth_method` | `is_ai_generated_scam_attempt` | 0.0192 |
+| `auth_method` | `prior_disputes` | 0.0054 |
+| `auth_method` | `is_fraud` | 0.0801 |
+| `channel` | `device_type` | 0.0022 |
+| `channel` | `is_foreign_transaction` | 0.0 |
+| `channel` | `is_new_merchant` | 0.0 |
+| `channel` | `used_vpn` | 0.0104 |
+| `channel` | `ip_country_mismatch` | 0.0079 |
+| `channel` | `billing_shipping_mismatch` | 0.1605 |
+| `channel` | `cvv_retry_count` | 0.0055 |
+| `channel` | `day_of_week` | 0.0103 |
+| `channel` | `is_ai_generated_scam_attempt` | 0.0992 |
+| `channel` | `prior_disputes` | 0.0 |
+| `channel` | `is_fraud` | 0.0105 |
+| `device_type` | `is_foreign_transaction` | 0.0 |
+| `device_type` | `is_new_merchant` | 0.0 |
+| `device_type` | `used_vpn` | 0.0112 |
+| `device_type` | `ip_country_mismatch` | 0.0251 |
+| `device_type` | `billing_shipping_mismatch` | 0.0 |
+| `device_type` | `cvv_retry_count` | 0.0 |
+| `device_type` | `day_of_week` | 0.0082 |
+| `device_type` | `is_ai_generated_scam_attempt` | 0.0138 |
+| `device_type` | `prior_disputes` | 0.0 |
+| `device_type` | `is_fraud` | 0.0041 |
+| `is_foreign_transaction` | `is_new_merchant` | 0.0 |
+| `is_foreign_transaction` | `used_vpn` | 0.0 |
+| `is_foreign_transaction` | `ip_country_mismatch` | 0.2722 |
+| `is_foreign_transaction` | `billing_shipping_mismatch` | 0.0101 |
+| `is_foreign_transaction` | `cvv_retry_count` | 0.0 |
+| `is_foreign_transaction` | `day_of_week` | 0.0 |
+| `is_foreign_transaction` | `is_ai_generated_scam_attempt` | 0.0075 |
+| `is_foreign_transaction` | `prior_disputes` | 0.0198 |
+| `is_foreign_transaction` | `is_fraud` | 0.0832 |
+| `is_new_merchant` | `used_vpn` | 0.0111 |
+| `is_new_merchant` | `ip_country_mismatch` | 0.0098 |
+| `is_new_merchant` | `billing_shipping_mismatch` | 0.0091 |
+| `is_new_merchant` | `cvv_retry_count` | 0.0146 |
+| `is_new_merchant` | `day_of_week` | 0.0 |
+| `is_new_merchant` | `is_ai_generated_scam_attempt` | 0.0016 |
+| `is_new_merchant` | `prior_disputes` | 0.0 |
+| `is_new_merchant` | `is_fraud` | 0.0761 |
+| `used_vpn` | `ip_country_mismatch` | 0.0 |
+| `used_vpn` | `billing_shipping_mismatch` | 0.0 |
+| `used_vpn` | `cvv_retry_count` | 0.0 |
+| `used_vpn` | `day_of_week` | 0.0 |
+| `used_vpn` | `is_ai_generated_scam_attempt` | 0.0 |
+| `used_vpn` | `prior_disputes` | 0.0041 |
+| `used_vpn` | `is_fraud` | 0.0641 |
+| `ip_country_mismatch` | `billing_shipping_mismatch` | 0.0102 |
+| `ip_country_mismatch` | `cvv_retry_count` | 0.0 |
+| `ip_country_mismatch` | `day_of_week` | 0.0 |
+| `ip_country_mismatch` | `is_ai_generated_scam_attempt` | 0.0 |
+| `ip_country_mismatch` | `prior_disputes` | 0.0029 |
+| `ip_country_mismatch` | `is_fraud` | 0.1176 |
+| `billing_shipping_mismatch` | `cvv_retry_count` | 0.0 |
+| `billing_shipping_mismatch` | `day_of_week` | 0.0 |
+| `billing_shipping_mismatch` | `is_ai_generated_scam_attempt` | 0.0198 |
+| `billing_shipping_mismatch` | `prior_disputes` | 0.0 |
+| `billing_shipping_mismatch` | `is_fraud` | 0.1006 |
+| `cvv_retry_count` | `day_of_week` | 0.0 |
+| `cvv_retry_count` | `is_ai_generated_scam_attempt` | 0.0 |
+| `cvv_retry_count` | `prior_disputes` | 0.0 |
+| `cvv_retry_count` | `is_fraud` | 0.1657 |
+| `day_of_week` | `is_ai_generated_scam_attempt` | 0.0 |
+| `day_of_week` | `prior_disputes` | 0.0 |
+| `day_of_week` | `is_fraud` | 0.0 |
+| `is_ai_generated_scam_attempt` | `prior_disputes` | 0.0 |
+| `is_ai_generated_scam_attempt` | `is_fraud` | 0.0786 |
+| `prior_disputes` | `is_fraud` | 0.0404 |
 
-The dataset is clean, well‑profiled, and contains a rich set of statistically significant predictors for fraud detection. With proper feature engineering, encoding, and a disciplined modeling pipeline (as outlined above), a high‑performing, explainable fraud classifier can be delivered within a short development cycle.
+---
+
+## 9. Predictive Modeling Strategy Blueprint
+- **Target Definition:** Undefined (Unsupervised)
+- **Problem Type:** Unsupervised / Exploratory
+### Recommended Algorithms
+- K-Means Clustering
+- Hierarchical Agglomerative Clustering
+- Principal Component Analysis (PCA) for Dimensionality Reduction
+### Feature Selection Strategy
+- Exclude high-cardinality ID or text name columns
+- Rank features using cross-validated permutation importance and mutual information
+- Remove collinear features exceeding correlation threshold > 0.85
+### Validation Strategy
+- Evaluate Silhouette Score and Inertia elbow curve
+### Overfitting Risk Mitigation
+- Apply regularization penalties (L1/L2)
+- Limit tree depth and enforce minimum samples per leaf
+- Perform hyperparameter tuning strictly within cross-validation folds
+- **Executive Summary:** Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 20000 rows x 26 columns.
+
+---
+
+*Report generated automatically by `summary_generator.py`*

@@ -1,7 +1,7 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": {\n        \"Age\": \"median\",\n        \"Embarked\": \"most_frequent\"\n      }\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"name\": \"FamilySize\",\n          \"formula\": \"SibSp + Parch + 1\",\n          \"rationale\": \"Total number of family members on board.\"\n        },\n        {\n          \"name\": \"IsAlone\",\n          \"formula\": \"FamilySize == 1\",\n          \"rationale\": \"Indicator for passengers traveling without family.\"\n        },\n        {\n          \"name\": \"HasCabin\",\n          \"formula\": \"Cabin.notnull()\",\n          \"rationale\": \"Binary indicator for whether a cabin number was recorded, often linked to socio-economic status.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Survived\",\n        \"Pclass\",\n        \"Sex\",\n        \"Age\",\n        \"Fare\",\n        \"Embarked\",\n        \"FamilySize\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Sex\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Pclass\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Age\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Pclass\",\n          \"y\": \"Fare\",\n          \"hue\": \"Survived\",\n          \"rationale\": \"Higher fares should correlate with Pclass, and both likely impact survival rates.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Fare\",\n          \"hue\": \"Survived\",\n          \"rationale\": \"To see if wealthy older passengers had different survival outcomes than younger ones.\"\n        },\n        {\n          \"x\": \"Sex\",\n          \"y\": \"Pclass\",\n          \"hue\": \"Survived\",\n          \"rationale\": \"Investigating the 'women and children first' rule across different social classes.\"\n        },\n        {\n          \"x\": \"FamilySize\",\n          \"y\": \"Survived\",\n          \"rationale\": \"Large families might have struggled to stay together, while individuals might have had different survival odds.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Fare\",\n        \"FamilySize\",\n        \"Pclass\"\n      ],\n      \"hue\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": {\n        \"Age\": \"median\",\n        \"Embarked\": \"most_frequent\"\n      }\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"name\": \"FamilySize\",\n          \"formula\": \"SibSp + Parch + 1\",\n          \"rationale\": \"Total number of family members on board.\"\n        },\n        {\n          \"name\": \"IsAlone\",\n          \"formula\": \"FamilySize == 1\",\n          \"rationale\": \"Indicator for passengers traveling without family.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\"Survived\", \"Pclass\", \"Sex\", \"Age\", \"SibSp\", \"Parch\", \"Fare\", \"Embarked\"]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Sex\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Pclass\",\n          \"y\": \"Survived\",\n          \"rationale\": \"Socio-economic status is a known primary driver of survival rates.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Survived\",\n          \"rationale\": \"To check 'women and children first' protocol impact.\"\n        },\n        {\n          \"x\": \"Fare\",\n          \"y\": \"Pclass\",\n          \"rationale\": \"Validate correlation between ticket price and passenger class.\"\n        },\n        {\n          \"x\": \"Embarked\",\n          \"y\": \"Survived\",\n          \"rationale\": \"Check if port of embarkation influenced survival, potentially due to cabin locations.\"\n        },\n        {\n          \"x\": \"FamilySize\",\n          \"y\": \"Survived\",\n          \"rationale\": \"Determine if large families or solo travelers had different survival outcomes.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\"Age\", \"Fare\", \"Pclass\", \"FamilySize\"],\n      \"hue\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "impute_missing_data",
@@ -10,7 +10,7 @@
             "Age": "median",
             "Embarked": "most_frequent"
           },
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -26,14 +26,9 @@
               "name": "IsAlone",
               "formula": "FamilySize == 1",
               "rationale": "Indicator for passengers traveling without family."
-            },
-            {
-              "name": "HasCabin",
-              "formula": "Cabin.notnull()",
-              "rationale": "Binary indicator for whether a cabin number was recorded, often linked to socio-economic status."
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -44,11 +39,12 @@
             "Pclass",
             "Sex",
             "Age",
+            "SibSp",
+            "Parch",
             "Fare",
-            "Embarked",
-            "FamilySize"
+            "Embarked"
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -56,23 +52,7 @@
         "args": {
           "target_col": "Survived",
           "feature_col": "Sex",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "Survived",
-          "feature_col": "Pclass",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "Survived",
-          "feature_col": "Age",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -81,29 +61,31 @@
           "bivariate_pairs": [
             {
               "x": "Pclass",
-              "y": "Fare",
-              "hue": "Survived",
-              "rationale": "Higher fares should correlate with Pclass, and both likely impact survival rates."
+              "y": "Survived",
+              "rationale": "Socio-economic status is a known primary driver of survival rates."
             },
             {
               "x": "Age",
-              "y": "Fare",
-              "hue": "Survived",
-              "rationale": "To see if wealthy older passengers had different survival outcomes than younger ones."
+              "y": "Survived",
+              "rationale": "To check 'women and children first' protocol impact."
             },
             {
-              "x": "Sex",
+              "x": "Fare",
               "y": "Pclass",
-              "hue": "Survived",
-              "rationale": "Investigating the 'women and children first' rule across different social classes."
+              "rationale": "Validate correlation between ticket price and passenger class."
+            },
+            {
+              "x": "Embarked",
+              "y": "Survived",
+              "rationale": "Check if port of embarkation influenced survival, potentially due to cabin locations."
             },
             {
               "x": "FamilySize",
               "y": "Survived",
-              "rationale": "Large families might have struggled to stay together, while individuals might have had different survival odds."
+              "rationale": "Determine if large families or solo travelers had different survival outcomes."
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -112,18 +94,19 @@
           "columns": [
             "Age",
             "Fare",
-            "FamilySize",
-            "Pclass"
+            "Pclass",
+            "FamilySize"
           ],
           "hue": "Survived",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
         "tool": "run_statistical_hypothesis_tests",
         "args": {
           "target_col": "Survived",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "alpha": 0.05,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\e71bd788-597f-419d-8fde-ddececcbd3db"
         }
       },
       {
@@ -133,12 +116,10 @@
     ],
     "step_results": [
       "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'PassengerId': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Survived': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Pclass': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Name': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Sex': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'float64', 'missing_before': 177, 'missing_after': 0, 'method': 'median', 'skewness': 0.39, 'fill_value': 28.0}, 'SibSp': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Parch': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Ticket': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Fare': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Cabin': {'dtype': 'str', 'missing_before': 687, 'missing_after': 0, 'method': 'mode', 'skewness': None, 'fill_value': 'B96 B98'}, 'Embarked': {'dtype': 'str', 'missing_before': 2, 'missing_after': 0, 'method': 'constant', 'skewness': None, 'fill_value': 'Unknown'}}}",
-      "engineer_features successful. Synthesized 3 derived domain metrics.",
+      "engineer_features successful. Synthesized 2 derived domain metrics.",
       "plot_feature_distributions successful.",
       "plot_target_interaction successful.",
-      "plot_target_interaction successful.",
-      "plot_target_interaction successful.",
-      "plot_semantic_bivariate_relationships successful. Count: 4",
+      "plot_semantic_bivariate_relationships successful. Count: 5",
       "plot_pairplot successful.",
       "run_statistical_hypothesis_tests successful. Significant predictors: ['Sex', 'Pclass', 'Fare', 'IsAlone', 'Embarked', 'Parch']",
       "Agent called finish_analysis. Terminating loop."

@@ -2,6 +2,7 @@ import os
 import json
 import re
 import shutil
+import time
 import pandas as pd
 from typing import Dict, Any, List, Optional, Tuple
 from openai import OpenAI
@@ -11,6 +12,7 @@ from . import tools
 from .profiler import run_and_save_profile
 from .summary_generator import create_summary, extract_dataset_name
 from .html_report_generator import generate_html_report
+from .pdf_report_generator import generate_pdf_report
 
 load_dotenv(override=True)
 
@@ -195,7 +197,7 @@ def run_tool_based_eda(
         "6. If you have completed the analysis or the user's request, you MUST call 'finish_analysis' to conclude the loop.\n"
         "7. Do NOT output conversational preambles.\n"
         "8. Do NOT request univariate distribution plots ('plot_feature_distributions') for identifier columns (ID, UUID, index, key), spatial coordinates (latitude, longitude), or timestamps, as they lack univariate distribution signal.\n"
-        "9. BIVARIATE GRAPH PRIORITY: Bivariate relationships and pairwise interactions are critical for discovering key feature correlations, trend lines, and domain insights. Always prioritize plotting semantic bivariate graphs ('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') for key feature pairs, target variable relationships, and high-signal numerical/categorical interactions.\n"
+        "9. SEMANTIC BIVARIATE GRAPH SELECTION: When calling 'plot_semantic_bivariate_relationships' or 'plot_target_interaction', select domain-relevant, semantically meaningful feature pairs (X vs Y) where X != Y. Never request self-bivariate plots where X == Y. Exclude unique ID, index, key, timestamp, or spatial coordinate columns.\n"
         "10. COMPREHENSIVE VISUAL PROFILING: When performing exploratory data analysis, call 'plot_feature_distributions' for key non-identifier features to analyze univariate distributions, alongside bivariate plotting tools ('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') and hypothesis testing ('run_statistical_hypothesis_tests'). Skip imputation, outlier handling, and predictive blueprinting unless explicitly requested or needed for severe distortion."
     )
     
@@ -492,8 +494,12 @@ def run_tool_based_eda(
         print("\n6. Invoking summary_generator to synthesize Executive Summary...")
         summary_text = create_summary(directory_path=workspace_dir, use_llm=False, dataset_name=dataset_name)
 
-    print("\n7. Generating interactive HTML profile report (eda_report.html) with Executive Summary...")
+    print("\n7. Generating profile reports (eda_report.html & eda_report.pdf) with Executive Summary...")
     generate_html_report(workspace_dir=workspace_dir)
+    try:
+        generate_pdf_report(workspace_dir=workspace_dir)
+    except Exception as exc:
+        print(f"[agent_loop] Warning: PDF report generation failed: {exc}")
     
     print(f"8. Exporting sandbox assets to: {export_dir}...")
     copied_files = []

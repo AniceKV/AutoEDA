@@ -1,44 +1,63 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Annual_Income_USD\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\"\n      ],\n      \"hue\": null\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Age\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Gender\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Daily_Commute_km\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Number_of_Cars_Owned\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Annual_Income_USD\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Daily_Commute_km\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Number_of_Cars_Owned\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"hue\": null\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"hue\": null\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"Annual_Income_USD\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Gender\",\n        \"Annual_Income_USD\",\n        \"City_Type\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Current_Car_Type\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Annual_Income_USD\",\n          \"y\": \"Number_of_Cars_Owned\",\n          \"rationale\": \"Higher income typically correlates with owning more vehicles.\"\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Daily_Commute_km\",\n          \"rationale\": \"Commute distances usually vary significantly between Rural, Suburban, and Urban settings.\"\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"rationale\": \"Checking if infrastructure development is balanced between residential and commercial areas.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Annual_Income_USD\",\n          \"rationale\": \"Income often follows a life-cycle pattern related to age and career progression.\"\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Current_Car_Type\",\n          \"rationale\": \"Urban environments might favor smaller cars (Sedans/Hatchbacks) while Rural areas might favor SUVs.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Charging_Stations_Near_Home\"\n      ],\n      \"hue\": \"City_Type\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
-        "tool": "impute_missing_data",
-        "args": {
-          "strategy_map": null,
-          "numeric_skew_threshold": 1.0,
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "detect_and_handle_outliers",
+        "tool": "plot_feature_distributions",
         "args": {
           "columns": [
             "Age",
+            "Gender",
             "Annual_Income_USD",
+            "City_Type",
             "Daily_Commute_km",
             "Number_of_Cars_Owned",
+            "Current_Car_Type",
             "Charging_Stations_Near_Home",
             "Charging_Stations_Near_Work"
           ],
-          "action": "profile",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "run_statistical_hypothesis_tests",
-        "args": {
-          "target_col": "Annual_Income_USD",
-          "alpha": 0.05,
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
         }
       },
       {
         "tool": "plot_correlation_matrix",
         "args": {
           "save_path": "correlation_matrix.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+        }
+      },
+      {
+        "tool": "plot_semantic_bivariate_relationships",
+        "args": {
+          "bivariate_pairs": [
+            {
+              "x": "Annual_Income_USD",
+              "y": "Number_of_Cars_Owned",
+              "rationale": "Higher income typically correlates with owning more vehicles."
+            },
+            {
+              "x": "City_Type",
+              "y": "Daily_Commute_km",
+              "rationale": "Commute distances usually vary significantly between Rural, Suburban, and Urban settings."
+            },
+            {
+              "x": "Charging_Stations_Near_Home",
+              "y": "Charging_Stations_Near_Work",
+              "rationale": "Checking if infrastructure development is balanced between residential and commercial areas."
+            },
+            {
+              "x": "Age",
+              "y": "Annual_Income_USD",
+              "rationale": "Income often follows a life-cycle pattern related to age and career progression."
+            },
+            {
+              "x": "City_Type",
+              "y": "Current_Car_Type",
+              "rationale": "Urban environments might favor smaller cars (Sedans/Hatchbacks) while Rural areas might favor SUVs."
+            }
+          ],
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
         }
       },
       {
@@ -48,70 +67,10 @@
             "Age",
             "Annual_Income_USD",
             "Daily_Commute_km",
-            "Number_of_Cars_Owned"
+            "Charging_Stations_Near_Home"
           ],
-          "hue": null,
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "plot_semantic_bivariate_relationships",
-        "args": {
-          "bivariate_pairs": [
-            {
-              "x": "Age",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Gender",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "City_Type",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Daily_Commute_km",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Number_of_Cars_Owned",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Charging_Stations_Near_Home",
-              "y": "Annual_Income_USD",
-              "hue": null
-            },
-            {
-              "x": "Age",
-              "y": "Daily_Commute_km",
-              "hue": null
-            },
-            {
-              "x": "Number_of_Cars_Owned",
-              "y": "Charging_Stations_Near_Work",
-              "hue": null
-            },
-            {
-              "x": "Charging_Stations_Near_Home",
-              "y": "Charging_Stations_Near_Work",
-              "hue": null
-            }
-          ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "generate_predictive_blueprint",
-        "args": {
-          "target_col": "Annual_Income_USD",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+          "hue": "City_Type",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
         }
       },
       {
@@ -120,13 +79,10 @@
       }
     ],
     "step_results": [
-      "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'Buyer_ID': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Gender': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Annual_Income_USD': {'dtype': 'float64', 'missing_before': 178, 'missing_after': 0, 'method': 'mean', 'skewness': 0.31, 'fill_value': 85378.48584809611}, 'City_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Daily_Commute_km': {'dtype': 'float64', 'missing_before': 181, 'missing_after': 0, 'method': 'mean', 'skewness': 0.34, 'fill_value': 41.10541806701294}, 'Number_of_Cars_Owned': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Current_Car_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Home': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Work': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
-      "detect_and_handle_outliers successful. Outlier stats collected.",
-      "run_statistical_hypothesis_tests successful. Significant predictors: []",
+      "plot_feature_distributions successful.",
       "plot_correlation_matrix successful.",
+      "plot_semantic_bivariate_relationships successful. Count: 5",
       "plot_pairplot successful.",
-      "plot_semantic_bivariate_relationships successful. Count: 9",
-      "generate_predictive_blueprint successful.",
       "Agent called finish_analysis. Terminating loop."
     ]
   }

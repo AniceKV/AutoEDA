@@ -7,7 +7,16 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. Derived Domain Attributes & Composite Metrics ---
-# Derived Domain Metrics Specs: []
+# Derived Domain Metrics Specs: [
+  {
+    "feature_name": "total_score",
+    "formula": "`math score` + `reading score` + `writing score`",
+    "data_type": "int64",
+    "rationale": "Aggregated academic performance across all subjects.",
+    "correlation_with_target": null
+  }
+]
+# Feature 'total_score': `math score` + `reading score` + `writing score`
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -31,7 +40,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 1000 rows x 8 columns."
+  "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns."
 }
 
 if __name__ == '__main__':

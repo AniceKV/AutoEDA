@@ -135,7 +135,7 @@
       <div class="section-sub">Self-contained Plotly report for <strong>{{ dataset_name }}</strong></div>
     </div>
     <a href="/download-report/" class="btn btn-ghost">
-      ↓ Download HTML
+      ↓ Download PDF Report
     </a>
   </div>
   <div class="report-iframe-wrap">
@@ -228,18 +228,10 @@
           {% endif %}
         </div>
 
-        <!-- Distribution PNG column -->
+        <!-- Distribution Chart column -->
         <div>
           <div class="panel-header">Distribution</div>
-          {% if p.dist_img %}
-          <img src="/artifact/{{ p.dist_img }}" alt="Distribution of {{ p.column }}"
-               style="width:100%;border-radius:6px;border:1px solid var(--border);">
-          {% else %}
-          <div class="empty-state" style="padding:24px 10px;">
-            <div class="empty-state-icon" style="font-size:1.2rem;">◫</div>
-            <p style="font-size:0.75rem;">Run pipeline to generate distribution plot</p>
-          </div>
-          {% endif %}
+          <div id="var-accordion-chart-{{ forloop.counter }}" data-col="{{ p.column }}" style="width:100%;height:240px;min-height:240px;"></div>
         </div>
 
       </div>
@@ -265,78 +257,410 @@
 <div id="tab-gallery" class="tab-panel">
   <div class="section-header">
     <div class="section-title">Generated Visualisations</div>
+    <div class="section-sub">Interactive Plotly.js canvas charts powered by pure JSON telemetry</div>
   </div>
 
-  {% if plots.bivariate or plots.heatmaps or plots.distributions or plots.other %}
+  {% if metrics.visual_distributions or metrics.correlation_data or metrics.bivariate_data or metrics.pairplot_data or metrics.target_interaction_data or plots.bivariate or plots.heatmaps or plots.distributions %}
 
   <div class="sub-tab-bar" data-scope="gallery">
+    <button class="sub-tab-btn active" data-subtab="dist">Distributions</button>
+    <button class="sub-tab-btn" data-subtab="heat">Heatmaps &amp; Correlation</button>
+    <button class="sub-tab-btn" data-subtab="pair">Pairplot Matrix</button>
     <button class="sub-tab-btn" data-subtab="biv">Bivariate Relationships</button>
-    <button class="sub-tab-btn" data-subtab="heat">Heatmaps &amp; Pairplot</button>
-    <button class="sub-tab-btn" data-subtab="dist">Distributions</button>
-    {% if plots.other %}<button class="sub-tab-btn" data-subtab="other">Other ({{ plots.other|length }})</button>{% endif %}
+    <button class="sub-tab-btn" data-subtab="target">Target Interaction</button>
   </div>
 
-  <!-- Bivariate -->
-  <div class="sub-tab-panel" data-scope="gallery" data-subtab="biv">
-    {% if plots.bivariate %}
-    <div class="image-grid cols-2">
-      {% for rel_path in plots.bivariate %}
-      <div class="image-tile">
-        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
-        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
-      </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-state"><p>No bivariate plots generated.</p></div>
-    {% endif %}
+  <!-- Distributions Sub-tab -->
+  <div class="sub-tab-panel active" data-scope="gallery" data-subtab="dist">
+    <div id="plotly-gallery-dist" class="image-grid cols-2"></div>
   </div>
 
-  <!-- Heatmaps -->
+  <!-- Heatmaps Sub-tab -->
   <div class="sub-tab-panel" data-scope="gallery" data-subtab="heat">
-    {% if plots.heatmaps %}
-    <div class="image-grid cols-2">
-      {% for rel_path in plots.heatmaps %}
-      <div class="image-tile">
-        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
-        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
-      </div>
-      {% endfor %}
+    <div class="card" style="padding:16px; min-width:0; overflow:hidden;">
+      <div id="plotly-gallery-heat" style="width:100%; min-height:550px;"></div>
     </div>
-    {% else %}
-    <div class="empty-state"><p>No heatmaps or pairplots generated yet.</p></div>
-    {% endif %}
   </div>
 
-  <!-- Distributions -->
-  <div class="sub-tab-panel" data-scope="gallery" data-subtab="dist">
-    {% if plots.distributions %}
-    <div class="image-grid cols-3">
-      {% for rel_path in plots.distributions %}
-      <div class="image-tile">
-        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
-        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
-      </div>
-      {% endfor %}
+  <!-- Pairplot Matrix Sub-tab -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="pair">
+    <div class="card" style="padding:16px; min-width:0; overflow-x:auto;">
+      <div id="plotly-gallery-pair" style="width:100%; min-height:550px;"></div>
     </div>
-    {% else %}
-    <div class="empty-state"><p>No distribution PNGs generated yet.</p></div>
-    {% endif %}
   </div>
 
-  <!-- Other plots -->
-  {% if plots.other %}
-  <div class="sub-tab-panel" data-scope="gallery" data-subtab="other">
-    <div class="image-grid cols-2">
-      {% for rel_path in plots.other %}
-      <div class="image-tile">
-        <img src="/artifact/{{ rel_path }}" alt="{{ rel_path }}" loading="lazy">
-        <div class="image-tile-caption">{{ rel_path|slice:"4:" }}</div>
-      </div>
-      {% endfor %}
+  <!-- Bivariate Sub-tab -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="biv">
+    <div id="plotly-gallery-biv" class="image-grid cols-2"></div>
+  </div>
+
+  <!-- Target Interaction Sub-tab -->
+  <div class="sub-tab-panel" data-scope="gallery" data-subtab="target">
+    <div class="card" style="padding:16px; min-width:0; overflow:hidden;">
+      <div id="plotly-gallery-target" style="width:100%; min-height:450px;"></div>
     </div>
   </div>
-  {% endif %}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const metricsData = {{ metrics_json|safe }};
+      const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const fontColor = theme === 'light' ? '#09090b' : '#cbd5e1';
+      const paperBg = 'rgba(0,0,0,0)';
+
+      function resizeAllPlotlyCharts() {
+        if (!window.Plotly) return;
+        document.querySelectorAll('.js-plotly-plot').forEach(el => {
+          try { Plotly.Plots.resize(el); } catch(e) {}
+        });
+      }
+
+      window.addEventListener('resize', resizeAllPlotlyCharts);
+
+      // Trigger resize when gallery sub-tabs are toggled
+      document.querySelectorAll('[data-scope="gallery"] .sub-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setTimeout(resizeAllPlotlyCharts, 50);
+        });
+      });
+
+      // 1. Render Distributions
+      const distContainer = document.getElementById("plotly-gallery-dist");
+      if (distContainer && metricsData.visual_distributions) {
+        distContainer.innerHTML = "";
+        Object.entries(metricsData.visual_distributions).forEach(([col, d], idx) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.style.padding = "16px";
+          card.style.minWidth = "0";
+          card.style.overflow = "hidden";
+          const chartDivId = "plotly-dist-chart-" + idx;
+          card.innerHTML = `<div class="panel-header">${col} Distribution</div><div id="${chartDivId}" style="width:100%;height:300px;"></div>`;
+          distContainer.appendChild(card);
+
+          let trace, layout;
+          if (d.type === "numeric") {
+            trace = {
+              x: d.bin_centers,
+              y: d.counts,
+              type: "bar",
+              marker: { color: "#6366f1", opacity: 0.85 },
+              name: col
+            };
+          } else {
+            trace = {
+              x: d.labels,
+              y: d.counts,
+              type: "bar",
+              marker: { color: "#a855f7", opacity: 0.85 },
+              name: col
+            };
+          }
+          layout = {
+            margin: { l: 45, r: 20, t: 30, b: 60 },
+            paper_bgcolor: paperBg,
+            plot_bgcolor: paperBg,
+            autosize: true,
+            font: { color: fontColor, family: 'Plus Jakarta Sans', size: 11 },
+            xaxis: { tickangle: -45, showgrid: false },
+            yaxis: { showgrid: true, gridcolor: '#27272a' }
+          };
+          Plotly.newPlot(chartDivId, [trace], layout, { responsive: true, displayModeBar: false });
+        });
+      }
+
+      // 1b. Render Variable Deep-Dive Accordion Charts
+      if (metricsData.visual_distributions) {
+        document.querySelectorAll("[id^='var-accordion-chart-']").forEach(div => {
+          const colName = div.getAttribute("data-col");
+          const d = metricsData.visual_distributions[colName];
+          if (d) {
+            let trace;
+            if (d.type === "numeric") {
+              trace = {
+                x: d.bin_centers,
+                y: d.counts,
+                type: "bar",
+                marker: { color: "#6366f1", opacity: 0.85 },
+                name: colName
+              };
+            } else {
+              trace = {
+                x: d.labels,
+                y: d.counts,
+                type: "bar",
+                marker: { color: "#a855f7", opacity: 0.85 },
+                name: colName
+              };
+            }
+            const layout = {
+              margin: { l: 35, r: 15, t: 15, b: 45 },
+              paper_bgcolor: paperBg,
+              plot_bgcolor: paperBg,
+              autosize: true,
+              font: { color: fontColor, family: 'Plus Jakarta Sans', size: 10 },
+              xaxis: { tickangle: -45, showgrid: false },
+              yaxis: { showgrid: true, gridcolor: '#27272a' }
+            };
+            Plotly.newPlot(div.id, [trace], layout, { responsive: true, displayModeBar: false });
+          }
+        });
+      }
+
+      // 2. Render Heatmap
+      const heatDiv = document.getElementById("plotly-gallery-heat");
+      if (heatDiv && metricsData.correlation_data && metricsData.correlation_data.z_matrix) {
+        const corr = metricsData.correlation_data;
+        const textVals = corr.z_matrix.map(row => row.map(v => (v !== null && v !== undefined) ? v.toFixed(2) : "0.00"));
+        const heatTrace = {
+          z: corr.z_matrix,
+          x: corr.x_labels,
+          y: corr.y_labels,
+          text: textVals,
+          texttemplate: "%{text}",
+          type: "heatmap",
+          colorscale: "Viridis",
+          zmin: -1, zmax: 1
+        };
+        const heatLayout = {
+          margin: { l: 100, r: 40, t: 40, b: 100 },
+          paper_bgcolor: paperBg,
+          plot_bgcolor: paperBg,
+          autosize: true,
+          font: { color: fontColor, family: 'Plus Jakarta Sans' },
+          xaxis: { tickangle: -45, showgrid: false },
+          yaxis: { autorange: 'reversed', showgrid: false }
+        };
+        Plotly.newPlot("plotly-gallery-heat", [heatTrace], heatLayout, { responsive: true });
+      }
+
+      // 3. Render Pairplot Matrix
+      const pairDiv = document.getElementById("plotly-gallery-pair");
+      if (pairDiv && metricsData.pairplot_data && metricsData.pairplot_data.pairplot_matrix) {
+        const pData = metricsData.pairplot_data;
+        const features = pData.features_plotted || [];
+        const matrix = pData.pairplot_matrix || [];
+
+        if (features.length >= 2 && matrix.length > 0) {
+          const N = features.length;
+          pairDiv.innerHTML = "";
+
+          const gridDiv = document.createElement("div");
+          gridDiv.style.display = "grid";
+          gridDiv.style.gridTemplateColumns = `repeat(${N}, minmax(130px, 1fr))`;
+          gridDiv.style.gap = "8px";
+          gridDiv.style.width = "100%";
+          pairDiv.appendChild(gridDiv);
+
+          matrix.forEach((row, rIdx) => {
+            row.forEach((cell, cIdx) => {
+              const cellDiv = document.createElement("div");
+              const cellId = `plotly-pair-cell-${rIdx}-${cIdx}`;
+              cellDiv.id = cellId;
+              cellDiv.style.width = "100%";
+              cellDiv.style.height = "160px";
+              cellDiv.style.background = (theme === 'light') ? '#f4f4f5' : '#18181b';
+              cellDiv.style.borderRadius = "6px";
+              cellDiv.style.padding = "4px";
+              gridDiv.appendChild(cellDiv);
+
+              let trace, layout;
+              if (cell.type === "diag") {
+                trace = {
+                  x: cell.bin_centers,
+                  y: cell.counts,
+                  type: "bar",
+                  marker: { color: "#6366f1" }
+                };
+                layout = {
+                  margin: { l: 20, r: 10, t: 25, b: 20 },
+                  paper_bgcolor: paperBg,
+                  plot_bgcolor: paperBg,
+                  font: { color: fontColor, size: 9 },
+                  title: { text: cell.feature, font: { size: 10, color: fontColor } },
+                  xaxis: { showticklabels: false, showgrid: false },
+                  yaxis: { showticklabels: false, showgrid: false }
+                };
+              } else {
+                trace = {
+                  x: (cell.points || []).map(p => p.x),
+                  y: (cell.points || []).map(p => p.y),
+                  mode: "markers",
+                  type: "scatter",
+                  marker: { color: "#06b6d4", size: 3, opacity: 0.6 }
+                };
+                layout = {
+                  margin: { l: 20, r: 10, t: 25, b: 20 },
+                  paper_bgcolor: paperBg,
+                  plot_bgcolor: paperBg,
+                  font: { color: fontColor, size: 9 },
+                  title: { text: `${cell.y_feature} vs ${cell.x_feature}`, font: { size: 9, color: fontColor } },
+                  xaxis: { showticklabels: false, showgrid: false },
+                  yaxis: { showticklabels: false, showgrid: false }
+                };
+              }
+              Plotly.newPlot(cellId, [trace], layout, { responsive: true, displayModeBar: false });
+            });
+          });
+        } else {
+          pairDiv.innerHTML = `<div class="empty-state"><p>Insufficient numerical features for pairplot matrix.</p></div>`;
+        }
+      }
+
+      // 4. Render Bivariate Relationships
+      const bivContainer = document.getElementById("plotly-gallery-biv");
+      if (bivContainer && metricsData.bivariate_data && metricsData.bivariate_data.length) {
+        bivContainer.innerHTML = "";
+        metricsData.bivariate_data.forEach((biv, idx) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.style.padding = "16px";
+          card.style.minWidth = "0";
+          card.style.overflow = "hidden";
+          const chartDivId = "plotly-biv-chart-" + idx;
+          card.innerHTML = `<div class="panel-header">${biv.x} vs ${biv.y}</div><div id="${chartDivId}" style="width:100%;height:320px;"></div>`;
+          bivContainer.appendChild(card);
+
+          let traces = [], layout = {};
+          if (biv.grouped_counts) {
+            const xCats = Object.keys(biv.grouped_counts);
+            const yCatsSet = new Set();
+            xCats.forEach(xVal => Object.keys(biv.grouped_counts[xVal] || {}).forEach(y => yCatsSet.add(y)));
+            const yCats = Array.from(yCatsSet);
+            const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
+
+            traces = yCats.map((yCat, i) => ({
+              x: xCats,
+              y: xCats.map(xCat => (biv.grouped_counts[xCat] ? biv.grouped_counts[xCat][yCat] || 0 : 0)),
+              name: `${biv.y}: ${yCat}`,
+              type: 'bar',
+              marker: { color: palette[i % palette.length] }
+            }));
+            layout = {
+              barmode: 'group',
+              margin: { l: 45, r: 20, t: 30, b: 60 },
+              paper_bgcolor: paperBg,
+              plot_bgcolor: paperBg,
+              autosize: true,
+              font: { color: fontColor, family: 'Plus Jakarta Sans', size: 11 },
+              xaxis: { title: biv.x, tickangle: -45 },
+              yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
+            };
+          } else if (biv.groups) {
+            const catLabels = Object.keys(biv.groups);
+            const medians = catLabels.map(k => biv.groups[k].median);
+            traces = [{
+              x: catLabels,
+              y: medians,
+              type: "bar",
+              marker: { color: "#10b981" }
+            }];
+            layout = {
+              margin: { l: 45, r: 20, t: 30, b: 60 },
+              paper_bgcolor: paperBg,
+              plot_bgcolor: paperBg,
+              autosize: true,
+              font: { color: fontColor, family: 'Plus Jakarta Sans', size: 11 },
+              xaxis: { title: biv.x, tickangle: -45 },
+              yaxis: { title: biv.y, showgrid: true, gridcolor: '#27272a' }
+            };
+          } else if (biv.x_is_numeric && biv.y_is_numeric && biv.points) {
+            traces = [{
+              x: biv.points.map(p => p.x),
+              y: biv.points.map(p => p.y),
+              mode: "markers",
+              type: "scatter",
+              marker: { color: "#06b6d4", size: 6, opacity: 0.7 }
+            }];
+            layout = {
+              margin: { l: 45, r: 20, t: 30, b: 60 },
+              paper_bgcolor: paperBg,
+              plot_bgcolor: paperBg,
+              autosize: true,
+              font: { color: fontColor, family: 'Plus Jakarta Sans', size: 11 },
+              xaxis: { title: biv.x, tickangle: -45, showgrid: false },
+              yaxis: { title: biv.y, showgrid: true, gridcolor: '#27272a' }
+            };
+          }
+          if (traces.length) Plotly.newPlot(chartDivId, traces, layout, { responsive: true, displayModeBar: false });
+        });
+      }
+
+      // 5. Render Target Interaction
+      const targetDiv = document.getElementById("plotly-gallery-target");
+      if (targetDiv && metricsData.target_interaction_data) {
+        const tData = metricsData.target_interaction_data;
+        let traces = [], layout = {};
+
+        if (tData.grouped_counts) {
+          const xCats = Object.keys(tData.grouped_counts);
+          const yCatsSet = new Set();
+          xCats.forEach(xVal => Object.keys(tData.grouped_counts[xVal] || {}).forEach(y => yCatsSet.add(y)));
+          const yCats = Array.from(yCatsSet);
+          const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
+
+          traces = yCats.map((yCat, i) => ({
+            x: xCats,
+            y: xCats.map(xCat => (tData.grouped_counts[xCat] ? tData.grouped_counts[xCat][yCat] || 0 : 0)),
+            name: `${tData.target_col}: ${yCat}`,
+            type: 'bar',
+            marker: { color: palette[i % palette.length] }
+          }));
+          layout = {
+            title: `Target Breakdown: ${tData.target_col} across ${tData.feature_col}`,
+            barmode: 'group',
+            margin: { l: 50, r: 20, t: 40, b: 60 },
+            paper_bgcolor: paperBg,
+            plot_bgcolor: paperBg,
+            autosize: true,
+            font: { color: fontColor, family: 'Plus Jakarta Sans', size: 12 },
+            xaxis: { title: tData.feature_col, tickangle: -45 },
+            yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
+          };
+        } else if (tData.groups) {
+          const cats = Object.keys(tData.groups);
+          const medians = cats.map(k => tData.groups[k].median);
+
+          traces = [{
+            x: cats,
+            y: medians,
+            type: "bar",
+            marker: { color: "#f59e0b", opacity: 0.85 },
+            name: `${tData.feature_col} Median`
+          }];
+          layout = {
+            title: `Segmented Median: ${tData.feature_col} across ${tData.target_col}`,
+            margin: { l: 50, r: 20, t: 40, b: 60 },
+            paper_bgcolor: paperBg,
+            plot_bgcolor: paperBg,
+            autosize: true,
+            font: { color: fontColor, family: 'Plus Jakarta Sans', size: 12 },
+            xaxis: { title: tData.target_col, tickangle: -45 },
+            yaxis: { title: tData.feature_col, showgrid: true, gridcolor: '#27272a' }
+          };
+        } else if (tData.points) {
+          traces = [{
+            x: tData.points.map(p => p.x),
+            y: tData.points.map(p => p.y),
+            mode: "markers",
+            type: "scatter",
+            marker: { color: "#f59e0b", size: 6, opacity: 0.75 }
+          }];
+          layout = {
+            title: `${tData.feature_col} vs ${tData.target_col}`,
+            margin: { l: 50, r: 20, t: 40, b: 60 },
+            paper_bgcolor: paperBg,
+            plot_bgcolor: paperBg,
+            autosize: true,
+            font: { color: fontColor },
+            xaxis: { title: tData.feature_col },
+            yaxis: { title: tData.target_col }
+          };
+        }
+        if (traces.length) Plotly.newPlot("plotly-gallery-target", traces, layout, { responsive: true });
+      }
+    });
+  </script>
 
   {% else %}
   <div class="card">

@@ -23,6 +23,20 @@ def _sanitize_col_name(col: str) -> str:
     return re.sub(r'\W+', '_', col).strip('_')
 
 
+def _safe_float(val: Any, default: float = 0.0) -> float:
+    """Safely converts any value (string, float, int, numpy value) to float without raising exceptions."""
+    if val is None or pd.isna(val):
+        return default
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        try:
+            cleaned = re.sub(r'[^\d\.\-]+', '', str(val))
+            return float(cleaned) if cleaned else default
+        except Exception:
+            return default
+
+
 def _is_numeric_col(s: pd.Series) -> bool:
     """Helper to check if a Series has numeric dtype and is not boolean."""
     return pd.api.types.is_numeric_dtype(s) and not pd.api.types.is_bool_dtype(s)
@@ -842,38 +856,81 @@ def plot_target_interaction(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Generates and saves a segmented visual plot (boxplot/violinplot/scatter)
-    comparing key feature distribution against target variable.
+    Computes mathematical target interaction statistics (grouped counts, boxplot quantiles, category breakdown)
+    filtering out non-distributional ID columns for clean client-side rendering.
     """
-    out_dir = kwargs.get("output_dir") or output_dir
-    plt.close()
-    if not target_col or target_col not in df.columns:
-        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
-        target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
+    if not target_col or target_col not in df.columns or is_non_distributional_column(target_col, df[target_col]):
+        valid_targets = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+        target_col = valid_targets[-1] if valid_targets else df.columns[-1]
 
-    if not feature_col or feature_col not in df.columns or feature_col == target_col:
-        candidates = [c for c in df.columns if c != target_col]
-        feature_col = candidates[0] if candidates else df.columns[0]
+    if not feature_col or feature_col not in df.columns or feature_col == target_col or is_non_distributional_column(feature_col, df[feature_col]):
+        candidates = [c for c in df.columns if c != target_col and not is_non_distributional_column(c, df[c])]
+        feature_col = candidates[0] if candidates else [c for c in df.columns if c != target_col][0]
 
-    os.makedirs(out_dir, exist_ok=True)
-    full_save_path = os.path.join(out_dir, os.path.basename(save_path))
+    clean_df = df[[feature_col, target_col]].dropna()
+    feat_is_num = _is_numeric_col(clean_df[feature_col])
+    target_is_num = _is_numeric_col(clean_df[target_col])
 
-    df_viz = _downsample_for_viz(df)
+    feat_nunique = clean_df[feature_col].nunique()
+    target_nunique = clean_df[target_col].nunique()
 
-    try:
-        fig, ax = plt.subplots(figsize=(9, 6))
-        _render_bivariate_axes(ax, df_viz, feature_col, target_col)
-        plt.tight_layout()
-        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
-        plt.close(fig)
-    except Exception as e:
-        print(f"[tools] Warning: Target interaction plot error: {e}")
-        plt.close()
+    feat_is_discrete = (not feat_is_num) or (feat_nunique <= 10)
+    target_is_discrete = (not target_is_num) or (target_nunique <= 10)
+
+    interaction_data = {
+        "target_col": target_col,
+        "feature_col": feature_col,
+        "feature_is_numeric": feat_is_num,
+        "target_is_numeric": target_is_num,
+        "feature_is_discrete": feat_is_discrete,
+        "target_is_discrete": target_is_discrete,
+    }
+
+    if feat_is_discrete and target_is_discrete and feat_nunique <= 15 and target_nunique <= 15:
+        sf = clean_df[feature_col].astype(str)
+        st = clean_df[target_col].astype(str)
+        ct = pd.crosstab(sf, st)
+        interaction_data["grouped_counts"] = ct.to_dict()
+        ct_norm = pd.crosstab(sf, st, normalize="index")
+        interaction_data["crosstab"] = ct_norm.round(4).to_dict()
+    elif feat_is_discrete and (target_is_num or target_nunique > 10):
+        groups = {}
+        for cat, group in clean_df.groupby(feature_col):
+            vals = pd.to_numeric(group[target_col], errors='coerce').dropna()
+            if len(vals) > 0:
+                groups[str(cat)] = {
+                    "min": round(_safe_float(vals.min()), 4),
+                    "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                    "median": round(_safe_float(vals.median()), 4),
+                    "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                    "max": round(_safe_float(vals.max()), 4),
+                }
+        interaction_data["groups"] = groups
+    elif target_is_discrete and (feat_is_num or feat_nunique > 10):
+        groups = {}
+        for cat, group in clean_df.groupby(target_col):
+            vals = pd.to_numeric(group[feature_col], errors='coerce').dropna()
+            if len(vals) > 0:
+                groups[str(cat)] = {
+                    "min": round(_safe_float(vals.min()), 4),
+                    "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                    "median": round(_safe_float(vals.median()), 4),
+                    "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                    "max": round(_safe_float(vals.max()), 4),
+                }
+        interaction_data["groups"] = groups
+    else:
+        sample_df = clean_df.sample(n=min(500, len(clean_df)), random_state=42) if len(clean_df) > 500 else clean_df
+        points = []
+        for _, r in sample_df.iterrows():
+            points.append({"x": round(_safe_float(r[feature_col]), 4), "y": round(_safe_float(r[target_col]), 4)})
+        interaction_data["points"] = points
 
     return {
-        "plot_saved": full_save_path,
+        "plot_saved": "interactive_client_side",
         "target_col": target_col,
-        "feature_col": feature_col
+        "feature_col": feature_col,
+        "interaction_data": interaction_data
     }
 
 
@@ -888,11 +945,9 @@ def plot_feature_distributions(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Plots probability distributions / KDE histograms for continuous numeric columns,
-    or countplots with count labels for categorical and low-cardinality discrete columns.
-    Saves each column as a separate dist_{col}.png file.
+    Computes mathematical distribution metrics (KDE/histogram binning for continuous numeric columns,
+    value_counts for categorical columns) without CPU-bound Matplotlib rendering.
     """
-    plt.close()
     target_cols = columns or kwargs.get("important_columns") or kwargs.get("cols") or kwargs.get("feature_cols")
     if not target_cols or target_cols == "all" or (isinstance(target_cols, (list, tuple)) and len(target_cols) == 0):
         target_cols = list(df.columns)
@@ -911,62 +966,50 @@ def plot_feature_distributions(
     if not valid_cols:
         valid_cols = list(df.columns)
 
-    out_dir = kwargs.get("output_dir") or output_dir
-    os.makedirs(out_dir, exist_ok=True)
-    saved_files = []
+    distributions = {}
 
     for col in valid_cols:
-        file_path = os.path.join(out_dir, f"dist_{_sanitize_col_name(col)}.png")
+        s_clean = df[col].dropna()
+        if len(s_clean) == 0:
+            continue
 
-        try:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            s_clean = df[col].dropna()
-            is_bool = pd.api.types.is_bool_dtype(s_clean)
-            is_num = _is_numeric_col(s_clean) and not is_bool
-            n_unique = s_clean.nunique()
+        is_bool = pd.api.types.is_bool_dtype(s_clean)
+        is_num = _is_numeric_col(s_clean) and not is_bool
+        n_unique = s_clean.nunique()
 
-            # Continuous numeric variables (is_num and > 10 unique values) get KDE / Histogram
-            if is_num and n_unique > 10:
-                sns.histplot(s_clean, kde=True, ax=ax, color="#6366f1")
-                ax.set_title(f"Numeric Distribution: {col}", fontsize=12, pad=10)
-                ax.set_xlabel(col)
-                ax.set_ylabel("Density / Frequency")
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
+        if is_num and n_unique > 10:
+            s_num = pd.to_numeric(s_clean, errors='coerce').dropna()
+            if len(s_num) > 0:
+                counts, bin_edges = np.histogram(s_num, bins=min(20, max(5, s_num.nunique() // 2)))
+                bin_centers = [(bin_edges[i] + bin_edges[i+1]) / 2.0 for i in range(len(counts))]
+                distributions[col] = {
+                    "type": "numeric",
+                    "counts": counts.tolist(),
+                    "bin_edges": [round(_safe_float(b), 4) for b in bin_edges],
+                    "bin_centers": [round(_safe_float(b), 4) for b in bin_centers],
+                    "mean": round(_safe_float(s_num.mean()), 4),
+                    "median": round(_safe_float(s_num.median()), 4),
+                    "std": round(_safe_float(s_num.std()), 4) if len(s_num) > 1 else 0.0
+                }
             else:
-                # Categorical, boolean, or low-cardinality discrete numeric features get Count Plot
-                if n_unique > 20:
-                    top_cats = s_clean.value_counts().head(20).index
-                    col_data_str = s_clean[s_clean.isin(top_cats)].astype(str)
-                else:
-                    col_data_str = s_clean.astype(str)
+                vc = s_clean.value_counts().head(20)
+                distributions[col] = {
+                    "type": "categorical",
+                    "labels": [str(idx) for idx in vc.index],
+                    "counts": [int(v) for v in vc.values]
+                }
+        else:
+            vc = s_clean.value_counts().head(20)
+            distributions[col] = {
+                "type": "categorical",
+                "labels": [str(idx) for idx in vc.index],
+                "counts": [int(v) for v in vc.values]
+            }
 
-                # Order categories by frequency for clean presentation
-                cat_order = col_data_str.value_counts().index
-                sns.countplot(x=col_data_str, hue=col_data_str, order=cat_order, ax=ax, palette="Set2", legend=False)
-                ax.set_title(f"Categorical Count Plot: {col}", fontsize=12, pad=10)
-                ax.set_xlabel(col)
-                ax.set_ylabel("Count")
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
-
-                # Annotate count bars with exact numeric counts
-                if len(ax.containers) > 0:
-                    try:
-                        ax.bar_label(ax.containers[0], padding=2, fontsize=9)
-                    except Exception:
-                        pass
-
-            plt.tight_layout()
-            plt.savefig(file_path, dpi=150, bbox_inches="tight")
-            plt.close(fig)
-            saved_files.append(file_path)
-            print(f"[tools] Saved distribution PNG for '{col}' to: {file_path}")
-        except Exception as e:
-            print(f"[tools] Warning: Error saving distribution plot for '{col}': {e}")
     return {
-        "individual_plots": saved_files,
-        "plotted_columns": valid_cols
+        "individual_plots": ["interactive_client_side"],
+        "plotted_columns": valid_cols,
+        "visual_distributions": distributions
     }
 
 
@@ -1136,14 +1179,9 @@ def plot_correlation_matrix(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Generates a correlation matrix heatmap for numeric features and association matrix for categorical features.
-    Detects cross-type redundant duplicate pairs (e.g. education vs educational-num) using Correlation Ratio (eta).
-    Excludes non-distributional columns (IDs, coordinates, timestamps).
+    Generates Pearson correlation matrix heatmap and categorical association metrics as clean JSON.
+    Fast mathematical aggregate computation without Matplotlib PNG rendering.
     """
-    plt.close()
-    os.makedirs(output_dir, exist_ok=True)
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
-
     numeric_cols = [c for c in df.columns if _is_numeric_col(df[c]) and not is_non_distributional_column(c, df[c])]
 
     if len(numeric_cols) < 2:
@@ -1164,20 +1202,6 @@ def plot_correlation_matrix(
                     "interpretation": _interpret_effect_size("Pearson", val)
                 })
 
-    fig, ax = plt.subplots(figsize=(max(6, len(numeric_cols) * 0.8), max(5, len(numeric_cols) * 0.7)))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", vmin=-1, vmax=1, ax=ax, cbar=True)
-    ax.set_title("Pearson Correlation Heatmap", fontsize=14, pad=12)
-    plt.xticks(rotation=90, ha="center")
-    plt.yticks(rotation=0)
-
-    try:
-        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        print(f"[tools] Correlation matrix successfully saved to: {full_save_path}")
-    except Exception as e:
-        print(f"[tools] Warning: Error saving correlation matrix: {e}")
-        plt.close()
-
     cat_cols = [c for c in df.columns if (not _is_numeric_col(df[c]) or df[c].nunique() <= 10) and not is_non_distributional_column(c, df[c])]
     cat_assoc = []
     if len(cat_cols) >= 2:
@@ -1191,7 +1215,6 @@ def plot_correlation_matrix(
                     "interpretation": _interpret_effect_size("Cramer", v)
                 })
 
-    # Cross-type redundancy detection (Categorical vs Numeric pairs, e.g. education vs educational-num)
     cross_type_redundant_pairs = []
     for c_col in cat_cols:
         for n_col in numeric_cols:
@@ -1205,8 +1228,13 @@ def plot_correlation_matrix(
                     "interpretation": f"High cross-type redundancy between '{c_col}' and '{n_col}' (Eta = {eta_val:.4f})."
                 })
 
+    z_matrix = corr_matrix.fillna(0).round(4).values.tolist()
+
     return {
-        "correlation_heatmap_saved": full_save_path,
+        "correlation_heatmap_saved": "interactive_client_side",
+        "z_matrix": z_matrix,
+        "x_labels": cols,
+        "y_labels": cols,
         "high_correlation_pairs": high_corr_pairs,
         "categorical_associations": cat_assoc,
         "cross_type_redundant_pairs": cross_type_redundant_pairs
@@ -1223,90 +1251,110 @@ def plot_semantic_bivariate_relationships(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Plots semantic X vs Y relationships selected by the LLM based on domain understanding.
-    Each pair in bivariate_pairs contains:
-    - 'x': X-axis column name
-    - 'y': Y-axis column name
-    - 'hue': Optional hue column name for segmentation
-    - 'rationale': Semantic domain rationale for comparing these two attributes
+    Computes mathematical bivariate relationship models for client-side rendering.
+    Filters out self-pairs (x == y) and non-distributional ID columns.
     """
-    plt.close()
-    os.makedirs(output_dir, exist_ok=True)
-    
-    pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
-    
-    # Auto-generate top pairs if not provided by LLM
+    raw_pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
+
+    valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+    numeric_cols = [c for c in valid_cols if _is_numeric_col(df[c]) and df[c].nunique() > 10]
+    discrete_cols = [c for c in valid_cols if df[c].nunique() <= 10 or not _is_numeric_col(df[c])]
+
+    pairs = []
+    for p in raw_pairs:
+        if isinstance(p, dict):
+            x = p.get("x") or p.get("x_col") or p.get("feature_1")
+            y = p.get("y") or p.get("y_col") or p.get("feature_2")
+            if x and y and x in df.columns and y in df.columns and x != y and not is_non_distributional_column(x, df[x]) and not is_non_distributional_column(y, df[y]):
+                pairs.append({"x": x, "y": y, "rationale": p.get("rationale", "Semantic relationship")})
+
     if not pairs:
-        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c]) and not is_non_distributional_column(c, df[c])]
-        cat_cols = [c for c in df.columns if (not _is_numeric_col(df[c]) or df[c].nunique() <= 10) and not is_non_distributional_column(c, df[c])]
-        
+        if len(discrete_cols) >= 2:
+            pairs.append({"x": discrete_cols[0], "y": discrete_cols[1], "rationale": f"Categorical breakdown of {discrete_cols[0]} by {discrete_cols[1]}"})
+        if discrete_cols and numeric_cols:
+            pairs.append({"x": discrete_cols[0], "y": numeric_cols[0], "rationale": f"Segmented distribution of {numeric_cols[0]} across {discrete_cols[0]}"})
         if len(numeric_cols) >= 2:
-            pairs.append({"x": numeric_cols[0], "y": numeric_cols[1], "rationale": "Bivariate numerical comparison"})
-        if cat_cols and numeric_cols:
-            pairs.append({"x": cat_cols[0], "y": numeric_cols[0], "rationale": "Segmented numerical distribution across category"})
+            pairs.append({"x": numeric_cols[0], "y": numeric_cols[1], "rationale": f"Bivariate scatter comparison of {numeric_cols[0]} vs {numeric_cols[1]}"})
 
-    saved_files = []
-    
+    bivariate_data_list = []
+    seen_pairs = set()
+
     for pair in pairs:
-        if not isinstance(pair, dict):
+        x_col = pair["x"]
+        y_col = pair["y"]
+        pair_key = tuple(sorted([x_col, y_col]))
+        if pair_key in seen_pairs:
+            continue
+        seen_pairs.add(pair_key)
+
+        clean_df = df[[x_col, y_col]].dropna()
+        if len(clean_df) < 5:
             continue
 
-        x_col = pair.get("x") or pair.get("x_col") or pair.get("feature_1")
-        y_col = pair.get("y") or pair.get("y_col") or pair.get("feature_2")
-        hue_col = pair.get("hue") or pair.get("hue_col")
-        rationale = pair.get("rationale", "Semantic domain relationship")
-        
-        if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
-            continue
-            
-        file_name = f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png"
-        file_path = os.path.join(output_dir, file_name)
-        
-        try:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            clean_df = df[[x_col, y_col] + ([hue_col] if hue_col and hue_col in df.columns else [])].dropna()
-            
-            if len(clean_df) < 5:
-                plt.close()
-                continue
-                
-            x_is_num = _is_numeric_col(clean_df[x_col])
-            y_is_num = _is_numeric_col(clean_df[y_col])
-            
-            if x_is_num and y_is_num:
-                sns.scatterplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set1", alpha=0.7)
-                sns.regplot(data=clean_df, x=x_col, y=y_col, scatter=False, ax=ax, color="#ef4444")
-                ax.set_title(f"{x_col} vs {y_col}", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
-            elif not x_is_num and y_is_num:
-                sns.boxplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
-                ax.set_title(f"{y_col} distribution across {x_col}", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
-            elif x_is_num and not y_is_num:
-                sns.boxplot(data=clean_df, x=y_col, y=x_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
-                ax.set_title(f"{x_col} distribution across {y_col}", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
-            else:
-                ct = pd.crosstab(clean_df[x_col], clean_df[y_col], normalize="index")
-                ct.plot(kind="bar", stacked=True, ax=ax, colormap="viridis")
-                ax.set_title(f"{x_col} vs {y_col} (Proportion)", fontsize=11, pad=10)
-                ax.tick_params(axis='x', rotation=90)
-                ax.tick_params(axis='y', rotation=0)
-                
-            plt.tight_layout()
-            plt.savefig(file_path, dpi=150, bbox_inches="tight")
-            plt.close()
-            saved_files.append({"name": file_name, "path": file_path, "x": x_col, "y": y_col, "rationale": rationale})
-        except Exception as e:
-            print(f"[tools] Warning: Error plotting bivariate relationship '{x_col}' vs '{y_col}': {e}")
-            plt.close()
+        x_is_num = _is_numeric_col(clean_df[x_col])
+        y_is_num = _is_numeric_col(clean_df[y_col])
+        x_nunique = clean_df[x_col].nunique()
+        y_nunique = clean_df[y_col].nunique()
+
+        x_is_discrete = (not x_is_num) or (x_nunique <= 10)
+        y_is_discrete = (not y_is_num) or (y_nunique <= 10)
+
+        pair_entry = {
+            "x": x_col,
+            "y": y_col,
+            "rationale": pair.get("rationale", "Semantic relationship"),
+            "x_is_numeric": x_is_num,
+            "y_is_numeric": y_is_num,
+            "x_is_discrete": x_is_discrete,
+            "y_is_discrete": y_is_discrete,
+        }
+
+        if x_is_discrete and y_is_discrete and x_nunique <= 15 and y_nunique <= 15:
+            sx = clean_df[x_col].astype(str)
+            sy = clean_df[y_col].astype(str)
+            ct = pd.crosstab(sx, sy)
+            pair_entry["grouped_counts"] = ct.to_dict()
+            ct_norm = pd.crosstab(sx, sy, normalize="index")
+            pair_entry["crosstab"] = ct_norm.round(4).to_dict()
+        elif x_is_discrete and (y_is_num or y_nunique > 10):
+            groups = {}
+            for cat, group in clean_df.groupby(x_col):
+                vals = pd.to_numeric(group[y_col], errors='coerce').dropna()
+                if len(vals) > 0:
+                    groups[str(cat)] = {
+                        "min": round(_safe_float(vals.min()), 4),
+                        "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                        "median": round(_safe_float(vals.median()), 4),
+                        "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                        "max": round(_safe_float(vals.max()), 4)
+                    }
+            pair_entry["groups"] = groups
+        elif y_is_discrete and (x_is_num or x_nunique > 10):
+            groups = {}
+            for cat, group in clean_df.groupby(y_col):
+                vals = pd.to_numeric(group[x_col], errors='coerce').dropna()
+                if len(vals) > 0:
+                    groups[str(cat)] = {
+                        "min": round(_safe_float(vals.min()), 4),
+                        "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                        "median": round(_safe_float(vals.median()), 4),
+                        "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                        "max": round(_safe_float(vals.max()), 4)
+                    }
+            pair_entry["groups"] = groups
+        else:
+            sample_df = clean_df.sample(n=min(500, len(clean_df)), random_state=42) if len(clean_df) > 500 else clean_df
+            points = []
+            for _, r in sample_df.iterrows():
+                points.append({"x": round(_safe_float(r[x_col]), 4), "y": round(_safe_float(r[y_col]), 4)})
+            pair_entry["points"] = points
+
+        bivariate_data_list.append(pair_entry)
 
     return {
-        "bivariate_plots_saved": saved_files,
-        "count": len(saved_files)
+        "bivariate_plots_saved": ["interactive_client_side"],
+        "count": len(bivariate_data_list),
+        "bivariate_data": bivariate_data_list
     }
 
 
@@ -1322,59 +1370,68 @@ def plot_pairplot(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Generates a concise pairplot visualizing pairwise distributions and relationships
-    across a reasonable subset of key numerical features (clamped to max 4-5 features).
+    Computes pairwise feature relationship coordinates for client-side rendering.
     """
-    plt.close()
-    os.makedirs(output_dir, exist_ok=True)
-    
     raw_cols = columns or kwargs.get("feature_cols") or kwargs.get("cols") or kwargs.get("numeric_cols")
     if not raw_cols:
         raw_cols = [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 2 and not is_non_distributional_column(c, df[c])]
         
-    valid_cols = [c for c in raw_cols if c in df.columns and _is_numeric_col(df[c])]
-    
+    valid_cols = []
+    if raw_cols:
+        for c in raw_cols:
+            if c in df.columns:
+                s_num = pd.to_numeric(df[c], errors='coerce').dropna()
+                if len(s_num) > 0 and _is_numeric_col(df[c]):
+                    valid_cols.append(c)
+
     max_features = 4
     if len(valid_cols) > max_features:
         valid_cols = valid_cols[:max_features]
-        print(f"[tools] Parameter Clamping: Clamped pairplot features to top {max_features}: {valid_cols}")
-        
+
     if len(valid_cols) < 2:
         return {"error": "Insufficient numeric columns for pairplot rendering."}
-        
+
     hue_col = hue or kwargs.get("target_col")
     if hue_col and hue_col not in df.columns:
         hue_col = None
-        
-    cols_to_plot = list(valid_cols)
-    if hue_col and hue_col not in cols_to_plot:
-        cols_to_plot.append(hue_col)
-        
-    clean_df = df[cols_to_plot].dropna()
-    if len(clean_df) < 5:
-        clean_df = df[cols_to_plot]
-        
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
-    
-    try:
-        if hue_col:
-            grid = sns.pairplot(clean_df, vars=valid_cols, hue=hue_col, palette="Set1", corner=True, plot_kws={"alpha": 0.6, "s": 25})
-        else:
-            grid = sns.pairplot(clean_df, vars=valid_cols, corner=True, plot_kws={"alpha": 0.6, "s": 25})
-            
-        grid.fig.suptitle("Pairwise Feature Relationships (Pairplot)", y=1.02, fontsize=14)
-        grid.savefig(full_save_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        print(f"[tools] Pairplot successfully saved to: {full_save_path}")
-    except Exception as e:
-        print(f"[tools] Warning: Pairplot rendering error: {e}")
-        plt.close()
-        
+
+    clean_df = df[valid_cols + ([hue_col] if hue_col else [])].dropna()
+    sample_df = clean_df.sample(n=min(300, len(clean_df)), random_state=42) if len(clean_df) > 300 else clean_df
+
+    pairplot_matrix = []
+    for c1 in valid_cols:
+        row_entry = []
+        for c2 in valid_cols:
+            if c1 == c2:
+                s_num = pd.to_numeric(clean_df[c1], errors='coerce').dropna()
+                if len(s_num) > 0:
+                    counts, bin_edges = np.histogram(s_num, bins=10)
+                    bin_centers = [(bin_edges[i] + bin_edges[i+1]) / 2.0 for i in range(len(counts))]
+                    row_entry.append({
+                        "type": "diag",
+                        "feature": c1,
+                        "bin_centers": [round(_safe_float(b), 4) for b in bin_centers],
+                        "counts": counts.tolist()
+                    })
+            else:
+                points = []
+                for _, r in sample_df.iterrows():
+                    points.append({"x": round(_safe_float(r[c2]), 4), "y": round(_safe_float(r[c1]), 4)})
+                row_entry.append({
+                    "type": "scatter",
+                    "x_feature": c2,
+                    "y_feature": c1,
+                    "points": points
+                })
+        pairplot_matrix.append(row_entry)
+
     return {
-        "pairplot_saved": full_save_path,
+        "pairplot_saved": "interactive_client_side",
         "features_plotted": valid_cols,
-        "hue": hue_col
+        "hue": hue_col,
+        "pairplot_matrix": pairplot_matrix
     }
+
 
 
 # =====================================================================
@@ -1565,6 +1622,13 @@ def compile_and_save_metrics(
             "cardinality": int(df[col].nunique())
         }
         
+    # Ensure pure JSON visual chart data structures are embedded into canonical metrics payload
+    dist_res = plot_feature_distributions(df)
+    corr_matrix_res = corr_res or plot_correlation_matrix(df)
+    bivariate_res = plot_semantic_bivariate_relationships(df)
+    pairplot_res = plot_pairplot(df)
+    target_inter_res = plot_target_interaction(df, target_col=target_col)
+
     metrics_dict = {
         "dataset_overview": {
             "dataset_path": os.path.abspath(dataset_path),
@@ -1575,10 +1639,15 @@ def compile_and_save_metrics(
         "imputation_summary": imputation_res or {"status": "Imputation completed"},
         "outlier_analysis": outlier_res or {},
         "engineered_features": engineered_res or [],
-        "correlation_analysis": corr_res or {},
-        "categorical_associations": (corr_res or {}).get("categorical_associations", []),
+        "correlation_analysis": corr_matrix_res,
+        "categorical_associations": corr_matrix_res.get("categorical_associations", []),
         "statistical_hypothesis_tests": hypothesis_res or {},
         "predictive_modeling_blueprint": blueprint_res or generate_predictive_blueprint(df, target_col),
+        "visual_distributions": dist_res.get("visual_distributions", {}),
+        "correlation_data": corr_matrix_res,
+        "bivariate_data": bivariate_res.get("bivariate_data", []),
+        "pairplot_data": pairplot_res,
+        "target_interaction_data": target_inter_res.get("interaction_data", {}),
         "extracted_insights": {
             "key_findings": [
                 f"Dataset contains {num_rows} rows and {num_cols} columns.",
@@ -1636,7 +1705,9 @@ class PlotTargetInteractionArgs(BaseModel):
     save_path: str = Field(default="target_interactions.png")
 
 class PlotSemanticBivariateRelationshipsArgs(BaseModel):
-    bivariate_pairs: List[Dict[str, Optional[str]]] = Field(description="List of dicts [{'x': 'col1', 'y': 'col2', 'hue': 'target'}]")
+    bivariate_pairs: List[Dict[str, Optional[str]]] = Field(
+        description="List of dicts [{'x': 'col1', 'y': 'col2', 'rationale': 'Domain rationale'}]. IMPORTANT: Select semantically meaningful feature pairs (x != y). Exclude ID, index, key, or coordinate columns."
+    )
 
 class PlotPairplotArgs(BaseModel):
     columns: List[str] = Field(description="List of 3-4 key numeric features")
@@ -1680,7 +1751,7 @@ TOOL_REGISTRY = {
     },
     "plot_correlation_matrix": {
         "function": plot_correlation_matrix,
-        "description": "Generates Pearson correlation matrix heatmap PNG image asset.",
+        "description": "Generates Pearson correlation matrix heatmap asset.",
         "model": PlotCorrelationMatrixArgs
     },
     "plot_feature_distributions": {
@@ -1690,12 +1761,12 @@ TOOL_REGISTRY = {
     },
     "plot_target_interaction": {
         "function": plot_target_interaction,
-        "description": "Generates segmented distribution / scatter visualization comparing key feature vs target.",
+        "description": "Plots target variable interaction chart (target_col vs top domain-relevant feature_col, e.g. Survived vs Pclass or Sex). Exclude unique ID/index columns.",
         "model": PlotTargetInteractionArgs
     },
     "plot_semantic_bivariate_relationships": {
         "function": plot_semantic_bivariate_relationships,
-        "description": "Plots custom X vs Y scatter/boxplot/countplot relationships dynamically selected by LLM based on semantic domain reasoning (passed via 'bivariate_pairs' list of dicts with 'x', 'y', optional 'hue', and 'rationale').",
+        "description": "Plots semantically meaningful bivariate relationship charts (X vs Y feature interactions, e.g. Pclass vs Survived, Sex vs Survived, Age vs Fare). IMPORTANT: Never pass identical feature pairs (x == y). Exclude unique ID/index/coordinate columns.",
         "model": PlotSemanticBivariateRelationshipsArgs
     },
     "plot_pairplot": {

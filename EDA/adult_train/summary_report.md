@@ -1,6 +1,6 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\f4673b7e-81d1-4823-a0f0-70734d95721b`
-**Processed Files:** `agent_plan_log.json`, `agent_state.json`, `bivariate_Age_vs_Hours_per_week.png`, `bivariate_Education_Num_vs_Occupation.png`, `bivariate_Martial_Status_vs_Relationship.png`, `bivariate_Sex_vs_Occupation.png`, `correlation_matrix.png`, `current_df.csv`, `dist_Age.png`, `dist_Education.png`, `dist_Education_Num.png`, `dist_Hours_per_week.png`, `dist_Martial_Status.png`, `dist_Occupation.png`, `dist_Race.png`, `dist_Relationship.png`, `dist_Sex.png`, `dist_Target.png`, `dist_Workclass.png`, `metadata_profile.json`, `metrics.json`, `pairplot.png`, `target_interactions.png`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\ff353bd1-081c-4a0a-bc11-8f8ffccb9c78`
+**Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
 ---
@@ -85,24 +85,7 @@ _Recommendation: drop one feature from each redundant pair before modeling to av
 ---
 
 ## 7. Generated Visual Artifacts
-- **`bivariate_Age_vs_Hours_per_week.png`** (392.29 KB) -- Relationship between `Age` and `Hours per week`.
-- **`bivariate_Education_Num_vs_Occupation.png`** (83.3 KB) -- Relationship between `Education Num` and `Occupation`.
-- **`bivariate_Martial_Status_vs_Relationship.png`** (62.84 KB) -- Relationship between `Martial Status` and `Relationship`.
-- **`bivariate_Sex_vs_Occupation.png`** (69.21 KB) -- Relationship between `Sex` and `Occupation`.
-- **`correlation_matrix.png`** (71.69 KB) -- Pearson correlation heatmap across numeric features.
-- **`dist_Age.png`** (43.56 KB) -- Distribution of `Age`.
-- **`dist_Education.png`** (43.94 KB) -- Distribution of `Education`.
-- **`dist_Education_Num.png`** (34.52 KB) -- Distribution of `Education Num`.
-- **`dist_Hours_per_week.png`** (31.9 KB) -- Distribution of `Hours per week`.
-- **`dist_Martial_Status.png`** (45.11 KB) -- Distribution of `Martial Status`.
-- **`dist_Occupation.png`** (54.53 KB) -- Distribution of `Occupation`.
-- **`dist_Race.png`** (34.54 KB) -- Distribution of `Race`.
-- **`dist_Relationship.png`** (37.42 KB) -- Distribution of `Relationship`.
-- **`dist_Sex.png`** (21.93 KB) -- Distribution of `Sex`.
-- **`dist_Target.png`** (22.89 KB) -- Distribution of `Target`.
-- **`dist_Workclass.png`** (41.54 KB) -- Distribution of `Workclass`.
-- **`pairplot.png`** (626.36 KB) -- Pairwise scatter/distribution grid across key numeric features, colored by target.
-- **`target_interactions.png`** (45.65 KB) -- Overview of how the top features interact with the target variable.
+No PNG/SVG image assets found in directory.
 
 ---
 

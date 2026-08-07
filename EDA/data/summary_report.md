@@ -1,13 +1,13 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\f4673b7e-81d1-4823-a0f0-70734d95721b`
-**Processed Files:** `agent_plan_log.json`, `agent_state.json`, `bivariate_Age_vs_Fare.png`, `bivariate_FamilySize_vs_Survived.png`, `bivariate_Pclass_vs_Fare.png`, `bivariate_Sex_vs_Pclass.png`, `current_df.csv`, `dist_Age.png`, `dist_Embarked.png`, `dist_FamilySize.png`, `dist_Fare.png`, `dist_Pclass.png`, `dist_Sex.png`, `dist_Survived.png`, `metadata_profile.json`, `metrics.json`, `pairplot.png`, `target_interactions.png`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\e71bd788-597f-419d-8fde-ddececcbd3db`
+**Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
 ---
 
 ## 1. Dataset Overview
 - **Dataset Identifier:** `data.csv`
-- **Dimensions:** `891` rows x `15` columns
+- **Dimensions:** `891` rows x `14` columns
 - **Target Variable:** `Survived`
 - **Missing Value Columns:** 3
   - `Age`: 177 (19.9%)
@@ -57,7 +57,6 @@ No numeric outlier statistics reported.
 ## 4. Derived Domain Attributes & Composite Metrics
 - **`FamilySize`**: Formula: `SibSp + Parch + 1` | Purpose: Total number of family members on board.
 - **`IsAlone`**: Formula: `FamilySize == 1` | Purpose: Indicator for passengers traveling without family.
-- **`HasCabin`**: Formula: `Cabin.notnull()` | Purpose: Binary indicator for whether a cabin number was recorded, often linked to socio-economic status.
 
 ---
 
@@ -69,36 +68,66 @@ All predictors below were tested against `Survived` and found statistically sign
 | `Sex` | ANOVA | 0.5434 | Large effect | 1.4061e-69 | Gender is a primary indicator of survival, reflecting historical emergency protocols that prioritized specific groups. |
 | `Pclass` | Pearson Correlation | 0.3385 | Moderate correlation | 2.5370e-25 | Socioeconomic status is strongly linked to survival, likely due to the location and accessibility of different cabin tiers. |
 | `Fare` | Pearson Correlation | 0.2573 | Weak correlation | 6.1202e-15 | The amount paid for a ticket relates to survival, as higher spending often granted better access to safety resources. |
-| `IsAlone` | ANOVA | 0.2034 | Large effect | 9.0095e-10 | Whether a passenger traveled solo or with others is associated with their likelihood of reaching safety. |
-| `Embarked` | ANOVA | 0.1825 | Large effect | 1.3423e-06 | The port where a passenger boarded shows a connection to survival rates, possibly reflecting different passenger demographics. |
-| `Parch` | Pearson Correlation | 0.0816 | Negligible correlation | 1.4799e-02 | The number of parents or children traveling with a passenger is linked to their survival outcome. |
+| `IsAlone` | ANOVA | 0.2034 | Large effect | 9.0095e-10 | Traveling without family is associated with different survival outcomes compared to those moving in groups. |
+| `Embarked` | ANOVA | 0.1825 | Large effect | 1.3423e-06 | The location where a passenger boarded shows a connection to survival, possibly reflecting different passenger demographics from each port. |
+| `Parch` | Pearson Correlation | 0.0816 | Negligible correlation | 1.4799e-02 | The number of parents or children traveling together is linked to survival rates during the evacuation process. |
 
 ---
 
 ## 6. Redundancy & Multicollinearity Analysis
-No high-correlation or cross-type redundant feature pairs detected (threshold: |r| or Eta >= 0.85).
+**Numeric-Numeric High Correlation Pairs (|r| >= 0.85):**
+
+| Feature 1 | Feature 2 | Correlation (r) | Interpretation |
+|---|---|---|---|
+| `SibSp` | `FamilySize` | 0.8907 | Strong correlation |
+
+**Cross-Type Redundant Pairs (categorical vs. its own numeric/ordinal encoding, Eta >= 0.85):**
+
+| Categorical Feature | Numeric Feature | Correlation Ratio (Eta) | Interpretation |
+|---|---|---|---|
+| `SibSp` | `FamilySize` | 0.8929 | High cross-type redundancy between 'SibSp' and 'FamilySize' (Eta = 0.8929). |
+| `FamilySize` | `SibSp` | 0.9173 | High cross-type redundancy between 'FamilySize' and 'SibSp' (Eta = 0.9173). |
+
+_Recommendation: drop one feature from each redundant pair before modeling to avoid multicollinearity._
 
 ---
 
 ## 7. Generated Visual Artifacts
-- **`bivariate_Age_vs_Fare.png`** (99.44 KB) -- Relationship between `Age` and `Fare`.
-- **`bivariate_FamilySize_vs_Survived.png`** (26.18 KB) -- Relationship between `FamilySize` and `Survived`.
-- **`bivariate_Pclass_vs_Fare.png`** (40.58 KB) -- Relationship between `Pclass` and `Fare`.
-- **`bivariate_Sex_vs_Pclass.png`** (25.23 KB) -- Relationship between `Sex` and `Pclass`.
-- **`dist_Age.png`** (37.47 KB) -- Distribution of `Age`.
-- **`dist_Embarked.png`** (24.6 KB) -- Distribution of `Embarked`.
-- **`dist_FamilySize.png`** (23.14 KB) -- Distribution of `FamilySize`.
-- **`dist_Fare.png`** (31.93 KB) -- Distribution of `Fare`.
-- **`dist_Pclass.png`** (18.96 KB) -- Distribution of `Pclass`.
-- **`dist_Sex.png`** (22.63 KB) -- Distribution of `Sex`.
-- **`dist_Survived.png`** (19.92 KB) -- Distribution of `Survived`.
-- **`pairplot.png`** (219.2 KB) -- Pairwise scatter/distribution grid across key numeric features, colored by target.
-- **`target_interactions.png`** (58.22 KB) -- Overview of how the top features interact with the target variable.
+No PNG/SVG image assets found in directory.
 
 ---
 
 ## 8. Categorical Associations (Cramer's V)
-No categorical associations available.
+| Feature 1 | Feature 2 | Cramer's V |
+|---|---|---|
+| `Survived` | `Pclass` | 0.3367 |
+| `Survived` | `Sex` | 0.5426 |
+| `Survived` | `SibSp` | 0.1874 |
+| `Survived` | `Parch` | 0.1569 |
+| `Survived` | `Embarked` | 0.1731 |
+| `Survived` | `FamilySize` | 0.2857 |
+| `Survived` | `IsAlone` | 0.2007 |
+| `Pclass` | `Sex` | 0.1297 |
+| `Pclass` | `SibSp` | 0.1478 |
+| `Pclass` | `Parch` | 0.022 |
+| `Pclass` | `Embarked` | 0.2637 |
+| `Pclass` | `FamilySize` | 0.2029 |
+| `Pclass` | `IsAlone` | 0.1275 |
+| `Sex` | `SibSp` | 0.2059 |
+| `Sex` | `Parch` | 0.2471 |
+| `Sex` | `Embarked` | 0.1255 |
+| `Sex` | `FamilySize` | 0.3128 |
+| `Sex` | `IsAlone` | 0.302 |
+| `SibSp` | `Parch` | 0.2399 |
+| `SibSp` | `Embarked` | 0.0612 |
+| `SibSp` | `FamilySize` | 0.7645 |
+| `SibSp` | `IsAlone` | 0.8367 |
+| `Parch` | `Embarked` | 0.0 |
+| `Parch` | `FamilySize` | 0.4901 |
+| `Parch` | `IsAlone` | 0.6858 |
+| `Embarked` | `FamilySize` | 0.098 |
+| `Embarked` | `IsAlone` | 0.1118 |
+| `FamilySize` | `IsAlone` | 0.9961 |
 
 ---
 
@@ -121,7 +150,7 @@ No categorical associations available.
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'Survived' (Binary Classification). Model recommendations and validation strategy tailored for 891 rows x 15 columns.
+- **Executive Summary:** Target: 'Survived' (Binary Classification). Model recommendations and validation strategy tailored for 891 rows x 14 columns.
 
 ---
 

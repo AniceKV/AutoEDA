@@ -11,13 +11,12 @@ df = pd.read_csv(DATA_FILEPATH)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
-  "target_definition": "Annual_Income_USD",
-  "problem_type": "Regression",
+  "target_definition": "Undefined (Unsupervised)",
+  "problem_type": "Unsupervised / Exploratory",
   "recommended_algorithms": [
-    "Regularized Linear Regression (Ridge / Lasso)",
-    "Random Forest Regressor",
-    "Gradient Boosting Regressor",
-    "Support Vector Regressor (SVR)"
+    "K-Means Clustering",
+    "Hierarchical Agglomerative Clustering",
+    "Principal Component Analysis (PCA) for Dimensionality Reduction"
   ],
   "feature_selection_strategy": [
     "Exclude high-cardinality ID or text name columns",
@@ -25,15 +24,14 @@ predictive_blueprint = {
     "Remove collinear features exceeding correlation threshold > 0.85"
   ],
   "validation_strategy": [
-    "K-Fold Cross-Validation (5 folds)",
-    "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
+    "Evaluate Silhouette Score and Inertia elbow curve"
   ],
   "overfitting_risk_mitigation": [
     "Apply regularization penalties (L1/L2)",
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: Annual_Income_USD (Regression). Use robust cross-validation on 10000 rows x 10 columns."
+  "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 10000 rows x 10 columns."
 }
 
 if __name__ == '__main__':
