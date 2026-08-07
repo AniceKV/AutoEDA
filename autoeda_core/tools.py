@@ -981,31 +981,34 @@ def run_statistical_hypothesis_tests(
         try:
             if col_is_num and target_is_num:
                 corr, p = stats.pearsonr(data_col, data_target)
-                eff = abs(corr)
+                eff = abs(float(corr))
                 label = _interpret_effect_size("Pearson Correlation", eff)
                 if p < alpha:
-                    significant_items.append({"feature": col, "test": "Pearson Correlation", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": p})
+                    significant_items.append({"feature": col, "test": "Pearson Correlation", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": float(p)})
             elif not col_is_num and target_is_num:
                 groups = [group.values for name, group in data_target.groupby(data_col)]
                 if len(groups) > 1:
                     f_val, p = stats.f_oneway(*groups)
-                    label = _interpret_effect_size("ANOVA", f_val)
+                    eff = _correlation_ratio(data_col, data_target)
+                    label = _interpret_effect_size("ANOVA", eff)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(f_val, 4), "effect_size_label": label, "p_value": p})
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": float(p)})
             elif col_is_num and not target_is_num:
                 groups = [group.values for name, group in data_col.groupby(data_target)]
                 if len(groups) > 1:
                     f_val, p = stats.f_oneway(*groups)
-                    label = _interpret_effect_size("ANOVA", f_val)
+                    eff = _correlation_ratio(data_target, data_col)
+                    label = _interpret_effect_size("ANOVA", eff)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(f_val, 4), "effect_size_label": label, "p_value": p})
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": float(p)})
             else:
                 contingency = pd.crosstab(data_col, data_target)
                 if contingency.size > 0:
                     chi2, p, _, _ = stats.chi2_contingency(contingency)
-                    label = _interpret_effect_size("Chi-Square", chi2)
+                    eff = _cramers_v(data_col, data_target)
+                    label = _interpret_effect_size("Chi-Square", eff)
                     if p < alpha:
-                        significant_items.append({"feature": col, "test": "Chi-Square", "effect_size": round(chi2, 4), "effect_size_label": label, "p_value": p})
+                        significant_items.append({"feature": col, "test": "Chi-Square", "effect_size": round(eff, 4), "effect_size_label": label, "p_value": float(p)})
         except Exception:
             continue
             

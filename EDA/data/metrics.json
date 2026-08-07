@@ -1,4 +1,323 @@
 {
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\temp_uploads\\data.csv",
+    "shape": {
+      "rows": 891,
+      "columns": 12
+    },
+    "target_column": "Survived",
+    "column_summary": {
+      "PassengerId": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 891
+      },
+      "Survived": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Pclass": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Name": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 891
+      },
+      "Sex": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Age": {
+        "dtype": "float64",
+        "missing_count": 177,
+        "cardinality": 88
+      },
+      "SibSp": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Parch": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 7
+      },
+      "Ticket": {
+        "dtype": "str",
+        "missing_count": 0,
+        "cardinality": 681
+      },
+      "Fare": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 248
+      },
+      "Cabin": {
+        "dtype": "str",
+        "missing_count": 687,
+        "cardinality": 147
+      },
+      "Embarked": {
+        "dtype": "str",
+        "missing_count": 2,
+        "cardinality": 3
+      }
+    }
+  },
+  "imputation_summary": {
+    "status": "Imputation completed"
+  },
+  "outlier_analysis": {},
+  "engineered_features": [],
+  "correlation_analysis": {
+    "correlation_heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0\\correlation_matrix.png",
+    "high_correlation_pairs": [],
+    "categorical_associations": [
+      {
+        "feature_1": "Survived",
+        "feature_2": "Pclass",
+        "cramers_v": 0.3367,
+        "interpretation": "Medium association"
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Sex",
+        "cramers_v": 0.5426,
+        "interpretation": "Large association"
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "SibSp",
+        "cramers_v": 0.1874,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Parch",
+        "cramers_v": 0.1569,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Survived",
+        "feature_2": "Embarked",
+        "cramers_v": 0.1661,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Sex",
+        "cramers_v": 0.1297,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "SibSp",
+        "cramers_v": 0.1478,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Parch",
+        "cramers_v": 0.022,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Pclass",
+        "feature_2": "Embarked",
+        "cramers_v": 0.2598,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Sex",
+        "feature_2": "SibSp",
+        "cramers_v": 0.2059,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Sex",
+        "feature_2": "Parch",
+        "cramers_v": 0.2471,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Sex",
+        "feature_2": "Embarked",
+        "cramers_v": 0.1131,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "SibSp",
+        "feature_2": "Parch",
+        "cramers_v": 0.2399,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "SibSp",
+        "feature_2": "Embarked",
+        "cramers_v": 0.0919,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Parch",
+        "feature_2": "Embarked",
+        "cramers_v": 0.0518,
+        "interpretation": "Negligible association"
+      }
+    ],
+    "cross_type_redundant_pairs": []
+  },
+  "categorical_associations": [
+    {
+      "feature_1": "Survived",
+      "feature_2": "Pclass",
+      "cramers_v": 0.3367,
+      "interpretation": "Medium association"
+    },
+    {
+      "feature_1": "Survived",
+      "feature_2": "Sex",
+      "cramers_v": 0.5426,
+      "interpretation": "Large association"
+    },
+    {
+      "feature_1": "Survived",
+      "feature_2": "SibSp",
+      "cramers_v": 0.1874,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Survived",
+      "feature_2": "Parch",
+      "cramers_v": 0.1569,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Survived",
+      "feature_2": "Embarked",
+      "cramers_v": 0.1661,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Pclass",
+      "feature_2": "Sex",
+      "cramers_v": 0.1297,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Pclass",
+      "feature_2": "SibSp",
+      "cramers_v": 0.1478,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Pclass",
+      "feature_2": "Parch",
+      "cramers_v": 0.022,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Pclass",
+      "feature_2": "Embarked",
+      "cramers_v": 0.2598,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Sex",
+      "feature_2": "SibSp",
+      "cramers_v": 0.2059,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Sex",
+      "feature_2": "Parch",
+      "cramers_v": 0.2471,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Sex",
+      "feature_2": "Embarked",
+      "cramers_v": 0.1131,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "SibSp",
+      "feature_2": "Parch",
+      "cramers_v": 0.2399,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "SibSp",
+      "feature_2": "Embarked",
+      "cramers_v": 0.0919,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Parch",
+      "feature_2": "Embarked",
+      "cramers_v": 0.0518,
+      "interpretation": "Negligible association"
+    }
+  ],
+  "statistical_hypothesis_tests": {
+    "target_col": "Survived",
+    "significant_predictors": [
+      "Sex",
+      "Embarked",
+      "Pclass",
+      "Fare",
+      "Parch",
+      "Age"
+    ],
+    "ranked_significant_details": [
+      {
+        "feature": "Sex",
+        "test": "ANOVA",
+        "effect_size": 372.4057,
+        "effect_size_label": "Large effect",
+        "p_value": 1.4060661308806846e-69
+      },
+      {
+        "feature": "Embarked",
+        "test": "ANOVA",
+        "effect_size": 13.6053,
+        "effect_size_label": "Large effect",
+        "p_value": 1.514339014291324e-06
+      },
+      {
+        "feature": "Pclass",
+        "test": "Pearson Correlation",
+        "effect_size": 0.3385,
+        "effect_size_label": "Moderate correlation",
+        "p_value": 2.537047387981532e-25
+      },
+      {
+        "feature": "Fare",
+        "test": "Pearson Correlation",
+        "effect_size": 0.2573,
+        "effect_size_label": "Weak correlation",
+        "p_value": 6.1201893419245854e-15
+      },
+      {
+        "feature": "Parch",
+        "test": "Pearson Correlation",
+        "effect_size": 0.0816,
+        "effect_size_label": "Negligible correlation",
+        "p_value": 0.014799245374728003
+      },
+      {
+        "feature": "Age",
+        "test": "Pearson Correlation",
+        "effect_size": 0.0772,
+        "effect_size_label": "Negligible correlation",
+        "p_value": 0.039124654013482245
+      }
+    ]
+  },
   "predictive_modeling_blueprint": {
     "target_definition": "Survived",
     "problem_type": "Binary Classification",
@@ -23,5 +342,19 @@
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
     "executive_summary": "Target: 'Survived' (Binary Classification). Model recommendations and validation strategy tailored for 891 rows x 12 columns."
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 891 rows and 12 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": [
+      "Sex",
+      "Embarked",
+      "Pclass",
+      "Fare",
+      "Parch",
+      "Age"
+    ]
   }
 }
