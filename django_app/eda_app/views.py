@@ -595,30 +595,33 @@ def submit_answer(request):
 
 
 def download_report(request):
-    """Stream the eda_report.pdf as a PDF file download."""
+    """Stream the eda_report.html as an HTML file download."""
     sid = _session_id(request)
     csv_path = request.session.get("selected_csv_path", "")
-    dataset_name = os.path.splitext(os.path.basename(csv_path))[0] if csv_path else "dataset"
+    if not csv_path:
+        return HttpResponse("No dataset selected.", status=404)
+
+    dataset_name = os.path.splitext(os.path.basename(csv_path))[0]
     eda_dir = _resolve_eda_dir(sid, dataset_name)
     if not eda_dir:
         return HttpResponse("Report not found.", status=404)
 
-    pdf_path = os.path.join(eda_dir, "eda_report.pdf")
-    if not os.path.exists(pdf_path):
+    html_path = os.path.join(eda_dir, "eda_report.html")
+    if not os.path.exists(html_path):
         try:
-            from autoeda_core.pdf_report_generator import generate_pdf_report
-            generate_pdf_report(workspace_dir=eda_dir)
+            from autoeda_core.html_report_generator import generate_html_report
+            generate_html_report(workspace_dir=eda_dir)
         except Exception as exc:
-            print(f"[views] PDF report generation failed: {exc}")
+            print(f"[views] HTML report generation failed: {exc}")
 
-    if not os.path.exists(pdf_path):
-        return HttpResponse("PDF report not found and could not be generated.", status=404)
+    if not os.path.exists(html_path):
+        return HttpResponse("HTML report not found and could not be generated.", status=404)
 
     response = FileResponse(
-        open(pdf_path, "rb"),
-        content_type="application/pdf",
+        open(html_path, "rb"),
+        content_type="text/html",
         as_attachment=True,
-        filename=f"eda_report_{dataset_name}.pdf",
+        filename=f"eda_report_{dataset_name}.html",
     )
     return response
 

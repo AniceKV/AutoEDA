@@ -12,8 +12,6 @@ from . import tools
 from .profiler import run_and_save_profile
 from .summary_generator import create_summary, extract_dataset_name
 from .html_report_generator import generate_html_report
-from .pdf_report_generator import generate_pdf_report
-
 load_dotenv(override=True)
 
 
@@ -494,12 +492,8 @@ def run_tool_based_eda(
         print("\n6. Invoking summary_generator to synthesize Executive Summary...")
         summary_text = create_summary(directory_path=workspace_dir, use_llm=False, dataset_name=dataset_name)
 
-    print("\n7. Generating profile reports (eda_report.html & eda_report.pdf) with Executive Summary...")
+    print("\n7. Generate Standalone Interactive HTML Report")
     generate_html_report(workspace_dir=workspace_dir)
-    try:
-        generate_pdf_report(workspace_dir=workspace_dir)
-    except Exception as exc:
-        print(f"[agent_loop] Warning: PDF report generation failed: {exc}")
     
     print(f"8. Exporting sandbox assets to: {export_dir}...")
     copied_files = []
