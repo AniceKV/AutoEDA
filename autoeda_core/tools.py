@@ -1293,6 +1293,282 @@ def plot_semantic_bivariate_relationships(
     }
 
 
+def infer_llm_bivariate_pairs(
+    df: pd.DataFrame,
+    dataset_name: str = "",
+    target_col: Optional[str] = None,
+    top_n: int = 5,
+    **kwargs
+) -> List[Dict[str, Any]]:
+    """
+    Leverages LLM inference to identify semantically meaningful or domain-relevant bivariate pairs (x, y)
+    along with a natural language rationale for why the pair interaction is insightful.
+    Includes a deterministic fallback if LLM is offline or no API key is configured.
+    """
+    valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+    if len(valid_cols) < 2:
+        return []
+
+    # Prepare metadata overview for LLM
+    col_summary = []
+    for c in valid_cols[:25]:
+        s_clean = df[c].dropna()
+        dtype = str(df[c].dtype)
+        nunique = int(s_clean.nunique())
+        sample_vals = [str(v) for v in s_clean.head(3).tolist()]
+        col_summary.append(f"- {c} ({dtype}, {nunique} unique values, samples: {sample_vals})")
+
+    cols_text = "\n".join(col_summary)
+    
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if api_key:
+        try:
+            from openai import OpenAI
+            client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+            prompt = (
+                f"You are an expert data scientist performing EDA on dataset '{dataset_name}'.\n"
+                f"Target column: '{target_col or 'None'}'\n"
+                f"Dataset features:\n{cols_text}\n\n"
+                f"Propose up to {top_n} semantically interesting or domain-relevant bivariate feature pairs (feature_1, feature_2) "
+                f"that should be analyzed together for domain insights, feature interaction, or segmentation.\n"
+                f"Requirements:\n"
+                f"- Exclude identical columns (feature_1 != feature_2)\n"
+                f"- Both features MUST exist in the feature list provided above.\n"
+                f"- Provide a concise 1-sentence domain rationale for each pair.\n"
+                f"Return ONLY a valid JSON array of objects with keys 'feature_1', 'feature_2', 'rationale'."
+            )
+            response = client.chat.completions.create(
+                model=os.getenv("EDA_MODEL", "google/gemini-3.6-flash"),
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.2,
+                max_tokens=500
+            )
+            raw = response.choices[0].message.content
+            match = re.search(r'\[.*\]', raw, re.DOTALL)
+            if match:
+                parsed = json.loads(match.group(0))
+                llm_pairs = []
+                for p in parsed:
+                    f1 = p.get("feature_1") or p.get("x")
+                    f2 = p.get("feature_2") or p.get("y")
+                    rat = p.get("rationale", "LLM-inferred domain relationship")
+                    if f1 and f2 and f1 in df.columns and f2 in df.columns and f1 != f2:
+                        llm_pairs.append({"feature_1": f1, "feature_2": f2, "rationale": rat, "source": "llm_inferred"})
+                if llm_pairs:
+                    return llm_pairs[:top_n]
+        except Exception as e:
+            print(f"[tools] LLM bivariate pair inference warning: {e}")
+
+    fallback_pairs = []
+    num_cols = [c for c in valid_cols if _is_numeric_col(df[c])]
+    cat_cols = [c for c in valid_cols if not _is_numeric_col(df[c])]
+    
+    if target_col and target_col in valid_cols:
+        for c in valid_cols:
+            if c != target_col:
+                fallback_pairs.append({
+                    "feature_1": c,
+                    "feature_2": target_col,
+                    "rationale": f"Domain interaction of '{c}' against primary target '{target_col}'",
+                    "source": "llm_inferred"
+                })
+                if len(fallback_pairs) >= top_n:
+                    break
+    
+    if len(fallback_pairs) < top_n and len(num_cols) >= 2:
+        fallback_pairs.append({
+            "feature_1": num_cols[0],
+            "feature_2": num_cols[1],
+            "rationale": f"Numeric scale comparison and scatter relationship of '{num_cols[0]}' vs '{num_cols[1]}'",
+            "source": "llm_inferred"
+        })
+    if len(fallback_pairs) < top_n and cat_cols and num_cols:
+        fallback_pairs.append({
+            "feature_1": cat_cols[0],
+            "feature_2": num_cols[0],
+            "rationale": f"Segmented behavior of numerical '{num_cols[0]}' across categorical '{cat_cols[0]}'",
+            "source": "llm_inferred"
+        })
+        
+    return fallback_pairs[:top_n]
+
+
+def compute_bivariate_union(
+    df: pd.DataFrame,
+    target_col: Optional[str] = None,
+    top_n_algo: int = 10,
+    top_n_llm: int = 5,
+    dataset_name: str = "",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Computes the Union (B_algorithmic U B_LLM) of all bivariate relationships:
+    - Algorithmic Pairs (A): Top Pearson correlations, Cramér's V associations, and significant hypothesis test pairs.
+    - LLM Inferred Pairs (L): Domain-relevant pairs recommended via LLM inference.
+    - Union (U = A U L): Deduplicated list of pairs with source tagging ('algorithmic', 'llm_inferred', 'both').
+    Generates interaction metric data for each union pair.
+    """
+    valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+    if len(valid_cols) < 2:
+        return {"union_pairs": [], "algorithmic_count": 0, "llm_count": 0, "both_count": 0, "union_count": 0}
+
+    # 1. Collect Algorithmic Pairs (A)
+    algo_pairs_dict = {}
+    
+    # A1. Pearson Correlation pairs (|r| >= 0.25)
+    num_cols = [c for c in valid_cols if _is_numeric_col(df[c]) and df[c].nunique() > 1]
+    if len(num_cols) >= 2:
+        corr_matrix = df[num_cols].corr()
+        for i in range(len(num_cols)):
+            for j in range(i + 1, len(num_cols)):
+                c1, c2 = num_cols[i], num_cols[j]
+                val = corr_matrix.loc[c1, c2]
+                if pd.notnull(val) and abs(val) >= 0.25:
+                    pk = tuple(sorted([c1, c2]))
+                    algo_pairs_dict[pk] = {
+                        "feature_1": c1,
+                        "feature_2": c2,
+                        "rationale": f"Algorithmic Pearson correlation (|r| = {abs(val):.2f})",
+                        "correlation": round(float(val), 4)
+                    }
+
+    # A2. Cramér's V categorical association pairs
+    cat_cols = [c for c in valid_cols if not _is_numeric_col(df[c]) and df[c].nunique() > 1 and df[c].nunique() <= 50]
+    if len(cat_cols) >= 2:
+        for i in range(len(cat_cols)):
+            for j in range(i + 1, len(cat_cols)):
+                c1, c2 = cat_cols[i], cat_cols[j]
+                v = _cramers_v(df[c1].dropna(), df[c2].dropna())
+                if v >= 0.2:
+                    pk = tuple(sorted([c1, c2]))
+                    if pk not in algo_pairs_dict:
+                        algo_pairs_dict[pk] = {
+                            "feature_1": c1,
+                            "feature_2": c2,
+                            "rationale": f"Algorithmic Cramér's V association (V = {v:.2f})",
+                            "cramers_v": round(float(v), 4)
+                        }
+
+    # A3. Target column hypothesis test predictors
+    if target_col and target_col in valid_cols:
+        for c in valid_cols:
+            if c != target_col:
+                pk = tuple(sorted([c, target_col]))
+                if pk not in algo_pairs_dict:
+                    algo_pairs_dict[pk] = {
+                        "feature_1": c,
+                        "feature_2": target_col,
+                        "rationale": f"Statistical hypothesis predictor against target '{target_col}'"
+                    }
+
+    # 2. Collect LLM Inferred Pairs (L)
+    llm_pairs = infer_llm_bivariate_pairs(df, dataset_name=dataset_name, target_col=target_col, top_n=top_n_llm)
+    llm_pairs_dict = {}
+    for item in llm_pairs:
+        f1, f2 = item["feature_1"], item["feature_2"]
+        pk = tuple(sorted([f1, f2]))
+        llm_pairs_dict[pk] = item
+
+    # 3. Compute Union (U = A U L)
+    all_keys = set(algo_pairs_dict.keys()) | set(llm_pairs_dict.keys())
+    union_list = []
+    algo_count = 0
+    llm_count = 0
+    both_count = 0
+
+    for pk in sorted(all_keys):
+        in_algo = pk in algo_pairs_dict
+        in_llm = pk in llm_pairs_dict
+        
+        if in_algo and in_llm:
+            source = "both"
+            both_count += 1
+            algo_count += 1
+            llm_count += 1
+            rat = f"{llm_pairs_dict[pk].get('rationale', '')} (Also identified statistically by algorithms)"
+        elif in_algo:
+            source = "algorithmic"
+            algo_count += 1
+            rat = algo_pairs_dict[pk].get("rationale", "Algorithmic bivariate relationship")
+        else:
+            source = "llm_inferred"
+            llm_count += 1
+            rat = llm_pairs_dict[pk].get("rationale", "LLM-inferred domain interaction")
+
+        f1, f2 = pk[0], pk[1]
+
+        clean_df = df[[f1, f2]].dropna()
+        f1_is_num = _is_numeric_col(clean_df[f1])
+        f2_is_num = _is_numeric_col(clean_df[f2])
+        f1_nunique = clean_df[f1].nunique()
+        f2_nunique = clean_df[f2].nunique()
+
+        f1_is_discrete = (not f1_is_num) or (f1_nunique <= 10)
+        f2_is_discrete = (not f2_is_num) or (f2_nunique <= 10)
+
+        entry = {
+            "feature_1": f1,
+            "feature_2": f2,
+            "rationale": rat.strip(),
+            "source": source,
+            "feature_1_is_numeric": f1_is_num,
+            "feature_2_is_numeric": f2_is_num,
+            "feature_1_is_discrete": f1_is_discrete,
+            "feature_2_is_discrete": f2_is_discrete,
+        }
+
+        if f1_is_discrete and f2_is_discrete and f1_nunique <= 15 and f2_nunique <= 15:
+            s1 = clean_df[f1].astype(str)
+            s2 = clean_df[f2].astype(str)
+            ct = pd.crosstab(s1, s2)
+            entry["grouped_counts"] = ct.to_dict()
+            ct_norm = pd.crosstab(s1, s2, normalize="index")
+            entry["crosstab"] = ct_norm.round(4).to_dict()
+        elif f1_is_discrete and (f2_is_num or f2_nunique > 10):
+            groups = {}
+            for cat, group in clean_df.groupby(f1):
+                vals = pd.to_numeric(group[f2], errors='coerce').dropna()
+                if len(vals) > 0:
+                    groups[str(cat)] = {
+                        "min": round(_safe_float(vals.min()), 4),
+                        "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                        "median": round(_safe_float(vals.median()), 4),
+                        "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                        "max": round(_safe_float(vals.max()), 4),
+                    }
+            entry["groups"] = groups
+        elif f2_is_discrete and (f1_is_num or f1_nunique > 10):
+            groups = {}
+            for cat, group in clean_df.groupby(f2):
+                vals = pd.to_numeric(group[f1], errors='coerce').dropna()
+                if len(vals) > 0:
+                    groups[str(cat)] = {
+                        "min": round(_safe_float(vals.min()), 4),
+                        "q1": round(_safe_float(vals.quantile(0.25)), 4),
+                        "median": round(_safe_float(vals.median()), 4),
+                        "q3": round(_safe_float(vals.quantile(0.75)), 4),
+                        "max": round(_safe_float(vals.max()), 4),
+                    }
+            entry["groups"] = groups
+        else:
+            sample_df = clean_df.sample(n=min(400, len(clean_df)), random_state=42) if len(clean_df) > 400 else clean_df
+            points = []
+            for _, r in sample_df.iterrows():
+                points.append({"x": round(_safe_float(r[f1]), 4), "y": round(_safe_float(r[f2]), 4)})
+            entry["points"] = points
+
+        union_list.append(entry)
+
+    return {
+        "union_pairs": union_list,
+        "algorithmic_count": len(algo_pairs_dict),
+        "llm_count": len(llm_pairs_dict),
+        "both_count": both_count,
+        "union_count": len(union_list)
+    }
+
+
+
 # =====================================================================
 # CONCISE PAIRPLOT TOOL (CLAMPED FEATURE SUBSET)
 # =====================================================================
@@ -1561,6 +1837,7 @@ def compile_and_save_metrics(
     dist_res = plot_feature_distributions(df)
     corr_matrix_res = corr_res or plot_correlation_matrix(df)
     bivariate_res = plot_semantic_bivariate_relationships(df)
+    bivariate_union_res = compute_bivariate_union(df, target_col=target_col, dataset_name=os.path.basename(dataset_path))
     pairplot_res = plot_pairplot(df)
     target_inter_res = plot_target_interaction(df, target_col=target_col)
 
@@ -1581,6 +1858,7 @@ def compile_and_save_metrics(
         "visual_distributions": dist_res.get("visual_distributions", {}),
         "correlation_data": corr_matrix_res,
         "bivariate_data": bivariate_res.get("bivariate_data", []),
+        "bivariate_union": bivariate_union_res,
         "pairplot_data": pairplot_res,
         "target_interaction_data": target_inter_res.get("interaction_data", {}),
         "extracted_insights": {

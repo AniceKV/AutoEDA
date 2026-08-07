@@ -1084,18 +1084,39 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 if (traces.length) Plotly.newPlot("report-plotly-target", traces, layout, { responsive: true });
             }
 
-            // Render Bivariate Relationships
-            const bivContainer = document.getElementById("report-plotly-biv");
-            if (bivContainer && metricsData.bivariate_data && metricsData.bivariate_data.length) {
-                bivContainer.innerHTML = "";
-                metricsData.bivariate_data.forEach((biv, idx) => {
+            // Render Bivariate Union Relationships
+            const bivDiv = document.getElementById("report-plotly-biv");
+            const bivUnion = (metricsData.bivariate_union && metricsData.bivariate_union.union_pairs) ? metricsData.bivariate_union.union_pairs : (metricsData.bivariate_data || []);
+            if (bivDiv && bivUnion && bivUnion.length > 0) {
+                bivDiv.innerHTML = "";
+                bivUnion.forEach((biv, idx) => {
                     const card = document.createElement("div");
                     card.className = "img-card";
-                    card.style.minWidth = "0";
-                    card.style.overflow = "hidden";
-                    const chartDivId = "report-biv-chart-" + idx;
-                    card.innerHTML = `<div style="font-weight: 700; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">${biv.x} vs ${biv.y}</div><div id="${chartDivId}" style="width:100%;height:320px;"></div>`;
-                    bivContainer.appendChild(card);
+                    card.style.background = isLightMode ? '#ffffff' : '#121215';
+                    card.style.border = isLightMode ? '1px solid #e4e4e7' : '1px solid #27272a';
+                    card.style.borderRadius = "12px";
+                    card.style.padding = "16px";
+
+                    const f1 = biv.feature_1 || biv.x || 'Feature 1';
+                    const f2 = biv.feature_2 || biv.y || 'Feature 2';
+                    const src = biv.source || 'algorithmic';
+                    let badgeBg = '#818cf8', badgeText = 'Algorithmic';
+                    if (src === 'llm_inferred') {
+                        badgeBg = '#34d399'; badgeText = 'LLM Inferred';
+                    } else if (src === 'both') {
+                        badgeBg = '#fbbf24'; badgeText = 'Both (Consensus)';
+                    }
+
+                    const chartDivId = `report-biv-chart-${idx}`;
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">${f1} vs ${f2}</div>
+                            <span class="system-badge" style="background: ${badgeBg}22; color: ${badgeBg}; border-color: ${badgeBg}55; margin-bottom: 0;">${badgeText}</span>
+                        </div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">${biv.rationale || 'Bivariate interaction'}</div>
+                        <div id="${chartDivId}" style="width:100%; height:260px;"></div>
+                    `;
+                    bivDiv.appendChild(card);
 
                     let traces = [], layout = {};
                     if (biv.grouped_counts) {
@@ -1108,7 +1129,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         traces = yCats.map((yCat, i) => ({
                             x: xCats,
                             y: xCats.map(xCat => (biv.grouped_counts[xCat] ? biv.grouped_counts[xCat][yCat] || 0 : 0)),
-                            name: `${biv.y}: ${yCat}`,
+                            name: `${f2}: ${yCat}`,
                             type: 'bar',
                             marker: { color: palette[i % palette.length] }
                         }));
@@ -1119,7 +1140,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                             plot_bgcolor: pPaperBg,
                             autosize: true,
                             font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 11 },
-                            xaxis: { title: biv.x, tickangle: -45 },
+                            xaxis: { title: f1, tickangle: -45 },
                             yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
                         };
                     } else if (biv.groups) {
@@ -1137,10 +1158,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                             plot_bgcolor: pPaperBg,
                             autosize: true,
                             font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 11 },
-                            xaxis: { title: biv.x, tickangle: -45 },
-                            yaxis: { title: biv.y, showgrid: true, gridcolor: '#27272a' }
+                            xaxis: { title: f1, tickangle: -45 },
+                            yaxis: { title: f2, showgrid: true, gridcolor: '#27272a' }
                         };
-                    } else if (biv.x_is_numeric && biv.y_is_numeric && biv.points) {
+                    } else if (biv.points) {
                         traces = [{
                             x: biv.points.map(p => p.x),
                             y: biv.points.map(p => p.y),
@@ -1154,8 +1175,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                             plot_bgcolor: pPaperBg,
                             autosize: true,
                             font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 11 },
-                            xaxis: { title: biv.x, tickangle: -45, showgrid: false },
-                            yaxis: { title: biv.y, showgrid: true, gridcolor: '#27272a' }
+                            xaxis: { title: f1, tickangle: -45, showgrid: false },
+                            yaxis: { title: f2, showgrid: true, gridcolor: '#27272a' }
                         };
                     }
                     if (traces.length) Plotly.newPlot(chartDivId, traces, layout, { responsive: true, displayModeBar: false });
