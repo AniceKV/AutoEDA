@@ -124,11 +124,13 @@ def run_tool_based_eda(
         try:
             hyp_res = tools.run_statistical_hypothesis_tests(df, output_dir=workspace_dir)
             agent_state["hypothesis_res"] = hyp_res
+            if hyp_res and isinstance(hyp_res, dict) and hyp_res.get("target_col"):
+                agent_state["target_col"] = hyp_res["target_col"]
         except Exception as e:
             print(f"[agent_loop] Warning: Error pre-generating hypothesis tests: {e}")
 
         try:
-            bp_res = tools.generate_predictive_blueprint(df, output_dir=workspace_dir)
+            bp_res = tools.generate_predictive_blueprint(df, target_col=agent_state.get("target_col"), output_dir=workspace_dir)
             agent_state["blueprint_res"] = bp_res
         except Exception as e:
             print(f"[agent_loop] Warning: Error pre-generating predictive blueprint: {e}")
@@ -459,6 +461,14 @@ def run_tool_based_eda(
         f.write("\n".join(script_content))
 
     print("\n5. Compiling and saving canonical metrics.json...")
+    if agent_state.get("target_col"):
+        try:
+            agent_state["blueprint_res"] = tools.generate_predictive_blueprint(
+                df, target_col=agent_state["target_col"], output_dir=workspace_dir
+            )
+        except Exception as e:
+            print(f"[agent_loop] Warning: Error synchronizing blueprint: {e}")
+
     metrics_path = tools.compile_and_save_metrics(
         df=df,
         dataset_path=abs_data_path,

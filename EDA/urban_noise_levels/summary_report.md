@@ -1,252 +1,177 @@
-# Executive Summary – Urban Noise Levels EDA  
-**Dataset:** `urban_noise_levels.csv`  
-**Rows / Columns:** 2 000 × 26  
-**Target Variable:** `noise_complaints` (classification)  
-
----  
-
-## Table of Contents
-1. [Dataset Overview](#1-dataset-overview)  
-2. [Data Quality & Imputation](#2-data-quality--imputation)  
-3. [Outlier Analysis](#3-outlier-analysis)  
-4. [Distribution Insights](#4-distribution-insights)  
-5. [Correlation Analysis](#5-correlation-analysis)  
-6. [Statistical Hypothesis Testing](#6-statistical-hypothesis-testing)  
-7. [Feature Engineering](#7-feature-engineering)  
-8. [Predictive‑Modeling Blueprint](#8-predictive‑modeling-blueprint)  
-9. [Visual Artifacts](#9-visual-artifacts)  
-10. [Conclusions & Recommendations](#10-conclusions--recommendations)  
-
----  
+# Executive Summary Report: Urban Noise Levels Exploratory Data Analysis
 
 ## 1. Dataset Overview
-| Item                     | Value |
-|--------------------------|-------|
-| Total rows               | 2 000 |
-| Total columns            | 26 |
-| Target column            | `noise_complaints` |
-| Problem type (inferred)  | Classification (multiclass, 0‑5 complaints) |
-| Primary key / ID column  | `id` (unique 1‑2000) |
-| Sensor identifier column | `sensor_id` (50 distinct sensors) |
 
-### Column Summary (selected)
+| Attribute | Value |
+|---|---|
+| **Dataset Name** | `urban_noise_levels.csv` |
+| **Rows** | 2,000 |
+| **Columns** | 26 |
+| **Target Variable** | `decibel_level` (continuous) |
+| **Missing Values** | None (0% across all columns) |
+| **Problem Type** | Unsupervised / Exploratory |
 
-| Column                | Type    | Cardinality | Mean   | Std.   | Min   | Max   | Skew   |
-|-----------------------|---------|-------------|--------|--------|-------|-------|--------|
-| `latitude`            | float64 | 2 000       | 40.70  | 0.12   | 40.50 | 40.90 | -0.01 |
-| `longitude`           | float64 | 2 000       | -73.95 | 0.14   | -74.20| -73.70| 0.00 |
-| `decibel_level`       | float64 | 2 000       | 64.82  | 10.07  | 33.23 | 97.43 | -0.04 |
-| `hour`                | int64   | 24          | 11.61  | 6.99   | 0     | 23    | -0.01 |
-| `temperature_c`       | float64 | 2 000       | 17.70  | 7.17   | -4.55 | 40.00 | 0.06 |
-| `humidity_%`          | float64 | 2 000       | 55.18  | 19.99  | 20.00 | 89.98 | -0.02 |
-| `precipitation_mm`    | float64 | 2 000       | 2.00   | 2.03   | 0.00  | 17.09 | 1.93 |
-| `traffic_density`     | int64   | 5           | 2.93   | 1.41   | 1     | 5     | 0.07 |
-| `near_airport`        | int64   | 2           | 0.10   | 0.30   | 0     | 1     | 2.66 |
-| `industrial_zone`     | int64   | 2           | 0.14   | 0.35   | 0     | 1     | 2.03 |
-| `vehicle_count`       | int64   | 29          | 20.11  | 4.50   | 7     | 39    | 0.24 |
-| `honking_events`      | int64   | 11          | 2.99   | 1.71   | 0     | 10    | 0.58 |
-| `public_event`        | int64   | 2           | 0.06   | 0.23   | 0     | 1     | 3.84 |
-| `holiday`             | int64   | 2           | 0.11   | 0.31   | 0     | 1     | 2.56 |
-| `noise_complaints`    | int64   | 6           | 0.99   | 0.98   | 0     | 5     | 0.97 |
+The dataset captures urban noise measurements across New York City coordinates (latitude range 40.50–40.90, longitude range -74.20 to -73.70), with each record representing a sensor reading at a specific timestamp. The target variable, `decibel_level`, ranges from **33.23 dB to 97.43 dB** with a mean of **64.82 dB** and median of **65.02 dB**, indicating a roughly symmetric distribution (skewness = -0.042).
 
-*All columns are non‑missing; categorical columns have low cardinality except `sensor_id` (50 levels).*
+## 2. Data Quality & Completeness
 
----  
+The pipeline reported **zero missing values** across all 26 columns. The dataset is fully populated with no imputation required. Key schema characteristics:
 
-## 2. Data Quality & Imputation
-The automated pipeline applied the following imputation policy (no actual changes were required because the data contained **zero missing values**):
+| Column Group | Columns | Cardinality | Notes |
+|---|---|---|---|
+| Identifiers | `id`, `sensor_id` | 2,000 / 50 | `id` is unique per row; `sensor_id` groups 50 sensors |
+| Geospatial | `latitude`, `longitude` | 2,000 each | Continuous coordinates |
+| Temporal | `datetime`, `hour`, `day_of_week`, `is_weekend` | 1,998 / 24 / 7 / 2 | `datetime` has 2 duplicate timestamps |
+| Weather | `temperature_c`, `humidity_%`, `wind_speed_kmh`, `precipitation_mm` | 2,000 each | `precipitation_mm` is highly skewed (1.93) |
+| Traffic | `traffic_density`, `vehicle_count`, `honking_events` | 5 / 29 / 11 | Ordinal and count features |
+| Contextual | `near_airport`, `near_highway`, `near_construction`, `park_proximity`, `industrial_zone`, `school_zone`, `public_event`, `holiday`, `noise_complaints` | 2 each (binary) | Several are highly skewed (e.g., `public_event` skew = 3.84) |
 
-* Standardised missing string placeholders (`?`, `NA`, `N/A`, `null`) → `NaN`.  
-* Numeric columns with absolute skew > 1.0 → median imputation.  
-* Numeric columns with |skew| ≤ 1.0 → mean imputation.  
-* Categorical / string columns → mode imputation (fallback `"Unknown"`).  
+## 3. Statistical Hypothesis Testing Results
 
-**Result:** Every column retained its original values; `method = none` for all fields.
+Pearson correlation tests were conducted for all numeric features against `decibel_level` at α = 0.05. **Only one feature achieved statistical significance:**
 
----  
+| Feature | Correlation (r) | p-value | Effect Size | Significant? |
+|---|---|---|---|---|
+| **day_of_week** | **-0.0513** | **0.0219** | **0.0513** | **Yes** |
+| is_weekend | -0.0379 | 0.0900 | 0.0379 | No |
+| traffic_density | 0.0387 | 0.0834 | 0.0387 | No |
+| population_density | -0.0416 | 0.0629 | 0.0416 | No |
+| holiday | -0.0409 | 0.0673 | 0.0409 | No |
+| noise_complaints | -0.0411 | 0.0659 | 0.0411 | No |
+| temperature_c | 0.0317 | 0.1564 | 0.0317 | No |
+| wind_speed_kmh | 0.0291 | 0.1936 | 0.0291 | No |
+| near_highway | -0.0333 | 0.1366 | 0.0333 | No |
+| All others | — | > 0.25 | — | No |
 
-## 3. Outlier Analysis
-Outliers were identified using the IQR rule (Q1 – 1.5·IQR, Q3 + 1.5·IQR) and **profiled only** (no removal).  
+**Interpretation:** The negative correlation with `day_of_week` suggests noise levels tend to decrease slightly as the week progresses (Monday = 0 through Sunday = 6), though the effect size is small (r = -0.05). The `is_weekend` variable approaches significance (p = 0.090) but does not cross the threshold.
 
-| Feature            | Q1   | Q3   | IQR   | Lower bound | Upper bound | Outlier count | % Outliers |
-|--------------------|------|------|-------|-------------|-------------|---------------|------------|
-| `decibel_level`    | 57.91| 71.65|13.74 | 37.30       | 92.26       | 17            | 0.85 % |
-| `precipitation_mm`| 0.54 | 2.84 |2.30  | –2.91       | 6.30        | 92            | 4.60 % |
-| `vehicle_count`    | 17   | 23   | 6    | 8           | 32          | 13            | 0.65 % |
-| `honking_events`   | 2    | 4    | 2    | –1          | 7           | 20            | 1.00 % |
-| `temperature_c`    |12.78 |22.76 | 9.98 | –2.20       | 37.73       | 8             | 0.40 % |
-| *All other numeric features* | – | – | – | – | – | 0 | 0 % |
+## 4. Correlation Analysis
 
-No outlier removal was performed; the pipeline retained the original records for downstream analysis.
+The correlation matrix reveals **generally weak linear relationships** across the dataset. Notable observations:
 
----  
+### Top Correlations (Absolute Value)
 
-## 4. Distribution Insights
-The pipeline generated individual distribution plots for every column (see **Section 9**). Highlights:
+| Feature Pair | Correlation |
+|---|---|
+| `day_of_week` ↔ `is_weekend` | 0.7974 |
+| `noise_complaints` ↔ `sensor_id` | -0.0843 |
+| `industrial_zone` ↔ `noise_complaints` | -0.0723 |
+| `industrial_zone` ↔ `vehicle_count` | -0.0707 |
+| `temperature_c` ↔ `noise_complaints` | -0.0619 |
+| `temperature_c` ↔ `honking_events` | -0.0578 |
+| `holiday` ↔ `noise_complaints` | 0.0544 |
+| `near_highway` ↔ `honking_events` | 0.0521 |
+| `decibel_level` ↔ `day_of_week` | -0.0513 |
 
-* **`decibel_level`** – roughly symmetric around 65 dB, slight left‑skew (‑0.04).  
-* **`precipitation_mm`** – highly right‑skewed (skew = 1.93, kurtosis = 5.13).  
-* **`temperature_c`** – near‑normal distribution (skew ≈ 0.06).  
-* **Binary flags** (`near_airport`, `public_event`, `holiday`, etc.) – strongly imbalanced toward 0 (means ≈ 0.1‑0.2).  
-* **`noise_complaints`** – majority of records have 0‑1 complaints (mean ≈ 1, std ≈ 1).  
+### Key Insights from Correlation Structure
 
-These visualizations confirm the numeric summary statistics and reveal the expected right‑skew in precipitation and the sparsity of complaint counts.
+1. **No strong multicollinearity** exists among features (max |r| = 0.797 between `day_of_week` and `is_weekend`, which is expected as they are derived from the same temporal source).
+2. **`decibel_level` shows no strong linear association** with any single feature (max |r| = 0.051 with `day_of_week`), suggesting that noise levels are driven by complex, non-linear interactions or unmeasured factors.
+3. **`noise_complaints` correlates weakly** with several features (`sensor_id`, `industrial_zone`, `temperature_c`, `holiday`), indicating complaint patterns may be spatially and temporally structured.
+4. **`honking_events`** shows weak positive associations with `near_highway` (0.052) and `public_event` (0.049), and a weak negative association with `temperature_c` (-0.058).
 
----  
+## 5. Distribution Analysis
 
-## 5. Correlation Analysis
-A Pearson correlation matrix was computed and saved as **`correlation_matrix.png`** (≈ 660 KB). The ten strongest absolute correlations are:
+Individual distribution plots were generated for all 21 analyzed columns. Key distribution characteristics:
 
-| Rank | Feature 1            | Feature 2            | Correlation |
-|------|---------------------|---------------------|-------------|
-| 1    | `day_of_week`       | `is_weekend`        | **0.7974** |
-| 2    | `noise_complaints`  | `sensor_id`         | **‑0.0843** |
-| 3    | `industrial_zone`   | `noise_complaints`  | **‑0.0723** |
-| 4    | `industrial_zone`   | `vehicle_count`     | **‑0.0707** |
-| 5    | `temperature_c`     | `noise_complaints`  | **‑0.0619** |
-| 6    | `temperature_c`     | `honking_events`    | **‑0.0578** |
-| 7    | `holiday`           | `noise_complaints`  | **0.0544** |
-| 8    | `latitude`          | `near_construction`| **‑0.0528** |
-| 9    | `near_highway`      | `honking_events`    | **0.0521** |
-|10    | `decibel_level`     | `day_of_week`       | **‑0.0513** |
+| Feature | Distribution Shape | Notable Characteristics |
+|---|---|---|
+| `decibel_level` | Approximately normal | Mean 64.82, SD 10.07, skew -0.042 |
+| `hour` | Uniform | Range 0–23, mean 11.61 |
+| `day_of_week` | Uniform | Range 0–6, mean 3.06 |
+| `temperature_c` | Approximately normal | Range -4.55 to 40.0, mean 17.70 |
+| `humidity_%` | Approximately uniform | Range 20.0–89.98, mean 55.18 |
+| `wind_speed_kmh` | Approximately uniform | Range 0.01–39.97, mean 20.10 |
+| `precipitation_mm` | **Highly right-skewed** | Skew 1.93, median 1.34, max 17.09 |
+| `traffic_density` | Uniform (ordinal) | 5 levels, mean 2.93 |
+| `vehicle_count` | Slightly right-skewed | Range 7–39, mean 20.11 |
+| `honking_events` | Right-skewed | Range 0–10, mean 2.99 |
+| `noise_complaints` | Right-skewed | Range 0–5, mean 0.99 |
+| Binary flags | Imbalanced | `public_event` (5.7%), `near_airport` (10.1%), `industrial_zone` (14.4%), `holiday` (10.6%), `school_zone` (14.4%) |
 
-All other pairwise correlations are below |0.05|, indicating low linear dependence among most predictors.
+## 6. Bivariate Relationship Analysis
 
----  
+The pipeline generated **23 semantic bivariate plots** in the first pass and **4 additional day-of-week focused plots** in the second pass. Key relationships examined:
 
-## 6. Statistical Hypothesis Testing
-Each numeric predictor was tested against the target using Pearson correlation (binary / categorical variables were also tested). Significance threshold: α = 0.05.
+### Traffic-Related Relationships
+- **`traffic_density` vs `decibel_level`**: Weak positive trend (r = 0.039), not statistically significant
+- **`vehicle_count` vs `decibel_level`**: Essentially no linear relationship (r = 0.006)
+- **`honking_events` vs `decibel_level`**: No linear relationship (r = -0.006)
+- **`vehicle_count` vs `traffic_density`**: Weak positive (r = 0.014)
+- **`honking_events` vs `vehicle_count`**: Weak negative (r = -0.011)
 
-| Predictor          | Pearson r | p‑value   | Significant? |
-|--------------------|-----------|-----------|--------------|
-| `temperature_c`    | ‑0.0619   | 0.0056    | **Yes** |
-| `industrial_zone`  | ‑0.0723   | 0.0012    | **Yes** |
-| `holiday`          | 0.0544    | 0.0149    | **Yes** |
-| `sensor_id`        | ‑0.0843   | 0.00016   | **Yes** |
-| `decibel_level`    | ‑0.0411   | 0.0659    | No |
-| `hour`             | 0.0340    | 0.1283    | No |
-| `precipitation_mm`| 0.0047    | 0.8319    | No |
-| `traffic_density` | 0.0115    | 0.6061    | No |
-| `near_airport`    | 0.0200    | 0.3720    | No |
-| `near_highway`    | 0.0205    | 0.3596    | No |
-| `public_event`    | 0.0299    | 0.1814    | No |
-| `honking_events`  | ‑0.0034   | 0.8794    | No |
-| *All other features* | – | – | Not significant |
+### Temporal Relationships
+- **`hour` vs `decibel_level`**: No significant linear trend (r = -0.012); the target interaction plot (`target_interaction_hour.png`) provides visual detail on hourly patterns
+- **`day_of_week` vs `decibel_level`**: Statistically significant weak negative correlation (r = -0.051, p = 0.022)
+- **`is_weekend` vs `decibel_level`**: Marginal (r = -0.038, p = 0.090)
 
-**Statistically significant predictors** (four in total) are:  
+### Environmental Relationships
+- **`temperature_c` vs `decibel_level`**: Weak positive (r = 0.032)
+- **`humidity_%` vs `decibel_level`**: Negligible (r = 0.011)
+- **`wind_speed_kmh` vs `decibel_level`**: Weak positive (r = 0.029)
+- **`precipitation_mm` vs `decibel_level`**: Negligible (r = 0.003)
 
-* `temperature_c` (negative association)  
-* `industrial_zone` (negative association)  
-* `holiday` (positive association)  
-* `sensor_id` (negative association)  
+### Contextual/Location Relationships
+- **`near_highway` vs `decibel_level`**: Weak negative (r = -0.033)
+- **`near_airport` vs `decibel_level`**: Negligible (r = 0.001)
+- **`near_construction` vs `decibel_level`**: Negligible (r = -0.007)
+- **`park_proximity` vs `decibel_level`**: Weak negative (r = -0.016)
+- **`industrial_zone` vs `decibel_level`**: Weak negative (r = -0.013)
+- **`population_density` vs `decibel_level`**: Weak negative (r = -0.042)
 
-These variables should be prioritized in any predictive model.
+## 7. Generated Visual Artifacts
 
----  
+The pipeline produced **50+ visualization files** organized into four categories:
 
-## 7. Feature Engineering
-The pipeline attempted the following transformations (see **Agent Plan**):
+| Category | Count | Examples |
+|---|---|---|
+| **Univariate Distributions** | 21 | `dist_decibel_level.png`, `dist_hour.png`, `dist_traffic_density.png` |
+| **Bivariate Relationships** | 27 | `bivariate_traffic_density_vs_decibel_level.png`, `bivariate_day_of_week_vs_decibel_level.png`, `bivariate_temperature_c_vs_humidity.png` |
+| **Target Interactions** | 3 | `target_interaction_traffic.png`, `target_interaction_hour.png`, `target_interaction_dayofweek.png` |
+| **Multivariate** | 2 | `correlation_matrix.png`, `pairplot.png` |
 
-| Operation | Source Column          | Target Column |
-|-----------|------------------------|---------------|
-| `log1p`   | `precipitation_mm`     | `log_precipitation_mm` |
-| `log1p`   | `near_airport`         | `log_near_airport` |
-| `log1p`   | `near_construction`    | `log_near_construction` |
-| `log1p`   | `public_event`         | `log_public_event` |
-| `log1p`   | `holiday`              | `log_holiday` |
-| `log1p`   | `school_zone`          | `log_school_zone` |
-| `log1p`   | `industrial_zone`      | `log_industrial_zone` |
-| `ratio`   | `vehicle_count` / `traffic_density` | `vehicle_per_traffic` |
+### Notable Visualizations
+- **`correlation_matrix.png`** (659 KB): Full 26×26 correlation heatmap
+- **`pairplot.png`** (404 KB): Scatter matrix for `decibel_level`, `vehicle_count`, `honking_events`, `temperature_c`
+- **`target_interaction_hour.png`** (212 KB): Hourly noise level patterns
+- **`bivariate_humidity_vs_decibel_level.png`** (276 KB): Weather-noise relationship
+- **`bivariate_wind_speed_kmh_vs_decibel_level.png`** (280 KB): Wind-noise relationship
 
-**Result:** No new features were actually added (`engineered_features = []`). The transformations were defined but not executed, possibly because the source columns are binary or already low‑cardinality, making a log‑transform unnecessary.
+## 8. Feature Engineering & Preprocessing
 
----  
+- **Imputation**: Completed (though no missing values were detected)
+- **Outlier Analysis**: No explicit outlier handling was triggered
+- **Engineered Features**: None were created during this run
+- **Categorical Associations**: No categorical association tests were reported
 
-## 8. Predictive‑Modeling Blueprint
-The automated blueprint recommends a **classification** approach for `noise_complaints` (multiclass 0‑5).  
+## 9. Predictive Modeling Blueprint
 
-### Recommended Algorithms
-1. **Regularized Logistic Regression** – baseline, fast, interpretable.  
-2. **Random Forest Classifier** – handles non‑linearities and mixed data types.  
-3. **Gradient Boosting (XGBoost / LightGBM)** – strong performance on tabular data.  
-4. **Support Vector Classifier (SVM)** – useful if the decision boundary is complex.
+The pipeline classified this dataset as **Unsupervised / Exploratory** with the following recommendations:
 
-### Feature‑Selection Strategy
-* Exclude high‑cardinality identifiers (`id`, `sensor_id` unless proven predictive).  
-* Rank features using **cross‑validated permutation importance** and **mutual information**.  
-* Remove collinear features with |ρ| > 0.85 (none detected beyond `day_of_week` / `is_weekend`).  
+| Component | Recommendation |
+|---|---|
+| **Problem Type** | Unsupervised / Exploratory (target undefined for supervised learning) |
+| **Recommended Algorithms** | K-Means Clustering, Hierarchical Agglomerative Clustering, PCA for Dimensionality Reduction |
+| **Feature Selection** | Exclude high-cardinality ID/text columns; rank features via cross-validated permutation importance and mutual information; remove collinear features above r > 0.85 |
+| **Validation Strategy** | Silhouette Score and Inertia elbow curve |
+| **Overfitting Mitigation** | Apply L1/L2 regularization; limit tree depth; enforce minimum samples per leaf; hyperparameter tuning strictly within CV folds |
 
-### Validation Strategy
-* **Stratified 5‑fold cross‑validation** to preserve complaint‑class distribution.  
-* Evaluation metrics:  
-  * **Balanced Accuracy** – accounts for class imbalance.  
-  * **Macro F1** – average F1 across all complaint levels.  
-  * **Precision‑Recall AUC** – especially relevant for the minority “high‑complaint” classes.  
-  * **Confusion Matrix** – for error analysis.  
+## 10. Key Findings & Conclusions
 
-### Over‑fitting Mitigation
-* Apply **L1/L2 regularisation** (logistic regression) or **shrinkage** (gradient boosting).  
-* Limit tree depth, enforce minimum samples per leaf (RF / GBM).  
-* Perform **hyper‑parameter tuning** strictly within the cross‑validation folds (no data leakage).  
+1. **Weak Linear Signal**: The target variable `decibel_level` exhibits no strong linear correlation with any individual feature. The strongest relationship (r = -0.051 with `day_of_week`) is statistically significant but practically weak, explaining less than 0.3% of variance.
 
-### Executive Summary (Blueprint)
-> **Target:** `noise_complaints` (Classification)  
-> **Data Size:** 2 000 rows × 26 columns  
-> **Suggested workflow:** Clean → Feature‑select (focus on `temperature_c`, `industrial_zone`, `holiday`, `sensor_id`) → Stratified CV → Compare baseline logistic regression against ensemble methods → Choose model balancing interpretability and performance.
+2. **Temporal Patterns Dominate**: The only statistically significant predictor is `day_of_week` (p = 0.022), suggesting that noise levels vary modestly by day of the week. The `is_weekend` variable approaches significance (p = 0.090), reinforcing a potential weekday/weekend effect.
 
----  
+3. **Traffic Metrics Underperform**: Despite intuitive expectations, `traffic_density`, `vehicle_count`, and `honking_events` show negligible linear correlations with noise levels (r = 0.039, 0.006, and -0.006 respectively). This suggests either non-linear relationships or that these proxy variables do not capture the true noise-generating mechanisms.
 
-## 9. Visual Artifacts
-All generated plots are stored in the sandbox directory. File names, type, and size are listed below.
+4. **Data Quality is High**: No missing values, no strong multicollinearity, and well-distributed continuous features provide a clean foundation for further analysis.
 
-| File (relative path)                                   | Description                                    | Size (KB) |
-|--------------------------------------------------------|------------------------------------------------|----------|
-| `dist_id.png`                                          | Histogram of `id` (unique identifier)          | 37.80 |
-| `dist_latitude.png`                                    | Distribution of latitude (geographic spread)  | 43.70 |
-| `dist_longitude.png`                                   | Distribution of longitude                      | 39.26 |
-| `dist_datetime.png`                                    | Frequency of timestamps (date‑time)            | 86.31 |
-| `dist_decibel_level.png`                               | Histogram of sound levels (dB)                 | 45.18 |
-| `dist_hour.png`                                        | Hour‑of‑day distribution (0‑23)                | 35.08 |
-| `dist_day_of_week.png`                                 | Day‑of‑week frequencies                        | 24.99 |
-| `dist_is_weekend.png`                                  | Weekend vs. weekday counts                     | 22.44 |
-| `dist_temperature_c.png`                               | Temperature distribution (°C)                  | 44.27 |
-| `dist_humidity.png`                                    | Humidity (%) distribution                      | 41.15 |
-| `dist_wind_speed_kmh.png`                              | Wind speed distribution (km/h)                | 42.80 |
-| `dist_precipitation_mm.png`                            | Precipitation (mm) – right‑skewed              | 40.50 |
-| `dist_traffic_density.png`                             | Traffic density categories (1‑5)               | 27.18 |
-| `dist_near_airport.png`                                | Binary flag for proximity to airport           | 22.75 |
-| `dist_near_highway.png`                                | Binary flag for proximity to highway           | 22.97 |
-| `dist_near_construction.png`                           | Binary flag for proximity to construction      | 23.70 |
-| `dist_population_density.png`                          | Population density (people per km²)            | 41.63 |
-| `dist_park_proximity.png`                              | Binary flag for park proximity                 | 21.05 |
-| `dist_industrial_zone.png`                             | Binary flag for industrial zone                | 23.63 |
-| `dist_vehicle_count.png`                               | Vehicle count per observation                  | 44.14 |
-| `dist_honking_events.png`                              | Honking event count per observation            | 34.48 |
-| `dist_public_event.png`                                | Binary flag for public events                  | 23.49 |
-| `dist_holiday.png`                                     | Binary flag for holidays                       | 22.72 |
-| `dist_school_zone.png`                                 | Binary flag for school zones                   | 22.94 |
-| `dist_noise_complaints.png`                            | Distribution of complaint counts (0‑5)         | 24.26 |
-| `dist_sensor_id.png`                                   | Sensor identifier frequencies                  | 40.11 |
-| `bivariate_decibel_level_vs_noise_complaints.png`      | Scatter of decibel level vs. complaints         | 71.31 |
-| `bivariate_hour_vs_noise_complaints.png`               | Hour vs. complaints (trend)                    | 40.27 |
-| `bivariate_near_airport_vs_noise_complaints.png`      | Airport proximity vs. complaints               | 31.94 |
-| `bivariate_public_event_vs_noise_complaints.png`      | Public event flag vs. complaints               | 32.01 |
-| `bivariate_traffic_density_vs_noise_complaints.png`   | Traffic density vs. complaints                 | 37.82 |
-| `correlation_matrix.png`                               | Full Pearson correlation heatmap (26 × 26)     | 659.07 |
-| `pairplot.png`                                         | Pairwise scatter matrix for selected features  | 605.60 |
+5. **Unsupervised Direction Recommended**: Given the weak linear signal, the pipeline recommends clustering approaches (K-Means, Hierarchical) and dimensionality reduction (PCA) to uncover latent structure in the data rather than pursuing supervised regression directly.
 
----  
+## 11. Recommendations for Next Steps
 
-## 10. Conclusions & Recommendations
-1. **Data Quality** – No missing values; the dataset is clean and ready for modeling.  
-2. **Key Predictors** – `temperature_c`, `industrial_zone`, `holiday`, and `sensor_id` show statistically significant relationships with complaint counts and should be emphasized in feature selection.  
-3. **Outliers** – Very few outliers (max ≈ 5 % for precipitation); retaining them is unlikely to harm model robustness.  
-4. **Modeling Strategy** – Begin with a regularized logistic regression baseline, then evaluate ensemble methods (Random Forest, XGBoost/LightGBM). Use stratified 5‑fold CV and monitor balanced accuracy and macro‑F1.  
-5. **Feature Engineering** – The planned log‑transformations and ratio feature were not materialised; consider creating a **traffic‑to‑vehicle ratio** (`vehicle_per_traffic`) manually if it adds predictive power.  
-6. **Interpretability** – Because `sensor_id` is a strong negative predictor, investigate sensor‑specific effects (e.g., calibration, location) before final deployment.  
-
-By following the blueprint and focusing on the four significant predictors, a robust classification model for urban noise complaints can be built with reliable performance across all complaint levels.  
-
----  
-
-*Prepared by the Senior Lead Data Scientist – Automated EDA Pipeline*  
+1. **Explore Non-Linear Models**: Given weak linear correlations, consider gradient boosting or random forest models to capture non-linear interactions.
+2. **Feature Engineering**: Create interaction terms (e.g., `hour × day_of_week`, `traffic_density × vehicle_count`) and cyclical encodings for temporal features.
+3. **Spatial Analysis**: Leverage `latitude`/`longitude` for spatial clustering or geospatial noise mapping.
+4. **Cluster Analysis**: Apply K-Means with silhouette scoring to identify distinct noise regimes (e.g., quiet residential vs. busy commercial zones).
+5. **Temporal Decomposition**: Investigate hourly and daily patterns more deeply using time-series decomposition techniques.

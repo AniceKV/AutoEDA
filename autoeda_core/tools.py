@@ -899,13 +899,166 @@ def plot_feature_distributions(
             print(f"[tools] Saved distribution PNG for '{col}' to: {file_path}")
         except Exception as e:
             print(f"[tools] Warning: Error saving distribution plot for '{col}': {e}")
-            plt.close()
-
     return {
         "individual_plots": saved_files,
         "plotted_columns": valid_cols
     }
 
+
+# =====================================================================
+# 4. STATISTICAL ANALYSIS: HYPOTHESIS TESTING TOOL
+# =====================================================================
+def run_statistical_hypothesis_tests(
+    df: pd.DataFrame,
+    target_col: str,
+    alpha: float = 0.05,
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Performs statistical significance tests based on data types.
+    Returns ranked significant predictors.
+    """
+    if target_col not in df.columns:
+        return {"error": f"Target column '{target_col}' not found."}
+
+    test_results = {"target_col": target_col, "significant_predictors": [], "ranked_significant_details": []}
+    significant_items = []
+    
+    target_is_num = _is_numeric_col(df[target_col])
+    
+    for col in df.columns:
+        if col == target_col or is_non_distributional_column(col, df[col]):
+            continue
+            
+        col_is_num = _is_numeric_col(df[col])
+        s1 = df[col].dropna()
+        s2 = df[target_col].dropna()
+        
+        # Intersection to ensure valid comparison
+        common_idx = s1.index.intersection(s2.index)
+        if len(common_idx) < 30: continue
+        
+        data_col = df.loc[common_idx, col]
+        data_target = df.loc[common_idx, target_col]
+        
+        try:
+            if col_is_num and target_is_num:
+                corr, p = stats.pearsonr(data_col, data_target)
+                if p < alpha:
+                    significant_items.append({"feature": col, "test": "Pearson Correlation", "effect_size": abs(corr), "p_value": p})
+            elif not col_is_num and target_is_num:
+                groups = [group.values for name, group in data_target.groupby(data_col)]
+                if len(groups) > 1:
+                    f_val, p = stats.f_oneway(*groups)
+                    if p < alpha:
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": f_val, "p_value": p})
+            elif col_is_num and not target_is_num:
+                groups = [group.values for name, group in data_col.groupby(data_target)]
+                if len(groups) > 1:
+                    f_val, p = stats.f_oneway(*groups)
+                    if p < alpha:
+                        significant_items.append({"feature": col, "test": "ANOVA", "effect_size": f_val, "p_value": p})
+            else:
+                contingency = pd.crosstab(data_col, data_target)
+                if contingency.size > 0:
+                    chi2, p, _, _ = stats.chi2_contingency(contingency)
+                    if p < alpha:
+                        significant_items.append({"feature": col, "test": "Chi-Square", "effect_size": chi2, "p_value": p})
+        except Exception:
+            continue
+            
+    test_results["target_col"] = target_col
+    significant_items.sort(key=lambda x: x["effect_size"], reverse=True)
+    test_results["significant_predictors"] = [item["feature"] for item in significant_items]
+    test_results["ranked_significant_details"] = significant_items
+    return test_results
+
+
+# =====================================================================
+# 5. VISUALIZATION: CORRELATION MATRIX TOOL
+# =====================================================================
+def _cramers_v(x, y):
+    confusion_matrix = pd.crosstab(x, y)
+    if confusion_matrix.empty:
+        return 0.0
+    chi2 = stats.chi2_contingency(confusion_matrix, correction=False)[0]
+    n = confusion_matrix.sum().sum()
+    if n == 0:
+        return 0.0
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    phi2corr = max(0, phi2 - ((k-1)*(r-1))/(n-1)) if n > 1 else 0
+    rcorr = r - ((r-1)**2)/(n-1) if n > 1 else r
+    kcorr = k - ((k-1)**2)/(n-1) if n > 1 else k
+    min_dim = min((kcorr-1), (rcorr-1))
+    return float(np.sqrt(phi2corr / min_dim)) if min_dim > 0 else 0.0
+
+
+def plot_correlation_matrix(
+    df: pd.DataFrame,
+    save_path: str = "correlation_matrix.png",
+    output_dir: str = "./sandbox_run",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Generates a correlation matrix heatmap for numeric features and association matrix for categorical features.
+    Excludes non-distributional columns (IDs, coordinates, timestamps).
+    """
+    plt.close()
+    os.makedirs(output_dir, exist_ok=True)
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+
+    numeric_cols = [c for c in df.columns if _is_numeric_col(df[c]) and not is_non_distributional_column(c, df[c])]
+
+    if len(numeric_cols) < 2:
+        return {"error": "Insufficient numerical columns for correlation heatmap."}
+
+    corr_matrix = df[numeric_cols].corr()
+
+    high_corr_pairs = []
+    cols = list(corr_matrix.columns)
+    for i in range(len(cols)):
+        for j in range(i + 1, len(cols)):
+            val = corr_matrix.iloc[i, j]
+            if pd.notnull(val) and abs(val) >= 0.85:
+                high_corr_pairs.append({
+                    "feature_1": cols[i],
+                    "feature_2": cols[j],
+                    "correlation": round(float(val), 4)
+                })
+
+    fig, ax = plt.subplots(figsize=(max(6, len(numeric_cols) * 0.8), max(5, len(numeric_cols) * 0.7)))
+    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", vmin=-1, vmax=1, ax=ax, cbar=True)
+    ax.set_title("Pearson Correlation Heatmap", fontsize=14, pad=12)
+    plt.xticks(rotation=45, ha="right")
+    plt.yticks(rotation=0)
+
+    try:
+        plt.savefig(full_save_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"[tools] Correlation matrix successfully saved to: {full_save_path}")
+    except Exception as e:
+        print(f"[tools] Warning: Error saving correlation matrix: {e}")
+        plt.close()
+
+    cat_cols = [c for c in df.columns if (not _is_numeric_col(df[c]) or df[c].nunique() <= 10) and not is_non_distributional_column(c, df[c])]
+    cat_assoc = []
+    if len(cat_cols) >= 2:
+        for i in range(len(cat_cols)):
+            for j in range(i + 1, len(cat_cols)):
+                v = _cramers_v(df[cat_cols[i]], df[cat_cols[j]])
+                if v >= 0.1:
+                    cat_assoc.append({
+                        "feature_1": cat_cols[i],
+                        "feature_2": cat_cols[j],
+                        "cramers_v": round(v, 4)
+                    })
+
+    return {
+        "correlation_heatmap_saved": full_save_path,
+        "high_correlation_pairs": high_corr_pairs,
+        "categorical_associations": cat_assoc
+    }
 
 
 # =====================================================================
@@ -925,16 +1078,15 @@ def plot_semantic_bivariate_relationships(
     - 'hue': Optional hue column name for segmentation
     - 'rationale': Semantic domain rationale for comparing these two attributes
     """
-    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
-    os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
     
     # Auto-generate top pairs if not provided by LLM
     if not pairs:
-        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
-        cat_cols = [c for c in df.columns if not _is_numeric_col(df[c]) and df[c].nunique() <= 10]
+        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c]) and not is_non_distributional_column(c, df[c])]
+        cat_cols = [c for c in df.columns if (not _is_numeric_col(df[c]) or df[c].nunique() <= 10) and not is_non_distributional_column(c, df[c])]
         
         if len(numeric_cols) >= 2:
             pairs.append({"x": numeric_cols[0], "y": numeric_cols[1], "rationale": "Bivariate numerical comparison"})
@@ -951,24 +1103,48 @@ def plot_semantic_bivariate_relationships(
         y_col = pair.get("y") or pair.get("y_col") or pair.get("feature_2")
         hue_col = pair.get("hue") or pair.get("hue_col")
         rationale = pair.get("rationale", "Semantic domain relationship")
-
+        
         if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
             continue
-        if hue_col and hue_col not in df.columns:
-            hue_col = None
-
-        file_path = os.path.join(out_dir, f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png")
-
+            
+        file_name = f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png"
+        file_path = os.path.join(output_dir, file_name)
+        
         try:
-            fig, ax = plt.subplots(figsize=(7, 5))
-            _render_bivariate_axes(ax, df, x_col, y_col, hue_col)
+            fig, ax = plt.subplots(figsize=(6, 4))
+            clean_df = df[[x_col, y_col] + ([hue_col] if hue_col and hue_col in df.columns else [])].dropna()
+            
+            if len(clean_df) < 5:
+                plt.close()
+                continue
+                
+            x_is_num = _is_numeric_col(clean_df[x_col])
+            y_is_num = _is_numeric_col(clean_df[y_col])
+            
+            if x_is_num and y_is_num:
+                sns.scatterplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set1", alpha=0.7)
+                sns.regplot(data=clean_df, x=x_col, y=y_col, scatter=False, ax=ax, color="#ef4444")
+                ax.set_title(f"{x_col} vs {y_col}", fontsize=11, pad=10)
+            elif not x_is_num and y_is_num:
+                sns.boxplot(data=clean_df, x=x_col, y=y_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
+                ax.set_title(f"{y_col} distribution across {x_col}", fontsize=11, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+            elif x_is_num and not y_is_num:
+                sns.boxplot(data=clean_df, x=y_col, y=x_col, hue=hue_col if hue_col in clean_df.columns else None, ax=ax, palette="Set2")
+                ax.set_title(f"{x_col} distribution across {y_col}", fontsize=11, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+            else:
+                ct = pd.crosstab(clean_df[x_col], clean_df[y_col], normalize="index")
+                ct.plot(kind="bar", stacked=True, ax=ax, colormap="viridis")
+                ax.set_title(f"{x_col} vs {y_col} (Proportion)", fontsize=11, pad=10)
+                ax.tick_params(axis='x', rotation=30)
+                
             plt.tight_layout()
             plt.savefig(file_path, dpi=150, bbox_inches="tight")
-            plt.close(fig)
-            saved_files.append({"x": x_col, "y": y_col, "saved_path": file_path, "rationale": rationale})
-            print(f"[tools] Saved semantic bivariate plot '{x_col}' vs '{y_col}' to: {file_path}")
+            plt.close()
+            saved_files.append({"name": file_name, "path": file_path, "x": x_col, "y": y_col, "rationale": rationale})
         except Exception as e:
-            print(f"[tools] Warning: Error plotting bivariate '{x_col}' vs '{y_col}': {e}")
+            print(f"[tools] Warning: Error plotting bivariate relationship '{x_col}' vs '{y_col}': {e}")
             plt.close()
 
     return {
@@ -992,18 +1168,15 @@ def plot_pairplot(
     Generates a concise pairplot visualizing pairwise distributions and relationships
     across a reasonable subset of key numerical features (clamped to max 4-5 features).
     """
-    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
-    os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
-    # Select reasonable subset of numerical columns (max 4 to 5)
     raw_cols = columns or kwargs.get("feature_cols") or kwargs.get("cols") or kwargs.get("numeric_cols")
     if not raw_cols:
-        raw_cols = [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 2]
+        raw_cols = [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 2 and not is_non_distributional_column(c, df[c])]
         
     valid_cols = [c for c in raw_cols if c in df.columns and _is_numeric_col(df[c])]
     
-    # Clamp number of features to maximum 4-5 for clean, uncluttered visual rendering
     max_features = 4
     if len(valid_cols) > max_features:
         valid_cols = valid_cols[:max_features]
@@ -1012,7 +1185,6 @@ def plot_pairplot(
     if len(valid_cols) < 2:
         return {"error": "Insufficient numeric columns for pairplot rendering."}
         
-    # Check hue column
     hue_col = hue or kwargs.get("target_col")
     if hue_col and hue_col not in df.columns:
         hue_col = None
@@ -1025,7 +1197,7 @@ def plot_pairplot(
     if len(clean_df) < 5:
         clean_df = df[cols_to_plot]
         
-    full_save_path = os.path.join(out_dir, os.path.basename(save_path))
+    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
     
     try:
         if hue_col:
@@ -1058,8 +1230,8 @@ def generate_predictive_blueprint(
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Generates a predictive modeling blueprint. If custom_blueprint or kwargs are provided
-    by the LLM, it uses the LLM's dynamic domain strategy.
+    Generates a predictive modeling blueprint.
+    Automatically infers problem type (Classification vs. Regression) when target_col is provided or detected.
     """
     if custom_blueprint and isinstance(custom_blueprint, dict):
         return custom_blueprint
@@ -1077,16 +1249,34 @@ def generate_predictive_blueprint(
 
     num_rows, num_cols = df.shape
     
+    # Auto-detect target_col if omitted but can be inferred
+    if not target_col or target_col not in df.columns:
+        target_col = kwargs.get("target_col") or kwargs.get("target") or kwargs.get("target_definition")
+
+    if not target_col or target_col not in df.columns:
+        # Heuristic search for common target column names in dataset
+        candidates = ["survived", "target", "label", "class", "income", "salary", "salary_usd", "price", "price_range", "diagnosis", "noise_complaints", "churn"]
+        for cand in candidates:
+            for col in df.columns:
+                if col.strip().lower() == cand:
+                    target_col = col
+                    break
+            if target_col in df.columns:
+                break
+
     if target_col and target_col in df.columns:
-        if _is_numeric_col(df[target_col]) and df[target_col].nunique() > 10:
+        n_unique = df[target_col].nunique()
+        if _is_numeric_col(df[target_col]) and n_unique > 20:
             problem_type = "Regression"
+        elif n_unique == 2:
+            problem_type = "Binary Classification"
         else:
-            problem_type = "Classification"
+            problem_type = "Multiclass Classification"
     else:
         target_col = "Undefined (Unsupervised)"
         problem_type = "Unsupervised / Exploratory"
 
-    if problem_type == "Classification":
+    if "Classification" in problem_type:
         recommended_algos = [
             "Regularized Logistic Regression (baseline)",
             "Random Forest Classifier",
@@ -1135,7 +1325,7 @@ def generate_predictive_blueprint(
         "feature_selection_strategy": feature_selection,
         "validation_strategy": val_strat,
         "overfitting_risk_mitigation": overfitting_mitigation,
-        "executive_summary": f"Target: {target_col} ({problem_type}). Use robust cross-validation on {num_rows} rows x {num_cols} columns."
+        "executive_summary": f"Target: '{target_col}' ({problem_type}). Model recommendations and validation strategy tailored for {num_rows} rows x {num_cols} columns."
     }
 
 

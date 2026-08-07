@@ -5,7 +5,7 @@
       "rows": 2000,
       "columns": 26
     },
-    "target_column": "noise_complaints",
+    "target_column": "decibel_level",
     "column_summary": {
       "id": {
         "dtype": "int64",
@@ -140,352 +140,12 @@
     }
   },
   "imputation_summary": {
-    "rules_applied": [
-      "Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.",
-      "Numeric columns with skewness > 1.0 or < -1.0 use median imputation.",
-      "Numeric columns with skewness between -1.0 and 1.0 use mean imputation.",
-      "Categorical/String columns use mode imputation with 'Unknown' fallback."
-    ],
-    "columns": {
-      "id": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "latitude": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "longitude": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "datetime": {
-        "dtype": "str",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "decibel_level": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "hour": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "day_of_week": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "is_weekend": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "temperature_c": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "humidity_%": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "wind_speed_kmh": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "precipitation_mm": {
-        "dtype": "float64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "traffic_density": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "near_airport": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "near_highway": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "near_construction": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "population_density": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "park_proximity": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "industrial_zone": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "vehicle_count": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "honking_events": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "public_event": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "holiday": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "school_zone": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "noise_complaints": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      },
-      "sensor_id": {
-        "dtype": "int64",
-        "missing_before": 0,
-        "missing_after": 0,
-        "method": "none",
-        "fill_value": null
-      }
-    }
+    "status": "Imputation completed"
   },
-  "outlier_analysis": {
-    "latitude": {
-      "q1": 40.5952,
-      "q3": 40.8003,
-      "iqr": 0.2051,
-      "lower_bound": 40.2876,
-      "upper_bound": 41.1079,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "longitude": {
-      "q1": -74.0746,
-      "q3": -73.8257,
-      "iqr": 0.249,
-      "lower_bound": -74.448,
-      "upper_bound": -73.4522,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "decibel_level": {
-      "q1": 57.9079,
-      "q3": 71.6476,
-      "iqr": 13.7397,
-      "lower_bound": 37.2983,
-      "upper_bound": 92.2572,
-      "outlier_count": 17,
-      "outlier_percentage": 0.85,
-      "action_taken": "profile"
-    },
-    "hour": {
-      "q1": 6.0,
-      "q3": 18.0,
-      "iqr": 12.0,
-      "lower_bound": -12.0,
-      "upper_bound": 36.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "day_of_week": {
-      "q1": 1.0,
-      "q3": 5.0,
-      "iqr": 4.0,
-      "lower_bound": -5.0,
-      "upper_bound": 11.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "temperature_c": {
-      "q1": 12.7758,
-      "q3": 22.7564,
-      "iqr": 9.9806,
-      "lower_bound": -2.1952,
-      "upper_bound": 37.7273,
-      "outlier_count": 8,
-      "outlier_percentage": 0.4,
-      "action_taken": "profile"
-    },
-    "humidity_%": {
-      "q1": 37.9863,
-      "q3": 72.3969,
-      "iqr": 34.4106,
-      "lower_bound": -13.6296,
-      "upper_bound": 124.0128,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "wind_speed_kmh": {
-      "q1": 10.0257,
-      "q3": 30.4683,
-      "iqr": 20.4426,
-      "lower_bound": -20.6382,
-      "upper_bound": 61.1322,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "precipitation_mm": {
-      "q1": 0.5412,
-      "q3": 2.8444,
-      "iqr": 2.3032,
-      "lower_bound": -2.9136,
-      "upper_bound": 6.2992,
-      "outlier_count": 92,
-      "outlier_percentage": 4.6,
-      "action_taken": "profile"
-    },
-    "traffic_density": {
-      "q1": 2.0,
-      "q3": 4.0,
-      "iqr": 2.0,
-      "lower_bound": -1.0,
-      "upper_bound": 7.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "population_density": {
-      "q1": 8490.5,
-      "q3": 22798.0,
-      "iqr": 14307.5,
-      "lower_bound": -12970.75,
-      "upper_bound": 44259.25,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "vehicle_count": {
-      "q1": 17.0,
-      "q3": 23.0,
-      "iqr": 6.0,
-      "lower_bound": 8.0,
-      "upper_bound": 32.0,
-      "outlier_count": 13,
-      "outlier_percentage": 0.65,
-      "action_taken": "profile"
-    },
-    "honking_events": {
-      "q1": 2.0,
-      "q3": 4.0,
-      "iqr": 2.0,
-      "lower_bound": -1.0,
-      "upper_bound": 7.0,
-      "outlier_count": 20,
-      "outlier_percentage": 1.0,
-      "action_taken": "profile"
-    },
-    "noise_complaints": {
-      "q1": 0.0,
-      "q3": 2.0,
-      "iqr": 2.0,
-      "lower_bound": -3.0,
-      "upper_bound": 5.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    },
-    "sensor_id": {
-      "q1": 14.0,
-      "q3": 38.0,
-      "iqr": 24.0,
-      "lower_bound": -22.0,
-      "upper_bound": 74.0,
-      "outlier_count": 0,
-      "outlier_percentage": 0.0,
-      "action_taken": "profile"
-    }
-  },
+  "outlier_analysis": {},
   "engineered_features": [],
   "correlation_analysis": {
-    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\dba982b1-9a7b-4138-bb05-5f601578d41a\\correlation_matrix.png",
+    "heatmap_saved": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0\\correlation_matrix.png",
     "top_correlations": [
       {
         "feature_1": "day_of_week",
@@ -1221,194 +881,222 @@
   "statistical_hypothesis_tests": {
     "id": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0316,
-      "p_value": 0.15741115395886865,
+      "statistic": -0.0044,
+      "p_value": 0.8424282995460795,
+      "effect_size": 0.0044,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0316, p = 1.5741e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0044, |r| = 0.0044, p = 8.4243e-01. (Not Significant)"
     },
     "latitude": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0337,
-      "p_value": 0.13217913144547896,
+      "statistic": -0.0253,
+      "p_value": 0.25804119319127794,
+      "effect_size": 0.0253,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0337, p = 1.3218e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0253, |r| = 0.0253, p = 2.5804e-01. (Not Significant)"
     },
     "longitude": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0374,
-      "p_value": 0.09472655614132722,
+      "statistic": 0.0114,
+      "p_value": 0.6117100236837072,
+      "effect_size": 0.0114,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0374, p = 9.4727e-02. (Not Significant)"
+      "interpretation": "Pearson r = 0.0114, |r| = 0.0114, p = 6.1171e-01. (Not Significant)"
     },
     "datetime": {
       "test_name": "Two-Sample Welch T-Test",
-      "statistic": 1.0,
-      "p_value": 0.5000000000000001,
+      "statistic": 1.3695,
+      "p_value": 0.3183611537673455,
+      "effect_size": 0.6848,
       "is_statistically_significant": false,
-      "interpretation": "T-statistic = 1.0000, p = 5.0000e-01. (Not Significant)"
-    },
-    "decibel_level": {
-      "test_name": "Pearson Correlation Test",
-      "statistic": -0.0411,
-      "p_value": 0.06594885869920505,
-      "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0411, p = 6.5949e-02. (Not Significant)"
+      "interpretation": "T-statistic = 1.3695, Cohen's d = 1.3695, p = 3.1836e-01. (Not Significant)"
     },
     "hour": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.034,
-      "p_value": 0.12833098005851812,
+      "statistic": -0.012,
+      "p_value": 0.5917132704597093,
+      "effect_size": 0.012,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0340, p = 1.2833e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0120, |r| = 0.012, p = 5.9171e-01. (Not Significant)"
     },
     "day_of_week": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0095,
-      "p_value": 0.6717112403749596,
-      "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0095, p = 6.7171e-01. (Not Significant)"
+      "statistic": -0.0513,
+      "p_value": 0.021857199903370414,
+      "effect_size": 0.0513,
+      "is_statistically_significant": true,
+      "interpretation": "Pearson r = -0.0513, |r| = 0.0513, p = 2.1857e-02. (Statistically Significant)"
     },
     "is_weekend": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0248,
-      "p_value": 0.2673927431748978,
+      "statistic": -0.0379,
+      "p_value": 0.09004633886661804,
+      "effect_size": 0.0379,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0248, p = 2.6739e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0379, |r| = 0.0379, p = 9.0046e-02. (Not Significant)"
     },
     "temperature_c": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0619,
-      "p_value": 0.005609816962610227,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0619, p = 5.6098e-03. (Statistically Significant)"
+      "statistic": 0.0317,
+      "p_value": 0.15644027485214237,
+      "effect_size": 0.0317,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = 0.0317, |r| = 0.0317, p = 1.5644e-01. (Not Significant)"
     },
     "humidity_%": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0168,
-      "p_value": 0.45319904057789445,
+      "statistic": 0.0109,
+      "p_value": 0.6246482648676568,
+      "effect_size": 0.0109,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0168, p = 4.5320e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0109, |r| = 0.0109, p = 6.2465e-01. (Not Significant)"
     },
     "wind_speed_kmh": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0089,
-      "p_value": 0.6910590144819775,
+      "statistic": 0.0291,
+      "p_value": 0.19364844627382097,
+      "effect_size": 0.0291,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0089, p = 6.9106e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0291, |r| = 0.0291, p = 1.9365e-01. (Not Significant)"
     },
     "precipitation_mm": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0047,
-      "p_value": 0.8319191820523361,
+      "statistic": 0.0033,
+      "p_value": 0.8835283591198878,
+      "effect_size": 0.0033,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0047, p = 8.3192e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0033, |r| = 0.0033, p = 8.8353e-01. (Not Significant)"
     },
     "traffic_density": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0115,
-      "p_value": 0.6061466541156062,
+      "statistic": 0.0387,
+      "p_value": 0.08339562051959201,
+      "effect_size": 0.0387,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0115, p = 6.0615e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0387, |r| = 0.0387, p = 8.3396e-02. (Not Significant)"
     },
     "near_airport": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.02,
-      "p_value": 0.37204997229093834,
+      "statistic": 0.001,
+      "p_value": 0.9643619976968937,
+      "effect_size": 0.001,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0200, p = 3.7205e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0010, |r| = 0.001, p = 9.6436e-01. (Not Significant)"
     },
     "near_highway": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0205,
-      "p_value": 0.35957421877184914,
+      "statistic": -0.0333,
+      "p_value": 0.13663453725328087,
+      "effect_size": 0.0333,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0205, p = 3.5957e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0333, |r| = 0.0333, p = 1.3663e-01. (Not Significant)"
     },
     "near_construction": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0158,
-      "p_value": 0.4796768237530174,
+      "statistic": -0.0074,
+      "p_value": 0.7395180457115055,
+      "effect_size": 0.0074,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0158, p = 4.7968e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0074, |r| = 0.0074, p = 7.3952e-01. (Not Significant)"
     },
     "population_density": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0079,
-      "p_value": 0.7230598775338208,
+      "statistic": -0.0416,
+      "p_value": 0.06292081599498718,
+      "effect_size": 0.0416,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0079, p = 7.2306e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0416, |r| = 0.0416, p = 6.2921e-02. (Not Significant)"
     },
     "park_proximity": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.003,
-      "p_value": 0.8941032298845341,
+      "statistic": -0.0161,
+      "p_value": 0.471136466616478,
+      "effect_size": 0.0161,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0030, p = 8.9410e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0161, |r| = 0.0161, p = 4.7114e-01. (Not Significant)"
     },
     "industrial_zone": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0723,
-      "p_value": 0.001207296837092476,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0723, p = 1.2073e-03. (Statistically Significant)"
+      "statistic": -0.0131,
+      "p_value": 0.5578428625200672,
+      "effect_size": 0.0131,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0131, |r| = 0.0131, p = 5.5784e-01. (Not Significant)"
     },
     "vehicle_count": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0341,
-      "p_value": 0.1270982195777486,
+      "statistic": 0.006,
+      "p_value": 0.7883845543452661,
+      "effect_size": 0.006,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0341, p = 1.2710e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0060, |r| = 0.006, p = 7.8838e-01. (Not Significant)"
     },
     "honking_events": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0034,
-      "p_value": 0.8793949605695189,
+      "statistic": -0.0056,
+      "p_value": 0.8014128290722772,
+      "effect_size": 0.0056,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = -0.0034, p = 8.7939e-01. (Not Significant)"
+      "interpretation": "Pearson r = -0.0056, |r| = 0.0056, p = 8.0141e-01. (Not Significant)"
     },
     "public_event": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0299,
-      "p_value": 0.18136943570512845,
+      "statistic": 0.0012,
+      "p_value": 0.9589466880762156,
+      "effect_size": 0.0012,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0299, p = 1.8137e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0012, |r| = 0.0012, p = 9.5895e-01. (Not Significant)"
     },
     "holiday": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0544,
-      "p_value": 0.014911706166833384,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = 0.0544, p = 1.4912e-02. (Statistically Significant)"
+      "statistic": -0.0409,
+      "p_value": 0.06728860546457384,
+      "effect_size": 0.0409,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0409, |r| = 0.0409, p = 6.7289e-02. (Not Significant)"
     },
     "school_zone": {
       "test_name": "Pearson Correlation Test",
-      "statistic": 0.0029,
-      "p_value": 0.8954036247102101,
+      "statistic": 0.0003,
+      "p_value": 0.9906326626975087,
+      "effect_size": 0.0003,
       "is_statistically_significant": false,
-      "interpretation": "Pearson r = 0.0029, p = 8.9540e-01. (Not Significant)"
+      "interpretation": "Pearson r = 0.0003, |r| = 0.0003, p = 9.9063e-01. (Not Significant)"
+    },
+    "noise_complaints": {
+      "test_name": "Pearson Correlation Test",
+      "statistic": -0.0411,
+      "p_value": 0.06594885869920505,
+      "effect_size": 0.0411,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0411, |r| = 0.0411, p = 6.5949e-02. (Not Significant)"
     },
     "sensor_id": {
       "test_name": "Pearson Correlation Test",
-      "statistic": -0.0843,
-      "p_value": 0.00015914219634219988,
-      "is_statistically_significant": true,
-      "interpretation": "Pearson r = -0.0843, p = 1.5914e-04. (Statistically Significant)"
+      "statistic": -0.0158,
+      "p_value": 0.4805779321941526,
+      "effect_size": 0.0158,
+      "is_statistically_significant": false,
+      "interpretation": "Pearson r = -0.0158, |r| = 0.0158, p = 4.8058e-01. (Not Significant)"
     },
     "significant_predictors": [
-      "temperature_c",
-      "industrial_zone",
-      "holiday",
-      "sensor_id"
+      "day_of_week"
+    ],
+    "ranked_significant_details": [
+      {
+        "feature": "day_of_week",
+        "effect_size": 0.0513,
+        "p_value": 0.021857199903370414
+      }
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "noise_complaints",
-    "problem_type": "Classification",
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
     "recommended_algorithms": [
-      "Regularized Logistic Regression (baseline)",
-      "Random Forest Classifier",
-      "Gradient Boosting Classifier (XGBoost / LightGBM)",
-      "Support Vector Classifier (SVM)"
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -1416,15 +1104,14 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "Stratified K-Fold Cross-Validation (5 folds)",
-      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+      "Evaluate Silhouette Score and Inertia elbow curve"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: noise_complaints (Classification). Use robust cross-validation on 2000 rows x 26 columns."
+    "executive_summary": "Target: Undefined (Unsupervised) (Unsupervised / Exploratory). Use robust cross-validation on 2000 rows x 26 columns."
   },
   "extracted_insights": {
     "key_findings": [
@@ -1432,10 +1119,7 @@
       "Processed missing values and computed statistical distributions."
     ],
     "statistically_significant_predictors": [
-      "temperature_c",
-      "industrial_zone",
-      "holiday",
-      "sensor_id"
+      "day_of_week"
     ]
   }
 }
