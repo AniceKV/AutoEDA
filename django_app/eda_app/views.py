@@ -353,7 +353,11 @@ def run_pipeline(request):
             if not uploaded:
                 return JsonResponse({"error": "No file uploaded."}, status=400)
             os.makedirs(settings.TEMP_UPLOADS_DIR, exist_ok=True)
-            csv_path = os.path.join(settings.TEMP_UPLOADS_DIR, uploaded.name)
+            from django.utils.text import get_valid_filename
+            safe_filename = get_valid_filename(os.path.basename(uploaded.name or ""))
+            if not safe_filename:
+                safe_filename = "uploaded_dataset.csv"
+            csv_path = os.path.join(settings.TEMP_UPLOADS_DIR, safe_filename)
             with open(csv_path, "wb") as f:
                 for chunk in uploaded.chunks():
                     f.write(chunk)
@@ -531,10 +535,14 @@ def serve_artifact(request, artifact_path: str):
     if not safe_path.startswith(AUTOEDA_ROOT):
         return HttpResponse("Forbidden.", status=403)
 
+    ext = os.path.splitext(safe_path)[1].lower()
+    ALLOWED_ARTIFACT_EXTENSIONS = {".png", ".jpg", ".jpeg", ".svg", ".html"}
+    if ext not in ALLOWED_ARTIFACT_EXTENSIONS:
+        return HttpResponse("Forbidden.", status=403)
+
     if not os.path.exists(safe_path) or not os.path.isfile(safe_path):
         return HttpResponse("Not found.", status=404)
 
-    ext = os.path.splitext(safe_path)[1].lower()
     content_type_map = {
         ".png": "image/png",
         ".jpg": "image/jpeg",

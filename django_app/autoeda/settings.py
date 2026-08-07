@@ -1,17 +1,27 @@
 import os
 from pathlib import Path
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 # Base directory of the Django project (django_app/)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Root of the entire AutoEDA repo (one level up from django_app/)
 AUTOEDA_ROOT = BASE_DIR.parent
 
-SECRET_KEY = "django-autoeda-pro-secret-key-change-in-production-xk92pl"
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-autoeda-pro-secret-key-change-in-production-xk92pl")
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "t")
 
-ALLOWED_HOSTS = ["*"]
+allowed_hosts_env = os.environ.get("ALLOWED_HOSTS")
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_env.split(",") if h.strip()]
+else:
+    ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.staticfiles",
@@ -27,13 +37,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
-    "https://*.railway.app",
-    "https://*.up.railway.app",
-    "http://*",
-    "https://*",
-]
+csrf_origins_env = os.environ.get("CSRF_TRUSTED_ORIGINS")
+if csrf_origins_env:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins_env.split(",") if origin.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        "https://*.onrender.com",
+        "https://*.railway.app",
+        "https://*.up.railway.app",
+    ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 

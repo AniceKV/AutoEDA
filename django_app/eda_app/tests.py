@@ -163,3 +163,28 @@ class DjangoAppViewsTestCase(TestCase):
         """Test requesting non-existent artifact returns 404."""
         response = self.client.get("/artifact/non_existent_path_xyz.png")
         self.assertEqual(response.status_code, 404)
+
+    def test_serve_artifact_disallowed_extension(self):
+        """Test serve_artifact blocks sensitive/unallowed file extensions."""
+        response = self.client.get("/artifact/.env")
+        self.assertEqual(response.status_code, 403)
+
+        response = self.client.get("/artifact/django_app/manage.py")
+        self.assertEqual(response.status_code, 403)
+
+    def test_run_pipeline_upload_sanitizes_filename(self):
+        """Test uploading CSV with path traversal filename is sanitized."""
+        csv_content = b"a,b\n1,2\n"
+        uploaded_file = io.BytesIO(csv_content)
+        uploaded_file.name = "../../unsafe_name.csv"
+
+        response = self.client.post(reverse("run_pipeline"), {
+            "data_source": "upload",
+            "csv_file": uploaded_file,
+            "user_request": "Test traversal filename",
+        })
+        self.assertEqual(response.status_code, 200)
+        expected_path = os.path.join(settings.TEMP_UPLOADS_DIR, "unsafe_name.csv")
+        self.assertTrue(os.path.exists(expected_path))
+        if os.path.exists(expected_path):
+            os.remove(expected_path)
