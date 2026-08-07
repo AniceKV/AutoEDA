@@ -1282,7 +1282,7 @@ TOOL_REGISTRY = {
     },
     "plot_feature_distributions": {
         "function": plot_feature_distributions,
-        "description": "Plots univariate histograms, KDE distributions, or countplots. SKIP THIS TOOL if the user requested relationship-focused or bivariate-only analysis.",
+        "description": "Plots univariate histograms, KDE distributions, or countplots for important non-identifier features (passed via 'columns' argument).",
         "model": PlotFeatureDistributionsArgs
     },
     "plot_target_interaction": {

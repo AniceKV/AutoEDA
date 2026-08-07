@@ -1,14 +1,14 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"new_column\": \"average_score\",\n          \"operation\": \"mean\",\n          \"source_columns\": [\"math score\", \"reading score\", \"writing score\"]\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {}\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\"math score\", \"reading score\", \"writing score\", \"average_score\"],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\"x\": \"gender\", \"y\": \"average_score\"},\n        {\"x\": \"race/ethnicity\", \"y\": \"average_score\"},\n        {\"x\": \"parental level of education\", \"y\": \"average_score\"},\n        {\"x\": \"lunch\", \"y\": \"average_score\"},\n        {\"x\": \"test preparation course\", \"y\": \"average_score\"},\n        {\"x\": \"parental level of education\", \"y\": \"test preparation course\"},\n        {\"x\": \"lunch\", \"y\": \"test preparation course\"},\n        {\"x\": \"gender\", \"y\": \"test preparation course\"}\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"gender\",\n      \"save_path\": \"target_interaction_gender.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"race/ethnicity\",\n      \"save_path\": \"target_interaction_race.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"parental level of education\",\n      \"save_path\": \"target_interaction_education.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"lunch\",\n      \"save_path\": \"target_interaction_lunch.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"test preparation course\",\n      \"save_path\": \"target_interaction_preparation.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\"math score\", \"reading score\", \"writing score\", \"average_score\"],\n      \"hue\": null,\n      \"save_path\": \"numeric_pairplot.png\"\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"average_score\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"new_feature_name\": \"average_score\",\n          \"operation\": \"mean\",\n          \"source_columns\": [\"math score\", \"reading score\", \"writing score\"]\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\"math score\", \"reading score\", \"writing score\", \"average_score\"],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\"x\": \"gender\", \"y\": \"average_score\"},\n        {\"x\": \"race/ethnicity\", \"y\": \"average_score\"},\n        {\"x\": \"parental level of education\", \"y\": \"average_score\"},\n        {\"x\": \"lunch\", \"y\": \"average_score\"},\n        {\"x\": \"test preparation course\", \"y\": \"average_score\"},\n        {\"x\": \"math score\", \"y\": \"reading score\"},\n        {\"x\": \"math score\", \"y\": \"writing score\"},\n        {\"x\": \"reading score\", \"y\": \"writing score\"},\n        {\"x\": \"parental level of education\", \"y\": \"test preparation course\", \"hue\": \"average_score\"}\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"math score\",\n      \"save_path\": \"target_interaction_math.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"reading score\",\n      \"save_path\": \"target_interaction_reading.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"writing score\",\n      \"save_path\": \"target_interaction_writing.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\"math score\", \"reading score\", \"writing score\", \"average_score\"],\n      \"hue\": \"average_score\"\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"average_score\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "engineer_features",
         "args": {
           "feature_specs": [
             {
-              "new_column": "average_score",
+              "new_feature_name": "average_score",
               "operation": "mean",
               "source_columns": [
                 "math score",
@@ -23,6 +23,8 @@
       {
         "tool": "impute_missing_data",
         "args": {
+          "strategy_map": null,
+          "numeric_skew_threshold": 1.0,
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
@@ -72,16 +74,21 @@
               "y": "average_score"
             },
             {
+              "x": "math score",
+              "y": "reading score"
+            },
+            {
+              "x": "math score",
+              "y": "writing score"
+            },
+            {
+              "x": "reading score",
+              "y": "writing score"
+            },
+            {
               "x": "parental level of education",
-              "y": "test preparation course"
-            },
-            {
-              "x": "lunch",
-              "y": "test preparation course"
-            },
-            {
-              "x": "gender",
-              "y": "test preparation course"
+              "y": "test preparation course",
+              "hue": "average_score"
             }
           ],
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
@@ -91,8 +98,8 @@
         "tool": "plot_target_interaction",
         "args": {
           "target_col": "average_score",
-          "feature_col": "gender",
-          "save_path": "target_interaction_gender.png",
+          "feature_col": "math score",
+          "save_path": "target_interaction_math.png",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
@@ -100,8 +107,8 @@
         "tool": "plot_target_interaction",
         "args": {
           "target_col": "average_score",
-          "feature_col": "race/ethnicity",
-          "save_path": "target_interaction_race.png",
+          "feature_col": "reading score",
+          "save_path": "target_interaction_reading.png",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
@@ -109,26 +116,8 @@
         "tool": "plot_target_interaction",
         "args": {
           "target_col": "average_score",
-          "feature_col": "parental level of education",
-          "save_path": "target_interaction_education.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "average_score",
-          "feature_col": "lunch",
-          "save_path": "target_interaction_lunch.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
-        }
-      },
-      {
-        "tool": "plot_target_interaction",
-        "args": {
-          "target_col": "average_score",
-          "feature_col": "test preparation course",
-          "save_path": "target_interaction_preparation.png",
+          "feature_col": "writing score",
+          "save_path": "target_interaction_writing.png",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
@@ -141,8 +130,7 @@
             "writing score",
             "average_score"
           ],
-          "hue": null,
-          "save_path": "numeric_pairplot.png",
+          "hue": "average_score",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
@@ -163,9 +151,7 @@
       "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'gender': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'race/ethnicity': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'parental level of education': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'lunch': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'test preparation course': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'math score': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'reading score': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'writing score': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'avg_math score_reading score_writing score': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
       "detect_and_handle_outliers successful. Outlier stats collected.",
       "run_statistical_hypothesis_tests successful. Significant predictors: ['reading score', 'writing score', 'math score', 'lunch', 'test preparation course', 'gender', 'parental level of education', 'race/ethnicity']",
-      "plot_semantic_bivariate_relationships successful. Count: 3",
-      "plot_target_interaction successful.",
-      "plot_target_interaction successful.",
+      "plot_semantic_bivariate_relationships successful. Count: 4",
       "plot_target_interaction successful.",
       "plot_target_interaction successful.",
       "plot_target_interaction successful.",

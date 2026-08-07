@@ -324,21 +324,16 @@ def index(request):
         "agent_question": agent_question,
         "sample_csvs": sample_csvs,
         "default_prompt": (
-            "Perform a complete exploratory analysis of this dataset, with primary emphasis "
-            "on bivariate relationships between variables.\n\n"
-            "The target/outcome of interest is <column name — fill this in>.\n\n"
-            "Bivariate analysis (primary focus):\n"
-            "- Generate semantically meaningful pairwise plots — pick pairs based on "
-            "domain logic, not just the first numeric columns. Include a short rationale "
-            "for each pair before plotting it.\n"
-            "- Cover feature-vs-target relationships as well as feature-vs-feature "
-            "relationships where a plausible interaction or confound exists.\n"
-            "- Run statistical significance tests of each feature against <target column>, "
-            "using the appropriate test per variable-type pairing. Report which are "
-            "significant at alpha=0.05, ranked by effect size.\n\n"
-            "Also perform, at normal depth: type-safe missing value imputation, outlier "
-            "profiling, and predictive blueprinting for <target column> — but keep these "
-            "secondary to the bivariate/relationship analysis above."
+            "Perform exploratory data analysis focusing on variable distributions, bivariate relationships, and hypothesis testing. "
+            "The target/outcome of interest is <column name — required, don't leave this out>.\n\n"
+            "1. Variable Distributions: generate univariate distribution plots (histograms/KDE for numeric, count plots for categorical) "
+            "for key non-identifier features to analyze feature characteristics.\n\n"
+            "2. Bivariate Analysis: for each feature, generate semantically meaningful pairwise plots against the target "
+            "(and against each other where a domain-relevant relationship is plausible — e.g. two variables that would plausibly "
+            "interact or confound each other). For each pair, give a short rationale for why the relationship is worth checking before plotting it.\n\n"
+            "3. Hypothesis Testing: run significance tests of every feature against <target column>, using the appropriate test "
+            "for each variable-type pairing. Report which features are statistically significant at alpha=0.05 and rank them by effect size, not just p-value.\n\n"
+            "Skip imputation, outlier handling, and predictive blueprinting unless missingness or extreme values distort a specific test. Keep type-safe."
         ),
         "generate_summary": request.session.get("generate_summary", True),
     }
@@ -354,21 +349,16 @@ def run_pipeline(request):
         data_source = request.POST.get("data_source", "sample")
         generate_summary = request.POST.get("generate_summary") == "on"
         user_request = request.POST.get("user_request", "").strip() or (
-            "Perform a complete exploratory analysis of this dataset, with primary emphasis "
-            "on bivariate relationships between variables.\n\n"
-            "The target/outcome of interest is <column name — fill this in>.\n\n"
-            "Bivariate analysis (primary focus):\n"
-            "- Generate semantically meaningful pairwise plots — pick pairs based on "
-            "domain logic, not just the first numeric columns. Include a short rationale "
-            "for each pair before plotting it.\n"
-            "- Cover feature-vs-target relationships as well as feature-vs-feature "
-            "relationships where a plausible interaction or confound exists.\n"
-            "- Run statistical significance tests of each feature against <target column>, "
-            "using the appropriate test per variable-type pairing. Report which are "
-            "significant at alpha=0.05, ranked by effect size.\n\n"
-            "Also perform, at normal depth: type-safe missing value imputation, outlier "
-            "profiling, and predictive blueprinting for <target column> — but keep these "
-            "secondary to the bivariate/relationship analysis above."
+            "Perform exploratory data analysis focusing on variable distributions, bivariate relationships, and hypothesis testing. "
+            "The target/outcome of interest is <column name — required, don't leave this out>.\n\n"
+            "1. Variable Distributions: generate univariate distribution plots (histograms/KDE for numeric, count plots for categorical) "
+            "for key non-identifier features to analyze feature characteristics.\n\n"
+            "2. Bivariate Analysis: for each feature, generate semantically meaningful pairwise plots against the target "
+            "(and against each other where a domain-relevant relationship is plausible — e.g. two variables that would plausibly "
+            "interact or confound each other). For each pair, give a short rationale for why the relationship is worth checking before plotting it.\n\n"
+            "3. Hypothesis Testing: run significance tests of every feature against <target column>, using the appropriate test "
+            "for each variable-type pairing. Report which features are statistically significant at alpha=0.05 and rank them by effect size, not just p-value.\n\n"
+            "Skip imputation, outlier handling, and predictive blueprinting unless missingness or extreme values distort a specific test. Keep type-safe."
         )
 
         # ---- Resolve CSV path ----

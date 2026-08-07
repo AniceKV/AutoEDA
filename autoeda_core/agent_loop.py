@@ -194,7 +194,7 @@ def run_tool_based_eda(
         "7. Do NOT output conversational preambles.\n"
         "8. Do NOT request univariate distribution plots ('plot_feature_distributions') for identifier columns (ID, UUID, index, key), spatial coordinates (latitude, longitude), or timestamps, as they lack univariate distribution signal.\n"
         "9. BIVARIATE GRAPH PRIORITY: Bivariate relationships and pairwise interactions are critical for discovering key feature correlations, trend lines, and domain insights. Always prioritize plotting semantic bivariate graphs ('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') for key feature pairs, target variable relationships, and high-signal numerical/categorical interactions.\n"
-        "10. STRICT USER SCOPE & EXCLUSIONS: If the user request instructs to focus on variable relationships or skip full EDA, DO NOT call 'plot_feature_distributions' (univariate plots), 'impute_missing_data', 'detect_and_handle_outliers', or 'generate_predictive_blueprint' unless explicitly requested. Focus tool selection strictly on bivariate plotting tools and hypothesis testing ('run_statistical_hypothesis_tests')."
+        "10. COMPREHENSIVE VISUAL PROFILING: When performing exploratory data analysis, call 'plot_feature_distributions' for key non-identifier features to analyze univariate distributions, alongside bivariate plotting tools ('plot_semantic_bivariate_relationships', 'plot_target_interaction', 'plot_pairplot') and hypothesis testing ('run_statistical_hypothesis_tests'). Skip imputation, outlier handling, and predictive blueprinting unless explicitly requested or needed for severe distortion."
     )
     
     # 2. Agentic Refinement Loop

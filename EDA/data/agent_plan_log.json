@@ -1,17 +1,14 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": {\n        \"Age\": \"median\",\n        \"Cabin\": \"mode\",\n        \"Embarked\": \"mode\"\n      },\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\"Age\", \"SibSp\", \"Parch\", \"Fare\", \"Pclass\"],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\"Age\", \"SibSp\", \"Parch\", \"Fare\", \"Pclass\", \"Sex\", \"Embarked\"],\n      \"save_path\": \"feature_distributions.png\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\"x\": \"Age\", \"y\": \"Survived\"},\n        {\"x\": \"Fare\", \"y\": \"Survived\"},\n        {\"x\": \"Sex\", \"y\": \"Survived\"},\n        {\"x\": \"Pclass\", \"y\": \"Survived\"},\n        {\"x\": \"SibSp\", \"y\": \"Survived\"},\n        {\"x\": \"Parch\", \"y\": \"Survived\"}\n      ]\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": null,\n      \"numeric_skew_threshold\": 1.0\n    }\n  },\n  {\n    \"tool\": \"detect_and_handle_outliers\",\n    \"args\": {\n      \"columns\": [\"Age\", \"SibSp\", \"Parch\", \"Fare\"],\n      \"action\": \"profile\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\"x\": \"Sex\", \"y\": \"Survived\", \"hue\": null},\n        {\"x\": \"Pclass\", \"y\": \"Survived\", \"hue\": null},\n        {\"x\": \"Age\", \"y\": \"Survived\", \"hue\": null},\n        {\"x\": \"Fare\", \"y\": \"Survived\", \"hue\": null},\n        {\"x\": \"Embarked\", \"y\": \"Survived\", \"hue\": null},\n        {\"x\": \"Age\", \"y\": \"Fare\", \"hue\": \"Survived\"},\n        {\"x\": \"SibSp\", \"y\": \"Parch\", \"hue\": \"Survived\"},\n        {\"x\": \"Pclass\", \"y\": \"Fare\", \"hue\": \"Survived\"}\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Age\",\n      \"save_path\": \"target_interaction_age_survived.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Fare\",\n      \"save_path\": \"target_interaction_fare_survived.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Survived\",\n      \"feature_col\": \"Pclass\",\n      \"save_path\": \"target_interaction_pclass_survived.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\"Age\", \"Fare\", \"SibSp\", \"Parch\"],\n      \"hue\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"generate_predictive_blueprint\",\n    \"args\": {\n      \"target_col\": \"Survived\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "impute_missing_data",
         "args": {
-          "strategy_map": {
-            "Age": "median",
-            "Cabin": "mode",
-            "Embarked": "mode"
-          },
-          "numeric_skew_threshold": 1.0
+          "strategy_map": null,
+          "numeric_skew_threshold": 1.0,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -21,40 +18,18 @@
             "Age",
             "SibSp",
             "Parch",
-            "Fare",
-            "Pclass"
+            "Fare"
           ],
-          "action": "profile"
-        }
-      },
-      {
-        "tool": "plot_correlation_matrix",
-        "args": {
-          "save_path": "correlation_matrix.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\0482fd59-bd3e-43ce-81a2-0424eab7d978"
-        }
-      },
-      {
-        "tool": "plot_feature_distributions",
-        "args": {
-          "columns": [
-            "Age",
-            "SibSp",
-            "Parch",
-            "Fare",
-            "Pclass",
-            "Sex",
-            "Embarked"
-          ],
-          "save_path": "feature_distributions.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\0482fd59-bd3e-43ce-81a2-0424eab7d978"
+          "action": "profile",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
         "tool": "run_statistical_hypothesis_tests",
         "args": {
           "target_col": "Survived",
-          "alpha": 0.05
+          "alpha": 0.05,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -62,37 +37,94 @@
         "args": {
           "bivariate_pairs": [
             {
-              "x": "Age",
-              "y": "Survived"
-            },
-            {
-              "x": "Fare",
-              "y": "Survived"
-            },
-            {
               "x": "Sex",
-              "y": "Survived"
+              "y": "Survived",
+              "hue": null
             },
             {
               "x": "Pclass",
-              "y": "Survived"
+              "y": "Survived",
+              "hue": null
+            },
+            {
+              "x": "Age",
+              "y": "Survived",
+              "hue": null
+            },
+            {
+              "x": "Fare",
+              "y": "Survived",
+              "hue": null
+            },
+            {
+              "x": "Embarked",
+              "y": "Survived",
+              "hue": null
+            },
+            {
+              "x": "Age",
+              "y": "Fare",
+              "hue": "Survived"
             },
             {
               "x": "SibSp",
-              "y": "Survived"
+              "y": "Parch",
+              "hue": "Survived"
             },
             {
-              "x": "Parch",
-              "y": "Survived"
+              "x": "Pclass",
+              "y": "Fare",
+              "hue": "Survived"
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\0482fd59-bd3e-43ce-81a2-0424eab7d978"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Survived",
+          "feature_col": "Age",
+          "save_path": "target_interaction_age_survived.png",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Survived",
+          "feature_col": "Fare",
+          "save_path": "target_interaction_fare_survived.png",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Survived",
+          "feature_col": "Pclass",
+          "save_path": "target_interaction_pclass_survived.png",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
+        }
+      },
+      {
+        "tool": "plot_pairplot",
+        "args": {
+          "columns": [
+            "Age",
+            "Fare",
+            "SibSp",
+            "Parch"
+          ],
+          "hue": "Survived",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
         "tool": "generate_predictive_blueprint",
         "args": {
-          "target_col": "Survived"
+          "target_col": "Survived",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\540735ab-2bfd-4f52-816b-8060468122d0"
         }
       },
       {
@@ -101,12 +133,14 @@
       }
     ],
     "step_results": [
-      "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'PassengerId': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Survived': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Pclass': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Name': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Sex': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'float64', 'missing_before': 177, 'missing_after': 0, 'method': 'median', 'skewness': 0.39, 'fill_value': 28.0}, 'SibSp': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Parch': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Ticket': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Fare': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Cabin': {'dtype': 'str', 'missing_before': 687, 'missing_after': 0, 'method': 'mode', 'skewness': None, 'fill_value': 'B96 B98'}, 'Embarked': {'dtype': 'str', 'missing_before': 2, 'missing_after': 0, 'method': 'mode', 'skewness': None, 'fill_value': 'S'}}}",
+      "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'PassengerId': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Survived': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Pclass': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Name': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Sex': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'float64', 'missing_before': 177, 'missing_after': 0, 'method': 'mean', 'skewness': 0.39, 'fill_value': 29.69911764705882}, 'SibSp': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Parch': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Ticket': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Fare': {'dtype': 'float64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Cabin': {'dtype': 'str', 'missing_before': 687, 'missing_after': 0, 'method': 'mode', 'skewness': None, 'fill_value': 'B96 B98'}, 'Embarked': {'dtype': 'str', 'missing_before': 2, 'missing_after': 0, 'method': 'mode', 'skewness': None, 'fill_value': 'S'}}}",
       "detect_and_handle_outliers successful. Outlier stats collected.",
-      "plot_correlation_matrix successful.",
-      "plot_feature_distributions successful.",
-      "run_statistical_hypothesis_tests successful. Significant predictors: ['Pclass', 'Sex', 'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']",
-      "plot_semantic_bivariate_relationships successful. Count: 6",
+      "run_statistical_hypothesis_tests successful. Significant predictors: ['Sex', 'Ticket', 'Pclass', 'Fare', 'Cabin', 'Parch', 'Age', 'Embarked']",
+      "plot_semantic_bivariate_relationships successful. Count: 8",
+      "plot_target_interaction successful.",
+      "plot_target_interaction successful.",
+      "plot_target_interaction successful.",
+      "plot_pairplot successful.",
       "generate_predictive_blueprint successful.",
       "Agent called finish_analysis. Terminating loop."
     ]
