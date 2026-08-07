@@ -302,7 +302,7 @@ def generate_template_summary(data: Dict[str, Any], use_llm_for_importance: bool
 
     # Dataset Overview
     dataset_overview = metrics.get("dataset_overview", {})
-    shape = dataset_overview.get("shape") or profile.get("dimensions", {})
+    shape = profile.get("dimensions") or dataset_overview.get("raw_shape") or dataset_overview.get("shape", {})
     dataset_name = profile.get("dataset_name") or os.path.basename(dataset_overview.get("dataset_path", "Dataset"))
     target_col = dataset_overview.get("target_column") or "Not Specified"
 
@@ -508,14 +508,14 @@ def generate_template_summary(data: Dict[str, Any], use_llm_for_importance: bool
 
     # 7. Generated Visualizations (FIXED: now includes a heuristic per-image caption)
     images = [name for name, val in contents.items() if isinstance(val, dict) and val.get("type") == "image_visualization"]
-    lines.append("## 7. Generated Visual Artifacts")
+    lines.append("## 7. Generated Visualizations")
     if images:
         for img in images:
             kb = contents[img]["size_kb"]
             caption = _caption_for_image(img)
             lines.append(f"- **`{img}`** ({kb} KB) -- {caption}")
     else:
-        lines.append("No PNG/SVG image assets found in directory.")
+        lines.append("No custom chart image assets found in directory (Interactive Plotly visualizations generated directly in HTML report).")
 
     lines.append("\n---\n")
 
@@ -608,7 +608,7 @@ def generate_llm_summary(data: Dict[str, Any]) -> str:
             f"{json.dumps(data['contents'], indent=2, default=str)}\n\n"
             "TASK:\n"
             "Write a comprehensive, highly professional Markdown Executive Summary Report based strictly on the above files.\n"
-            "Structure the report logically with headers, tables, key statistical findings, feature engineering highlights, image artifact descriptions, redundancy analysis, and predictive modeling blueprints.\n"
+            "Structure the report logically with headers, tables, key statistical findings, feature engineering highlights, visualization descriptions, redundancy analysis, and predictive modeling blueprints.\n"
             "Ensure plain ASCII characters in table formatting and text."
         )
 

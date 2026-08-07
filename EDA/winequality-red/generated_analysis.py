@@ -1,4 +1,4 @@
-DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\StudentsPerformance.csv'
+DATA_FILEPATH = r'C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\temp_uploads\winequality-red.csv'
 # Generated Analysis Script purely coded for domain feature engineering & predictive modeling strategy
 import pandas as pd
 import numpy as np
@@ -9,14 +9,30 @@ df = pd.read_csv(DATA_FILEPATH)
 # --- 1. Derived Domain Attributes & Composite Metrics ---
 # Derived Domain Metrics Specs: [
   {
-    "feature_name": "average_score",
-    "formula": "(`math score` + `reading score` + `writing score`) / 3",
+    "feature_name": "total_acidity",
+    "formula": "`fixed acidity` + `volatile acidity` + `citric acid`",
     "data_type": "float64",
-    "rationale": "Composite academic performance metric as requested by the user.",
-    "correlation_with_target": null
+    "rationale": "Combines different acid types to capture the overall acidic profile of the wine.",
+    "correlation_with_target": 0.1038
+  },
+  {
+    "feature_name": "bound_sulfur_dioxide",
+    "formula": "`total sulfur dioxide` - `free sulfur dioxide`",
+    "data_type": "float64",
+    "rationale": "Isolates the portion of SO2 that is bound to other molecules, which can be a marker for wine oxidation or microbial history.",
+    "correlation_with_target": -0.2055
+  },
+  {
+    "feature_name": "alcohol_density_ratio",
+    "formula": "alcohol / density",
+    "data_type": "float64",
+    "rationale": "Captures the interaction between body (density) and strength (alcohol), which are key components of wine balance.",
+    "correlation_with_target": 0.475
   }
 ]
-df['average_score'] = df['(`math score` + `reading score` + `writing score`)'] / (df['3'].abs() + 1e-5)
+# Feature 'total_acidity': `fixed acidity` + `volatile acidity` + `citric acid`
+# Custom feature placeholder - 'bound_sulfur_dioxide': `total sulfur dioxide` - `free sulfur dioxide`
+df['alcohol_density_ratio'] = df['alcohol'] / (df['density'].abs() + 1e-5)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {
@@ -40,7 +56,7 @@ predictive_blueprint = {
     "Limit tree depth and enforce minimum samples per leaf",
     "Perform hyperparameter tuning strictly within cross-validation folds"
   ],
-  "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns."
+  "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1599 rows x 12 columns."
 }
 
 if __name__ == '__main__':

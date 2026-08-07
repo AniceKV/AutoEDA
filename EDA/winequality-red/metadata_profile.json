@@ -1,0 +1,288 @@
+{
+    "dataset_name": "winequality-red.csv",
+    "dimensions": {
+        "rows": 1599,
+        "columns": 12
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "fixed acidity": {
+            "type": "float64",
+            "cardinality": 96,
+            "key_metric": "Range: [4.60 to 15.90] | Mean: 8.32 | Median: 7.90"
+        },
+        "volatile acidity": {
+            "type": "float64",
+            "cardinality": 143,
+            "key_metric": "Range: [0.12 to 1.58] | Mean: 0.53 | Median: 0.52"
+        },
+        "citric acid": {
+            "type": "float64",
+            "cardinality": 80,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.27 | Median: 0.26"
+        },
+        "residual sugar": {
+            "type": "float64",
+            "cardinality": 91,
+            "key_metric": "Range: [0.90 to 15.50] | Mean: 2.54 | Median: 2.20 | Highly Skewed (4.54)"
+        },
+        "chlorides": {
+            "type": "float64",
+            "cardinality": 153,
+            "key_metric": "Range: [0.01 to 0.61] | Mean: 0.09 | Median: 0.08 | Highly Skewed (5.68)"
+        },
+        "free sulfur dioxide": {
+            "type": "float64",
+            "cardinality": 60,
+            "key_metric": "Range: [1.00 to 72.00] | Mean: 15.87 | Median: 14.00 | Highly Skewed (1.25)"
+        },
+        "total sulfur dioxide": {
+            "type": "float64",
+            "cardinality": 144,
+            "key_metric": "Range: [6.00 to 289.00] | Mean: 46.47 | Median: 38.00 | Highly Skewed (1.52)"
+        },
+        "density": {
+            "type": "float64",
+            "cardinality": 436,
+            "key_metric": "Range: [0.99 to 1.00] | Mean: 1.00 | Median: 1.00"
+        },
+        "pH": {
+            "type": "float64",
+            "cardinality": 89,
+            "key_metric": "Range: [2.74 to 4.01] | Mean: 3.31 | Median: 3.31"
+        },
+        "sulphates": {
+            "type": "float64",
+            "cardinality": 96,
+            "key_metric": "Range: [0.33 to 2.00] | Mean: 0.66 | Median: 0.62 | Highly Skewed (2.43)"
+        },
+        "alcohol": {
+            "type": "float64",
+            "cardinality": 65,
+            "key_metric": "Range: [8.40 to 14.90] | Mean: 10.42 | Median: 10.20"
+        },
+        "quality": {
+            "type": "int64",
+            "cardinality": 6,
+            "key_metric": "Range: [3.00 to 8.00] | Mean: 5.64 | Median: 6.00"
+        }
+    },
+    "columns": [
+        {
+            "column": "fixed acidity",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 96,
+            "unique_pct": 6.0,
+            "mean": 8.31963727329581,
+            "median": 7.9,
+            "std": 1.7410963181276953,
+            "min": 4.6,
+            "max": 15.9,
+            "q1": 7.1,
+            "q3": 9.2,
+            "iqr": 2.0999999999999996,
+            "skew": 0.9827514413284587,
+            "kurtosis": 1.1321433977276252
+        },
+        {
+            "column": "volatile acidity",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 143,
+            "unique_pct": 8.94,
+            "mean": 0.5278205128205128,
+            "median": 0.52,
+            "std": 0.17905970415353537,
+            "min": 0.12,
+            "max": 1.58,
+            "q1": 0.39,
+            "q3": 0.64,
+            "iqr": 0.25,
+            "skew": 0.6715925723840199,
+            "kurtosis": 1.2255422501791422
+        },
+        {
+            "column": "citric acid",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 80,
+            "unique_pct": 5.0,
+            "mean": 0.2709756097560976,
+            "median": 0.26,
+            "std": 0.19480113740531857,
+            "min": 0.0,
+            "max": 1.0,
+            "q1": 0.09,
+            "q3": 0.42,
+            "iqr": 0.32999999999999996,
+            "skew": 0.3183372952546368,
+            "kurtosis": -0.7889975153633966
+        },
+        {
+            "column": "residual sugar",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 91,
+            "unique_pct": 5.69,
+            "mean": 2.53880550343965,
+            "median": 2.2,
+            "std": 1.4099280595072798,
+            "min": 0.9,
+            "max": 15.5,
+            "q1": 1.9,
+            "q3": 2.6,
+            "iqr": 0.7000000000000002,
+            "skew": 4.54065542590319,
+            "kurtosis": 28.617595424475443
+        },
+        {
+            "column": "chlorides",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 153,
+            "unique_pct": 9.57,
+            "mean": 0.08746654158849279,
+            "median": 0.079,
+            "std": 0.0470653020100901,
+            "min": 0.012,
+            "max": 0.611,
+            "q1": 0.07,
+            "q3": 0.09,
+            "iqr": 0.01999999999999999,
+            "skew": 5.680346571971722,
+            "kurtosis": 41.7157872475766
+        },
+        {
+            "column": "free sulfur dioxide",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 60,
+            "unique_pct": 3.75,
+            "mean": 15.874921826141339,
+            "median": 14.0,
+            "std": 10.460156969809725,
+            "min": 1.0,
+            "max": 72.0,
+            "q1": 7.0,
+            "q3": 21.0,
+            "iqr": 14.0,
+            "skew": 1.250567293314441,
+            "kurtosis": 2.023562045840575
+        },
+        {
+            "column": "total sulfur dioxide",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 144,
+            "unique_pct": 9.01,
+            "mean": 46.46779237023139,
+            "median": 38.0,
+            "std": 32.895324478299074,
+            "min": 6.0,
+            "max": 289.0,
+            "q1": 22.0,
+            "q3": 62.0,
+            "iqr": 40.0,
+            "skew": 1.515531257594554,
+            "kurtosis": 3.8098244878645744
+        },
+        {
+            "column": "density",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 436,
+            "unique_pct": 27.27,
+            "mean": 0.9967466791744841,
+            "median": 0.99675,
+            "std": 0.0018873339538425554,
+            "min": 0.99007,
+            "max": 1.00369,
+            "q1": 0.9956,
+            "q3": 0.997835,
+            "iqr": 0.002234999999999987,
+            "skew": 0.07128766294927483,
+            "kurtosis": 0.9340790654648123
+        },
+        {
+            "column": "pH",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 89,
+            "unique_pct": 5.57,
+            "mean": 3.3111131957473416,
+            "median": 3.31,
+            "std": 0.15438646490354277,
+            "min": 2.74,
+            "max": 4.01,
+            "q1": 3.21,
+            "q3": 3.4,
+            "iqr": 0.18999999999999995,
+            "skew": 0.19368349811284427,
+            "kurtosis": 0.806942508246574
+        },
+        {
+            "column": "sulphates",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 96,
+            "unique_pct": 6.0,
+            "mean": 0.6581488430268917,
+            "median": 0.62,
+            "std": 0.16950697959010996,
+            "min": 0.33,
+            "max": 2.0,
+            "q1": 0.55,
+            "q3": 0.73,
+            "iqr": 0.17999999999999994,
+            "skew": 2.4286723536602945,
+            "kurtosis": 11.720250727147674
+        },
+        {
+            "column": "alcohol",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 65,
+            "unique_pct": 4.07,
+            "mean": 10.422983114446529,
+            "median": 10.2,
+            "std": 1.0656675818473946,
+            "min": 8.4,
+            "max": 14.9,
+            "q1": 9.5,
+            "q3": 11.1,
+            "iqr": 1.5999999999999996,
+            "skew": 0.8608288068888538,
+            "kurtosis": 0.2000293113417695
+        },
+        {
+            "column": "quality",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 6,
+            "unique_pct": 0.38,
+            "mean": 5.6360225140712945,
+            "median": 6.0,
+            "std": 0.807569439734705,
+            "min": 3.0,
+            "max": 8.0,
+            "q1": 5.0,
+            "q3": 6.0,
+            "iqr": 1.0,
+            "skew": 0.21780157547366327,
+            "kurtosis": 0.2967081197538759
+        }
+    ]
+}

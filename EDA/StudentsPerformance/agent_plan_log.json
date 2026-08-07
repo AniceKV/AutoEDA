@@ -1,19 +1,19 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"name\": \"total_score\",\n          \"formula\": \"`math score` + `reading score` + `writing score`\",\n          \"rationale\": \"Aggregated academic performance across all subjects.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"gender\",\n        \"race/ethnicity\",\n        \"parental level of education\",\n        \"lunch\",\n        \"test preparation course\",\n        \"math score\",\n        \"reading score\",\n        \"writing score\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"total_score\",\n      \"feature_col\": \"test preparation course\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"parental level of education\",\n          \"y\": \"total_score\",\n          \"rationale\": \"Investigating if higher parental education correlates with higher student aggregate scores.\"\n        },\n        {\n          \"x\": \"lunch\",\n          \"y\": \"total_score\",\n          \"rationale\": \"Socioeconomic status (proxied by lunch type) often impacts academic resources and outcomes.\"\n        },\n        {\n          \"x\": \"reading score\",\n          \"y\": \"writing score\",\n          \"rationale\": \"Literacy skills are typically highly correlated; checking for consistency in verbal performance.\"\n        },\n        {\n          \"x\": \"gender\",\n          \"y\": \"math score\",\n          \"rationale\": \"Checking for gender-based performance gaps in quantitative subjects.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"math score\",\n        \"reading score\",\n        \"writing score\",\n        \"total_score\"\n      ],\n      \"hue\": \"gender\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"total_score\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"name\": \"average_score\",\n          \"formula\": \"(`math score` + `reading score` + `writing score`) / 3\",\n          \"rationale\": \"Composite academic performance metric as requested by the user.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"gender\",\n        \"race/ethnicity\",\n        \"parental level of education\",\n        \"lunch\",\n        \"test preparation course\",\n        \"math score\",\n        \"reading score\",\n        \"writing score\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"feature_col\": \"test preparation course\",\n      \"save_path\": \"target_interaction_prep_course.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"parental level of education\",\n          \"y\": \"average_score\",\n          \"rationale\": \"To see if higher parental education correlates with higher student performance.\"\n        },\n        {\n          \"x\": \"lunch\",\n          \"y\": \"average_score\",\n          \"rationale\": \"Socioeconomic status (proxied by lunch type) often impacts academic outcomes.\"\n        },\n        {\n          \"x\": \"reading score\",\n          \"y\": \"math score\",\n          \"rationale\": \"To check the correlation between literacy and numeracy skills.\"\n        },\n        {\n          \"x\": \"gender\",\n          \"y\": \"average_score\",\n          \"rationale\": \"To identify if there are gender-based performance gaps in the overall score.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"math score\",\n        \"reading score\",\n        \"writing score\",\n        \"average_score\"\n      ],\n      \"hue\": \"gender\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"average_score\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "engineer_features",
         "args": {
           "feature_specs": [
             {
-              "name": "total_score",
-              "formula": "`math score` + `reading score` + `writing score`",
-              "rationale": "Aggregated academic performance across all subjects."
+              "name": "average_score",
+              "formula": "(`math score` + `reading score` + `writing score`) / 3",
+              "rationale": "Composite academic performance metric as requested by the user."
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {
@@ -29,15 +29,16 @@
             "reading score",
             "writing score"
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {
         "tool": "plot_target_interaction",
         "args": {
-          "target_col": "total_score",
+          "target_col": "average_score",
           "feature_col": "test preparation course",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "save_path": "target_interaction_prep_course.png",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {
@@ -46,26 +47,26 @@
           "bivariate_pairs": [
             {
               "x": "parental level of education",
-              "y": "total_score",
-              "rationale": "Investigating if higher parental education correlates with higher student aggregate scores."
+              "y": "average_score",
+              "rationale": "To see if higher parental education correlates with higher student performance."
             },
             {
               "x": "lunch",
-              "y": "total_score",
-              "rationale": "Socioeconomic status (proxied by lunch type) often impacts academic resources and outcomes."
+              "y": "average_score",
+              "rationale": "Socioeconomic status (proxied by lunch type) often impacts academic outcomes."
             },
             {
               "x": "reading score",
-              "y": "writing score",
-              "rationale": "Literacy skills are typically highly correlated; checking for consistency in verbal performance."
+              "y": "math score",
+              "rationale": "To check the correlation between literacy and numeracy skills."
             },
             {
               "x": "gender",
-              "y": "math score",
-              "rationale": "Checking for gender-based performance gaps in quantitative subjects."
+              "y": "average_score",
+              "rationale": "To identify if there are gender-based performance gaps in the overall score."
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {
@@ -75,18 +76,18 @@
             "math score",
             "reading score",
             "writing score",
-            "total_score"
+            "average_score"
           ],
           "hue": "gender",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {
         "tool": "run_statistical_hypothesis_tests",
         "args": {
-          "target_col": "total_score",
+          "target_col": "average_score",
           "alpha": 0.05,
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\10a21ac3-9881-4101-a677-f0865233b181"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\1da9e373-8d94-40ad-b6b7-b370e045ad89"
         }
       },
       {

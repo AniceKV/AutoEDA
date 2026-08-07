@@ -753,7 +753,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 <button class="report-sub-btn" onclick="switchSubReportTab('report-sub-biv', this)">Bivariate Relationships</button>
                 <button class="report-sub-btn" onclick="switchSubReportTab('report-sub-pair', this)">Pairplot Matrix</button>
                 {% if visual_artifacts %}
-                <button class="report-sub-btn" onclick="switchSubReportTab('report-sub-artifacts', this)">Image Artifacts</button>
+                <button class="report-sub-btn" onclick="switchSubReportTab('report-sub-artifacts', this)">Generated Visualizations</button>
                 {% endif %}
             </div>
 
@@ -1631,7 +1631,7 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
                 pass
 
     # Basic stats
-    dimensions = profile.get("dimensions", {"rows": 0, "columns": 0})
+    dimensions = profile.get("dimensions") or (metrics.get("dataset_overview") or {}).get("raw_shape") or (metrics.get("dataset_overview") or {}).get("shape", {"rows": 0, "columns": 0})
     columns_profile = profile.get("columns", [])
     dataset_name = profile.get("dataset_name") or os.path.basename(os.path.abspath(workspace_dir))
     target_column = (metrics.get("dataset_overview") or {}).get("target_column")

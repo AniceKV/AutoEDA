@@ -1824,6 +1824,18 @@ def compile_and_save_metrics(
     os.makedirs(output_dir, exist_ok=True)
     
     num_rows, num_cols = df.shape
+
+    # Determine raw column count from metadata_profile.json if available
+    raw_num_cols = num_cols
+    profile_path = os.path.join(output_dir, "metadata_profile.json")
+    if os.path.exists(profile_path):
+        try:
+            with open(profile_path, "r", encoding="utf-8") as f:
+                prof_data = json.load(f)
+                if isinstance(prof_data.get("dimensions"), dict) and "columns" in prof_data["dimensions"]:
+                    raw_num_cols = prof_data["dimensions"]["columns"]
+        except Exception:
+            pass
     
     column_summary = {}
     for col in df.columns:
@@ -1844,7 +1856,9 @@ def compile_and_save_metrics(
     metrics_dict = {
         "dataset_overview": {
             "dataset_path": os.path.abspath(dataset_path),
-            "shape": {"rows": num_rows, "columns": num_cols},
+            "shape": {"rows": num_rows, "columns": raw_num_cols},
+            "raw_shape": {"rows": num_rows, "columns": raw_num_cols},
+            "modified_shape": {"rows": num_rows, "columns": num_cols},
             "target_column": target_col,
             "column_summary": column_summary
         },

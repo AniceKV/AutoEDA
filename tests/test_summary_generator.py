@@ -198,6 +198,7 @@ def test_generate_template_summary():
     assert "Statistical Hypothesis Testing & Key Predictors" in report
     assert "Pearson correlation heatmap across numeric features." in report
     assert "Redundancy & Multicollinearity Analysis" in report
+    assert "## 7. Generated Visualizations" in report
     assert "Predictive Modeling Strategy Blueprint" in report
 
 
