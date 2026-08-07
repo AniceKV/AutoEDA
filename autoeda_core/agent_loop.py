@@ -297,6 +297,9 @@ def run_tool_based_eda(
             except Exception as e:
                 print(f"Step {idx}: Pydantic validation failed for {tool_name}. Error: {e}")
 
+            # Always enforce per-session workspace_dir for image artifacts and outputs
+            args["output_dir"] = workspace_dir
+
             print(f"Executing '{tool_name}' with args {args}...")
             
             try:

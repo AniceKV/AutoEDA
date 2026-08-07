@@ -631,12 +631,14 @@ def plot_correlation_matrix(
     df: pd.DataFrame,
     numeric_cols: Optional[List[str]] = None,
     save_path: str = "correlation_matrix.png",
-    output_dir: str = "./sandbox_run"
+    output_dir: str = "./sandbox_run",
+    **kwargs
 ) -> Dict[str, Any]:
     """
     Computes Pearson correlation matrix, saves styled heatmap asset,
     and extracts top positive/negative correlations.
     """
+    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
     target_cols = numeric_cols or [c for c in df.columns if _is_numeric_col(df[c]) and df[c].nunique() > 1]
     
@@ -645,8 +647,8 @@ def plot_correlation_matrix(
         
     corr_matrix = df[target_cols].corr()
     
-    os.makedirs(output_dir, exist_ok=True)
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    os.makedirs(out_dir, exist_ok=True)
+    full_save_path = os.path.join(out_dir, os.path.basename(save_path))
 
     try:
         fig, ax = plt.subplots(figsize=(max(8, len(target_cols) * 0.8), max(6, len(target_cols) * 0.7)))
@@ -779,12 +781,14 @@ def plot_target_interaction(
     target_col: Optional[str] = None,
     feature_col: Optional[str] = None,
     save_path: str = "target_interactions.png",
-    output_dir: str = "./sandbox_run"
+    output_dir: str = "./sandbox_run",
+    **kwargs
 ) -> Dict[str, Any]:
     """
     Generates and saves a segmented visual plot (boxplot/violinplot/scatter)
     comparing key feature distribution against target variable.
     """
+    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
     if not target_col or target_col not in df.columns:
         numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
@@ -794,8 +798,8 @@ def plot_target_interaction(
         candidates = [c for c in df.columns if c != target_col]
         feature_col = candidates[0] if candidates else df.columns[0]
 
-    os.makedirs(output_dir, exist_ok=True)
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    os.makedirs(out_dir, exist_ok=True)
+    full_save_path = os.path.join(out_dir, os.path.basename(save_path))
 
     df_viz = _downsample_for_viz(df)
 
@@ -845,11 +849,12 @@ def plot_feature_distributions(
     if not valid_cols:
         valid_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
 
-    os.makedirs(output_dir, exist_ok=True)
+    out_dir = kwargs.get("output_dir") or output_dir
+    os.makedirs(out_dir, exist_ok=True)
     saved_files = []
 
     for col in valid_cols:
-        file_path = os.path.join(output_dir, f"dist_{_sanitize_col_name(col)}.png")
+        file_path = os.path.join(out_dir, f"dist_{_sanitize_col_name(col)}.png")
 
         try:
             fig, ax = plt.subplots(figsize=(6, 4))
@@ -920,8 +925,9 @@ def plot_semantic_bivariate_relationships(
     - 'hue': Optional hue column name for segmentation
     - 'rationale': Semantic domain rationale for comparing these two attributes
     """
+    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
     
     pairs = bivariate_pairs or kwargs.get("pairs") or kwargs.get("bivariate_list") or kwargs.get("bivariate_pairs") or []
     
@@ -951,7 +957,7 @@ def plot_semantic_bivariate_relationships(
         if hue_col and hue_col not in df.columns:
             hue_col = None
 
-        file_path = os.path.join(output_dir, f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png")
+        file_path = os.path.join(out_dir, f"bivariate_{_sanitize_col_name(x_col)}_vs_{_sanitize_col_name(y_col)}.png")
 
         try:
             fig, ax = plt.subplots(figsize=(7, 5))
@@ -986,8 +992,9 @@ def plot_pairplot(
     Generates a concise pairplot visualizing pairwise distributions and relationships
     across a reasonable subset of key numerical features (clamped to max 4-5 features).
     """
+    out_dir = kwargs.get("output_dir") or output_dir
     plt.close()
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
     
     # Select reasonable subset of numerical columns (max 4 to 5)
     raw_cols = columns or kwargs.get("feature_cols") or kwargs.get("cols") or kwargs.get("numeric_cols")
@@ -1018,7 +1025,7 @@ def plot_pairplot(
     if len(clean_df) < 5:
         clean_df = df[cols_to_plot]
         
-    full_save_path = os.path.join(output_dir, os.path.basename(save_path))
+    full_save_path = os.path.join(out_dir, os.path.basename(save_path))
     
     try:
         if hue_col:
