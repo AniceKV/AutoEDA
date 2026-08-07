@@ -797,7 +797,7 @@
             <th>Test</th>
             <th>Statistic / Effect Size</th>
             <th>p-value</th>
-            <th>Significant</th>
+            <th>Label</th>
           </tr>
         </thead>
         <tbody>
@@ -808,7 +808,9 @@
             <td class="mono">{{ row.statistic }}</td>
             <td class="mono">{{ row.p_value }}</td>
             <td>
-              {% if row.significant %}
+              {% if row.label %}
+                <span class="badge {% if 'Large' in row.label or 'Strong' in row.label %}badge-large{% elif 'Moderate' in row.label or 'Medium' in row.label %}badge-moderate{% elif 'Weak' in row.label or 'Small' in row.label %}badge-weak{% elif 'Negligible' in row.label %}badge-negligible{% else %}badge-sig{% endif %}">{{ row.label }}</span>
+              {% elif row.significant %}
                 <span class="badge badge-sig">Yes</span>
               {% else %}
                 <span class="badge badge-nosig">No</span>

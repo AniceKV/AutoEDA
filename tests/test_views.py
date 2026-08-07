@@ -31,12 +31,13 @@ def test_views_hypothesis_parsing_per_feature():
     }
     factory = RequestFactory()
     request = factory.get("/")
-    request.session = {}
+    request.session = {"selected_csv_path": "dummy.csv"}
 
     from unittest.mock import patch
     with patch("eda_app.views._load_metrics", return_value=metrics):
         response = index(request)
         assert response.status_code == 200
+        assert b"Significant gap" in response.content
 
 
 def test_views_hypothesis_parsing_ranked_details():
@@ -48,6 +49,7 @@ def test_views_hypothesis_parsing_ranked_details():
                     "feature": "reading score",
                     "test": "Pearson Correlation",
                     "effect_size": 0.9546,
+                    "effect_size_label": "Strong correlation",
                     "p_value": 0.0,
                     "is_statistically_significant": True,
                     "interpretation": "High correlation"
@@ -58,9 +60,10 @@ def test_views_hypothesis_parsing_ranked_details():
     }
     factory = RequestFactory()
     request = factory.get("/")
-    request.session = {}
+    request.session = {"selected_csv_path": "dummy.csv"}
 
     from unittest.mock import patch
     with patch("eda_app.views._load_metrics", return_value=metrics):
         response = index(request)
         assert response.status_code == 200
+        assert b"Strong correlation" in response.content

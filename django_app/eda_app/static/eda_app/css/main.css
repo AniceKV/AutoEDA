@@ -835,8 +835,10 @@ select option { background: var(--bg-surface); color: var(--text-primary); }
 .badge-numeric   { background: var(--badge-num-bg); border: 1px solid var(--badge-num-border); color: var(--badge-num-text); }
 .badge-categ     { background: var(--badge-cat-bg); border: 1px solid var(--badge-cat-border); color: var(--badge-cat-text); }
 .badge-missing   { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary); }
-.badge-sig       { background: var(--badge-sig-bg); border: 1px solid var(--badge-sig-border); color: var(--badge-sig-text); }
-.badge-nosig     { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-dim); }
+.badge-sig, .badge-strong, .badge-large { background: var(--badge-sig-bg); border: 1px solid var(--badge-sig-border); color: var(--badge-sig-text); }
+.badge-moderate, .badge-medium { background: var(--badge-num-bg); border: 1px solid var(--badge-num-border); color: var(--badge-num-text); }
+.badge-weak, .badge-small { background: var(--badge-cat-bg); border: 1px solid var(--badge-cat-border); color: var(--badge-cat-text); }
+.badge-nosig, .badge-negligible { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-dim); }
 .badge-bool      { background: var(--badge-num-bg); border: 1px solid var(--badge-num-border); color: var(--badge-num-text); }
 .badge-datetime  { background: var(--badge-cat-bg); border: 1px solid var(--badge-cat-border); color: var(--badge-cat-text); }
 

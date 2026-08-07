@@ -304,6 +304,7 @@ def index(request):
         is_sig = v.get("is_statistically_significant", False)
         test_name = v.get("test_name") or v.get("test") or "Hypothesis Test"
         interpretation = v.get("interpretation", "")
+        effect_label = v.get("effect_size_label") or v.get("label") or (interpretation if interpretation else ("Yes" if is_sig else "No"))
 
         hyp_rows.append({
             "feature": k,
@@ -311,6 +312,7 @@ def index(request):
             "statistic": stat_val,
             "p_value": p_val_fmt,
             "significant": is_sig,
+            "label": effect_label,
             "interpretation": interpretation,
         })
 
@@ -332,6 +334,7 @@ def index(request):
                     p_val_fmt = str(p_val)
                 is_sig = item.get("is_statistically_significant", True)
                 interpretation = item.get("interpretation", "")
+                effect_label = item.get("effect_size_label") or item.get("label") or (interpretation if interpretation else ("Yes" if is_sig else "No"))
 
                 hyp_rows.append({
                     "feature": feat,
@@ -339,6 +342,7 @@ def index(request):
                     "statistic": stat_val,
                     "p_value": p_val_fmt,
                     "significant": is_sig,
+                    "label": effect_label,
                     "interpretation": interpretation,
                 })
 
