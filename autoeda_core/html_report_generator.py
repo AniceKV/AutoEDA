@@ -1436,6 +1436,14 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
 
     # Render Template
     tmpl = Template(HTML_TEMPLATE)
+    raw_cat = metrics.get("categorical_associations", [])
+    if isinstance(raw_cat, dict):
+        cat_assoc_list = raw_cat.get("top_correlations", [])
+    elif isinstance(raw_cat, list):
+        cat_assoc_list = raw_cat
+    else:
+        cat_assoc_list = []
+
     html_content = tmpl.render(
         dataset_name=dataset_name,
         generation_time=pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -1452,7 +1460,7 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
         var_charts_json=json.dumps(var_charts_json),
         agent_trajectory=agent_trajectory,
         visual_artifacts=visual_artifacts,
-        categorical_associations=metrics.get("categorical_associations", {}).get("top_correlations", []),
+        categorical_associations=cat_assoc_list,
         engineered_features=metrics.get("engineered_features", []),
         predictive_blueprint=metrics.get("predictive_modeling_blueprint", {})
     )

@@ -235,18 +235,25 @@ def generate_template_summary(data: Dict[str, Any]) -> str:
     lines.append("\n---\n")
 
     # Categorical Associations
-    cat_assoc = metrics.get("categorical_associations", {})
+    cat_assoc = metrics.get("categorical_associations", [])
     if cat_assoc:
         lines.append("## Categorical Associations (Cramér's V)")
-        top_cat = cat_assoc.get("top_correlations", [])
+        if isinstance(cat_assoc, dict):
+            top_cat = cat_assoc.get("top_correlations", [])
+        elif isinstance(cat_assoc, list):
+            top_cat = cat_assoc
+        else:
+            top_cat = []
+
         if top_cat:
             lines.append("| Feature 1 | Feature 2 | Cramér's V |")
             lines.append("|---|---|---|")
             for pair in top_cat:
-                f1 = pair.get("feature_1", "N/A")
-                f2 = pair.get("feature_2", "N/A")
-                v = pair.get("cramers_v", "N/A")
-                lines.append(f"| `{f1}` | `{f2}` | {v} |")
+                if isinstance(pair, dict):
+                    f1 = pair.get("feature_1", "N/A")
+                    f2 = pair.get("feature_2", "N/A")
+                    v = pair.get("cramers_v", "N/A")
+                    lines.append(f"| `{f1}` | `{f2}` | {v} |")
         else:
             lines.append("No categorical associations available.")
         lines.append("\n---\n")
