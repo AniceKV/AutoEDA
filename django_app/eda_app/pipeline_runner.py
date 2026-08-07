@@ -79,7 +79,7 @@ def _run(session_id: str, data_path: str, user_request: str,
     importing at module load time (heavy deps).
     """
     try:
-        from agent_loop import run_tool_based_eda
+        from autoeda_core.agent_loop import run_tool_based_eda
 
         clear_log(session_id)
         append_log(session_id, "▶ Pipeline initialised — profiling dataset…")

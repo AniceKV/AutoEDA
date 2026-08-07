@@ -7,10 +7,10 @@ from typing import Dict, Any, List, Optional, Tuple
 from openai import OpenAI
 from dotenv import load_dotenv
 
-import tools
-from profiler import run_and_save_profile
-from summary_generator import create_summary, extract_dataset_name
-from html_report_generator import generate_html_report
+from . import tools
+from .profiler import run_and_save_profile
+from .summary_generator import create_summary, extract_dataset_name
+from .html_report_generator import generate_html_report
 
 load_dotenv(override=True)
 
@@ -123,7 +123,7 @@ def run_tool_based_eda(
         
         print("1b. Pre-generating visual plot assets concurrently via parallel_plotter (distributions, correlation heatmaps, bivariate relationships)...")
         try:
-            from parallel_plotter import batch_render_pipeline_plots
+            from .parallel_plotter import batch_render_pipeline_plots
             target_col = agent_state.get("target_col") or ""
             batch_render_pipeline_plots(
                 df=df,

@@ -1,7 +1,10 @@
-import pytest
+import os
+import sys
 import pandas as pd
 import copy
-from tools import StatefulDataStore  # Test your actual tools implementation!
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from autoeda_core.tools import StatefulDataStore  # Test your actual tools implementation!
 
 def test_initial_state_setup():
     store = StatefulDataStore()

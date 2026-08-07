@@ -23,8 +23,8 @@ AUTOEDA_ROOT = os.path.dirname(AUTOEDA_ROOT)  # go up one more from django_app/
 if AUTOEDA_ROOT not in sys.path:
     sys.path.insert(0, AUTOEDA_ROOT)
 
-from profiler import calculate_column_stats
-import tools
+from autoeda_core.profiler import calculate_column_stats
+from autoeda_core import tools
 from . import pipeline_runner
 
 # ─── Numeric type helper ───────────────────────────────────────────────────────
