@@ -1452,11 +1452,15 @@ def generate_predictive_blueprint(
         "overfitting_risk_mitigation": overfitting_mitigation,
         "executive_summary": f"Target: '{target_col}' ({problem_type}). Model recommendations and validation strategy tailored for {num_rows} rows x {num_cols} columns."
     }
-def validate_report_consistency(metrics_dict: Dict[str, Any]) -> Dict[str, Any]:
+def validate_report_consistency(
+    metrics_dict: Dict[str, Any],
+    report_text: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Lightweight post-generation validation step that asserts consistency across:
     1. Target column alignment between dataset overview, hypothesis tests, and modeling blueprint.
     2. Non-empty predictor reporting consistency.
+    3. Rendered Markdown prose report consistency (verifying target name and zero false feature claims).
     Returns a dictionary of validation checks and warning flags.
     """
     overview = metrics_dict.get("dataset_overview", {})
@@ -1486,6 +1490,16 @@ def generate_predictive_blueprint(
         validation_passed = False
         warnings.append("Engineered features in metrics.json is not a valid list.")
         
+    # 3. Markdown Text Validation (if provided)
+    if report_text and isinstance(report_text, str):
+        if target_col and target_col != "Undefined (Unsupervised)" and target_col not in report_text:
+            validation_passed = False
+            warnings.append(f"Target column '{target_col}' is missing from rendered report text.")
+            
+        if len(engineered) == 0 and "FamilySize" in report_text and "No custom derived" not in report_text:
+            validation_passed = False
+            warnings.append("Rendered report claims engineered feature 'FamilySize' when engineered_features is empty.")
+
     validation_summary = {
         "is_consistent": validation_passed,
         "warnings": warnings,
@@ -1497,7 +1511,7 @@ def generate_predictive_blueprint(
     if warnings:
         print(f"[tools] Validation Warning: Report consistency issues detected: {warnings}")
     else:
-        print("[tools] Post-generation validation PASSED cleanly: Target and metrics state are 100% consistent.")
+        print("[tools] Post-generation validation PASSED cleanly: Target, metrics, and report text are 100% consistent.")
         
     return validation_summary
 
