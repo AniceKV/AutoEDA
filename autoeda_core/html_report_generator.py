@@ -1366,13 +1366,16 @@ def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Opti
     else:
         missing_chart_json = "{}"
 
-    # 5. Correlation Matrix Calculation (Robust for all datasets including categorical/mixed)
+    # 5. Correlation Matrix Calculation (Robust for all numeric & non-identifier features)
     corr_matrix = None
     corr_chart_json = "{}"
     
     if df is not None and df.shape[1] >= 2:
-        df_corr = df.copy()
-        # Convert non-numeric/object/categorical features via factorize
+        # Exclude non-distributional identifier/name/timestamp columns
+        valid_feature_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+        df_corr = df[valid_feature_cols].copy() if valid_feature_cols else df.copy()
+        
+        # Convert remaining valid object/categorical features via factorize
         for c in df_corr.columns:
             if not pd.api.types.is_numeric_dtype(df_corr[c]) or pd.api.types.is_bool_dtype(df_corr[c]):
                 df_corr[c] = pd.factorize(df_corr[c])[0]
