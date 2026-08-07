@@ -42,14 +42,6 @@ def _is_numeric_col(s: pd.Series) -> bool:
     return pd.api.types.is_numeric_dtype(s) and not pd.api.types.is_bool_dtype(s)
 
 
-def _downsample_for_viz(df: pd.DataFrame, max_samples: int = 10000, random_state: int = 42) -> pd.DataFrame:
-    """Downsamples large DataFrames for rendering fast Matplotlib/Seaborn visual plots."""
-    if len(df) > max_samples:
-        print(f"[tools] Parameter Clamping: Downsampling DataFrame from {len(df)} rows to {max_samples} rows for fast visualization rendering.")
-        return df.sample(n=max_samples, random_state=random_state)
-    return df
-
-
 
 
 # =====================================================================
@@ -788,63 +780,6 @@ def plot_correlation_matrix(
         "correlation_matrix_text": corr_matrix.round(3).to_dict(),
         "categorical_associations": categorical_associations
     }
-
-
-# =====================================================================
-# 6. VISUALIZATION: SHARED BIVARIATE PLOT DISPATCH
-# =====================================================================
-def _render_bivariate_axes(
-    ax, df: pd.DataFrame, x_col: str, y_col: str, hue_col: Optional[str] = None
-) -> None:
-    """
-    Shared rendering logic for bivariate plots.
-    Dispatches to regplot, boxplot, or countplot based on column dtypes.
-    """
-    df_plot = df.copy()
-    
-    # 1. Determine original types first
-    x_is_num = _is_numeric_col(df_plot[x_col])
-    y_is_num = _is_numeric_col(df_plot[y_col])
-    
-    # 2. Local binning specifically for categorical/mixed plots
-    def _bin_series(series):
-        if _is_numeric_col(series) and series.nunique() > 15:
-            return pd.cut(series, bins=min(10, series.nunique())).astype(str)
-        return series
-
-    if x_is_num and y_is_num:
-        # Scatter/Regression Plot (Preserves raw float/int values!)
-        if hue_col:
-            sns.scatterplot(data=df_plot, x=x_col, y=y_col, hue=hue_col, palette="Set1", alpha=0.7, ax=ax)
-        sns.regplot(data=df_plot, x=x_col, y=y_col, scatter=(hue_col is None),
-                    scatter_kws={"alpha": 0.6}, line_kws={"color": "darkred", "linestyle": "--"}, ax=ax)
-        ax.set_title(f"Scatter: {x_col} vs {y_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=90)
-        ax.tick_params(axis='y', rotation=0)
-
-    elif not x_is_num and y_is_num:
-        # Bin the categorical x-axis if it is actually numeric
-        df_plot[x_col] = _bin_series(df_plot[x_col])
-        sns.boxplot(data=df_plot, x=x_col, y=y_col, hue=hue_col if hue_col else x_col, palette="Set2", legend=False, ax=ax)
-        ax.set_title(f"Boxplot: {y_col} across {x_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=90)
-        ax.tick_params(axis='y', rotation=0)
-
-    elif x_is_num and not y_is_num:
-        df_plot[y_col] = _bin_series(df_plot[y_col])
-        sns.boxplot(data=df_plot, x=y_col, y=x_col, hue=hue_col if hue_col else y_col, palette="Set2", legend=False, ax=ax)
-        ax.set_title(f"Boxplot: {x_col} across {y_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=90)
-        ax.tick_params(axis='y', rotation=0)
-
-    else:
-        # Both categorical
-        df_plot[x_col] = _bin_series(df_plot[x_col])
-        df_plot[y_col] = _bin_series(df_plot[y_col])
-        sns.countplot(data=df_plot, x=x_col, hue=y_col, palette="Set1", ax=ax)
-        ax.set_title(f"Categorical: {x_col} by {y_col}", fontsize=12, pad=10)
-        ax.tick_params(axis='x', rotation=90)
-        ax.tick_params(axis='y', rotation=0)
 
 
 def plot_target_interaction(
