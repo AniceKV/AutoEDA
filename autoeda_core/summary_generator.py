@@ -209,7 +209,7 @@ def generate_column_importance_blurbs(
                 base_url="https://openrouter.ai/api/v1",
                 api_key=api_key,
             )
-            model = os.getenv("SUMMARY_MODEL", "google/gemini-3.6-flash")
+            model = os.getenv("SUMMARY_MODEL")
 
             payload = [
                 {

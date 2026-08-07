@@ -1,0 +1,127 @@
+{
+    "dataset_name": "BankNoteAuthentication.csv",
+    "dimensions": {
+        "rows": 1372,
+        "columns": 5
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "variance": {
+            "type": "float64",
+            "cardinality": 1338,
+            "key_metric": "Range: [-7.04 to 6.82] | Mean: 0.43 | Median: 0.50"
+        },
+        "skewness": {
+            "type": "float64",
+            "cardinality": 1256,
+            "key_metric": "Range: [-13.77 to 12.95] | Mean: 1.92 | Median: 2.32"
+        },
+        "curtosis": {
+            "type": "float64",
+            "cardinality": 1270,
+            "key_metric": "Range: [-5.29 to 17.93] | Mean: 1.40 | Median: 0.62 | Highly Skewed (1.09)"
+        },
+        "entropy": {
+            "type": "float64",
+            "cardinality": 1156,
+            "key_metric": "Range: [-8.55 to 2.45] | Mean: -1.19 | Median: -0.59 | Highly Skewed (-1.02)"
+        },
+        "class": {
+            "type": "int64",
+            "cardinality": 2,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.44 | Median: 0.00"
+        }
+    },
+    "columns": [
+        {
+            "column": "variance",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1338,
+            "unique_pct": 97.52,
+            "mean": 0.4337352570699707,
+            "median": 0.49617999999999995,
+            "std": 2.8427625862785617,
+            "min": -7.0421,
+            "max": 6.8248,
+            "q1": -1.7730000000000001,
+            "q3": 2.821475,
+            "iqr": 4.594475,
+            "skew": -0.14938770055109993,
+            "kurtosis": -0.751581381583446
+        },
+        {
+            "column": "skewness",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1256,
+            "unique_pct": 91.55,
+            "mean": 1.9223531206393585,
+            "median": 2.31965,
+            "std": 5.869046743695517,
+            "min": -13.7731,
+            "max": 12.9516,
+            "q1": -1.7082000000000002,
+            "q3": 6.8146249999999995,
+            "iqr": 8.522825,
+            "skew": -0.39410347444624066,
+            "kurtosis": -0.437211524327382
+        },
+        {
+            "column": "curtosis",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1270,
+            "unique_pct": 92.57,
+            "mean": 1.3976271172667638,
+            "median": 0.61663,
+            "std": 4.310030090106596,
+            "min": -5.2861,
+            "max": 17.9274,
+            "q1": -1.574975,
+            "q3": 3.1792499999999997,
+            "iqr": 4.754225,
+            "skew": 1.088568543275335,
+            "kurtosis": 1.2704759157901702
+        },
+        {
+            "column": "entropy",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1156,
+            "unique_pct": 84.26,
+            "mean": -1.1916565200437317,
+            "median": -0.58665,
+            "std": 2.10101313735961,
+            "min": -8.5482,
+            "max": 2.4495,
+            "q1": -2.41345,
+            "q3": 0.39481,
+            "iqr": 2.80826,
+            "skew": -1.0222430438083978,
+            "kurtosis": 0.49749575397598766
+        },
+        {
+            "column": "class",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.15,
+            "mean": 0.4446064139941691,
+            "median": 0.0,
+            "std": 0.4971032701256608,
+            "min": 0.0,
+            "max": 1.0,
+            "q1": 0.0,
+            "q3": 1.0,
+            "iqr": 1.0,
+            "skew": 0.22319085746799167,
+            "kurtosis": -1.953034960425155
+        }
+    ]
+}

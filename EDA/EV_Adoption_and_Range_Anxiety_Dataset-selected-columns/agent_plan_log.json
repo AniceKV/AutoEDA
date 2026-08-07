@@ -1,8 +1,18 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Gender\",\n        \"Annual_Income_USD\",\n        \"City_Type\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Current_Car_Type\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Annual_Income_USD\",\n          \"y\": \"Number_of_Cars_Owned\",\n          \"rationale\": \"Higher income typically correlates with owning more vehicles.\"\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Daily_Commute_km\",\n          \"rationale\": \"Commute distances usually vary significantly between Rural, Suburban, and Urban settings.\"\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"rationale\": \"Checking if infrastructure development is balanced between residential and commercial areas.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Annual_Income_USD\",\n          \"rationale\": \"Income often follows a life-cycle pattern related to age and career progression.\"\n        },\n        {\n          \"x\": \"City_Type\",\n          \"y\": \"Current_Car_Type\",\n          \"rationale\": \"Urban environments might favor smaller cars (Sedans/Hatchbacks) while Rural areas might favor SUVs.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Charging_Stations_Near_Home\"\n      ],\n      \"hue\": \"City_Type\"\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"impute_missing_data\",\n    \"args\": {\n      \"strategy_map\": {\n        \"Annual_Income_USD\": \"median\",\n        \"Daily_Commute_km\": \"median\"\n      }\n    }\n  },\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Gender\",\n        \"Annual_Income_USD\",\n        \"City_Type\",\n        \"Daily_Commute_km\",\n        \"Number_of_Cars_Owned\",\n        \"Charging_Stations_Near_Home\",\n        \"Charging_Stations_Near_Work\"\n      ]\n    }\n  },\n  {\n    \"tool\": \"engineer_features\",\n    \"args\": {\n      \"feature_specs\": [\n        {\n          \"name\": \"Total_Charging_Access\",\n          \"formula\": \"Charging_Stations_Near_Home + Charging_Stations_Near_Work\",\n          \"rationale\": \"Total infrastructure availability is often a stronger predictor of EV-related behavior than home or work alone.\"\n        },\n        {\n          \"name\": \"Income_Per_Car\",\n          \"formula\": \"Annual_Income_USD / Number_of_Cars_Owned\",\n          \"rationale\": \"Financial capacity relative to existing vehicle overhead.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Annual_Income_USD\",\n          \"y\": \"City_Type\",\n          \"rationale\": \"Income levels often vary significantly by city type (Urban vs Rural), which may confound car type preferences.\"\n        },\n        {\n          \"x\": \"Daily_Commute_km\",\n          \"y\": \"City_Type\",\n          \"rationale\": \"Commute distances are typically longer in Rural/Suburban areas compared to Urban centers.\"\n        },\n        {\n          \"x\": \"Charging_Stations_Near_Home\",\n          \"y\": \"Charging_Stations_Near_Work\",\n          \"rationale\": \"Check if charging infrastructure is concentrated in specific areas or balanced across locations.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Annual_Income_USD\",\n          \"rationale\": \"Standard life-cycle hypothesis check to see if income peaks at specific age brackets.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"feature_col\": \"Annual_Income_USD\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"feature_col\": \"City_Type\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"feature_col\": \"Daily_Commute_km\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Annual_Income_USD\",\n        \"Daily_Commute_km\",\n        \"Total_Charging_Access\"\n      ],\n      \"hue\": \"Current_Car_Type\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Current_Car_Type\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
+      {
+        "tool": "impute_missing_data",
+        "args": {
+          "strategy_map": {
+            "Annual_Income_USD": "median",
+            "Daily_Commute_km": "median"
+          },
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
+        }
+      },
       {
         "tool": "plot_feature_distributions",
         "args": {
@@ -13,18 +23,28 @@
             "City_Type",
             "Daily_Commute_km",
             "Number_of_Cars_Owned",
-            "Current_Car_Type",
             "Charging_Stations_Near_Home",
             "Charging_Stations_Near_Work"
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
         }
       },
       {
-        "tool": "plot_correlation_matrix",
+        "tool": "engineer_features",
         "args": {
-          "save_path": "correlation_matrix.png",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "feature_specs": [
+            {
+              "name": "Total_Charging_Access",
+              "formula": "Charging_Stations_Near_Home + Charging_Stations_Near_Work",
+              "rationale": "Total infrastructure availability is often a stronger predictor of EV-related behavior than home or work alone."
+            },
+            {
+              "name": "Income_Per_Car",
+              "formula": "Annual_Income_USD / Number_of_Cars_Owned",
+              "rationale": "Financial capacity relative to existing vehicle overhead."
+            }
+          ],
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
         }
       },
       {
@@ -33,31 +53,50 @@
           "bivariate_pairs": [
             {
               "x": "Annual_Income_USD",
-              "y": "Number_of_Cars_Owned",
-              "rationale": "Higher income typically correlates with owning more vehicles."
+              "y": "City_Type",
+              "rationale": "Income levels often vary significantly by city type (Urban vs Rural), which may confound car type preferences."
             },
             {
-              "x": "City_Type",
-              "y": "Daily_Commute_km",
-              "rationale": "Commute distances usually vary significantly between Rural, Suburban, and Urban settings."
+              "x": "Daily_Commute_km",
+              "y": "City_Type",
+              "rationale": "Commute distances are typically longer in Rural/Suburban areas compared to Urban centers."
             },
             {
               "x": "Charging_Stations_Near_Home",
               "y": "Charging_Stations_Near_Work",
-              "rationale": "Checking if infrastructure development is balanced between residential and commercial areas."
+              "rationale": "Check if charging infrastructure is concentrated in specific areas or balanced across locations."
             },
             {
               "x": "Age",
               "y": "Annual_Income_USD",
-              "rationale": "Income often follows a life-cycle pattern related to age and career progression."
-            },
-            {
-              "x": "City_Type",
-              "y": "Current_Car_Type",
-              "rationale": "Urban environments might favor smaller cars (Sedans/Hatchbacks) while Rural areas might favor SUVs."
+              "rationale": "Standard life-cycle hypothesis check to see if income peaks at specific age brackets."
             }
           ],
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Current_Car_Type",
+          "feature_col": "Annual_Income_USD",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Current_Car_Type",
+          "feature_col": "City_Type",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
+        }
+      },
+      {
+        "tool": "plot_target_interaction",
+        "args": {
+          "target_col": "Current_Car_Type",
+          "feature_col": "Daily_Commute_km",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
         }
       },
       {
@@ -67,10 +106,18 @@
             "Age",
             "Annual_Income_USD",
             "Daily_Commute_km",
-            "Charging_Stations_Near_Home"
+            "Total_Charging_Access"
           ],
-          "hue": "City_Type",
-          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\f4673b7e-81d1-4823-a0f0-70734d95721b"
+          "hue": "Current_Car_Type",
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
+        }
+      },
+      {
+        "tool": "run_statistical_hypothesis_tests",
+        "args": {
+          "target_col": "Current_Car_Type",
+          "alpha": 0.05,
+          "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\eda46a27-60ad-4e5a-81be-dfe3b8ff1e8e"
         }
       },
       {
@@ -79,10 +126,15 @@
       }
     ],
     "step_results": [
+      "impute_missing_data successful. Summary: {'rules_applied': [\"Standardized missing string placeholders ('?', 'NA', 'N/A', 'null') to NaN.\", 'Numeric columns with skewness > 1.0 or < -1.0 use median imputation.', 'Numeric columns with skewness between -1.0 and 1.0 use mean imputation.', \"Categorical/String columns use mode imputation with 'Unknown' fallback.\"], 'columns': {'Buyer_ID': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Age': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Gender': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Annual_Income_USD': {'dtype': 'float64', 'missing_before': 178, 'missing_after': 0, 'method': 'median', 'skewness': 0.31, 'fill_value': 84708.0}, 'City_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Daily_Commute_km': {'dtype': 'float64', 'missing_before': 181, 'missing_after': 0, 'method': 'median', 'skewness': 0.34, 'fill_value': 40.2}, 'Number_of_Cars_Owned': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Current_Car_Type': {'dtype': 'str', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Home': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}, 'Charging_Stations_Near_Work': {'dtype': 'int64', 'missing_before': 0, 'missing_after': 0, 'method': 'none', 'fill_value': None}}}",
       "plot_feature_distributions successful.",
-      "plot_correlation_matrix successful.",
-      "plot_semantic_bivariate_relationships successful. Count: 5",
+      "engineer_features successful. Synthesized 2 derived domain metrics.",
+      "plot_semantic_bivariate_relationships successful. Count: 4",
+      "plot_target_interaction successful.",
+      "plot_target_interaction successful.",
+      "plot_target_interaction successful.",
       "plot_pairplot successful.",
+      "run_statistical_hypothesis_tests successful. Significant predictors: []",
       "Agent called finish_analysis. Terminating loop."
     ]
   }

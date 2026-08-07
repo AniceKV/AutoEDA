@@ -67,8 +67,8 @@ No statistically significant predictors identified.
 
 ---
 
-## 7. Generated Visual Artifacts
-No PNG/SVG image assets found in directory.
+## 7. Generated Visualizations
+No custom chart image assets found in directory (Interactive Plotly visualizations generated directly in HTML report).
 
 ---
 

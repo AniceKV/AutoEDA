@@ -1,6 +1,6 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\1da9e373-8d94-40ad-b6b7-b370e045ad89`
-**Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\tests\benchmark_sandbox\StudentsPerformance`
+**Processed Files:** `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
 ---
@@ -8,7 +8,7 @@
 ## 1. Dataset Overview
 - **Dataset Identifier:** `StudentsPerformance.csv`
 - **Dimensions:** `1000` rows x `8` columns
-- **Target Variable:** `average_score`
+- **Target Variable:** `Not Specified`
 - **Data Quality:** No missing values detected in raw profile.
 
 ---
@@ -38,23 +38,12 @@ No numeric outlier statistics reported.
 ---
 
 ## 4. Derived Domain Attributes & Composite Metrics
-- **`average_score`**: Formula: `(`math score` + `reading score` + `writing score`) / 3` | Purpose: Composite academic performance metric as requested by the user.
+No custom derived domain metrics synthesized during this run.
 
 ---
 
 ## 5. Statistical Hypothesis Testing & Key Predictors
-All predictors below were tested against `average_score` and found statistically significant (p < 0.05), ranked by effect size.
-
-| Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
-|---|---|---|---|---|---|
-| `reading score` | Pearson Correlation | 0.9703 | Strong correlation | 0.0000e+00 | High proficiency in reading is closely linked to a student's overall academic success across all subjects. |
-| `writing score` | Pearson Correlation | 0.9657 | Strong correlation | 0.0000e+00 | Strong writing skills are a primary indicator of a student's ability to achieve high average marks. |
-| `math score` | Pearson Correlation | 0.9187 | Strong correlation | 0.0000e+00 | Performance in mathematics shows a very strong connection to the total average grade earned by students. |
-| `lunch` | ANOVA | 0.2901 | Large effect | 7.7368e-21 | The type of lunch a student receives is associated with significant differences in their overall academic results. |
-| `test preparation course` | ANOVA | 0.2567 | Large effect | 1.6338e-16 | Completing a preparatory course relates to a notable increase in a student's average performance levels. |
-| `parental level of education` | ANOVA | 0.2265 | Large effect | 4.3810e-10 | The educational background of parents is a meaningful factor linked to their children's academic achievement. |
-| `race/ethnicity` | ANOVA | 0.1878 | Large effect | 3.2259e-07 | Average scores show distinct variations when analyzed across different student ethnic groups. |
-| `gender` | ANOVA | 0.1309 | Medium effect | 3.3120e-05 | There is a measurable difference in the average academic performance between male and female students. |
+No statistically significant predictors identified.
 
 ---
 
@@ -63,10 +52,7 @@ All predictors below were tested against `average_score` and found statistically
 
 | Feature 1 | Feature 2 | Correlation (r) | Interpretation |
 |---|---|---|---|
-| `math score` | `average_score` | 0.9187 | Strong correlation |
 | `reading score` | `writing score` | 0.9546 | Strong correlation |
-| `reading score` | `average_score` | 0.9703 | Strong correlation |
-| `writing score` | `average_score` | 0.9657 | Strong correlation |
 
 
 ---
@@ -93,25 +79,23 @@ No custom chart image assets found in directory (Interactive Plotly visualizatio
 ---
 
 ## 9. Predictive Modeling Strategy Blueprint
-- **Target Definition:** average_score
-- **Problem Type:** Regression
+- **Target Definition:** Undefined (Unsupervised)
+- **Problem Type:** Unsupervised / Exploratory
 ### Recommended Algorithms
-- Regularized Linear Regression (Ridge / Lasso)
-- Random Forest Regressor
-- Gradient Boosting Regressor
-- Support Vector Regressor (SVR)
+- K-Means Clustering
+- Hierarchical Agglomerative Clustering
+- Principal Component Analysis (PCA) for Dimensionality Reduction
 ### Feature Selection Strategy
 - Exclude high-cardinality ID or text name columns
 - Rank features using cross-validated permutation importance and mutual information
 - Remove collinear features exceeding correlation threshold > 0.85
 ### Validation Strategy
-- K-Fold Cross-Validation (5 folds)
-- Evaluate MAE, RMSE, R-Squared, and Residual Error distribution
+- Evaluate Silhouette Score and Inertia elbow curve
 ### Overfitting Risk Mitigation
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'average_score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 9 columns.
+- **Executive Summary:** Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns.
 
 ---
 

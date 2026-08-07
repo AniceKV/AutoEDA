@@ -1,5 +1,5 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\35e050f3-2492-4fc0-a18d-4bcec85c0355`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\83a3d53f-69b5-4ee5-bd10-2c4b05f18a87`
 **Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
@@ -42,9 +42,7 @@ No numeric outlier statistics reported.
 ---
 
 ## 4. Derived Domain Attributes & Composite Metrics
-- **`total_acidity`**: Formula: ``fixed acidity` + `volatile acidity` + `citric acid`` | Purpose: Combines different acid types to capture the overall acidic profile of the wine.
-- **`bound_sulfur_dioxide`**: Formula: ``total sulfur dioxide` - `free sulfur dioxide`` | Purpose: Isolates the portion of SO2 that is bound to other molecules, which can be a marker for wine oxidation or microbial history.
-- **`alcohol_density_ratio`**: Formula: `alcohol / density` | Purpose: Captures the interaction between body (density) and strength (alcohol), which are key components of wine balance.
+No custom derived domain metrics synthesized during this run.
 
 ---
 
@@ -53,18 +51,16 @@ All predictors below were tested against `quality` and found statistically signi
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `alcohol` | Pearson Correlation | 0.4762 | Moderate correlation | 2.8315e-91 | Higher alcohol content is strongly associated with better quality ratings in these red wines. |
-| `alcohol_density_ratio` | Pearson Correlation | 0.475 | Moderate correlation | 9.0902e-91 | The balance between alcohol and density serves as a key indicator of wine quality. |
-| `volatile acidity` | Pearson Correlation | 0.3906 | Moderate correlation | 2.0517e-59 | Lower levels of volatile acidity are linked to higher quality scores due to reduced vinegar-like aromas. |
-| `sulphates` | Pearson Correlation | 0.2514 | Weak correlation | 1.8021e-24 | Increased sulphate levels are associated with higher quality ratings, likely due to their role as preservatives. |
-| `citric acid` | Pearson Correlation | 0.2264 | Weak correlation | 4.9913e-20 | Higher citric acid levels, which add freshness, are linked to better quality scores. |
-| `bound_sulfur_dioxide` | Pearson Correlation | 0.2055 | Weak correlation | 1.0569e-16 | The amount of sulfur dioxide bound to other molecules relates to the overall quality of the wine. |
-| `total sulfur dioxide` | Pearson Correlation | 0.1851 | Weak correlation | 8.6217e-14 | Total sulfur dioxide levels are associated with quality, reflecting the wine's microbial stability and oxidation. |
-| `density` | Pearson Correlation | 0.1749 | Weak correlation | 1.8750e-12 | The thickness or body of the wine shows a relationship with the final quality score. |
-| `chlorides` | Pearson Correlation | 0.1289 | Weak correlation | 2.3134e-07 | Lower salt content in the wine is associated with higher consumer quality ratings. |
-| `fixed acidity` | Pearson Correlation | 0.1241 | Weak correlation | 6.4956e-07 | The concentration of non-volatile acids shows a relationship with how the wine's quality is perceived. |
-| `pH` | Pearson Correlation | 0.0577 | Negligible correlation | 2.0963e-02 | The acid-base balance of the wine has a minor association with its quality rating. |
-| `free sulfur dioxide` | Pearson Correlation | 0.0507 | Negligible correlation | 4.2834e-02 | The amount of sulfur dioxide available to prevent spoilage shows a slight link to wine quality. |
+| `alcohol` | Pearson Correlation | 0.4762 | Moderate correlation | 2.8315e-91 | Wines with more alcohol tend to score higher in quality, making this the standout trait to watch when comparing bottles. |
+| `volatile acidity` | Pearson Correlation | 0.3906 | Moderate correlation | 2.0517e-59 | Higher volatile acidity, which gives wine a vinegar-like sharpness, tends to go hand in hand with lower quality ratings. |
+| `sulphates` | Pearson Correlation | 0.2514 | Weak correlation | 1.8021e-24 | Wines with more sulphates, compounds used to protect freshness, tend to receive somewhat better quality scores. |
+| `citric acid` | Pearson Correlation | 0.2264 | Weak correlation | 4.9913e-20 | Citric acid, linked to a fresh, bright taste, shows up more in wines rated higher quality. |
+| `total sulfur dioxide` | Pearson Correlation | 0.1851 | Weak correlation | 8.6217e-14 | Wines carrying more total sulfur dioxide, a preservative, tend to be rated slightly lower in quality. |
+| `density` | Pearson Correlation | 0.1749 | Weak correlation | 1.8750e-12 | Denser wines, which often carry more sugar and less alcohol, tend to sit at the lower end of quality. |
+| `chlorides` | Pearson Correlation | 0.1289 | Weak correlation | 2.3134e-07 | Wines with more chlorides, which can taste saltier, tend to earn slightly lower quality ratings. |
+| `fixed acidity` | Pearson Correlation | 0.1241 | Weak correlation | 6.4956e-07 | Wines with more fixed acidity, the acids shaping a wine's core tartness, tend to score slightly higher in quality. |
+| `pH` | Pearson Correlation | 0.0577 | Negligible correlation | 2.0963e-02 | A wine's pH shows almost no meaningful link to how its quality is rated. |
+| `free sulfur dioxide` | Pearson Correlation | 0.0507 | Negligible correlation | 4.2834e-02 | Free sulfur dioxide barely tracks with quality, so knowing its level tells you little about how good the wine is. |
 
 ---
 
@@ -102,7 +98,7 @@ No categorical associations available.
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'quality' (Multiclass Classification). Model recommendations and validation strategy tailored for 1599 rows x 15 columns.
+- **Executive Summary:** Target: 'quality' (Multiclass Classification). Model recommendations and validation strategy tailored for 1599 rows x 12 columns.
 
 ---
 

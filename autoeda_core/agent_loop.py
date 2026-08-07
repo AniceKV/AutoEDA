@@ -78,7 +78,7 @@ def run_tool_based_eda(
     if not effective_api_key:
         raise ValueError("OPENROUTER_API_KEY is missing. Set it in your environment / .env file.")
 
-    effective_model = model_name or os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
+    effective_model = model_name or os.getenv("EDA_MODEL")
 
     # Thread-isolated client instance
     client = OpenAI(
