@@ -303,6 +303,47 @@ def _find_matching_col(requested: Optional[str], df_columns: List[str]) -> Optio
     return None
 
 
+def _evaluate_feature_formula(df: pd.DataFrame, formula_str: str) -> Optional[pd.Series]:
+    """
+    Safely evaluates mathematical/logical feature expressions against DataFrame columns.
+    Supports arithmetic (+, -, *, /), comparisons (==, >, <), and functions (log1p, log, abs).
+    """
+    try:
+        clean_expr = formula_str.replace("np.log1p", "log1p").replace("np.log", "log").replace("np.abs", "abs")
+        
+        import re
+        if "log1p(" in clean_expr:
+            m = re.search(r"log1p\(([^)]+)\)", clean_expr)
+            if m:
+                col = m.group(1).strip()
+                if col in df.columns:
+                    return np.log1p(np.maximum(0, pd.to_numeric(df[col], errors="coerce").fillna(0)))
+        elif "log(" in clean_expr:
+            m = re.search(r"log\(([^)]+)\)", clean_expr)
+            if m:
+                col = m.group(1).strip()
+                if col in df.columns:
+                    return np.log(np.maximum(1e-5, pd.to_numeric(df[col], errors="coerce").fillna(0)))
+                    
+        res = df.eval(clean_expr)
+        if isinstance(res, (pd.Series, np.ndarray)):
+            return pd.Series(res, index=df.index)
+    except Exception:
+        pass
+        
+    try:
+        local_dict = {col: df[col] for col in df.columns}
+        local_dict["np"] = np
+        local_dict["pd"] = pd
+        res = eval(formula_str, {"__builtins__": None}, local_dict)
+        if isinstance(res, (pd.Series, np.ndarray, list)):
+            return pd.Series(res, index=df.index)
+    except Exception:
+        pass
+        
+    return None
+
+
 def engineer_features(
     df: pd.DataFrame,
     feature_specs: Optional[List[Dict[str, Any]]] = None,
@@ -311,7 +352,7 @@ def engineer_features(
 ) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
     """
     Creates high-signal domain features safely.
-    Supports auto-generation and flexible LLM specification formats (sum/add, product, ratio, log, diff, mean).
+    Supports auto-generation, arbitrary formula evaluation (e.g. 'SibSp + Parch + 1'), and flexible LLM specifications.
     """
     df_feat = df.copy()
     engineered_summary = []
@@ -355,6 +396,7 @@ def engineer_features(
 
         ftype = str(spec.get("type") or spec.get("transformation") or spec.get("operation") or "custom").lower()
         rationale = spec.get("rationale") or spec.get("description") or "High-signal feature engineering transformation"
+        raw_formula = spec.get("formula") or spec.get("expression")
         
         # Extract column references gracefully
         raw_cols = spec.get("columns") or spec.get("source_cols") or spec.get("source_columns") or spec.get("features") or spec.get("input_cols") or spec.get("input_columns") or spec.get("cols") or []
@@ -376,7 +418,9 @@ def engineer_features(
         # Dynamic Semantic Feature Naming (avoid generic 'engineered_feature')
         fname = spec.get("name") or spec.get("feature_name") or spec.get("target")
         if not fname or fname == "engineered_feature":
-            if ftype in ["sum", "add", "addition", "total", "plus", "aggregate", "combine", "cumulative"]:
+            if raw_formula:
+                fname = "derived_formula_metric"
+            elif ftype in ["sum", "add", "addition", "total", "plus", "aggregate", "combine", "cumulative"]:
                 fname = f"total_{'_'.join(cols[:3])}" if cols else "composite_total"
             elif ftype in ["ratio", "division", "divide", "div"]:
                 num_raw = spec.get("numerator") or (raw_cols[0] if len(raw_cols) >= 1 else None)
@@ -396,7 +440,15 @@ def engineer_features(
                 fname = "derived_domain_metric"
         
         try:
-            if ftype in ["log1p", "log", "logarithm", "log_transform"]:
+            # Primary: Formula string evaluation
+            if raw_formula:
+                evaluated_series = _evaluate_feature_formula(df_feat, raw_formula)
+                if evaluated_series is not None:
+                    df_feat[fname] = evaluated_series
+                    formula = raw_formula
+                else:
+                    continue
+            elif ftype in ["log1p", "log", "logarithm", "log_transform"]:
                 if scol and scol in df_feat.columns:
                     df_feat[fname] = np.log1p(np.maximum(0, pd.to_numeric(df_feat[scol], errors="coerce").fillna(0)))
                     formula = f"np.log1p({scol})"
@@ -1543,7 +1595,11 @@ class DetectAndHandleOutliersArgs(BaseModel):
     action: str = Field(description="'profile' or 'cap'")
 
 class EngineerFeaturesArgs(BaseModel):
-    feature_specs: List[Dict[str, Any]] = Field(description="List of dicts defining features")
+    feature_specs: List[Dict[str, Any]] = Field(
+        description="List of dicts defining features. Accepts arbitrary formulas or standard types. "
+                    "Example: [{'name': 'FamilySize', 'formula': 'SibSp + Parch + 1', 'rationale': 'Total family count'}, "
+                    "{'name': 'IsAlone', 'formula': 'FamilySize == 1', 'rationale': 'Solo traveler indicator'}]"
+    )
 
 class RunStatisticalHypothesisTestsArgs(BaseModel):
     target_col: str = Field(description="Name of target column")
