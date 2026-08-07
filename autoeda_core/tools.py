@@ -559,106 +559,7 @@ def _run_group_test(groups: list) -> Optional[Tuple[str, float, float, float, st
     return "One-Way ANOVA", float(f_stat), float(p_val), effect_size, f"F-statistic = {f_stat:.4f}, Eta-squared = {eta_sq:.4f}, p = {p_val:.4e}."
 
 
-def run_statistical_hypothesis_tests(
-    df: pd.DataFrame,
-    target_col: Optional[str] = None,
-    feature_cols: Optional[List[str]] = None,
-    alpha: float = 0.05,
-    **kwargs
-) -> Dict[str, Any]:
-    """
-    Automates statistical significance testing against target_col with defensive parameter clamping.
-    Ranks statistically significant features by effect size.
-    """
-    # Parameter Clamping for alpha
-    try:
-        alpha = max(0.0001, min(0.5, float(alpha)))
-    except (ValueError, TypeError):
-        alpha = 0.05
 
-    if not target_col or target_col not in df.columns:
-        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
-        target_col = numeric_cols[-1] if numeric_cols else df.columns[-1]
-
-    raw_targets = feature_cols or [c for c in df.columns if c != target_col]
-    targets_to_test = [c for c in raw_targets if c in df.columns and c != target_col]
-    
-    test_results = {}
-    significant_items = []
-    
-    target_is_num = _is_numeric_col(df[target_col])
-    
-    for col in targets_to_test:
-        col_is_num = _is_numeric_col(df[col])
-        clean_data = df[[target_col, col]].dropna()
-        if len(clean_data) < 5:
-            continue
-            
-        try:
-            if target_is_num and col_is_num:
-                # Pearson Correlation Test
-                r_val, p_val = stats.pearsonr(clean_data[target_col], clean_data[col])
-                test_name = "Pearson Correlation Test"
-                statistic = float(r_val)
-                effect_size = round(abs(float(r_val)), 4)
-                interpretation = f"Pearson r = {r_val:.4f}, |r| = {effect_size}, p = {p_val:.4e}."
-                
-            elif not target_is_num and not col_is_num:
-                # Chi-Square Test of Independence
-                contingency = pd.crosstab(clean_data[target_col], clean_data[col])
-                chi2, p_val, dof, ex = stats.chi2_contingency(contingency)
-                test_name = "Chi-Square Test of Independence"
-                statistic = float(chi2)
-                n = contingency.sum().sum()
-                min_dim = min(contingency.shape[0] - 1, contingency.shape[1] - 1)
-                cramers_v = np.sqrt(chi2 / (n * min_dim)) if (n > 0 and min_dim > 0) else 0.0
-                effect_size = round(float(cramers_v), 4)
-                interpretation = f"Chi2 = {chi2:.4f}, Cramér's V = {effect_size:.4f}, p = {p_val:.4e}."
-                
-            elif not target_is_num and col_is_num:
-                # Feature is Numerical, Target is Categorical
-                groups = [group[col].dropna().values for name, group in clean_data.groupby(target_col)]
-                result = _run_group_test(groups)
-                if result is None:
-                    continue
-                test_name, statistic, p_val, effect_size, interpretation = result
-            else:
-                # Target is Numerical, Feature is Categorical
-                groups = [group[target_col].dropna().values for name, group in clean_data.groupby(col)]
-                result = _run_group_test(groups)
-                if result is None:
-                    continue
-                test_name, statistic, p_val, effect_size, interpretation = result
-                    
-            p_val_float = float(p_val) if pd.notnull(p_val) else 1.0
-            is_sig = p_val_float < alpha
-            
-            if is_sig:
-                significant_items.append({"feature": col, "effect_size": effect_size, "p_value": p_val_float})
-                
-            test_results[col] = {
-                "test_name": test_name,
-                "statistic": round(statistic, 4),
-                "p_value": p_val_float,
-                "effect_size": effect_size,
-                "is_statistically_significant": is_sig,
-                "interpretation": interpretation + (" (Statistically Significant)" if is_sig else " (Not Significant)")
-            }
-        except Exception as e:
-            test_results[col] = {
-                "test_name": "Hypothesis Test",
-                "error": str(e),
-                "p_value": 1.0,
-                "effect_size": 0.0,
-                "is_statistically_significant": False,
-                "interpretation": f"Could not perform test: {e}"
-            }
-
-    # Rank significant features by effect size descending
-    significant_items.sort(key=lambda x: x["effect_size"], reverse=True)
-    test_results["significant_predictors"] = [item["feature"] for item in significant_items]
-    test_results["ranked_significant_details"] = significant_items
-    return test_results
 
 
 # =====================================================================
@@ -987,16 +888,27 @@ def _interpret_effect_size(test_name: str, val: float) -> str:
 # =====================================================================
 def run_statistical_hypothesis_tests(
     df: pd.DataFrame,
-    target_col: str,
+    target_col: Optional[str] = None,
+    feature_cols: Optional[List[str]] = None,
     alpha: float = 0.05,
     **kwargs
 ) -> Dict[str, Any]:
     """
-    Performs statistical significance tests based on data types.
+    Performs statistical significance tests based on data types with defensive parameter clamping.
     Returns ranked significant predictors with qualitative effect size interpretations.
     """
-    if target_col not in df.columns:
-        return {"error": f"Target column '{target_col}' not found."}
+    # Parameter Clamping for alpha
+    try:
+        alpha = max(0.0001, min(0.5, float(alpha)))
+    except (ValueError, TypeError):
+        alpha = 0.05
+
+    if not target_col or target_col not in df.columns:
+        numeric_cols = [c for c in df.columns if _is_numeric_col(df[c])]
+        target_col = numeric_cols[-1] if numeric_cols else (df.columns[-1] if len(df.columns) > 0 else "")
+
+    if not target_col or target_col not in df.columns:
+        return {"error": "No valid target column found in dataset."}
 
     test_results = {"target_col": target_col, "significant_predictors": [], "ranked_significant_details": []}
     significant_items = []
