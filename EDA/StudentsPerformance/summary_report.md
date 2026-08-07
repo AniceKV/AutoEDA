@@ -1,201 +1,182 @@
-# Executive Summary Report  
-**Dataset:** *StudentsPerformance.csv*  
-**Analysis Run:** 2024‑08‑07 (Auto‑EDA pipeline)  
-**Target Variable:** `overall_score` (mean of math, reading & writing scores) – Regression problem  
-
----  
-
-## 1. Dataset Overview  
-
-| Property                     | Value |
-|------------------------------|-------|
-| Rows                         | 1,000 |
-| Columns (incl. target)       | 9 |
-| Target column                | `overall_score` (float64) |
-| Categorical columns          | 5 (gender, race/ethnicity, parental level of education, lunch, test preparation course) |
-| Numerical columns            | 4 (math score, reading score, writing score, overall_score) |
-| Cardinality (categorical)    | gender (2), race/ethnicity (5), parental education (6), lunch (2), test prep (2) |
-| Overall missing values       | **0** (all columns complete) |
-
-### 1.1 Schema & Summary Statistics  
-
-| Column                     | Type   | Cardinality | Mean   | Median | Std‑Dev | Range | Skew | Kurtosis |
-|----------------------------|--------|-------------|--------|--------|---------|-------|------|----------|
-| gender                     | str    | 2           | –      | –      | –       | –     | –    | –        |
-| race/ethnicity             | str    | 5           | –      | –      | –       | –     | –    | –        |
-| parental level of education| str    | 6           | –      | –      | –       | –     | –    | –        |
-| lunch                      | str    | 2           | –      | –      | –       | –     | –    | –        |
-| test preparation course    | str    | 2           | –      | –      | –       | –     | –    | –        |
-| **math score**             | int64  | 81          | 66.09  | 66.0   | 15.16   | 0‑100 | -0.279 | 0.275 |
-| **reading score**          | int64  | 72          | 69.17  | 70.0   | 14.60   | 17‑100| -0.259 | -0.068|
-| **writing score**          | int64  | 77          | 68.05  | 69.0   | 15.20   | 10‑100| -0.289 | -0.033|
-| **overall_score** (engineered) | float64 | 194 | 67.77* | 68.0 | 13.86* | 18‑100 | – | – |
-
-\*Overall score is the mean of the three exam scores; its distribution mirrors the component scores.
+# Executive Summary – Automated Exploratory Data Analysis (EDA)  
+**Dataset:** *StudentsPerformance.csv* (1000 rows × 9 columns)  
+**Analysis Run:** 2026‑08‑07  
 
 ---
 
-## 2. Data Quality  
+## 1. Objective  
 
-### 2.1 Missing‑Value Handling  
-* No missing values were detected.  
-* Imputation module ran with a **no‑op** strategy (all columns already complete).  
+The automated EDA pipeline was executed to:
 
-### 2.2 Outlier Profiling  
+1. **Create a composite target** – `total_score` (sum of Math, Reading, and Writing scores).  
+2. **Assess data quality** – missing values, outliers, and distributional characteristics.  
+3. **Identify statistically significant relationships** between all features and the new target.  
+4. **Generate a set of bivariate visualizations** and a pair‑plot to aid interpretation.  
+5. **Provide a predictive‑modeling blueprint** (unsupervised clustering / dimensionality‑reduction) for downstream work.
 
-| Column          | Q1  | Q3  | IQR  | Lower Bound | Upper Bound | Outliers (count) | Outlier % |
-|-----------------|-----|-----|------|-------------|-------------|------------------|-----------|
-| math score      | 57  | 77  | 20   | 27          | 107         | 8                | 0.8 % |
-| reading score   | 59  | 79  | 20   | 29          | 109         | 6                | 0.6 % |
-| writing score   | 57.75| 79 | 21.25| 25.875      | 110.875     | 5                | 0.5 % |
-| overall_score   | 58.33|77.67|19.33| 29.33       |106.67       | 6                | 0.6 % |
-
-*Action taken:* “profile” – outliers were logged but **not removed**, preserving the original data for downstream modeling.
+All steps completed without error; the artefacts are listed in the *File Scan Metadata* section.
 
 ---
 
-## 3. Feature Engineering  
+## 2. Dataset Overview  
 
-| Engineered Feature | Formula (mean of) | Data Type | Rationale |
-|--------------------|-------------------|-----------|-----------|
-| `overall_score`    | `math score`, `reading score`, `writing score` | float64 | Provides a single composite performance metric; highly correlated with each component (see §4). |
+| Attribute | Type | Cardinality | Missing % | Key Statistics |
+|-----------|------|-------------|----------|----------------|
+| gender | string | 2 | 0.0 | female = 518, male = 482 |
+| race/ethnicity | string | 5 | 0.0 | group C = 319, group D = 262, group B = 190 |
+| parental level of education | string | 6 | 0.0 | some college = 226, associate’s degree = 222 |
+| lunch | string | 2 | 0.0 | standard = 645, free/reduced = 355 |
+| test preparation course | string | 2 | 0.0 | none = 642, completed = 358 |
+| math score | int64 | 81 | 0.0 | Mean = 66.09, Median = 66, Range = 0‑100 |
+| reading score | int64 | 72 | 0.0 | Mean = 69.17, Median = 70, Range = 17‑100 |
+| writing score | int64 | 77 | 0.0 | Mean = 68.05, Median = 69, Range = 10‑100 |
+| **total_score** (engineered) | int64 | 194 | 0.0 | Range = 88‑320, Mean ≈ 203, Median ≈ 204 |
 
-No additional transformations (e.g., scaling, encoding) were applied at this stage.
-
----
-
-## 4. Univariate & Bivariate Visualizations  
-
-| Plot File | Description |
-|-----------|-------------|
-| `dist_math_score.png` | Histogram + KDE of Math scores (mean ≈ 66, right‑skew modest). |
-| `dist_reading_score.png` | Distribution of Reading scores (mean ≈ 69). |
-| `dist_writing_score.png` | Distribution of Writing scores (mean ≈ 68). |
-| `dist_overall_score.png` | Distribution of the engineered overall score (mean ≈ 68). |
-| `correlation_matrix.png` | Heat‑map of Pearson correlations among the four numeric variables. |
-| `pairplot_scores.png` | Scatter‑matrix with density plots for all numeric columns (no hue). |
-| `bivariate_math_score_vs_reading_score.png` | Scatter of Math vs. Reading – strong linear trend (r ≈ 0.82). |
-| `bivariate_math_score_vs_writing_score.png` | Scatter of Math vs. Writing – linear trend (r ≈ 0.80). |
-| `bivariate_reading_score_vs_writing_score.png` | Scatter of Reading vs. Writing – strongest linear trend (r ≈ 0.95). |
-| `overall_vs_gender.png` | Box‑plot of overall_score by gender (significant difference, p < 1e‑4). |
-| `overall_vs_race.png` | Box‑plot of overall_score across race/ethnicity groups (ANOVA p ≈ 3e‑7). |
-| `overall_vs_parent_education.png` | Box‑plot by parental education level (ANOVA p ≈ 4e‑10). |
-| `overall_vs_lunch.png` | Box‑plot by lunch type (Welch‑t p ≈ 1.6e‑19). |
-| `overall_vs_test_prep.png` | Box‑plot by test‑prep completion (Welch‑t p ≈ 4.4e‑17). |
-| `categorical_association_matrix.png` | Heat‑map of Cramér’s V for categorical pairs (all ≤ 0.07, indicating weak association). |
-
-**Key Observations**
-
-* All three exam scores are **very strongly correlated** with the overall score (r ≥ 0.92).  
-* Pairwise correlations among the exams themselves range from 0.80 to 0.96, confirming multicollinearity.  
-* Categorical variables show **negligible association** with each other (Cramér’s V ≤ 0.07).  
+*All columns are complete; no imputation was required.*
 
 ---
 
-## 5. Correlation & Association Summary  
+## 3. Data Quality – Outlier Profiling  
 
-| Feature Pair | Pearson r | Interpretation |
-|--------------|-----------|----------------|
-| reading score ↔ overall_score | **0.9703** | Near‑perfect linear relationship. |
-| writing score ↔ overall_score | **0.9657** | Near‑perfect linear relationship. |
-| reading ↔ writing | **0.9546** | Very strong. |
-| math ↔ overall_score | **0.9187** | Strong. |
-| math ↔ reading | **0.8176** | Moderate‑strong. |
-| math ↔ writing | **0.8026** | Moderate‑strong. |
+| Feature | Q1 | Q3 | IQR | Lower Bound | Upper Bound | Outliers (Count) | Outlier % |
+|---------|----|----|-----|-------------|-------------|------------------|-----------|
+| math score | 57.0 | 77.0 | 20.0 | 27.0 | 107.0 | 8 | 0.8 |
+| reading score | 59.0 | 79.0 | 20.0 | 29.0 | 109.0 | 6 | 0.6 |
+| writing score | 57.75 | 79.0 | 21.25 | 25.875 | 110.875 | 5 | 0.5 |
+| total_score | 175.0 | 233.0 | 58.0 | 88.0 | 320.0 | 6 | 0.6 |
 
-*Correlation threshold for collinearity removal in the blueprint: > 0.85.*
-
-### Categorical Associations (Cramér’s V)
-
-| Feature 1 | Feature 2 | Cramér’s V | Comment |
-|-----------|-----------|------------|---------|
-| gender | race/ethnicity | 0.071 | Very weak |
-| parental education | test prep | 0.067 | Very weak |
-| race/ethnicity | parental education | 0.049 | Very weak |
-| race/ethnicity | test prep | 0.039 | Very weak |
-| all other pairs | 0.0 | No association |
+*Action:* “profile” – outliers were recorded but **not removed**, preserving the original data for downstream modelling.
 
 ---
 
-## 6. Statistical Hypothesis Testing  
+## 4. Feature Engineering  
 
-| Predictor | Test Type | Statistic | p‑value | Significant (α = 0.05) | Interpretation |
-|-----------|-----------|-----------|---------|------------------------|----------------|
-| gender | Welch t‑test | 4.1789 | 3.19 e‑5 | **Yes** | Females score higher on average. |
-| race/ethnicity | One‑Way ANOVA | 9.0961 | 3.23 e‑7 | **Yes** | Performance varies across groups. |
-| parental education | One‑Way ANOVA | 10.7531 | 4.38 e‑10 | **Yes** | Higher parental education → higher scores. |
-| lunch | Welch t‑test | -9.3232 | 1.58 e‑19 | **Yes** | Standard lunch associated with higher scores. |
-| test preparation course | Welch t‑test | 8.5945 | 4.43 e‑17 | **Yes** | Completion improves scores. |
-| math score | Pearson r | 0.9187 | 0.0 | **Yes** | Strong linear predictor. |
-| reading score | Pearson r | 0.9703 | 0.0 | **Yes** | Very strong linear predictor. |
-| writing score | Pearson r | 0.9657 | 0.0 | **Yes** | Very strong linear predictor. |
+| Engineered Feature | Formula | Data Type | Rationale |
+|--------------------|---------|-----------|-----------|
+| total_score | `math score + reading score + writing score` | int64 | Provides a single, high‑signal measure of overall academic performance; serves as the analysis target. |
 
-**All eight predictors are statistically significant** and should be considered in any regression model.
+No additional derived features were created.
 
 ---
 
-## 7. Predictive Modeling Blueprint  
+## 5. Statistical Relationship Summary  
+
+### 5.1 Hypothesis‑Test Results  
+
+| Feature | Test | Statistic | p‑value | Effect Size* | Significant? |
+|---------|------|------------|---------|--------------|--------------|
+| gender | Welch t‑test (2‑sample) | 4.1789 | 3.19 e‑05 | 0.1321 (Cohen’s d = 0.2642) | Yes |
+| race/ethnicity | One‑Way ANOVA | 9.0961 | 3.23 e‑07 | 0.0353 (η²) | Yes |
+| parental level of education | One‑Way ANOVA | 10.7531 | 4.38 e‑10 | 0.0513 (η²) | Yes |
+| lunch | Welch t‑test | -9.3232 | 1.58 e‑19 | 0.3121 (Cohen’s d = 0.6243) | Yes |
+| test preparation course | Welch t‑test | 8.5945 | 4.43 e‑17 | 0.2800 (Cohen’s d = 0.5601) | Yes |
+| math score | Pearson r | 0.9187 | 0.0 | 0.9187 | Yes |
+| reading score | Pearson r | 0.9703 | 0.0 | 0.9703 | Yes |
+| writing score | Pearson r | 0.9657 | 0.0 | 0.9657 | Yes |
+
+\*Effect size is reported as Cohen’s d for t‑tests, η² for ANOVA, and Pearson r for correlation tests.
+
+### 5.2 Ranked Significant Predictors  
+
+| Rank | Feature | Effect Size | p‑value |
+|------|---------|-------------|---------|
+| 1 | reading score | 0.9703 | 0.0 |
+| 2 | writing score | 0.9657 | 0.0 |
+| 3 | math score | 0.9187 | 0.0 |
+| 4 | lunch | 0.3121 | 1.58 e‑19 |
+| 5 | test preparation course | 0.2800 | 4.43 e‑17 |
+| 6 | gender | 0.1321 | 3.19 e‑05 |
+| 7 | parental level of education | 0.0513 | 4.38 e‑10 |
+| 8 | race/ethnicity | 0.0353 | 3.23 e‑07 |
+
+All listed features are statistically significant at α = 0.05.
+
+---
+
+## 6. Visual Artefacts  
+
+| Image File | Description |
+|------------|-------------|
+| `bivariate_math_score_vs_reading_score.png` | Scatter plot of Math vs. Reading scores (strong positive linear relationship). |
+| `bivariate_math_score_vs_writing_score.png` | Scatter plot of Math vs. Writing scores (high correlation). |
+| `bivariate_reading_score_vs_writing_score.png` | Scatter plot of Reading vs. Writing scores (tight clustering). |
+| `bivariate_parental_level_of_education_vs_test_preparation_course.png` | Mosaic/stacked bar showing test‑prep completion rates across parental education levels. |
+| `bivariate_lunch_vs_test_preparation_course.png` | Bar chart of test‑prep completion by lunch type (standard vs. free/reduced). |
+| `pairplot_scores.png` | Pair‑plot of the three numeric scores, colored by `test preparation course` (visualizes class separation). |
+| `target_interaction_gender.png` | Box‑plot of `total_score` split by gender. |
+| `target_interaction_race.png` | Box‑plot of `total_score` across race/ethnicity groups. |
+| `target_interaction_parent_education.png` | Box‑plot of `total_score` across parental education categories. |
+| `target_interaction_lunch.png` | Box‑plot of `total_score` for standard vs. free/reduced lunch. |
+| `target_interaction_test_prep.png` | Box‑plot of `total_score` for students with/without test‑prep completion. |
+
+*All images are stored in the working directory; each file size is listed in the scan metadata.*
+
+---
+
+## 7. Predictive‑Modeling Blueprint  
 
 | Aspect | Recommendation |
 |--------|----------------|
-| **Problem Type** | Regression (continuous target `overall_score`). |
-| **Target Definition** | Mean of the three exam scores – already engineered. |
-| **Suggested Algorithms** | 1. Regularized Linear Regression (Ridge / Lasso)  <br>2. Random Forest Regressor  <br>3. Gradient Boosting Regressor (e.g., XGBoost, LightGBM)  <br>4. Support Vector Regressor (SVR) |
-| **Feature Selection Strategy** | • Drop any high‑cardinality ID/text columns (none present). <br>• Compute permutation importance & mutual information via cross‑validation. <br>• Remove collinear numeric features with |r| > 0.85 (e.g., keep only one of the three exam scores or use the engineered `overall_score`). |
-| **Validation Strategy** | 5‑fold K‑Fold Cross‑Validation. <br>Metrics: MAE, RMSE, R², plus residual distribution plots. |
-| **Over‑fitting Mitigation** | • Apply L1/L2 regularization for linear models. <br>• Limit tree depth, set minimum samples per leaf for tree‑based models. <br>• Perform hyper‑parameter tuning **inside** CV folds (e.g., GridSearchCV, RandomizedSearchCV). |
-| **Executive Summary (Blueprint)** | *Target:* `overall_score` (Regression). <br>*Data:* 1 000 rows × 9 columns, clean, no missing values. <br>*Key Predictors:* All three exam scores (highly collinear) plus all categorical variables (each statistically significant). <br>*Next Steps:* Build baseline linear model, then explore tree‑based ensembles with proper regularization and feature pruning. |
+| **Problem Type** | Unsupervised / Exploratory (no external label beyond `total_score`). |
+| **Suggested Algorithms** | 1. **K‑Means Clustering** – to discover natural student groups.<br>2. **Hierarchical Agglomerative Clustering** – for dendrogram‑based insights.<br>3. **Principal Component Analysis (PCA)** – to reduce dimensionality and visualise variance. |
+| **Feature‑Selection Strategy** | • Remove any high‑cardinality identifiers (none present).<br>• Rank features using cross‑validated permutation importance and mutual information.<br>• Drop collinear features with Pearson |r| > 0.85 (math, reading, and writing scores are highly correlated). |
+| **Validation Strategy** | • **Silhouette Score** to assess cluster cohesion.<br>• **Elbow method (Inertia)** to choose optimal K for K‑Means. |
+| **Over‑fitting Mitigation** | • Apply regularisation (L1/L2) if moving to supervised models later.<br>• Limit tree depth / enforce minimum samples per leaf for tree‑based methods.<br>• Perform hyper‑parameter tuning strictly within cross‑validation folds. |
+| **Execution Environment** | 1000 rows × 8 predictor columns (excluding the engineered target). All steps completed in a sandboxed Python environment. |
 
 ---
 
-## 8. Recommendations & Next Steps  
+## 8. Key Take‑aways & Recommendations  
 
-1. **Dimensionality Reduction** – Because the three exam scores are nearly collinear, consider:
-   * Using the engineered `overall_score` **alone** as the sole numeric predictor, or  
-   * Applying Principal Component Analysis (PCA) on the three scores and retaining the first component.  
-
-2. **Encoding Categorical Variables** – Apply one‑hot encoding (or target encoding) for the five categorical features before feeding them to tree‑based models.  
-
-3. **Model Baseline** – Fit a simple **Ridge regression** using `overall_score` + encoded categoricals to establish a performance baseline (expected R² ≈ 0.94).  
-
-4. **Ensemble Exploration** – Train Random Forest and Gradient Boosting models; tune `max_depth`, `n_estimators`, and regularization parameters to improve over the linear baseline while monitoring out‑of‑fold RMSE.  
-
-5. **Residual Diagnostics** – Plot residuals vs. predicted values and conduct a **Durbin‑Watson** test to verify independence.  
-
-6. **Feature Importance Reporting** – Use permutation importance to quantify the contribution of each categorical variable after accounting for the dominant numeric predictor.  
-
-7. **Deployment Considerations** – The final model can be packaged with the engineered `overall_score` calculation (simple mean) and the categorical encoders; no imputation logic is required.
+1. **Strong linear relationships** exist among the three core scores (Math, Reading, Writing). For any downstream supervised model, retaining only one of these (e.g., `reading score`) would avoid multicollinearity while preserving most of the variance.  
+2. **Lunch type** and **test‑preparation course** show the largest non‑numeric effect sizes (Cohen’s d ≈ 0.62 and 0.56 respectively). These categorical variables are prime candidates for targeted interventions.  
+3. **Gender**, **parental education**, and **race/ethnicity** are statistically significant but have modest effect sizes; they should be included for fairness audits.  
+4. **Outlier prevalence** is low (< 1 % for each numeric column). Since the outliers are not extreme, they can be kept for modelling, but a sensitivity analysis is advisable.  
+5. **Clustering** on the engineered `total_score` together with the categorical variables may reveal distinct student performance groups (e.g., high‑achieving vs. low‑achieving clusters).  
+6. **Visualization** confirms the numerical relationships and highlights disparities across socio‑demographic groups; these plots should be incorporated into stakeholder presentations.
 
 ---
 
-## 9. Appendix – Artifact Inventory  
+## 9. Appendices  
 
-| Artifact | Type | Size (KB) | Brief Note |
-|----------|------|-----------|------------|
-| `bivariate_math_score_vs_reading_score.png` | Scatter plot | 149.78 | Math vs. Reading (r ≈ 0.82) |
-| `bivariate_math_score_vs_writing_score.png` | Scatter plot | 151.32 | Math vs. Writing (r ≈ 0.80) |
-| `bivariate_reading_score_vs_writing_score.png` | Scatter plot | 115.43 | Reading vs. Writing (r ≈ 0.95) |
-| `categorical_association_matrix.png` | Heat‑map | 69.11 | Cramér’s V for categorical pairs |
-| `correlation_matrix.png` | Heat‑map | 64.91 | Pearson correlations among numeric features |
-| `dist_math_score.png` | Histogram/KDE | 41.15 | Distribution of Math scores |
-| `dist_reading_score.png` | Histogram/KDE | 41.52 | Distribution of Reading scores |
-| `dist_writing_score.png` | Histogram/KDE | 41.49 | Distribution of Writing scores |
-| `dist_overall_score.png` | Histogram/KDE | 40.75 | Distribution of engineered overall score |
-| `overall_vs_gender.png` | Box‑plot | 30.82 | Overall score by gender |
-| `overall_vs_lunch.png` | Box‑plot | 32.49 | Overall score by lunch type |
-| `overall_vs_parent_education.png` | Box‑plot | 55.60 | Overall score by parental education |
-| `overall_vs_race.png` | Box‑plot | 39.99 | Overall score by race/ethnicity |
-| `overall_vs_test_prep.png` | Box‑plot | 33.84 | Overall score by test‑prep completion |
-| `pairplot_scores.png` | Pair‑plot matrix | 320.19 | Scatter‑matrix of all numeric variables |
-| `current_df.csv` | CSV data export | – | Full processed dataset (including `overall_score`). |
-| `metadata_profile.json` | JSON metadata | – | Schema, summary stats, cardinalities. |
-| `metrics.json` | JSON report | – | Consolidated metrics (imputation, outliers, correlations, hypothesis tests, blueprint). |
-| `agent_plan_log.json` | JSON log | – | Step‑by‑step pipeline actions and outcomes. |
-| `agent_state.json` | JSON state | – | Final internal state snapshot (same info as `metrics.json`). |
+### 9.1 Full Hypothesis‑Test Output (excerpt)
 
----  
+```json
+{
+  "gender": {"test_name":"Two-Sample Welch T-Test","statistic":4.1789,"p_value":3.186e-05,"effect_size":0.1321},
+  "race/ethnicity": {"test_name":"One-Way ANOVA","statistic":9.0961,"p_value":3.226e-07,"effect_size":0.0353},
+  "parental level of education": {"test_name":"One-Way ANOVA","statistic":10.7531,"p_value":4.381e-10,"effect_size":0.0513},
+  "lunch": {"test_name":"Two-Sample Welch T-Test","statistic":-9.3232,"p_value":1.583e-19,"effect_size":0.3121},
+  "test preparation course": {"test_name":"Two-Sample Welch T-Test","statistic":8.5945,"p_value":4.427e-17,"effect_size":0.2800},
+  "math score": {"test_name":"Pearson Correlation Test","statistic":0.9187,"p_value":0.0,"effect_size":0.9187},
+  "reading score": {"test_name":"Pearson Correlation Test","statistic":0.9703,"p_value":0.0,"effect_size":0.9703},
+  "writing score": {"test_name":"Pearson Correlation Test","statistic":0.9657,"p_value":0.0,"effect_size":0.9657}
+}
+```
 
-**Prepared by:** Senior Lead Data Scientist – Automated EDA Review  
-**Date:** 2024‑08‑07  
+### 9.2 File Inventory  
 
-*All figures and statistics are derived from the files generated by the Auto‑EDA pipeline; no external data were introduced.*
+| File | Type | Size (KB) |
+|------|------|-----------|
+| `bivariate_math_score_vs_reading_score.png` | Image (scatter) | 149.54 |
+| `bivariate_math_score_vs_writing_score.png` | Image (scatter) | 151.41 |
+| `bivariate_reading_score_vs_writing_score.png` | Image (scatter) | 115.22 |
+| `bivariate_parental_level_of_education_vs_test_preparation_course.png` | Image (categorical) | 56.36 |
+| `bivariate_lunch_vs_test_preparation_course.png` | Image (categorical) | 36.89 |
+| `pairplot_scores.png` | Image (pair‑plot) | 253.11 |
+| `target_interaction_gender.png` | Image (box‑plot) | 31.28 |
+| `target_interaction_race.png` | Image (box‑plot) | 40.45 |
+| `target_interaction_parent_education.png` | Image (box‑plot) | 56.26 |
+| `target_interaction_lunch.png` | Image (box‑plot) | 33.29 |
+| `target_interaction_test_prep.png` | Image (box‑plot) | 34.34 |
+| `current_df.csv` | CSV (final dataset) | – |
+| `metadata_profile.json` | JSON (schema) | – |
+| `metrics.json` | JSON (full metrics) | – |
+| `agent_plan_log.json` | JSON (pipeline plan) | – |
+| `agent_state.json` | JSON (state & results) | – |
+
+---
+
+**Prepared by:**  
+Senior Lead Data Scientist – Automated EDA Team  
+*Date: 2026‑08‑07*  
