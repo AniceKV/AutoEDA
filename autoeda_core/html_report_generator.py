@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import re
 import base64
@@ -814,13 +814,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
             {% if categorical_associations %}
             <div class="metric-card">
-                <div class="section-title">Categorical Associations (Cramér's V)</div>
+                <div class="section-title">Categorical Associations (Cram├⌐r's V)</div>
                 <table class="stats-table" style="font-size: 0.85rem;">
                     <thead>
                         <tr style="color: var(--text-muted); text-align: left;">
                             <th>Feature 1</th>
                             <th>Feature 2</th>
-                            <th>Cramér's V</th>
+                            <th>Cram├⌐r's V</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1259,533 +1259,509 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </body>
 </html>
 """
+class HTMLReportCompiler:
+    """
+    Classful HTML Report Compiler for synthesizing interactive Plotly reports,
+    Jinja2 HTML rendering, data quality alerts, and markdown summary embedding.
+    """
+    def compute_alerts(self, profile: Dict[str, Any], corr_matrix: Optional[pd.DataFrame] = None) -> List[Dict[str, Any]]:
+        """Detects data quality warnings: high missingness, high skewness, constant columns, high cardinality."""
+        alerts = []
+        columns = profile.get("columns", [])
+
+        for col in columns:
+            name = col.get("column", "Unknown")
+            missing_pct = col.get("missing_pct", 0)
+            cardinality = col.get("cardinality", 0)
+            unique_pct = col.get("unique_pct", 0)
+            skew = col.get("skew")
+            dtype = col.get("dtype", "")
+
+            if missing_pct >= 20.0:
+                alerts.append({
+                    "column": name,
+                    "type": "High Missingness",
+                    "level": "warning",
+                    "message": f"Contains {missing_pct}% missing values ({col.get('missing_count')} rows)."
+                })
+            elif missing_pct > 0.0:
+                alerts.append({
+                    "column": name,
+                    "type": "Missing Values",
+                    "level": "info",
+                    "message": f"{missing_pct}% values missing."
+                })
+
+            if skew is not None and abs(skew) >= 1.5:
+                alerts.append({
+                    "column": name,
+                    "type": "High Skewness",
+                    "level": "notice",
+                    "message": f"Highly skewed distribution with skewness coefficient = {skew:.2f}."
+                })
+
+            if cardinality == 1:
+                alerts.append({
+                    "column": name,
+                    "type": "Constant Column",
+                    "level": "warning",
+                    "message": "Contains only 1 unique value across all rows (zero variance)."
+                })
+
+            if (unique_pct >= 25.0 and cardinality > 50 and not dtype.startswith("float")) or is_non_distributional_column(name):
+                alerts.append({
+                    "column": name,
+                    "type": "High Cardinality",
+                    "level": "notice",
+                    "message": f"High cardinality feature ({cardinality} distinct values, {unique_pct}% unique). Excluded from ANOVA hypothesis testing."
+                })
+
+        if corr_matrix is not None and not corr_matrix.empty:
+            cols = corr_matrix.columns
+            for i in range(len(cols)):
+                for j in range(i + 1, len(cols)):
+                    val = corr_matrix.iloc[i, j]
+                    if pd.notnull(val) and abs(val) >= 0.85:
+                        alerts.append({
+                            "column": f"{cols[i]} & {cols[j]}",
+                            "type": "High Correlation",
+                            "level": "warning",
+                            "message": f"Strong collinearity detected with correlation r = {val:.2f}."
+                        })
+
+        return alerts
+
+    def build_variable_chart(self, df: Optional[pd.DataFrame], col_name: str, col_info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Generates an interactive Plotly figure spec dict for a single column's distribution."""
+        layout = dict(
+            margin=dict(l=30, r=20, t=30, b=30),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
+            xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)'),
+            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
+        )
+
+        try:
+            if df is None or col_name not in df.columns:
+                fig = go.Figure()
+                fig.add_annotation(
+                    text=f"No raw data loaded for '{col_name}'",
+                    xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                    font=dict(size=13, color="#94a3b8")
+                )
+                fig.update_layout(**layout)
+                return json.loads(pio.to_json(fig))
+
+            s = df[col_name].dropna()
+            if len(s) == 0:
+                fig = go.Figure()
+                fig.add_annotation(
+                    text=f"All values missing (NaN) for '{col_name}'",
+                    xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                    font=dict(size=13, color="#ef4444")
+                )
+                fig.update_layout(**layout)
+                return json.loads(pio.to_json(fig))
+
+            if is_non_distributional_column(col_name, df[col_name]):
+                fig = go.Figure()
+                fig.add_annotation(
+                    text=f"Univariate distribution skipped for identifier / spatial coordinate '{col_name}'",
+                    xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                    font=dict(size=12, color="#94a3b8")
+                )
+                fig.update_layout(**layout)
+                return json.loads(pio.to_json(fig))
+
+            is_bool = pd.api.types.is_bool_dtype(s)
+            is_num = pd.api.types.is_numeric_dtype(s) and not is_bool
+            n_unique = s.nunique()
+
+            is_categorical = (not is_num) or is_bool or (n_unique <= 10)
+
+            if is_categorical:
+                counts_series = s.astype(str).value_counts().head(15)
+                cat_df = pd.DataFrame({
+                    "Category": counts_series.index,
+                    "Count": counts_series.values
+                })
+
+                fig = px.bar(
+                    cat_df,
+                    x="Category",
+                    y="Count",
+                    color_discrete_sequence=['#a855f7'],
+                    text="Count"
+                )
+                fig.update_traces(
+                    textposition='outside',
+                    texttemplate='%{text}',
+                    marker_line_color='rgba(255,255,255,0.15)',
+                    marker_line_width=1
+                )
+                fig.update_layout(
+                    title=dict(text=f"Categorical Count Plot: {col_name}", font=dict(size=12, color='#e9d5ff')),
+                    xaxis_title="Category",
+                    yaxis_title="Count",
+                    **layout
+                )
+                return json.loads(pio.to_json(fig))
+            else:
+                s_clean = s.replace([np.inf, -np.inf], np.nan).dropna()
+                fig = px.histogram(
+                    s_clean,
+                    x=col_name,
+                    marginal="box",
+                    color_discrete_sequence=['#6366f1'],
+                    opacity=0.85
+                )
+                fig.update_layout(
+                    title=dict(text=f"Numeric Distribution: {col_name}", font=dict(size=12, color='#a5b4fc')),
+                    xaxis_title=col_name,
+                    yaxis_title="Frequency",
+                    **layout
+                )
+                return json.loads(pio.to_json(fig))
+        except Exception as e:
+            print(f"[html_report_generator] Error building chart for '{col_name}': {e}")
+            fig = go.Figure()
+            fig.add_annotation(
+                text=f"Chart Error: {str(e)}",
+                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
+                font=dict(size=12, color="#ef4444")
+            )
+            fig.update_layout(**layout)
+            return json.loads(pio.to_json(fig))
+
+    def render_markdown_to_html(self, md_text: str) -> str:
+        """Converts Markdown into styled HTML for embedding in HTML profile report."""
+        if not md_text or not md_text.strip():
+            return "<p style='color: var(--text-muted); font-style: italic;'>No executive summary report available.</p>"
+
+        import html
+        lines = md_text.splitlines()
+        html_lines = []
+        in_list = False
+        in_table = False
+        in_code_block = False
+
+        for line in lines:
+            stripped = line.strip()
+
+            if stripped.startswith("```"):
+                if in_code_block:
+                    html_lines.append("</code></pre>")
+                    in_code_block = False
+                else:
+                    html_lines.append("<pre class='summary-code'><code>")
+                    in_code_block = True
+                continue
+
+            if in_code_block:
+                html_lines.append(html.escape(line))
+                continue
+
+            if in_list and not (stripped.startswith("- ") or stripped.startswith("* ") or re.match(r'^\d+\.\s', stripped)):
+                html_lines.append("</ul>")
+                in_list = False
+
+            if in_table and not (stripped.startswith("|") and stripped.endswith("|")):
+                html_lines.append("</tbody></table></div>")
+                in_table = False
+
+            if not stripped:
+                continue
+
+            if stripped.startswith("|") and stripped.endswith("|"):
+                cells = [c.strip() for c in stripped.split("|")[1:-1]]
+                if all(set(c).issubset({'-', ':', ' '}) for c in cells):
+                    continue
+
+                if not in_table:
+                    html_lines.append("<div class='table-responsive'><table class='summary-table'><thead><tr>")
+                    for cell in cells:
+                        html_lines.append(f"<th>{html.escape(cell)}</th>")
+                    html_lines.append("</tr></thead><tbody>")
+                    in_table = True
+                else:
+                    html_lines.append("<tr>")
+                    for cell in cells:
+                        html_lines.append(f"<td>{html.escape(cell)}</td>")
+                    html_lines.append("</tr>")
+                continue
+
+            if stripped.startswith("# "):
+                html_lines.append(f"<h1 class='summary-h1'>{html.escape(stripped[2:])}</h1>")
+            elif stripped.startswith("## "):
+                html_lines.append(f"<h2 class='summary-h2'>{html.escape(stripped[3:])}</h2>")
+            elif stripped.startswith("### "):
+                html_lines.append(f"<h3 class='summary-h3'>{html.escape(stripped[4:])}</h3>")
+            elif stripped.startswith("#### "):
+                html_lines.append(f"<h4 class='summary-h4'>{html.escape(stripped[5:])}</h4>")
+            elif stripped.startswith("- ") or stripped.startswith("* "):
+                if not in_list:
+                    html_lines.append("<ul class='summary-list'>")
+                    in_list = True
+                html_lines.append(f"<li>{html.escape(stripped[2:])}</li>")
+            elif re.match(r'^\d+\.\s', stripped):
+                if not in_list:
+                    html_lines.append("<ol class='summary-list'>")
+                    in_list = True
+                txt = re.sub(r'^\d+\.\s', '', stripped)
+                html_lines.append(f"<li>{html.escape(txt)}</li>")
+            else:
+                html_lines.append(f"<p>{html.escape(stripped)}</p>")
+
+        if in_list:
+            html_lines.append("</ul>")
+        if in_table:
+            html_lines.append("</tbody></table></div>")
+        if in_code_block:
+            html_lines.append("</code></pre>")
+
+        res = "\n".join(html_lines)
+        res = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', res)
+        res = re.sub(r'\*(.*?)\*', r'<em>\1</em>', res)
+        res = re.sub(r'`(.*?)`', r'<code class="summary-inline-code">\1</code>', res)
+        return res
+
+    def generate_html_report(self, workspace_dir: str = "./sandbox_run", output_path: Optional[str] = None, data_path: Optional[str] = None) -> str:
+        """Main entry point to read workspace metadata and generate a complete self-contained HTML profile report."""
+        summary_path = os.path.join(workspace_dir, "summary_report.md")
+        executive_summary_md = ""
+        if os.path.exists(summary_path):
+            try:
+                with open(summary_path, "r", encoding="utf-8") as f:
+                    executive_summary_md = f.read()
+            except Exception as e:
+                print(f"[html_report_generator] Warning loading summary_report.md: {e}")
+
+        executive_summary_html = self.render_markdown_to_html(executive_summary_md)
+
+        profile_path = os.path.join(workspace_dir, "metadata_profile.json")
+        if os.path.exists(profile_path):
+            with open(profile_path, "r", encoding="utf-8") as f:
+                profile = json.load(f)
+        else:
+            profile = {}
+
+        metrics_path = os.path.join(workspace_dir, "metrics.json")
+        if os.path.exists(metrics_path):
+            with open(metrics_path, "r", encoding="utf-8") as f:
+                metrics = json.load(f)
+        else:
+            metrics = {}
+
+        plan_log_path = os.path.join(workspace_dir, "agent_plan_log.json")
+        if os.path.exists(plan_log_path):
+            with open(plan_log_path, "r", encoding="utf-8") as f:
+                agent_plan_log = json.load(f)
+        else:
+            agent_plan_log = []
+
+        agent_trajectory = []
+        for entry in agent_plan_log:
+            loop_num = entry.get("loop", 1)
+            plan_items = entry.get("plan", [])
+            llm_out = entry.get("llm_output", "")
+            step_res = entry.get("step_results", [])
+
+            for idx, step in enumerate(plan_items):
+                res_str = step_res[idx] if idx < len(step_res) else "Executed"
+                agent_trajectory.append({
+                    "loop": loop_num,
+                    "tool": step.get("tool", "tool_call"),
+                    "args_json": json.dumps(step.get("args", {})),
+                    "rationale": llm_out[:300] if idx == 0 else None,
+                    "result": res_str,
+                    "status": "Success" if "Error" not in str(res_str) else "Warning"
+                })
+
+        df = None
+        if data_path and os.path.exists(data_path):
+            try:
+                df = pd.read_csv(data_path)
+            except Exception:
+                pass
+
+        if df is None:
+            curr_df_path = os.path.join(workspace_dir, "current_df.csv")
+            if os.path.exists(curr_df_path):
+                try:
+                    df = pd.read_csv(curr_df_path)
+                except Exception:
+                    pass
+
+        if df is None and os.path.exists(workspace_dir):
+            data_files = [f for f in os.listdir(workspace_dir) if f.endswith(".csv")]
+            if data_files:
+                try:
+                    df = pd.read_csv(os.path.join(workspace_dir, data_files[0]))
+                except Exception:
+                    pass
+
+        dimensions = profile.get("dimensions") or (metrics.get("dataset_overview") or {}).get("raw_shape") or (metrics.get("dataset_overview") or {}).get("shape", {"rows": 0, "columns": 0})
+        columns_profile = profile.get("columns", [])
+        dataset_name = profile.get("dataset_name") or os.path.basename(os.path.abspath(workspace_dir))
+        target_column = (metrics.get("dataset_overview") or {}).get("target_column")
+
+        total_missing = sum(col.get("missing_count", 0) for col in columns_profile)
+        total_cells = dimensions.get("rows", 1) * dimensions.get("columns", 1)
+        missing_pct = round((total_missing / total_cells) * 100, 2) if total_cells > 0 else 0.0
+
+        dtype_counts = pd.Series([col.get("dtype", "unknown") for col in columns_profile]).value_counts()
+        fig_dtype = px.pie(
+            names=dtype_counts.index,
+            values=dtype_counts.values,
+            hole=0.4,
+            color_discrete_sequence=['#6366f1', '#a855f7', '#06b6d4', '#10b981', '#f59e0b']
+        )
+        fig_dtype.update_layout(
+            margin=dict(l=10, r=10, t=10, b=10),
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
+        )
+        dtype_chart_json = pio.to_json(fig_dtype)
+
+        missing_series = pd.Series({col.get("column"): col.get("missing_pct", 0) for col in columns_profile if col.get("missing_pct", 0) > 0})
+        if not missing_series.empty:
+            fig_miss = px.bar(
+                x=missing_series.index,
+                y=missing_series.values,
+                color_discrete_sequence=['#ef4444'],
+                labels={'x': 'Feature', 'y': 'Missing %'}
+            )
+            fig_miss.update_layout(
+                margin=dict(l=10, r=10, t=10, b=10),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
+            )
+            missing_chart_json = pio.to_json(fig_miss)
+        else:
+            missing_chart_json = "{}"
+
+        corr_matrix = None
+        corr_chart_json = "{}"
+
+        if df is not None and df.shape[1] >= 2:
+            valid_feature_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
+            df_corr = df[valid_feature_cols].copy() if valid_feature_cols else df.copy()
+
+            for c in df_corr.columns:
+                if not pd.api.types.is_numeric_dtype(df_corr[c]) or pd.api.types.is_bool_dtype(df_corr[c]):
+                    df_corr[c] = pd.factorize(df_corr[c])[0]
+
+            valid_cols = [c for c in df_corr.columns if df_corr[c].nunique() > 1]
+            if len(valid_cols) >= 2:
+                corr_df = df_corr[valid_cols].corr().fillna(0).round(2)
+                corr_matrix = corr_df
+
+                cols = corr_df.columns.tolist()
+                z_vals = corr_df.values.tolist()
+                text_vals = [[f"{val:.2f}" for val in row] for row in z_vals]
+
+                fig_corr = go.Figure(data=go.Heatmap(
+                    z=z_vals,
+                    x=cols,
+                    y=cols,
+                    text=text_vals,
+                    texttemplate="%{text}",
+                    textfont={"size": 11, "color": "#ffffff"},
+                    colorscale="Viridis",
+                    colorbar=dict(title="Correlation"),
+                    zmin=-1,
+                    zmax=1
+                ))
+
+                chart_height = max(500, len(cols) * 45)
+                fig_corr.update_layout(
+                    height=chart_height,
+                    margin=dict(l=90, r=40, t=40, b=90),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
+                    xaxis=dict(tickangle=-45, showgrid=False),
+                    yaxis=dict(autorange='reversed', showgrid=False)
+                )
+                corr_chart_json = pio.to_json(fig_corr)
+
+        alerts = self.compute_alerts(profile, corr_matrix)
+
+        var_charts_json = {}
+        for idx, col in enumerate(columns_profile, start=1):
+            col_name = col.get("column")
+            chart_spec = self.build_variable_chart(df, col_name, col_info=col)
+            if chart_spec:
+                var_charts_json[f"var-chart-{idx}"] = chart_spec
+
+        visual_artifacts = []
+        for entry in sorted(os.listdir(workspace_dir)):
+            if entry.lower().endswith((".png", ".jpg", ".jpeg", ".svg")):
+                img_path = os.path.join(workspace_dir, entry)
+                try:
+                    with open(img_path, "rb") as f:
+                        b64_str = base64.b64encode(f.read()).decode("utf-8")
+                    visual_artifacts.append({"name": entry, "b64": b64_str})
+                except Exception:
+                    pass
+
+        tmpl = Template(HTML_TEMPLATE)
+        raw_cat = metrics.get("categorical_associations", [])
+        if isinstance(raw_cat, dict):
+            cat_assoc_list = raw_cat.get("top_correlations", [])
+        elif isinstance(raw_cat, list):
+            cat_assoc_list = raw_cat
+        else:
+            cat_assoc_list = []
+
+        html_content = tmpl.render(
+            dataset_name=dataset_name,
+            generation_time=pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"),
+            dimensions=dimensions,
+            executive_summary_html=executive_summary_html,
+            target_column=target_column,
+            total_missing=total_missing,
+            missing_pct=missing_pct,
+            alerts=alerts,
+            columns_profile=columns_profile,
+            dtype_chart_json=dtype_chart_json,
+            missing_chart_json=missing_chart_json,
+            corr_chart_json=corr_chart_json,
+            var_charts_json=json.dumps(var_charts_json),
+            agent_trajectory=agent_trajectory,
+            visual_artifacts=visual_artifacts,
+            categorical_associations=cat_assoc_list,
+            engineered_features=metrics.get("engineered_features", []),
+            predictive_blueprint=metrics.get("predictive_modeling_blueprint", {}),
+            metrics_json=json.dumps(metrics, indent=2)
+        )
+
+        if not output_path:
+            output_path = os.path.join(workspace_dir, "eda_report.html")
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+        print(f"[html_report_generator] Interactive report written to: {os.path.abspath(output_path)}")
+        return html_content
+
+
+default_html_compiler = HTMLReportCompiler()
 
 
 def compute_alerts(profile: Dict[str, Any], corr_matrix: Optional[pd.DataFrame] = None) -> List[Dict[str, Any]]:
-    """
-    Detects data quality warnings: high missingness, high skewness, constant columns, high cardinality, etc.
-    """
-    alerts = []
-    columns = profile.get("columns", [])
-    
-    for col in columns:
-        name = col.get("column", "Unknown")
-        missing_pct = col.get("missing_pct", 0)
-        cardinality = col.get("cardinality", 0)
-        unique_pct = col.get("unique_pct", 0)
-        skew = col.get("skew")
-        dtype = col.get("dtype", "")
-
-        # 1. Missingness Alert
-        if missing_pct >= 20.0:
-            alerts.append({
-                "column": name,
-                "type": "High Missingness",
-                "level": "warning",
-                "message": f"Contains {missing_pct}% missing values ({col.get('missing_count')} rows)."
-            })
-        elif missing_pct > 0.0:
-            alerts.append({
-                "column": name,
-                "type": "Missing Values",
-                "level": "info",
-                "message": f"{missing_pct}% values missing."
-            })
-
-        # 2. Skewness Alert
-        if skew is not None and abs(skew) >= 1.5:
-            alerts.append({
-                "column": name,
-                "type": "High Skewness",
-                "level": "notice",
-                "message": f"Highly skewed distribution with skewness coefficient = {skew:.2f}."
-            })
-
-        # 3. Constant Column Alert
-        if cardinality == 1:
-            alerts.append({
-                "column": name,
-                "type": "Constant Column",
-                "level": "warning",
-                "message": "Contains only 1 unique value across all rows (zero variance)."
-            })
-
-        # 4. High Cardinality Alert
-        if (unique_pct >= 25.0 and cardinality > 50 and not dtype.startswith("float")) or is_non_distributional_column(name):
-            alerts.append({
-                "column": name,
-                "type": "High Cardinality",
-                "level": "notice",
-                "message": f"High cardinality feature ({cardinality} distinct values, {unique_pct}% unique). Excluded from ANOVA hypothesis testing."
-            })
-
-    # 5. Correlation Alerts
-    if corr_matrix is not None and not corr_matrix.empty:
-        cols = corr_matrix.columns
-        for i in range(len(cols)):
-            for j in range(i + 1, len(cols)):
-                val = corr_matrix.iloc[i, j]
-                if pd.notnull(val) and abs(val) >= 0.85:
-                    alerts.append({
-                        "column": f"{cols[i]} & {cols[j]}",
-                        "type": "High Correlation",
-                        "level": "warning",
-                        "message": f"Strong collinearity detected with correlation r = {val:.2f}."
-                    })
-
-    return alerts
-
+    return default_html_compiler.compute_alerts(profile, corr_matrix)
 
 def build_variable_chart(df: Optional[pd.DataFrame], col_name: str, col_info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """
-    Generates an interactive Plotly figure spec dict for a single column's distribution.
-    - Categorical / Discrete variables -> Count Plot (Bar chart with frequency counts & text labels).
-    - Continuous Numeric variables -> Numeric Distribution Plot (Histogram + marginal Box Plot).
-    - Fallback for missing/empty columns -> Clear annotated chart.
-    """
-    layout = dict(
-        margin=dict(l=30, r=20, t=30, b=30),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
-        xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)'),
-        yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
-    )
-
-    try:
-        if df is None or col_name not in df.columns:
-            fig = go.Figure()
-            fig.add_annotation(
-                text=f"No raw data loaded for '{col_name}'",
-                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
-                font=dict(size=13, color="#94a3b8")
-            )
-            fig.update_layout(**layout)
-            return json.loads(pio.to_json(fig))
-
-        s = df[col_name].dropna()
-        if len(s) == 0:
-            fig = go.Figure()
-            fig.add_annotation(
-                text=f"All values missing (NaN) for '{col_name}'",
-                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
-                font=dict(size=13, color="#ef4444")
-            )
-            fig.update_layout(**layout)
-            return json.loads(pio.to_json(fig))
-
-        if is_non_distributional_column(col_name, df[col_name]):
-            fig = go.Figure()
-            fig.add_annotation(
-                text=f"Univariate distribution skipped for identifier / spatial coordinate '{col_name}'",
-                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
-                font=dict(size=12, color="#94a3b8")
-            )
-            fig.update_layout(**layout)
-            return json.loads(pio.to_json(fig))
-
-        is_bool = pd.api.types.is_bool_dtype(s)
-        is_num = pd.api.types.is_numeric_dtype(s) and not is_bool
-        n_unique = s.nunique()
-
-        # Categorical, boolean, or low-cardinality discrete numeric features (<= 10 unique values) get Count Plot
-        is_categorical = (not is_num) or is_bool or (n_unique <= 10)
-
-        if is_categorical:
-            counts_series = s.astype(str).value_counts().head(15)
-            cat_df = pd.DataFrame({
-                "Category": counts_series.index,
-                "Count": counts_series.values
-            })
-            
-            fig = px.bar(
-                cat_df,
-                x="Category",
-                y="Count",
-                color_discrete_sequence=['#a855f7'],
-                text="Count"
-            )
-            fig.update_traces(
-                textposition='outside',
-                texttemplate='%{text}',
-                marker_line_color='rgba(255,255,255,0.15)',
-                marker_line_width=1
-            )
-            fig.update_layout(
-                title=dict(text=f"Categorical Count Plot: {col_name}", font=dict(size=12, color='#e9d5ff')),
-                xaxis_title="Category",
-                yaxis_title="Count",
-                **layout
-            )
-            return json.loads(pio.to_json(fig))
-        else:
-            # Continuous Numeric Distribution Plot (Histogram + Box Plot)
-            s_clean = s.replace([np.inf, -np.inf], np.nan).dropna()
-            fig = px.histogram(
-                s_clean, 
-                x=col_name, 
-                marginal="box",
-                color_discrete_sequence=['#6366f1'],
-                opacity=0.85
-            )
-            fig.update_layout(
-                title=dict(text=f"Numeric Distribution: {col_name}", font=dict(size=12, color='#a5b4fc')),
-                xaxis_title=col_name,
-                yaxis_title="Frequency",
-                **layout
-            )
-            return json.loads(pio.to_json(fig))
-    except Exception as e:
-        print(f"[html_report_generator] Error building chart for '{col_name}': {e}")
-        fig = go.Figure()
-        fig.add_annotation(
-            text=f"Chart Error: {str(e)}",
-            xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
-            font=dict(size=12, color="#ef4444")
-        )
-        fig.update_layout(**layout)
-        return json.loads(pio.to_json(fig))
-
+    return default_html_compiler.build_variable_chart(df, col_name, col_info=col_info)
 
 def render_markdown_to_html(md_text: str) -> str:
-    """Converts Markdown into styled HTML for embedding in HTML profile report."""
-    if not md_text or not md_text.strip():
-        return "<p style='color: var(--text-muted); font-style: italic;'>No executive summary report available.</p>"
-
-    import html
-    lines = md_text.splitlines()
-    html_lines = []
-    in_list = False
-    in_table = False
-    in_code_block = False
-
-    for line in lines:
-        stripped = line.strip()
-
-        # Code block handling
-        if stripped.startswith("```"):
-            if in_code_block:
-                html_lines.append("</code></pre>")
-                in_code_block = False
-            else:
-                html_lines.append("<pre class='summary-code'><code>")
-                in_code_block = True
-            continue
-
-        if in_code_block:
-            html_lines.append(html.escape(line))
-            continue
-
-        # Close list if line is not a bullet
-        if in_list and not (stripped.startswith("- ") or stripped.startswith("* ") or re.match(r'^\d+\.\s', stripped)):
-            html_lines.append("</ul>")
-            in_list = False
-
-        # Close table if line is not a table row
-        if in_table and not (stripped.startswith("|") and stripped.endswith("|")):
-            html_lines.append("</tbody></table></div>")
-            in_table = False
-
-        if not stripped:
-            continue
-
-        # Table rows
-        if stripped.startswith("|") and stripped.endswith("|"):
-            cells = [c.strip() for c in stripped.split("|")[1:-1]]
-            # Check if separator line (|---|---|)
-            if all(set(c).issubset({'-', ':', ' '}) for c in cells):
-                continue
-            
-            if not in_table:
-                html_lines.append("<div class='table-responsive'><table class='summary-table'><thead><tr>")
-                for cell in cells:
-                    html_lines.append(f"<th>{html.escape(cell)}</th>")
-                html_lines.append("</tr></thead><tbody>")
-                in_table = True
-            else:
-                html_lines.append("<tr>")
-                for cell in cells:
-                    html_lines.append(f"<td>{html.escape(cell)}</td>")
-                html_lines.append("</tr>")
-            continue
-
-        # Headings
-        if stripped.startswith("# "):
-            html_lines.append(f"<h1 class='summary-h1'>{html.escape(stripped[2:])}</h1>")
-        elif stripped.startswith("## "):
-            html_lines.append(f"<h2 class='summary-h2'>{html.escape(stripped[3:])}</h2>")
-        elif stripped.startswith("### "):
-            html_lines.append(f"<h3 class='summary-h3'>{html.escape(stripped[4:])}</h3>")
-        elif stripped.startswith("#### "):
-            html_lines.append(f"<h4 class='summary-h4'>{html.escape(stripped[5:])}</h4>")
-        elif stripped.startswith("- ") or stripped.startswith("* "):
-            if not in_list:
-                html_lines.append("<ul class='summary-list'>")
-                in_list = True
-            html_lines.append(f"<li>{html.escape(stripped[2:])}</li>")
-        elif re.match(r'^\d+\.\s', stripped):
-            if not in_list:
-                html_lines.append("<ol class='summary-list'>")
-                in_list = True
-            txt = re.sub(r'^\d+\.\s', '', stripped)
-            html_lines.append(f"<li>{html.escape(txt)}</li>")
-        else:
-            html_lines.append(f"<p>{html.escape(stripped)}</p>")
-
-    if in_list:
-        html_lines.append("</ul>")
-    if in_table:
-        html_lines.append("</tbody></table></div>")
-    if in_code_block:
-        html_lines.append("</code></pre>")
-
-    res = "\n".join(html_lines)
-    # Format bold, italic, code
-    res = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', res)
-    res = re.sub(r'\*(.*?)\*', r'<em>\1</em>', res)
-    res = re.sub(r'`(.*?)`', r'<code class="summary-inline-code">\1</code>', res)
-    return res
-
+    return default_html_compiler.render_markdown_to_html(md_text)
 
 def generate_html_report(workspace_dir: str = "./sandbox_run", output_path: Optional[str] = None, data_path: Optional[str] = None) -> str:
-    """
-    Main entry point to read workspace metadata and generate a complete self-contained HTML profile report.
-    """
-    # 0. Load Executive Summary Report
-    summary_path = os.path.join(workspace_dir, "summary_report.md")
-    executive_summary_md = ""
-    if os.path.exists(summary_path):
-        try:
-            with open(summary_path, "r", encoding="utf-8") as f:
-                executive_summary_md = f.read()
-        except Exception as e:
-            print(f"[html_report_generator] Warning loading summary_report.md: {e}")
-
-    executive_summary_html = render_markdown_to_html(executive_summary_md)
-
-    # 1. Load Profile metadata
-    profile_path = os.path.join(workspace_dir, "metadata_profile.json")
-    if os.path.exists(profile_path):
-        with open(profile_path, "r", encoding="utf-8") as f:
-            profile = json.load(f)
-    else:
-        profile = {}
-
-    # 2. Load Canonical Metrics
-    metrics_path = os.path.join(workspace_dir, "metrics.json")
-    if os.path.exists(metrics_path):
-        with open(metrics_path, "r", encoding="utf-8") as f:
-            metrics = json.load(f)
-    else:
-        metrics = {}
-
-    # 3. Load Agent Execution Trajectory
-    plan_log_path = os.path.join(workspace_dir, "agent_plan_log.json")
-    if os.path.exists(plan_log_path):
-        with open(plan_log_path, "r", encoding="utf-8") as f:
-            agent_plan_log = json.load(f)
-    else:
-        agent_plan_log = []
-
-    # Parse agent trajectory
-    agent_trajectory = []
-    for entry in agent_plan_log:
-        loop_num = entry.get("loop", 1)
-        plan_items = entry.get("plan", [])
-        llm_out = entry.get("llm_output", "")
-        step_res = entry.get("step_results", [])
-        
-        for idx, step in enumerate(plan_items):
-            res_str = step_res[idx] if idx < len(step_res) else "Executed"
-            agent_trajectory.append({
-                "loop": loop_num,
-                "tool": step.get("tool", "tool_call"),
-                "args_json": json.dumps(step.get("args", {})),
-                "rationale": llm_out[:300] if idx == 0 else None,
-                "result": res_str,
-                "status": "Success" if "Error" not in str(res_str) else "Warning"
-            })
-
-    # 4. Load Dataset DataFrame if available for charts & correlations
-    df = None
-    if data_path and os.path.exists(data_path):
-        try:
-            df = pd.read_csv(data_path)
-        except Exception:
-            pass
-
-    if df is None:
-        curr_df_path = os.path.join(workspace_dir, "current_df.csv")
-        if os.path.exists(curr_df_path):
-            try:
-                df = pd.read_csv(curr_df_path)
-            except Exception:
-                pass
-
-    if df is None and os.path.exists(workspace_dir):
-        data_files = [f for f in os.listdir(workspace_dir) if f.endswith(".csv")]
-        if data_files:
-            try:
-                df = pd.read_csv(os.path.join(workspace_dir, data_files[0]))
-            except Exception:
-                pass
-
-    # Basic stats
-    dimensions = profile.get("dimensions") or (metrics.get("dataset_overview") or {}).get("raw_shape") or (metrics.get("dataset_overview") or {}).get("shape", {"rows": 0, "columns": 0})
-    columns_profile = profile.get("columns", [])
-    dataset_name = profile.get("dataset_name") or os.path.basename(os.path.abspath(workspace_dir))
-    target_column = (metrics.get("dataset_overview") or {}).get("target_column")
-
-    # Missing counts
-    total_missing = sum(col.get("missing_count", 0) for col in columns_profile)
-    total_cells = dimensions.get("rows", 1) * dimensions.get("columns", 1)
-    missing_pct = round((total_missing / total_cells) * 100, 2) if total_cells > 0 else 0.0
-
-    # Dtypes breakdown chart
-    dtype_counts = pd.Series([col.get("dtype", "unknown") for col in columns_profile]).value_counts()
-    fig_dtype = px.pie(
-        names=dtype_counts.index, 
-        values=dtype_counts.values,
-        hole=0.4,
-        color_discrete_sequence=['#6366f1', '#a855f7', '#06b6d4', '#10b981', '#f59e0b']
-    )
-    fig_dtype.update_layout(
-        margin=dict(l=10, r=10, t=10, b=10),
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
-    )
-    dtype_chart_json = pio.to_json(fig_dtype)
-
-    # Missing chart
-    missing_series = pd.Series({col.get("column"): col.get("missing_pct", 0) for col in columns_profile if col.get("missing_pct", 0) > 0})
-    if not missing_series.empty:
-        fig_miss = px.bar(
-            x=missing_series.index, 
-            y=missing_series.values,
-            color_discrete_sequence=['#ef4444'],
-            labels={'x': 'Feature', 'y': 'Missing %'}
-        )
-        fig_miss.update_layout(
-            margin=dict(l=10, r=10, t=10, b=10),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
-        )
-        missing_chart_json = pio.to_json(fig_miss)
-    else:
-        missing_chart_json = "{}"
-
-    # 5. Correlation Matrix Calculation (Robust for all numeric & non-identifier features)
-    corr_matrix = None
-    corr_chart_json = "{}"
-    
-    if df is not None and df.shape[1] >= 2:
-        # Exclude non-distributional identifier/name/timestamp columns
-        valid_feature_cols = [c for c in df.columns if not is_non_distributional_column(c, df[c])]
-        df_corr = df[valid_feature_cols].copy() if valid_feature_cols else df.copy()
-        
-        # Convert remaining valid object/categorical features via factorize
-        for c in df_corr.columns:
-            if not pd.api.types.is_numeric_dtype(df_corr[c]) or pd.api.types.is_bool_dtype(df_corr[c]):
-                df_corr[c] = pd.factorize(df_corr[c])[0]
-        
-        valid_cols = [c for c in df_corr.columns if df_corr[c].nunique() > 1]
-        if len(valid_cols) >= 2:
-            corr_df = df_corr[valid_cols].corr().fillna(0).round(2)
-            corr_matrix = corr_df
-            
-            cols = corr_df.columns.tolist()
-            z_vals = corr_df.values.tolist()
-            text_vals = [[f"{val:.2f}" for val in row] for row in z_vals]
-            
-            fig_corr = go.Figure(data=go.Heatmap(
-                z=z_vals,
-                x=cols,
-                y=cols,
-                text=text_vals,
-                texttemplate="%{text}",
-                textfont={"size": 11, "color": "#ffffff"},
-                colorscale="Viridis",
-                colorbar=dict(title="Correlation"),
-                zmin=-1,
-                zmax=1
-            ))
-            
-            chart_height = max(500, len(cols) * 45)
-            fig_corr.update_layout(
-                height=chart_height,
-                margin=dict(l=90, r=40, t=40, b=90),
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
-                xaxis=dict(tickangle=-45, showgrid=False),
-                yaxis=dict(autorange='reversed', showgrid=False)
-            )
-            corr_chart_json = pio.to_json(fig_corr)
-
-    # Compute Alerts
-    alerts = compute_alerts(profile, corr_matrix)
-
-    # Build per-variable charts (guaranteed for every column in columns_profile)
-    var_charts_json = {}
-    for idx, col in enumerate(columns_profile, start=1):
-        col_name = col.get("column")
-        chart_spec = build_variable_chart(df, col_name, col_info=col)
-        if chart_spec:
-            var_charts_json[f"var-chart-{idx}"] = chart_spec
-
-    # Image Artifacts (b64 encoded)
-    visual_artifacts = []
-    for entry in sorted(os.listdir(workspace_dir)):
-        if entry.lower().endswith((".png", ".jpg", ".jpeg", ".svg")):
-            img_path = os.path.join(workspace_dir, entry)
-            try:
-                with open(img_path, "rb") as f:
-                    b64_str = base64.b64encode(f.read()).decode("utf-8")
-                visual_artifacts.append({"name": entry, "b64": b64_str})
-            except Exception:
-                pass
-
-    # Render Template
-    tmpl = Template(HTML_TEMPLATE)
-    raw_cat = metrics.get("categorical_associations", [])
-    if isinstance(raw_cat, dict):
-        cat_assoc_list = raw_cat.get("top_correlations", [])
-    elif isinstance(raw_cat, list):
-        cat_assoc_list = raw_cat
-    else:
-        cat_assoc_list = []
-
-    html_content = tmpl.render(
-        dataset_name=dataset_name,
-        generation_time=pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"),
-        dimensions=dimensions,
-        executive_summary_html=executive_summary_html,
-        target_column=target_column,
-        total_missing=total_missing,
-        missing_pct=missing_pct,
-        alerts=alerts,
-        columns_profile=columns_profile,
-        dtype_chart_json=dtype_chart_json,
-        missing_chart_json=missing_chart_json,
-        corr_chart_json=corr_chart_json,
-        var_charts_json=json.dumps(var_charts_json),
-        agent_trajectory=agent_trajectory,
-        visual_artifacts=visual_artifacts,
-        categorical_associations=cat_assoc_list,
-        engineered_features=metrics.get("engineered_features", []),
-        predictive_blueprint=metrics.get("predictive_modeling_blueprint", {}),
-        metrics_json=json.dumps(metrics, indent=2)
-    )
-
-    if not output_path:
-        output_path = os.path.join(workspace_dir, "eda_report.html")
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(html_content)
-
-    print(f"[html_report_generator] Interactive report written to: {os.path.abspath(output_path)}")
-    return html_content
+    return default_html_compiler.generate_html_report(workspace_dir=workspace_dir, output_path=output_path, data_path=data_path)
 
 
 if __name__ == "__main__":

@@ -509,9 +509,19 @@
 
       // 4. Render Bivariate Relationships
       const bivContainer = document.getElementById("plotly-gallery-biv");
-      if (bivContainer && metricsData.bivariate_data && metricsData.bivariate_data.length) {
+      const bivUnionData = (metricsData.bivariate_union && metricsData.bivariate_union.union_pairs) ? metricsData.bivariate_union.union_pairs : (metricsData.bivariate_data || []);
+      if (bivContainer && bivUnionData && bivUnionData.length) {
         bivContainer.innerHTML = "";
-        metricsData.bivariate_data.forEach((biv, idx) => {
+        bivUnionData.forEach((rawBiv, idx) => {
+          const biv = {
+            ...rawBiv,
+            x: rawBiv.x || rawBiv.feature_1,
+            y: rawBiv.y || rawBiv.feature_2,
+            x_is_numeric: rawBiv.x_is_numeric !== undefined ? rawBiv.x_is_numeric : rawBiv.feature_1_is_numeric,
+            y_is_numeric: rawBiv.y_is_numeric !== undefined ? rawBiv.y_is_numeric : rawBiv.feature_2_is_numeric,
+            x_is_discrete: rawBiv.x_is_discrete !== undefined ? rawBiv.x_is_discrete : rawBiv.feature_1_is_discrete,
+            y_is_discrete: rawBiv.y_is_discrete !== undefined ? rawBiv.y_is_discrete : rawBiv.feature_2_is_discrete,
+          };
           const card = document.createElement("div");
           card.className = "card";
           card.style.padding = "16px";
