@@ -1358,7 +1358,7 @@ class HTMLReportCompiler:
                     font=dict(size=13, color="#94a3b8")
                 )
                 fig.update_layout(**layout_base)
-                return json.loads(pio.to_json(fig))
+                return json.loads(pio.to_json(fig.update_layout(template=None)))
 
             s = df[col_name].dropna()
             if len(s) == 0:
@@ -1369,7 +1369,7 @@ class HTMLReportCompiler:
                     font=dict(size=13, color="#ef4444")
                 )
                 fig.update_layout(**layout_base)
-                return json.loads(pio.to_json(fig))
+                return json.loads(pio.to_json(fig.update_layout(template=None)))
 
             if is_non_distributional_column(col_name, df[col_name]):
                 fig = go.Figure()
@@ -1379,7 +1379,7 @@ class HTMLReportCompiler:
                     font=dict(size=12, color="#94a3b8")
                 )
                 fig.update_layout(**layout_base)
-                return json.loads(pio.to_json(fig))
+                return json.loads(pio.to_json(fig.update_layout(template=None)))
 
             is_bool = pd.api.types.is_bool_dtype(s)
             is_num = pd.api.types.is_numeric_dtype(s) and not is_bool
@@ -1415,7 +1415,7 @@ class HTMLReportCompiler:
                 )
                 fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
                 fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
-                return json.loads(pio.to_json(fig))
+                return json.loads(pio.to_json(fig.update_layout(template=None)))
             else:
                 s_clean = s.replace([np.inf, -np.inf], np.nan).dropna()
                 df_clean = s_clean.to_frame(name=col_name)
@@ -1434,7 +1434,7 @@ class HTMLReportCompiler:
                 )
                 fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
                 fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
-                return json.loads(pio.to_json(fig))
+                return json.loads(pio.to_json(fig.update_layout(template=None)))
         except Exception as e:
             print(f"[html_report_generator] Error building chart for '{col_name}': {e}")
             fig = go.Figure()
@@ -1444,7 +1444,7 @@ class HTMLReportCompiler:
                 font=dict(size=12, color="#ef4444")
             )
             fig.update_layout(**layout_base)
-            return json.loads(pio.to_json(fig))
+            return json.loads(pio.to_json(fig.update_layout(template=None)))
 
     def render_markdown_to_html(self, md_text: str) -> str:
         """Converts Markdown into styled HTML for embedding in HTML profile report."""
@@ -1634,7 +1634,7 @@ class HTMLReportCompiler:
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
         )
-        dtype_chart_json = pio.to_json(fig_dtype)
+        dtype_chart_json = pio.to_json(fig_dtype.update_layout(template=None))
 
         missing_series = pd.Series({col.get("column"): col.get("missing_pct", 0) for col in columns_profile if col.get("missing_pct", 0) > 0})
         if not missing_series.empty:
@@ -1650,7 +1650,7 @@ class HTMLReportCompiler:
                 plot_bgcolor='rgba(0,0,0,0)',
                 font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
             )
-            missing_chart_json = pio.to_json(fig_miss)
+            missing_chart_json = pio.to_json(fig_miss.update_layout(template=None))
         else:
             missing_chart_json = "{}"
 
@@ -1697,7 +1697,7 @@ class HTMLReportCompiler:
                     xaxis=dict(tickangle=-45, showgrid=False),
                     yaxis=dict(autorange='reversed', showgrid=False)
                 )
-                corr_chart_json = pio.to_json(fig_corr)
+                corr_chart_json = pio.to_json(fig_corr.update_layout(template=None))
 
         alerts = self.compute_alerts(profile, corr_matrix)
 

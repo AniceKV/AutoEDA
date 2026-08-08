@@ -38,8 +38,8 @@ class DataProfiler:
         # 2. Identifier / Key / Sampling Weight column name patterns
         id_patterns = [
             r"^(id|uuid|guid|pk|index|row_id|row_num|code|hash|ssn|fnlwgt|ticket|ticket_num|ticket_no|passengerid|name|member_id)$",
-            r".*(_id|_uuid|_guid|_pk|_code|_hash|_index|_number|_no|_weight|_wt)$",
-            r"^(id_|uuid_|guid_|pk_|index_|ticket_).*"
+            r".*(_id|_uuid|_guid|_pk|_code|_hash)$",
+            r"^(id_|uuid_|guid_|pk_|ticket_).*"
         ]
         for pattern in id_patterns:
             if re.match(pattern, col_clean):
