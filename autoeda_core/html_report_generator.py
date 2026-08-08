@@ -1122,15 +1122,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
                     let traces = [], layout = {};
                     if (biv.grouped_counts) {
-                        const xCats = Object.keys(biv.grouped_counts);
-                        const yCatsSet = new Set();
-                        xCats.forEach(xVal => Object.keys(biv.grouped_counts[xVal] || {}).forEach(y => yCatsSet.add(y)));
-                        const yCats = Array.from(yCatsSet);
+                        const yCats = Object.keys(biv.grouped_counts);
+                        const xCatsSet = new Set();
+                        yCats.forEach(y => Object.keys(biv.grouped_counts[y] || {}).forEach(x => xCatsSet.add(x)));
+                        const xCats = Array.from(xCatsSet);
                         const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
 
                         traces = yCats.map((yCat, i) => ({
                             x: xCats,
-                            y: xCats.map(xCat => (biv.grouped_counts[xCat] ? biv.grouped_counts[xCat][yCat] || 0 : 0)),
+                            y: xCats.map(xCat => (biv.grouped_counts[yCat] ? biv.grouped_counts[yCat][xCat] || 0 : 0)),
                             name: `${f2}: ${yCat}`,
                             type: 'bar',
                             marker: { color: palette[i % palette.length] }
@@ -1147,11 +1147,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         };
                     } else if (biv.groups) {
                         const catLabels = Object.keys(biv.groups);
-                        const medians = catLabels.map(k => biv.groups[k].median);
                         traces = [{
+                            type: "box",
+                            name: f2,
                             x: catLabels,
-                            y: medians,
-                            type: "bar",
+                            q1: catLabels.map(k => biv.groups[k].q1),
+                            median: catLabels.map(k => biv.groups[k].median),
+                            q3: catLabels.map(k => biv.groups[k].q3),
+                            lowerfence: catLabels.map(k => biv.groups[k].min),
+                            upperfence: catLabels.map(k => biv.groups[k].max),
                             marker: { color: "#10b981" }
                         }];
                         layout = {

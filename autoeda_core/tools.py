@@ -960,9 +960,14 @@ class DataVisualizer:
                 "y_is_discrete": y_is_discrete,
             }
 
-            if x_is_discrete and y_is_discrete and x_nunique <= 15 and y_nunique <= 15:
-                sx = clean_df[x_col].astype(str)
-                sy = clean_df[y_col].astype(str)
+            if x_is_discrete and y_is_discrete:
+                # Limit to top 15 categories to prevent massive charts
+                top_x = clean_df[x_col].value_counts().nlargest(15).index
+                top_y = clean_df[y_col].value_counts().nlargest(15).index
+                sub_df = clean_df[clean_df[x_col].isin(top_x) & clean_df[y_col].isin(top_y)]
+
+                sx = sub_df[x_col].astype(str)
+                sy = sub_df[y_col].astype(str)
                 ct = pd.crosstab(sx, sy)
                 pair_entry["grouped_counts"] = ct.to_dict()
                 ct_norm = pd.crosstab(sx, sy, normalize="index")
