@@ -1350,7 +1350,7 @@ class HTMLReportCompiler:
                     xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
                     font=dict(size=13, color="#94a3b8")
                 )
-                fig.update_layout(**layout)
+                fig.update_layout(**layout_base)
                 return json.loads(pio.to_json(fig))
 
             s = df[col_name].dropna()
@@ -1361,7 +1361,7 @@ class HTMLReportCompiler:
                     xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
                     font=dict(size=13, color="#ef4444")
                 )
-                fig.update_layout(**layout)
+                fig.update_layout(**layout_base)
                 return json.loads(pio.to_json(fig))
 
             if is_non_distributional_column(col_name, df[col_name]):
@@ -1371,7 +1371,7 @@ class HTMLReportCompiler:
                     xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
                     font=dict(size=12, color="#94a3b8")
                 )
-                fig.update_layout(**layout)
+                fig.update_layout(**layout_base)
                 return json.loads(pio.to_json(fig))
 
             is_bool = pd.api.types.is_bool_dtype(s)
@@ -1436,7 +1436,7 @@ class HTMLReportCompiler:
                 xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False,
                 font=dict(size=12, color="#ef4444")
             )
-            fig.update_layout(**layout)
+            fig.update_layout(**layout_base)
             return json.loads(pio.to_json(fig))
 
     def render_markdown_to_html(self, md_text: str) -> str:
