@@ -70,14 +70,15 @@ class DataProfiler:
                 if len(diffs) > 0 and (diffs == 1).all():
                     return True
 
-            # High cardinality non-float / string check (e.g. >25% unique or >50 distinct categories)
+            # High cardinality non-numeric / string check
             if len(s) > 20:
                 uniq_ratio = s.nunique() / len(s)
-                if not pd.api.types.is_float_dtype(s):
-                    if uniq_ratio > 0.30 or (not pd.api.types.is_numeric_dtype(s) and s.nunique() > 50):
+                if not pd.api.types.is_numeric_dtype(s):
+                    if uniq_ratio > 0.30 or s.nunique() > 50:
                         return True
-                elif uniq_ratio > 0.50 and s.nunique() > 500:
-                    if any(kw in col_clean for kw in ["id", "wt", "weight", "code", "fnlwgt"]):
+                elif uniq_ratio > 0.90 and pd.api.types.is_integer_dtype(s):
+                    # Almost completely unique integer column
+                    if any(kw in col_clean for kw in ["id", "wt", "weight", "code", "fnlwgt", "num", "no"]):
                         return True
 
         return False

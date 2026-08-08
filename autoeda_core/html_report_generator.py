@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import re
 import base64
@@ -733,11 +733,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         </div>
                     </div>
                     {% if col.mean is not none %}
-                    <div class="grid-4" style="margin-bottom: 1rem;">
+                    <div class="grid-6" style="margin-bottom: 1rem;">
                         <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Mean: <strong>{{ col.mean }}</strong></div>
                         <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Median: <strong>{{ col.median }}</strong></div>
                         <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Std: <strong>{{ col.std }}</strong></div>
                         <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Skew: <strong>{{ col.skew }}</strong></div>
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">IQR: <strong>{{ col.iqr }}</strong></div>
+                        <div style="background: var(--bg-card-hover); padding: 8px; border-radius: 6px; font-size: 0.8rem;">Kurt: <strong>{{ col.kurtosis }}</strong></div>
                     </div>
                     {% endif %}
                     <div id="var-chart-{{ loop.index }}" class="var-chart"></div>
