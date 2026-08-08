@@ -1002,7 +1002,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             // Render Variable Distribution Charts
             const varCharts = {{ var_charts_json|safe }};
             for (const [divId, chartSpec] of Object.entries(varCharts)) {
-                if (chartSpec && chartSpec.data && chartSpec.data.length > 0) {
+                if (chartSpec && chartSpec.data) {
                     Plotly.newPlot(divId, chartSpec.data, chartSpec.layout, {responsive: true, displayModeBar: false});
                 }
             }
