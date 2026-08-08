@@ -7,10 +7,10 @@ This report evaluates the performance transformation of **AutoEDA Pro** followin
 
 | Scale (Rows) | Old Pipeline Latency | New Pipeline Latency | Speed Multiplier | Old Server RAM Overhead | New Server RAM Overhead | Old Output Size | New Output Size | Network Footprint Reduction |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1,000 | 0.0000s | 0.0446s | **0.0x faster** | 0.00 MB | 0.90 MB | 0.0 KB | 44.5 KB | **0.0x smaller** |
-| 5,000 | 0.0000s | 0.0456s | **0.0x faster** | 0.00 MB | 0.18 MB | 0.0 KB | 45.4 KB | **0.0x smaller** |
-| 10,000 | 0.0000s | 0.0549s | **0.0x faster** | 0.00 MB | 0.04 MB | 0.0 KB | 45.4 KB | **0.0x smaller** |
-| 32,000 | 0.0000s | 0.1074s | **0.0x faster** | 0.00 MB | 0.00 MB | 0.0 KB | 45.5 KB | **0.0x smaller** |
+| 1,000 | 0.0000s | 0.0465s | **0.0x faster** | 0.00 MB | 1.16 MB | 0.0 KB | 44.5 KB | **0.0x smaller** |
+| 5,000 | 0.0000s | 0.0255s | **0.0x faster** | 0.00 MB | 0.04 MB | 0.0 KB | 45.4 KB | **0.0x smaller** |
+| 10,000 | 0.0000s | 0.0260s | **0.0x faster** | 0.00 MB | 0.04 MB | 0.0 KB | 45.4 KB | **0.0x smaller** |
+| 32,000 | 0.0000s | 0.0393s | **0.0x faster** | 0.00 MB | 0.00 MB | 0.0 KB | 45.5 KB | **0.0x smaller** |
 
 ## 🧠 Systems-Level Key Takeaways
 

@@ -1,5 +1,5 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\36313acd-2e56-4fa9-9f08-a783b3bf3da8`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\ce1e0998-50a9-421f-905f-ddc962645911`
 **Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
@@ -44,9 +44,9 @@ All predictors below were tested against `class` and found statistically signifi
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `variance` | Pearson Correlation | 0.7248 | Strong correlation | 5.7410e-224 | Higher variance in the note’s image signals a stronger likelihood of being authentic. |
-| `skewness` | Pearson Correlation | 0.4447 | Moderate correlation | 1.3721e-67 | Skewness reflects asymmetry in the note’s texture, with larger values often linked to genuine notes. |
-| `curtosis` | Pearson Correlation | 0.1559 | Weak correlation | 6.4655e-09 | Curtosis measures peakedness of the image distribution; higher values modestly associate with authentic banknotes. |
+| `variance` | Pearson Correlation | 0.7248 | Strong correlation | 5.7410e-224 | Notes with higher variance in their image texture are more likely to be genuine. |
+| `skewness` | Pearson Correlation | 0.4447 | Moderate correlation | 1.3721e-67 | Skewed pixel intensity patterns often differ between authentic and counterfeit notes, helping to separate them. |
+| `curtosis` | Pearson Correlation | 0.1559 | Weak correlation | 6.4655e-09 | Subtle differences in the sharpness of image details can indicate whether a note is real or fake. |
 
 ---
 

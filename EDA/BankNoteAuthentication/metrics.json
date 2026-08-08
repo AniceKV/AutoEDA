@@ -2670,8 +2670,8 @@
       {
         "feature_1": "curtosis",
         "feature_2": "entropy",
-        "rationale": "Linking entropy with curtosis highlights whether more random notes also display heavy\u2011tailed coefficient distributions, a characteristic of manipulated banknotes. (Also identified statistically by algorithms)",
-        "source": "both",
+        "rationale": "Algorithmic Pearson correlation (|r| = 0.32)",
+        "source": "algorithmic",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
         "feature_1_is_discrete": false,
@@ -4282,7 +4282,7 @@
       {
         "feature_1": "curtosis",
         "feature_2": "skewness",
-        "rationale": "The joint distribution of skewness and curtosis captures both asymmetry and tail heaviness, offering insight into subtle shape distortions introduced by forgery. (Also identified statistically by algorithms)",
+        "rationale": "Joint analysis of asymmetry (skewness) and peakedness (curtosis) captures the overall shape of the coefficient distribution, useful for segmentation. (Also identified statistically by algorithms)",
         "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
@@ -5894,7 +5894,7 @@
       {
         "feature_1": "curtosis",
         "feature_2": "variance",
-        "rationale": "Analyzing variance together with curtosis (tailedness) helps identify whether high\u2011energy notes also exhibit extreme outliers, a pattern often linked to counterfeit signatures. (Also identified statistically by algorithms)",
+        "rationale": "Linking dispersion (variance) with tail heaviness (curtosis) helps identify extreme deviations that may signal counterfeit characteristics. (Also identified statistically by algorithms)",
         "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
@@ -7506,8 +7506,8 @@
       {
         "feature_1": "entropy",
         "feature_2": "skewness",
-        "rationale": "Algorithmic Pearson correlation (|r| = 0.53)",
-        "source": "algorithmic",
+        "rationale": "Assessing entropy against skewness reveals whether more chaotic signals also exhibit directional bias, a potential indicator of forgery. (Also identified statistically by algorithms)",
+        "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
         "feature_1_is_discrete": false,
@@ -9118,7 +9118,7 @@
       {
         "feature_1": "entropy",
         "feature_2": "variance",
-        "rationale": "Entropy measures randomness while variance measures signal strength; their interaction can differentiate structured genuine notes from noisy counterfeit ones. (Also identified statistically by algorithms)",
+        "rationale": "Comparing randomness (entropy) with amplitude variability (variance) can differentiate the informational content of authentic versus fake notes. (Also identified statistically by algorithms)",
         "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
@@ -10730,7 +10730,7 @@
       {
         "feature_1": "skewness",
         "feature_2": "variance",
-        "rationale": "Combining variance (overall signal energy) with skewness (asymmetry) reveals how the spread and directional bias of wavelet coefficients differ between genuine and forged notes. (Also identified statistically by algorithms)",
+        "rationale": "Examining how the spread of wavelet coefficients (variance) relates to their asymmetry (skewness) can reveal distinct texture patterns between genuine and forged notes. (Also identified statistically by algorithms)",
         "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
