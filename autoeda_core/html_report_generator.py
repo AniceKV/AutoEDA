@@ -1317,7 +1317,7 @@ class HTMLReportCompiler:
                     "message": "Contains only 1 unique value across all rows (zero variance)."
                 })
 
-            if (unique_pct >= 25.0 and cardinality > 50 and not dtype.startswith("float")) or is_non_distributional_column(name):
+            if (unique_pct >= 25.0 and cardinality > 50 and not dtype.startswith("float")) or is_non_distributional_column(name, df[name]):
                 alerts.append({
                     "column": name,
                     "type": "High Cardinality",

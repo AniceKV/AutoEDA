@@ -41,9 +41,31 @@ class DataProfiler:
             r".*(_id|_uuid|_guid|_pk|_code|_hash)$",
             r"^(id_|uuid_|guid_|pk_|ticket_).*"
         ]
+        matches_id_pattern = False
         for pattern in id_patterns:
             if re.match(pattern, col_clean):
+                matches_id_pattern = True
+                break
+                
+        if matches_id_pattern:
+            if series is None:
+                # Conservative fallback: respect the name match if no data is provided
                 return True
+            else:
+                s = series.dropna()
+                if len(s) == 0:
+                    return True
+                
+                # A true ID shouldn't be a float (scientific index scores often are)
+                if pd.api.types.is_float_dtype(s):
+                    pass # Continue to generic data heuristics instead of dropping
+                
+                # A true ID should have very high cardinality. If it's low, it's likely categorical
+                elif len(s) > 20 and (s.nunique() / len(s)) < 0.5:
+                    pass # Continue to generic data heuristics instead of dropping
+                
+                else:
+                    return True
 
         # 3. Temporal / Timestamp column patterns
         time_patterns = [
