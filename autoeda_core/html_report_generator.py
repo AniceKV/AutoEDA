@@ -1020,15 +1020,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 let traces = [], layout = {};
 
                 if (tData.grouped_counts) {
-                    const xCats = Object.keys(tData.grouped_counts);
-                    const yCatsSet = new Set();
-                    xCats.forEach(xVal => Object.keys(tData.grouped_counts[xVal] || {}).forEach(y => yCatsSet.add(y)));
-                    const yCats = Array.from(yCatsSet);
+                    const yCats = Object.keys(tData.grouped_counts);
+                    const xCatsSet = new Set();
+                    yCats.forEach(y => Object.keys(tData.grouped_counts[y] || {}).forEach(x => xCatsSet.add(x)));
+                    const xCats = Array.from(xCatsSet);
                     const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
 
                     traces = yCats.map((yCat, i) => ({
                         x: xCats,
-                        y: xCats.map(xCat => (tData.grouped_counts[xCat] ? tData.grouped_counts[xCat][yCat] || 0 : 0)),
+                        y: xCats.map(xCat => (tData.grouped_counts[yCat] ? tData.grouped_counts[yCat][xCat] || 0 : 0)),
                         name: `${tData.target_col}: ${yCat}`,
                         type: 'bar',
                         marker: { color: palette[i % palette.length] }
@@ -1045,14 +1045,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
                     };
                 } else if (tData.groups) {
-                    const cats = Object.keys(tData.groups);
-                    const medians = cats.map(k => tData.groups[k].median);
+                    const catLabels = Object.keys(tData.groups);
                     traces = [{
-                        x: cats,
-                        y: medians,
-                        type: "bar",
-                        marker: { color: "#f59e0b", opacity: 0.85 },
-                        name: `${tData.feature_col} Median`
+                        type: "box",
+                        name: tData.feature_col,
+                        x: catLabels,
+                        q1: catLabels.map(k => tData.groups[k].q1),
+                        median: catLabels.map(k => tData.groups[k].median),
+                        q3: catLabels.map(k => tData.groups[k].q3),
+                        lowerfence: catLabels.map(k => tData.groups[k].min),
+                        upperfence: catLabels.map(k => tData.groups[k].max),
+                        marker: { color: "#f59e0b" }
                     }];
                     layout = {
                         title: `Segmented Median: ${tData.feature_col} across ${tData.target_col}`,

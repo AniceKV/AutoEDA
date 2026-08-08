@@ -779,9 +779,14 @@ class DataVisualizer:
             "target_is_discrete": target_is_discrete,
         }
 
-        if feat_is_discrete and target_is_discrete and feat_nunique <= 15 and target_nunique <= 15:
-            sf = clean_df[feature_col].astype(str)
-            st = clean_df[target_col].astype(str)
+        if feat_is_discrete and target_is_discrete:
+            # Limit to top 15 categories to prevent massive charts
+            top_f = clean_df[feature_col].value_counts().nlargest(15).index
+            top_t = clean_df[target_col].value_counts().nlargest(15).index
+            sub_df = clean_df[clean_df[feature_col].isin(top_f) & clean_df[target_col].isin(top_t)]
+
+            sf = sub_df[feature_col].astype(str)
+            st = sub_df[target_col].astype(str)
             ct = pd.crosstab(sf, st)
             interaction_data["grouped_counts"] = ct.to_dict()
             ct_norm = pd.crosstab(sf, st, normalize="index")
