@@ -1335,13 +1335,11 @@ class HTMLReportCompiler:
 
     def build_variable_chart(self, df: Optional[pd.DataFrame], col_name: str, col_info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Generates an interactive Plotly figure spec dict for a single column's distribution."""
-        layout = dict(
+        layout_base = dict(
             margin=dict(l=30, r=20, t=30, b=30),
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#cbd5e1', family='Plus Jakarta Sans'),
-            xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)'),
-            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
+            font=dict(color='#cbd5e1', family='Plus Jakarta Sans')
         )
 
         try:
@@ -1406,13 +1404,16 @@ class HTMLReportCompiler:
                     title=dict(text=f"Categorical Count Plot: {col_name}", font=dict(size=12, color='#e9d5ff')),
                     xaxis_title="Category",
                     yaxis_title="Count",
-                    **layout
+                    **layout_base
                 )
+                fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
+                fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
                 return json.loads(pio.to_json(fig))
             else:
                 s_clean = s.replace([np.inf, -np.inf], np.nan).dropna()
+                df_clean = s_clean.to_frame(name=col_name)
                 fig = px.histogram(
-                    s_clean,
+                    df_clean,
                     x=col_name,
                     marginal="box",
                     color_discrete_sequence=['#6366f1'],
@@ -1422,8 +1423,10 @@ class HTMLReportCompiler:
                     title=dict(text=f"Numeric Distribution: {col_name}", font=dict(size=12, color='#a5b4fc')),
                     xaxis_title=col_name,
                     yaxis_title="Frequency",
-                    **layout
+                    **layout_base
                 )
+                fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
+                fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
                 return json.loads(pio.to_json(fig))
         except Exception as e:
             print(f"[html_report_generator] Error building chart for '{col_name}': {e}")
