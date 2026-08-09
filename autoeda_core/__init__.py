@@ -3,7 +3,7 @@ AutoEDA Core Engine Package
 Classful Architecture & Unified Engine Facade
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from typing import Dict, Any, Optional, List
 

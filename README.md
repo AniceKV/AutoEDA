@@ -35,7 +35,7 @@ pip install edanet
 ```
 
 ```python
-from autoeda_core import AutoEDAEngine
+from edanet import AutoEDAEngine
 
 # Initialize the engine (automatically reads from your environment variables or .env)
 engine = AutoEDAEngine()
