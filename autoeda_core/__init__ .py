@@ -109,7 +109,6 @@ class AutoEDAEngine:
 __all__ = [
     # Unified Facade Engine
     "AutoEDAEngine",
-    "__version__",
     # Core Classful Components
     "DataProfiler",
     "StatefulDataStore",
@@ -157,4 +156,5 @@ __all__ = [
     "generate_html_report",
     "parse_llm_json_plan",
     "validate_tool_plan",
+    "__version__",
 ]

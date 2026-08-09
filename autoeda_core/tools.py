@@ -16,6 +16,7 @@ from typing import Dict, Any, List, Optional, Tuple
 from pydantic import BaseModel, Field
 
 from .profiler import is_non_distributional_column
+from .llm_config import get_api_key, get_model, get_base_url
 
 sns.set_theme(style="whitegrid")
 
@@ -1040,11 +1041,16 @@ class DataVisualizer:
 
         cols_text = "\n".join(col_summary)
 
-        api_key = os.getenv("OPENROUTER_API_KEY")
+        api_key = None
+        try:
+            api_key = get_api_key()
+        except ValueError:
+            pass
+
         if api_key:
             try:
                 from openai import OpenAI
-                client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+                client = OpenAI(base_url=get_base_url(), api_key=api_key)
                 prompt = (
                     f"You are an expert data scientist performing EDA on dataset '{dataset_name}'.\n"
                     f"Target column: '{target_col or 'None'}'\n"
@@ -1058,7 +1064,7 @@ class DataVisualizer:
                     f"Return ONLY a valid JSON array of objects with keys 'feature_1', 'feature_2', 'rationale'."
                 )
                 response = client.chat.completions.create(
-                    model=os.getenv("EDA_MODEL", "google/gemini-3.6-flash"),
+                    model=get_model(),
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.2,
                     max_tokens=500

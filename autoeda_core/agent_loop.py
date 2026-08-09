@@ -12,6 +12,7 @@ from . import tools
 from .profiler import run_and_save_profile
 from .summary_generator import create_summary, extract_dataset_name
 from .html_report_generator import generate_html_report
+from .llm_config import get_api_key, get_model, get_base_url
 load_dotenv(override=True)
 
 
@@ -74,14 +75,11 @@ class AutoEDAAgent:
         status_callback: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Agentic Tool-Based Orchestrator for AutoEDA."""
-        effective_api_key = os.getenv("OPENROUTER_API_KEY") or api_key
-        if not effective_api_key:
-            raise ValueError("OPENROUTER_API_KEY is missing. Set it in your environment / .env file.")
-
-        effective_model = model_name or os.getenv("EDA_MODEL")
+        effective_api_key = get_api_key(api_key)
+        effective_model = get_model(model_name)
 
         client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=get_base_url(),
             api_key=effective_api_key,
         )
         if conversation_history is None:

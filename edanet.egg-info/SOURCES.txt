@@ -1,0 +1,20 @@
+LICENSE
+README.md
+pyproject.toml
+autoeda_core/__init__ .py
+autoeda_core/__init__.py
+autoeda_core/agent_loop.py
+autoeda_core/executor.py
+autoeda_core/html_report_generator.py
+autoeda_core/profiler.py
+autoeda_core/summary_generator.py
+autoeda_core/tools.py
+edanet.egg-info/PKG-INFO
+edanet.egg-info/SOURCES.txt
+edanet.egg-info/dependency_links.txt
+edanet.egg-info/requires.txt
+edanet.egg-info/top_level.txt
+tests/test_classful_architecture.py
+tests/test_datastore.py
+tests/test_summary_generator.py
+tests/test_views.py

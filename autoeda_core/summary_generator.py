@@ -10,6 +10,8 @@ import re
 from typing import Dict, Any, List, Optional
 from dotenv import load_dotenv
 
+from .llm_config import get_api_key, get_model, get_base_url
+
 # Try importing OpenAI client module for OpenRouter API synthesis
 try:
     from openai import OpenAI
@@ -143,15 +145,19 @@ class ExecutiveSummaryGenerator:
     ) -> Dict[str, str]:
         """Produces short explanations for each statistically significant predictor."""
         blurbs: Dict[str, str] = {}
-        api_key = os.getenv("OPENROUTER_API_KEY")
+        api_key = None
+        try:
+            api_key = get_api_key()
+        except ValueError:
+            pass
 
         if use_llm and HAS_OPENROUTER and api_key and ranked_details:
             try:
                 client = OpenAI(
-                    base_url="https://openrouter.ai/api/v1",
+                    base_url=get_base_url(),
                     api_key=api_key,
                 )
-                model = os.getenv("SUMMARY_MODEL")
+                model = get_model()
 
                 payload = [
                     {
@@ -475,17 +481,18 @@ class ExecutiveSummaryGenerator:
 
     def generate_llm_summary(self, data: Dict[str, Any]) -> str:
         """Uses OpenRouter API to synthesize an executive summary report."""
-        api_key = os.getenv("OPENROUTER_API_KEY")
-        if not api_key:
+        try:
+            api_key = get_api_key()
+        except ValueError:
             print("[summary_generator] OPENROUTER_API_KEY not found. Falling back to template summary.")
             return self.generate_template_summary(data)
 
         try:
             client = OpenAI(
-                base_url="https://openrouter.ai/api/v1",
+                base_url=get_base_url(),
                 api_key=api_key,
             )
-            model = os.getenv("SUMMARY_MODEL", "google/gemini-3.6-flash")
+            model = get_model()
 
             prompt = (
                 "You are a Senior Lead Data Scientist summarizing the outputs of an automated Exploratory Data Analysis (EDA) pipeline.\n"
@@ -567,7 +574,13 @@ class ExecutiveSummaryGenerator:
         print(f"Found {len(data['files_scanned'])} files: {data['files_scanned']}")
         print(f"Explicitly excluded: {data['excluded_files']}")
 
-        if use_llm and HAS_OPENROUTER and os.getenv("OPENROUTER_API_KEY"):
+        has_key = False
+        try:
+            has_key = bool(get_api_key())
+        except ValueError:
+            pass
+
+        if use_llm and HAS_OPENROUTER and has_key:
             print("Generating summary using full-report LLM synthesis (legacy mode)...")
             report_md = self.generate_llm_summary(data)
         else:

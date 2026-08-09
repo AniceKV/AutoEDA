@@ -1,0 +1,219 @@
+{
+    "dataset_name": "abalone.data.csv",
+    "dimensions": {
+        "rows": 4177,
+        "columns": 9
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "gender": {
+            "type": "str",
+            "cardinality": 3,
+            "key_metric": "Top Values: 'M': 1528, 'I': 1342, 'F': 1307"
+        },
+        "Length": {
+            "type": "float64",
+            "cardinality": 134,
+            "key_metric": "Range: [0.07 to 0.81] | Mean: 0.52 | Median: 0.55"
+        },
+        "Diameter": {
+            "type": "float64",
+            "cardinality": 111,
+            "key_metric": "Range: [0.06 to 0.65] | Mean: 0.41 | Median: 0.42"
+        },
+        "Height": {
+            "type": "float64",
+            "cardinality": 51,
+            "key_metric": "Range: [0.00 to 1.13] | Mean: 0.14 | Median: 0.14 | Highly Skewed (3.13)"
+        },
+        "Whole weight": {
+            "type": "float64",
+            "cardinality": 2429,
+            "key_metric": "Range: [0.00 to 2.83] | Mean: 0.83 | Median: 0.80"
+        },
+        "Shucked weight": {
+            "type": "float64",
+            "cardinality": 1515,
+            "key_metric": "Range: [0.00 to 1.49] | Mean: 0.36 | Median: 0.34"
+        },
+        "Viscera weight": {
+            "type": "float64",
+            "cardinality": 880,
+            "key_metric": "Range: [0.00 to 0.76] | Mean: 0.18 | Median: 0.17"
+        },
+        "Shell weight": {
+            "type": "float64",
+            "cardinality": 926,
+            "key_metric": "Range: [0.00 to 1.00] | Mean: 0.24 | Median: 0.23"
+        },
+        "Rings": {
+            "type": "int64",
+            "cardinality": 28,
+            "key_metric": "Range: [1.00 to 29.00] | Mean: 9.93 | Median: 9.00 | Highly Skewed (1.11)"
+        }
+    },
+    "columns": [
+        {
+            "column": "gender",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 3,
+            "unique_pct": 0.07,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "Length",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 134,
+            "unique_pct": 3.21,
+            "mean": 0.5239920995930094,
+            "median": 0.545,
+            "std": 0.12009291256479956,
+            "min": 0.075,
+            "max": 0.815,
+            "q1": 0.45,
+            "q3": 0.615,
+            "iqr": 0.16499999999999998,
+            "skew": -0.639873268981801,
+            "kurtosis": 0.06462097389494126
+        },
+        {
+            "column": "Diameter",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 111,
+            "unique_pct": 2.66,
+            "mean": 0.40788125448886764,
+            "median": 0.425,
+            "std": 0.09923986613365945,
+            "min": 0.055,
+            "max": 0.65,
+            "q1": 0.35,
+            "q3": 0.48,
+            "iqr": 0.13,
+            "skew": -0.6091981423290918,
+            "kurtosis": -0.04547558144299568
+        },
+        {
+            "column": "Height",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 51,
+            "unique_pct": 1.22,
+            "mean": 0.13951639932966242,
+            "median": 0.14,
+            "std": 0.041827056607257274,
+            "min": 0.0,
+            "max": 1.13,
+            "q1": 0.115,
+            "q3": 0.165,
+            "iqr": 0.05,
+            "skew": 3.1288173790659615,
+            "kurtosis": 76.02550922920125
+        },
+        {
+            "column": "Whole weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2429,
+            "unique_pct": 58.15,
+            "mean": 0.8287421594445774,
+            "median": 0.7995,
+            "std": 0.4903890182309977,
+            "min": 0.002,
+            "max": 2.8255,
+            "q1": 0.4415,
+            "q3": 1.153,
+            "iqr": 0.7115,
+            "skew": 0.5309585632523087,
+            "kurtosis": -0.02364350426998163
+        },
+        {
+            "column": "Shucked weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 1515,
+            "unique_pct": 36.27,
+            "mean": 0.35936748862820206,
+            "median": 0.336,
+            "std": 0.22196294903322014,
+            "min": 0.001,
+            "max": 1.488,
+            "q1": 0.186,
+            "q3": 0.502,
+            "iqr": 0.316,
+            "skew": 0.7190979217612694,
+            "kurtosis": 0.5951236783694207
+        },
+        {
+            "column": "Viscera weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 880,
+            "unique_pct": 21.07,
+            "mean": 0.1805936078525257,
+            "median": 0.171,
+            "std": 0.10961425025968446,
+            "min": 0.0005,
+            "max": 0.76,
+            "q1": 0.0935,
+            "q3": 0.253,
+            "iqr": 0.1595,
+            "skew": 0.5918521514155083,
+            "kurtosis": 0.08401174900221298
+        },
+        {
+            "column": "Shell weight",
+            "dtype": "float64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 926,
+            "unique_pct": 22.17,
+            "mean": 0.23883085946851804,
+            "median": 0.234,
+            "std": 0.1392026695223861,
+            "min": 0.0015,
+            "max": 1.005,
+            "q1": 0.13,
+            "q3": 0.329,
+            "iqr": 0.199,
+            "skew": 0.6209268251392077,
+            "kurtosis": 0.531926126202173
+        },
+        {
+            "column": "Rings",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 28,
+            "unique_pct": 0.67,
+            "mean": 9.933684462532918,
+            "median": 9.0,
+            "std": 3.2241690320681284,
+            "min": 1.0,
+            "max": 29.0,
+            "q1": 8.0,
+            "q3": 11.0,
+            "iqr": 3.0,
+            "skew": 1.114101898355677,
+            "kurtosis": 2.3306874268535847
+        }
+    ]
+}
