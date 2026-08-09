@@ -82,7 +82,7 @@ class MetricsCompiler:
         bivariate_res = self.visualizer.plot_semantic_bivariate_relationships(df)
         bivariate_union_res = self.visualizer.compute_bivariate_union(df, target_col=target_col, dataset_name=os.path.basename(dataset_path))
         pairplot_res = self.visualizer.plot_pairplot(df)
-        target_inter_res = self.visualizer.plot_target_interaction(df, target_col=target_col)
+        target_inter_res = self.visualizer.plot_target_interaction(df, target_col=target_col, top_n=10)
 
         metrics_dict = {
             "dataset_overview": {
@@ -106,6 +106,7 @@ class MetricsCompiler:
             "bivariate_union": bivariate_union_res,
             "pairplot_data": pairplot_res,
             "target_interaction_data": target_inter_res.get("interaction_data", {}),
+            "target_interactions": target_inter_res.get("target_interactions", []),
             "extracted_insights": {
                 "key_findings": [
                     f"Dataset contains {num_rows} rows and {num_cols} columns.",

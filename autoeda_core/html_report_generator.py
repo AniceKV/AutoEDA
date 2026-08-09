@@ -1018,78 +1018,134 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
             // Render Target Interaction
             const targetDiv = document.getElementById("report-plotly-target");
-            if (targetDiv && metricsData.target_interaction_data) {
-                const tData = metricsData.target_interaction_data;
-                let traces = [], layout = {};
+            const targetList = (metricsData.target_interactions && metricsData.target_interactions.length > 0)
+                ? metricsData.target_interactions
+                : (metricsData.target_interaction_data ? [metricsData.target_interaction_data] : []);
 
-                if (tData.grouped_counts) {
-                    const yCats = Object.keys(tData.grouped_counts);
-                    const xCatsSet = new Set();
-                    yCats.forEach(y => Object.keys(tData.grouped_counts[y] || {}).forEach(x => xCatsSet.add(x)));
-                    const xCats = Array.from(xCatsSet);
-                    const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
+            if (targetDiv && targetList.length > 0) {
+                targetDiv.innerHTML = "";
 
-                    traces = yCats.map((yCat, i) => ({
-                        x: xCats,
-                        y: xCats.map(xCat => (tData.grouped_counts[yCat] ? tData.grouped_counts[yCat][xCat] || 0 : 0)),
-                        name: `${tData.target_col}: ${yCat}`,
-                        type: 'bar',
-                        marker: { color: palette[i % palette.length] }
-                    }));
-                    layout = {
-                        title: `Target Breakdown: ${tData.target_col} across ${tData.feature_col}`,
-                        barmode: 'group',
-                        margin: { l: 50, r: 20, t: 40, b: 60 },
-                        paper_bgcolor: pPaperBg,
-                        plot_bgcolor: pPaperBg,
-                        autosize: true,
-                        font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 12 },
-                        xaxis: { title: tData.feature_col, tickangle: -45 },
-                        yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
-                    };
-                } else if (tData.groups) {
-                    const catLabels = Object.keys(tData.groups);
-                    traces = [{
-                        type: "box",
-                        name: tData.feature_col,
-                        x: catLabels,
-                        q1: catLabels.map(k => tData.groups[k].q1),
-                        median: catLabels.map(k => tData.groups[k].median),
-                        q3: catLabels.map(k => tData.groups[k].q3),
-                        lowerfence: catLabels.map(k => tData.groups[k].min),
-                        upperfence: catLabels.map(k => tData.groups[k].max),
-                        marker: { color: "#f59e0b" }
-                    }];
-                    layout = {
-                        title: `Segmented Median: ${tData.feature_col} across ${tData.target_col}`,
-                        margin: { l: 50, r: 20, t: 40, b: 60 },
-                        paper_bgcolor: pPaperBg,
-                        plot_bgcolor: pPaperBg,
-                        autosize: true,
-                        font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 12 },
-                        xaxis: { title: tData.target_col, tickangle: -45 },
-                        yaxis: { title: tData.feature_col, showgrid: true, gridcolor: '#27272a' }
-                    };
-                } else if (tData.points) {
-                    traces = [{
-                        x: tData.points.map(p => p.x),
-                        y: tData.points.map(p => p.y),
-                        mode: "markers",
-                        type: "scatter",
-                        marker: { color: "#f59e0b", size: 6, opacity: 0.75 }
-                    }];
-                    layout = {
-                        title: `${tData.feature_col} vs ${tData.target_col}`,
-                        margin: { l: 50, r: 20, t: 40, b: 60 },
-                        paper_bgcolor: pPaperBg,
-                        plot_bgcolor: pPaperBg,
-                        autosize: true,
-                        font: { color: pFontColor },
-                        xaxis: { title: tData.feature_col },
-                        yaxis: { title: tData.target_col }
-                    };
+                const drawSingleTargetPlot = (tData, containerId) => {
+                    let traces = [], layout = {};
+                    if (tData.grouped_counts) {
+                        const yCats = Object.keys(tData.grouped_counts);
+                        const xCatsSet = new Set();
+                        yCats.forEach(y => Object.keys(tData.grouped_counts[y] || {}).forEach(x => xCatsSet.add(x)));
+                        const xCats = Array.from(xCatsSet);
+                        const palette = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
+
+                        traces = yCats.map((yCat, i) => ({
+                            x: xCats,
+                            y: xCats.map(xCat => (tData.grouped_counts[yCat] ? tData.grouped_counts[yCat][xCat] || 0 : 0)),
+                            name: `${tData.target_col}: ${yCat}`,
+                            type: 'bar',
+                            marker: { color: palette[i % palette.length] }
+                        }));
+                        layout = {
+                            title: `Target Breakdown: ${tData.target_col} across ${tData.feature_col}`,
+                            barmode: 'group',
+                            margin: { l: 50, r: 20, t: 40, b: 60 },
+                            paper_bgcolor: pPaperBg,
+                            plot_bgcolor: pPaperBg,
+                            autosize: true,
+                            font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 12 },
+                            xaxis: { title: tData.feature_col, tickangle: -45 },
+                            yaxis: { title: 'Count', showgrid: true, gridcolor: '#27272a' }
+                        };
+                    } else if (tData.groups) {
+                        const catLabels = Object.keys(tData.groups);
+                        traces = [{
+                            type: "box",
+                            name: tData.feature_col,
+                            x: catLabels,
+                            q1: catLabels.map(k => tData.groups[k].q1),
+                            median: catLabels.map(k => tData.groups[k].median),
+                            q3: catLabels.map(k => tData.groups[k].q3),
+                            lowerfence: catLabels.map(k => tData.groups[k].min),
+                            upperfence: catLabels.map(k => tData.groups[k].max),
+                            marker: { color: "#f59e0b" }
+                        }];
+                        layout = {
+                            title: `Segmented Median: ${tData.feature_col} across ${tData.target_col}`,
+                            margin: { l: 50, r: 20, t: 40, b: 60 },
+                            paper_bgcolor: pPaperBg,
+                            plot_bgcolor: pPaperBg,
+                            autosize: true,
+                            font: { color: pFontColor, family: 'Plus Jakarta Sans', size: 12 },
+                            xaxis: { title: tData.target_col, tickangle: -45 },
+                            yaxis: { title: tData.feature_col, showgrid: true, gridcolor: '#27272a' }
+                        };
+                    } else if (tData.points) {
+                        traces = [{
+                            x: tData.points.map(p => p.x),
+                            y: tData.points.map(p => p.y),
+                            mode: "markers",
+                            type: "scatter",
+                            marker: { color: "#f59e0b", size: 6, opacity: 0.75 }
+                        }];
+                        layout = {
+                            title: `${tData.feature_col} vs ${tData.target_col}`,
+                            margin: { l: 50, r: 20, t: 40, b: 60 },
+                            paper_bgcolor: pPaperBg,
+                            plot_bgcolor: pPaperBg,
+                            autosize: true,
+                            font: { color: pFontColor },
+                            xaxis: { title: tData.feature_col },
+                            yaxis: { title: tData.target_col }
+                        };
+                    }
+                    if (traces.length) Plotly.newPlot(containerId, traces, layout, { responsive: true });
+                };
+
+                if (targetList.length > 1) {
+                    const controls = document.createElement("div");
+                    controls.style.marginBottom = "14px";
+                    controls.style.display = "flex";
+                    controls.style.alignItems = "center";
+                    controls.style.gap = "12px";
+
+                    const lbl = document.createElement("label");
+                    lbl.innerHTML = "<strong>Feature Interaction:</strong>";
+                    lbl.style.fontSize = "0.9rem";
+                    lbl.style.color = pFontColor;
+
+                    const sel = document.createElement("select");
+                    sel.style.padding = "6px 14px";
+                    sel.style.borderRadius = "8px";
+                    sel.style.border = isLightMode ? "1px solid #d4d4d8" : "1px solid #3f3f46";
+                    sel.style.background = isLightMode ? "#ffffff" : "#18181b";
+                    sel.style.color = pFontColor;
+                    sel.style.fontSize = "0.88rem";
+
+                    targetList.forEach((t, i) => {
+                        const opt = document.createElement("option");
+                        opt.value = i;
+                        opt.textContent = `${i + 1}. ${t.feature_col} vs ${t.target_col}`;
+                        sel.appendChild(opt);
+                    });
+
+                    controls.appendChild(lbl);
+                    controls.appendChild(sel);
+                    targetDiv.appendChild(controls);
+
+                    const chartBox = document.createElement("div");
+                    chartBox.id = "target-plotly-active-chart";
+                    chartBox.style.width = "100%";
+                    chartBox.style.height = "380px";
+                    targetDiv.appendChild(chartBox);
+
+                    drawSingleTargetPlot(targetList[0], "target-plotly-active-chart");
+                    sel.addEventListener("change", (e) => {
+                        drawSingleTargetPlot(targetList[parseInt(e.target.value, 10)], "target-plotly-active-chart");
+                    });
+                } else {
+                    const chartBox = document.createElement("div");
+                    chartBox.id = "target-plotly-active-chart";
+                    chartBox.style.width = "100%";
+                    chartBox.style.height = "380px";
+                    targetDiv.appendChild(chartBox);
+                    drawSingleTargetPlot(targetList[0], "target-plotly-active-chart");
                 }
-                if (traces.length) Plotly.newPlot("report-plotly-target", traces, layout, { responsive: true });
             }
 
             // Render Bivariate Union Relationships
