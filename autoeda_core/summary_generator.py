@@ -8,9 +8,7 @@ import sys
 import json
 import re
 from typing import Dict, Any, List, Optional
-from dotenv import load_dotenv
-
-from .llm_config import get_api_key, get_model, get_base_url
+from dotenv import load_dotenv, find_dotenv
 
 # Try importing OpenAI client module for OpenRouter API synthesis
 try:
@@ -19,7 +17,7 @@ try:
 except ImportError:
     HAS_OPENROUTER = False
 
-load_dotenv(override=True)
+load_dotenv(dotenv_path=find_dotenv(usecwd=True), override=True)
 
 # Files to explicitly exclude from the summary generation input
 EXCLUDED_FILES = {"generated_analysis.py", "summary_report.md", "executive_summary.md"}
@@ -145,19 +143,15 @@ class ExecutiveSummaryGenerator:
     ) -> Dict[str, str]:
         """Produces short explanations for each statistically significant predictor."""
         blurbs: Dict[str, str] = {}
-        api_key = None
-        try:
-            api_key = get_api_key()
-        except ValueError:
-            pass
+        api_key = os.getenv("OPENROUTER_API_KEY")
 
         if use_llm and HAS_OPENROUTER and api_key and ranked_details:
             try:
                 client = OpenAI(
-                    base_url=get_base_url(),
+                    base_url="https://openrouter.ai/api/v1",
                     api_key=api_key,
                 )
-                model = get_model()
+                model = os.getenv("SUMMARY_MODEL")
 
                 payload = [
                     {
@@ -481,18 +475,17 @@ class ExecutiveSummaryGenerator:
 
     def generate_llm_summary(self, data: Dict[str, Any]) -> str:
         """Uses OpenRouter API to synthesize an executive summary report."""
-        try:
-            api_key = get_api_key()
-        except ValueError:
+        api_key = os.getenv("OPENROUTER_API_KEY")
+        if not api_key:
             print("[summary_generator] OPENROUTER_API_KEY not found. Falling back to template summary.")
             return self.generate_template_summary(data)
 
         try:
             client = OpenAI(
-                base_url=get_base_url(),
+                base_url="https://openrouter.ai/api/v1",
                 api_key=api_key,
             )
-            model = get_model()
+            model = os.getenv("SUMMARY_MODEL", "google/gemini-3.6-flash")
 
             prompt = (
                 "You are a Senior Lead Data Scientist summarizing the outputs of an automated Exploratory Data Analysis (EDA) pipeline.\n"
@@ -574,13 +567,7 @@ class ExecutiveSummaryGenerator:
         print(f"Found {len(data['files_scanned'])} files: {data['files_scanned']}")
         print(f"Explicitly excluded: {data['excluded_files']}")
 
-        has_key = False
-        try:
-            has_key = bool(get_api_key())
-        except ValueError:
-            pass
-
-        if use_llm and HAS_OPENROUTER and has_key:
+        if use_llm and HAS_OPENROUTER and os.getenv("OPENROUTER_API_KEY"):
             print("Generating summary using full-report LLM synthesis (legacy mode)...")
             report_md = self.generate_llm_summary(data)
         else:
