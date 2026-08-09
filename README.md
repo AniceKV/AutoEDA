@@ -8,6 +8,8 @@
 
 **Live Application:** [AutoEDA](https://autoeda-fjgz.onrender.com/)
 
+---
+
 **Example Report:** [Titanic EDA Report](eda_report_Titanic-Dataset.html)
 
 ---
