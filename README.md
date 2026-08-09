@@ -16,8 +16,8 @@ You can configure AutoEDA by setting these environment variables (or putting the
 
 | Var | Required | Default | Purpose |
 | :--- | :---: | :--- | :--- |
-| **`OPENROUTER_API_KEY`** | Yes | — | Your API key from [OpenRouter](https://openrouter.ai/keys) |
-| **`EDA_MODEL`** | No | `openrouter/free` | Any valid model ID (e.g., `openrouter/free`, `meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
+| **`OPENROUTER_API_KEY`** | Yes | -- | Your API key from [OpenRouter](https://openrouter.ai/keys) |
+| **`EDA_MODEL`** | Yes | -- | Any valid model ID (use can choose free ones too) (e.g.,`meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
 | **`OPENROUTER_BASE_URL`** | No | `https://openrouter.ai/api/v1` | Override this to point to a local endpoint (e.g. `http://localhost:1234/v1` for LM Studio) or another OpenAI-compatible provider. |
 
 **Examples:**
@@ -38,6 +38,7 @@ pip install edanet
 from autoeda_core import AutoEDAEngine
 
 # Initialize the engine (automatically reads from your environment variables or .env)
+# make sure the OPENROUTER_API_KEY and EDA_MODEL is set (setup guide is above)
 engine = AutoEDAEngine()
 
 # Run a full agentic analysis on any CSV dataset

@@ -1,0 +1,8385 @@
+{
+  "dataset_overview": {
+    "dataset_path": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\test_data\\fertility.csv",
+    "shape": {
+      "rows": 100,
+      "columns": 10
+    },
+    "raw_shape": {
+      "rows": 100,
+      "columns": 10
+    },
+    "modified_shape": {
+      "rows": 100,
+      "columns": 12
+    },
+    "target_column": "Diagnosis",
+    "column_summary": {
+      "Season": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 4
+      },
+      "Age": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 10
+      },
+      "Childish diseases": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Accident or serious trauma": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "Surgical intervention": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "High fevers in the last year": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Frequency of alcohol consumption": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 5
+      },
+      "Smoking habit": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 3
+      },
+      "Number of hours spent sitting per day": {
+        "dtype": "int64",
+        "missing_count": 0,
+        "cardinality": 14
+      },
+      "Diagnosis": {
+        "dtype": "object",
+        "missing_count": 0,
+        "cardinality": 2
+      },
+      "log_hours_sitting": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 14
+      },
+      "age_hours_ratio": {
+        "dtype": "float64",
+        "missing_count": 0,
+        "cardinality": 44
+      }
+    }
+  },
+  "imputation_summary": {
+    "status": "Imputation completed"
+  },
+  "outlier_analysis": {},
+  "engineered_features": [
+    {
+      "feature_name": "log_hours_sitting",
+      "formula": "log1p(`Number of hours spent sitting per day`)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": 0.7347
+    },
+    {
+      "feature_name": "age_hours_ratio",
+      "formula": "`Age` / (`Number of hours spent sitting per day` + 1)",
+      "data_type": "float64",
+      "rationale": "High-signal feature engineering transformation",
+      "correlation_with_target": -0.2484
+    }
+  ],
+  "correlation_analysis": {
+    "correlation_heatmap_saved": "interactive_client_side",
+    "z_matrix": [
+      [
+        1.0,
+        -0.0466,
+        -0.3042,
+        0.4316
+      ],
+      [
+        -0.0466,
+        1.0,
+        0.7347,
+        -0.2484
+      ],
+      [
+        -0.3042,
+        0.7347,
+        1.0,
+        -0.7998
+      ],
+      [
+        0.4316,
+        -0.2484,
+        -0.7998,
+        1.0
+      ]
+    ],
+    "x_labels": [
+      "Age",
+      "Number of hours spent sitting per day",
+      "log_hours_sitting",
+      "age_hours_ratio"
+    ],
+    "y_labels": [
+      "Age",
+      "Number of hours spent sitting per day",
+      "log_hours_sitting",
+      "age_hours_ratio"
+    ],
+    "high_correlation_pairs": [],
+    "categorical_associations": [
+      {
+        "feature_1": "Season",
+        "feature_2": "Age",
+        "cramers_v": 0.1063,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Childish diseases",
+        "cramers_v": 0.1049,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.2253,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2027,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.1069,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Childish diseases",
+        "cramers_v": 0.1588,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.2386,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.1911,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2229,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.2367,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.1109,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.1796,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.1289,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0994,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0234,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.177,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0999,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2437,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0218,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.2102,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Smoking habit",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      }
+    ],
+    "cross_type_redundant_pairs": []
+  },
+  "categorical_associations": [
+    {
+      "feature_1": "Season",
+      "feature_2": "Age",
+      "cramers_v": 0.1063,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Childish diseases",
+      "cramers_v": 0.1049,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Accident or serious trauma",
+      "cramers_v": 0.2253,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Surgical intervention",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "High fevers in the last year",
+      "cramers_v": 0.2027,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Season",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.1069,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Childish diseases",
+      "cramers_v": 0.1588,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Accident or serious trauma",
+      "cramers_v": 0.2386,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Surgical intervention",
+      "cramers_v": 0.1911,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "High fevers in the last year",
+      "cramers_v": 0.2229,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.2367,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.1109,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Age",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.1796,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "Accident or serious trauma",
+      "cramers_v": 0.1289,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "Surgical intervention",
+      "cramers_v": 0.0994,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "High fevers in the last year",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Childish diseases",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Accident or serious trauma",
+      "feature_2": "Surgical intervention",
+      "cramers_v": 0.0234,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Accident or serious trauma",
+      "feature_2": "High fevers in the last year",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Accident or serious trauma",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.177,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Accident or serious trauma",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Accident or serious trauma",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0999,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Surgical intervention",
+      "feature_2": "High fevers in the last year",
+      "cramers_v": 0.2437,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Surgical intervention",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Surgical intervention",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Surgical intervention",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "High fevers in the last year",
+      "feature_2": "Frequency of alcohol consumption",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "High fevers in the last year",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.0218,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "High fevers in the last year",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Frequency of alcohol consumption",
+      "feature_2": "Smoking habit",
+      "cramers_v": 0.2102,
+      "interpretation": "Small association"
+    },
+    {
+      "feature_1": "Frequency of alcohol consumption",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    },
+    {
+      "feature_1": "Smoking habit",
+      "feature_2": "Diagnosis",
+      "cramers_v": 0.0,
+      "interpretation": "Negligible association"
+    }
+  ],
+  "statistical_hypothesis_tests": {
+    "target_col": "Diagnosis",
+    "significant_predictors": [],
+    "ranked_significant_details": []
+  },
+  "predictive_modeling_blueprint": {
+    "target_definition": "Diagnosis",
+    "problem_type": "Binary Classification",
+    "recommended_algorithms": [
+      "Regularized Logistic Regression (baseline)",
+      "Random Forest Classifier",
+      "Gradient Boosting Classifier (XGBoost / LightGBM)",
+      "Support Vector Classifier (SVM)"
+    ],
+    "feature_selection_strategy": [
+      "Exclude high-cardinality ID or text name columns",
+      "Rank features using cross-validated permutation importance and mutual information",
+      "Remove collinear features exceeding correlation threshold > 0.85"
+    ],
+    "validation_strategy": [
+      "Stratified K-Fold Cross-Validation (5 folds)",
+      "Evaluate Balanced Accuracy, Macro F1, Precision-Recall AUC, and Confusion Matrix"
+    ],
+    "overfitting_risk_mitigation": [
+      "Apply regularization penalties (L1/L2)",
+      "Limit tree depth and enforce minimum samples per leaf",
+      "Perform hyperparameter tuning strictly within cross-validation folds"
+    ],
+    "executive_summary": "Target: 'Diagnosis' (Binary Classification). Model recommendations and validation strategy tailored for 100 rows x 12 columns."
+  },
+  "visual_distributions": {
+    "Season": {
+      "type": "categorical",
+      "labels": [
+        "spring",
+        "fall",
+        "winter",
+        "summer"
+      ],
+      "counts": [
+        37,
+        31,
+        28,
+        4
+      ]
+    },
+    "Age": {
+      "type": "categorical",
+      "labels": [
+        "28",
+        "30",
+        "32",
+        "33",
+        "27",
+        "29",
+        "35",
+        "36",
+        "31",
+        "34"
+      ],
+      "counts": [
+        28,
+        27,
+        17,
+        7,
+        7,
+        5,
+        4,
+        2,
+        2,
+        1
+      ]
+    },
+    "Childish diseases": {
+      "type": "categorical",
+      "labels": [
+        "yes",
+        "no"
+      ],
+      "counts": [
+        87,
+        13
+      ]
+    },
+    "Accident or serious trauma": {
+      "type": "categorical",
+      "labels": [
+        "no",
+        "yes"
+      ],
+      "counts": [
+        56,
+        44
+      ]
+    },
+    "Surgical intervention": {
+      "type": "categorical",
+      "labels": [
+        "yes",
+        "no"
+      ],
+      "counts": [
+        51,
+        49
+      ]
+    },
+    "High fevers in the last year": {
+      "type": "categorical",
+      "labels": [
+        "more than 3 months ago",
+        "no",
+        "less than 3 months ago"
+      ],
+      "counts": [
+        63,
+        28,
+        9
+      ]
+    },
+    "Frequency of alcohol consumption": {
+      "type": "categorical",
+      "labels": [
+        "hardly ever or never",
+        "once a week",
+        "several times a week",
+        "several times a day",
+        "every day"
+      ],
+      "counts": [
+        40,
+        39,
+        19,
+        1,
+        1
+      ]
+    },
+    "Smoking habit": {
+      "type": "categorical",
+      "labels": [
+        "never",
+        "occasional",
+        "daily"
+      ],
+      "counts": [
+        56,
+        23,
+        21
+      ]
+    },
+    "Number of hours spent sitting per day": {
+      "type": "numeric",
+      "counts": [
+        99,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "bin_edges": [
+        1.0,
+        49.7143,
+        98.4286,
+        147.1429,
+        195.8571,
+        244.5714,
+        293.2857,
+        342.0
+      ],
+      "bin_centers": [
+        25.3571,
+        74.0714,
+        122.7857,
+        171.5,
+        220.2143,
+        268.9286,
+        317.6429
+      ],
+      "mean": 10.8,
+      "median": 7.0,
+      "std": 33.617
+    },
+    "Diagnosis": {
+      "type": "categorical",
+      "labels": [
+        "Normal",
+        "Altered"
+      ],
+      "counts": [
+        88,
+        12
+      ]
+    },
+    "log_hours_sitting": {
+      "type": "numeric",
+      "counts": [
+        13,
+        41,
+        44,
+        1,
+        0,
+        0,
+        1
+      ],
+      "bin_edges": [
+        0.6931,
+        1.4281,
+        2.163,
+        2.898,
+        3.6329,
+        4.3678,
+        5.1028,
+        5.8377
+      ],
+      "bin_centers": [
+        1.0606,
+        1.7956,
+        2.5305,
+        3.2654,
+        4.0004,
+        4.7353,
+        5.4703
+      ],
+      "mean": 2.0911,
+      "median": 2.0794,
+      "std": 0.5663
+    },
+    "age_hours_ratio": {
+      "type": "numeric",
+      "counts": [
+        1,
+        3,
+        12,
+        26,
+        16,
+        12,
+        15,
+        2,
+        3,
+        5,
+        2,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      "bin_edges": [
+        0.0875,
+        0.8831,
+        1.6787,
+        2.4743,
+        3.27,
+        4.0656,
+        4.8612,
+        5.6569,
+        6.4525,
+        7.2481,
+        8.0437,
+        8.8394,
+        9.635,
+        10.4306,
+        11.2262,
+        12.0219,
+        12.8175,
+        13.6131,
+        14.4087,
+        15.2044,
+        16.0
+      ],
+      "bin_centers": [
+        0.4853,
+        1.2809,
+        2.0765,
+        2.8722,
+        3.6678,
+        4.4634,
+        5.259,
+        6.0547,
+        6.8503,
+        7.6459,
+        8.4415,
+        9.2372,
+        10.0328,
+        10.8284,
+        11.6241,
+        12.4197,
+        13.2153,
+        14.0109,
+        14.8066,
+        15.6022
+      ],
+      "mean": 4.2769,
+      "median": 3.75,
+      "std": 2.4626
+    }
+  },
+  "correlation_data": {
+    "correlation_heatmap_saved": "interactive_client_side",
+    "z_matrix": [
+      [
+        1.0,
+        -0.0466,
+        -0.3042,
+        0.4316
+      ],
+      [
+        -0.0466,
+        1.0,
+        0.7347,
+        -0.2484
+      ],
+      [
+        -0.3042,
+        0.7347,
+        1.0,
+        -0.7998
+      ],
+      [
+        0.4316,
+        -0.2484,
+        -0.7998,
+        1.0
+      ]
+    ],
+    "x_labels": [
+      "Age",
+      "Number of hours spent sitting per day",
+      "log_hours_sitting",
+      "age_hours_ratio"
+    ],
+    "y_labels": [
+      "Age",
+      "Number of hours spent sitting per day",
+      "log_hours_sitting",
+      "age_hours_ratio"
+    ],
+    "high_correlation_pairs": [],
+    "categorical_associations": [
+      {
+        "feature_1": "Season",
+        "feature_2": "Age",
+        "cramers_v": 0.1063,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Childish diseases",
+        "cramers_v": 0.1049,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.2253,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2027,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Season",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.1069,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Childish diseases",
+        "cramers_v": 0.1588,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.2386,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.1911,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2229,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.2367,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.1109,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.1796,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Accident or serious trauma",
+        "cramers_v": 0.1289,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0994,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Surgical intervention",
+        "cramers_v": 0.0234,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.177,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0999,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "High fevers in the last year",
+        "cramers_v": 0.2437,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Surgical intervention",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Frequency of alcohol consumption",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.0218,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Smoking habit",
+        "cramers_v": 0.2102,
+        "interpretation": "Small association"
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      },
+      {
+        "feature_1": "Smoking habit",
+        "feature_2": "Diagnosis",
+        "cramers_v": 0.0,
+        "interpretation": "Negligible association"
+      }
+    ],
+    "cross_type_redundant_pairs": []
+  },
+  "bivariate_data": [
+    {
+      "x": "Season",
+      "y": "Age",
+      "rationale": "Categorical breakdown of Season by Age",
+      "x_is_numeric": false,
+      "y_is_numeric": true,
+      "x_is_discrete": true,
+      "y_is_discrete": true,
+      "grouped_counts": {
+        "27": {
+          "fall": 0,
+          "spring": 6,
+          "summer": 0,
+          "winter": 1
+        },
+        "28": {
+          "fall": 9,
+          "spring": 8,
+          "summer": 0,
+          "winter": 11
+        },
+        "29": {
+          "fall": 2,
+          "spring": 1,
+          "summer": 0,
+          "winter": 2
+        },
+        "30": {
+          "fall": 12,
+          "spring": 7,
+          "summer": 1,
+          "winter": 7
+        },
+        "31": {
+          "fall": 0,
+          "spring": 1,
+          "summer": 0,
+          "winter": 1
+        },
+        "32": {
+          "fall": 5,
+          "spring": 5,
+          "summer": 3,
+          "winter": 4
+        },
+        "33": {
+          "fall": 2,
+          "spring": 4,
+          "summer": 0,
+          "winter": 1
+        },
+        "34": {
+          "fall": 0,
+          "spring": 1,
+          "summer": 0,
+          "winter": 0
+        },
+        "35": {
+          "fall": 1,
+          "spring": 3,
+          "summer": 0,
+          "winter": 0
+        },
+        "36": {
+          "fall": 0,
+          "spring": 1,
+          "summer": 0,
+          "winter": 1
+        }
+      },
+      "crosstab": {
+        "27": {
+          "fall": 0.0,
+          "spring": 0.1622,
+          "summer": 0.0,
+          "winter": 0.0357
+        },
+        "28": {
+          "fall": 0.2903,
+          "spring": 0.2162,
+          "summer": 0.0,
+          "winter": 0.3929
+        },
+        "29": {
+          "fall": 0.0645,
+          "spring": 0.027,
+          "summer": 0.0,
+          "winter": 0.0714
+        },
+        "30": {
+          "fall": 0.3871,
+          "spring": 0.1892,
+          "summer": 0.25,
+          "winter": 0.25
+        },
+        "31": {
+          "fall": 0.0,
+          "spring": 0.027,
+          "summer": 0.0,
+          "winter": 0.0357
+        },
+        "32": {
+          "fall": 0.1613,
+          "spring": 0.1351,
+          "summer": 0.75,
+          "winter": 0.1429
+        },
+        "33": {
+          "fall": 0.0645,
+          "spring": 0.1081,
+          "summer": 0.0,
+          "winter": 0.0357
+        },
+        "34": {
+          "fall": 0.0,
+          "spring": 0.027,
+          "summer": 0.0,
+          "winter": 0.0
+        },
+        "35": {
+          "fall": 0.0323,
+          "spring": 0.0811,
+          "summer": 0.0,
+          "winter": 0.0
+        },
+        "36": {
+          "fall": 0.0,
+          "spring": 0.027,
+          "summer": 0.0,
+          "winter": 0.0357
+        }
+      }
+    },
+    {
+      "x": "Season",
+      "y": "Number of hours spent sitting per day",
+      "rationale": "Segmented distribution of Number of hours spent sitting per day across Season",
+      "x_is_numeric": false,
+      "y_is_numeric": true,
+      "x_is_discrete": true,
+      "y_is_discrete": false,
+      "groups": {
+        "fall": {
+          "min": 2.0,
+          "q1": 5.0,
+          "median": 7.0,
+          "q3": 9.0,
+          "max": 18.0
+        },
+        "spring": {
+          "min": 1.0,
+          "q1": 6.0,
+          "median": 8.0,
+          "q3": 11.0,
+          "max": 342.0
+        },
+        "summer": {
+          "min": 1.0,
+          "q1": 4.75,
+          "median": 6.5,
+          "q3": 7.25,
+          "max": 8.0
+        },
+        "winter": {
+          "min": 3.0,
+          "q1": 5.0,
+          "median": 7.0,
+          "q3": 9.0,
+          "max": 11.0
+        }
+      }
+    },
+    {
+      "x": "Number of hours spent sitting per day",
+      "y": "log_hours_sitting",
+      "rationale": "Bivariate scatter comparison of Number of hours spent sitting per day vs log_hours_sitting",
+      "x_is_numeric": true,
+      "y_is_numeric": true,
+      "x_is_discrete": false,
+      "y_is_discrete": false,
+      "points": [
+        {
+          "x": 16.0,
+          "y": 2.8332
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 2.0,
+          "y": 1.0986
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 342.0,
+          "y": 5.8377
+        },
+        {
+          "x": 14.0,
+          "y": 2.7081
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 14.0,
+          "y": 2.7081
+        },
+        {
+          "x": 14.0,
+          "y": 2.7081
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 18.0,
+          "y": 2.9444
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 10.0,
+          "y": 2.3979
+        },
+        {
+          "x": 16.0,
+          "y": 2.8332
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 16.0,
+          "y": 2.8332
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 10.0,
+          "y": 2.3979
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 11.0,
+          "y": 2.4849
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 1.0,
+          "y": 0.6931
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 5.0,
+          "y": 1.7918
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 1.0,
+          "y": 0.6931
+        },
+        {
+          "x": 7.0,
+          "y": 2.0794
+        },
+        {
+          "x": 8.0,
+          "y": 2.1972
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 9.0,
+          "y": 2.3026
+        },
+        {
+          "x": 6.0,
+          "y": 1.9459
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        },
+        {
+          "x": 3.0,
+          "y": 1.3863
+        }
+      ]
+    }
+  ],
+  "bivariate_union": {
+    "union_pairs": [
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Diagnosis",
+        "rationale": "Physical trauma can disrupt reproductive organs or endocrine function, potentially leading to altered fertility diagnoses. (Also identified statistically by algorithms)",
+        "source": "both",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "Altered": {
+            "no": 9,
+            "yes": 3
+          },
+          "Normal": {
+            "no": 47,
+            "yes": 41
+          }
+        },
+        "crosstab": {
+          "Altered": {
+            "no": 0.1607,
+            "yes": 0.0682
+          },
+          "Normal": {
+            "no": 0.8393,
+            "yes": 0.9318
+          }
+        }
+      },
+      {
+        "feature_1": "Accident or serious trauma",
+        "feature_2": "Season",
+        "rationale": "Algorithmic Cram\u00e9r's V association (V = 0.23)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "fall": {
+            "no": 21,
+            "yes": 10
+          },
+          "spring": {
+            "no": 14,
+            "yes": 23
+          },
+          "summer": {
+            "no": 3,
+            "yes": 1
+          },
+          "winter": {
+            "no": 18,
+            "yes": 10
+          }
+        },
+        "crosstab": {
+          "fall": {
+            "no": 0.375,
+            "yes": 0.2273
+          },
+          "spring": {
+            "no": 0.25,
+            "yes": 0.5227
+          },
+          "summer": {
+            "no": 0.0536,
+            "yes": 0.0227
+          },
+          "winter": {
+            "no": 0.3214,
+            "yes": 0.2273
+          }
+        }
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "Diagnosis",
+        "rationale": "Maternal age is a well\u2011known factor influencing fertility outcomes, so examining its relationship with the diagnosis can reveal age\u2011related risk patterns. (Also identified statistically by algorithms)",
+        "source": "both",
+        "feature_1_is_numeric": true,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "Altered": {
+            "27": 1,
+            "28": 0,
+            "29": 0,
+            "30": 7,
+            "31": 0,
+            "32": 3,
+            "33": 0,
+            "34": 0,
+            "35": 1,
+            "36": 0
+          },
+          "Normal": {
+            "27": 6,
+            "28": 28,
+            "29": 5,
+            "30": 20,
+            "31": 2,
+            "32": 14,
+            "33": 7,
+            "34": 1,
+            "35": 3,
+            "36": 2
+          }
+        },
+        "crosstab": {
+          "Altered": {
+            "27": 0.1429,
+            "28": 0.0,
+            "29": 0.0,
+            "30": 0.2593,
+            "31": 0.0,
+            "32": 0.1765,
+            "33": 0.0,
+            "34": 0.0,
+            "35": 0.25,
+            "36": 0.0
+          },
+          "Normal": {
+            "27": 0.8571,
+            "28": 1.0,
+            "29": 1.0,
+            "30": 0.7407,
+            "31": 1.0,
+            "32": 0.8235,
+            "33": 1.0,
+            "34": 1.0,
+            "35": 0.75,
+            "36": 1.0
+          }
+        }
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "age_hours_ratio",
+        "rationale": "Algorithmic Pearson correlation (|r| = 0.43)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": true,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": false,
+        "groups": {
+          "27": {
+            "min": 1.5882,
+            "q1": 2.1441,
+            "median": 2.7,
+            "q3": 3.0,
+            "max": 3.8571
+          },
+          "28": {
+            "min": 1.4737,
+            "q1": 2.3333,
+            "median": 2.8,
+            "q3": 3.1111,
+            "max": 7.0
+          },
+          "29": {
+            "min": 2.4167,
+            "q1": 2.4167,
+            "median": 2.9,
+            "q3": 3.625,
+            "max": 4.8333
+          },
+          "30": {
+            "min": 0.0875,
+            "q1": 3.0,
+            "median": 3.75,
+            "q3": 5.0,
+            "max": 7.5
+          },
+          "31": {
+            "min": 7.75,
+            "q1": 7.75,
+            "median": 7.75,
+            "q3": 7.75,
+            "max": 7.75
+          },
+          "32": {
+            "min": 2.9091,
+            "q1": 4.0,
+            "median": 5.3333,
+            "q3": 5.3333,
+            "max": 16.0
+          },
+          "33": {
+            "min": 3.3,
+            "q1": 4.125,
+            "median": 4.125,
+            "q3": 5.1071,
+            "max": 8.25
+          },
+          "34": {
+            "min": 4.8571,
+            "q1": 4.8571,
+            "median": 4.8571,
+            "q3": 4.8571,
+            "max": 4.8571
+          },
+          "35": {
+            "min": 2.9167,
+            "q1": 4.4792,
+            "median": 5.4167,
+            "q3": 6.5625,
+            "max": 8.75
+          },
+          "36": {
+            "min": 4.5,
+            "q1": 4.875,
+            "median": 5.25,
+            "q3": 5.625,
+            "max": 6.0
+          }
+        }
+      },
+      {
+        "feature_1": "Age",
+        "feature_2": "log_hours_sitting",
+        "rationale": "Algorithmic Pearson correlation (|r| = 0.30)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": true,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": false,
+        "groups": {
+          "27": {
+            "min": 1.9459,
+            "q1": 2.1972,
+            "median": 2.3026,
+            "q3": 2.5679,
+            "max": 2.8332
+          },
+          "28": {
+            "min": 1.3863,
+            "q1": 2.1972,
+            "median": 2.3026,
+            "q3": 2.4849,
+            "max": 2.9444
+          },
+          "29": {
+            "min": 1.7918,
+            "q1": 2.0794,
+            "median": 2.3026,
+            "q3": 2.4849,
+            "max": 2.4849
+          },
+          "30": {
+            "min": 1.3863,
+            "q1": 1.7918,
+            "median": 2.0794,
+            "q3": 2.3026,
+            "max": 5.8377
+          },
+          "31": {
+            "min": 1.3863,
+            "q1": 1.3863,
+            "median": 1.3863,
+            "q3": 1.3863,
+            "max": 1.3863
+          },
+          "32": {
+            "min": 0.6931,
+            "q1": 1.7918,
+            "median": 1.7918,
+            "q3": 2.0794,
+            "max": 2.3979
+          },
+          "33": {
+            "min": 1.3863,
+            "q1": 1.8688,
+            "median": 2.0794,
+            "q3": 2.0794,
+            "max": 2.3026
+          },
+          "34": {
+            "min": 1.9459,
+            "q1": 1.9459,
+            "median": 1.9459,
+            "q3": 1.9459,
+            "max": 1.9459
+          },
+          "35": {
+            "min": 1.3863,
+            "q1": 1.6904,
+            "median": 1.8688,
+            "q3": 2.0807,
+            "max": 2.4849
+          },
+          "36": {
+            "min": 1.7918,
+            "q1": 1.8637,
+            "median": 1.9356,
+            "q3": 2.0075,
+            "max": 2.0794
+          }
+        }
+      },
+      {
+        "feature_1": "Childish diseases",
+        "feature_2": "Diagnosis",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "Altered": {
+            "no": 2,
+            "yes": 10
+          },
+          "Normal": {
+            "no": 11,
+            "yes": 77
+          }
+        },
+        "crosstab": {
+          "Altered": {
+            "no": 0.1538,
+            "yes": 0.1149
+          },
+          "Normal": {
+            "no": 0.8462,
+            "yes": 0.8851
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "Frequency of alcohol consumption",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "every day": {
+            "Altered": 0,
+            "Normal": 1
+          },
+          "hardly ever or never": {
+            "Altered": 2,
+            "Normal": 38
+          },
+          "once a week": {
+            "Altered": 6,
+            "Normal": 33
+          },
+          "several times a day": {
+            "Altered": 0,
+            "Normal": 1
+          },
+          "several times a week": {
+            "Altered": 4,
+            "Normal": 15
+          }
+        },
+        "crosstab": {
+          "every day": {
+            "Altered": 0.0,
+            "Normal": 0.0114
+          },
+          "hardly ever or never": {
+            "Altered": 0.1667,
+            "Normal": 0.4318
+          },
+          "once a week": {
+            "Altered": 0.5,
+            "Normal": 0.375
+          },
+          "several times a day": {
+            "Altered": 0.0,
+            "Normal": 0.0114
+          },
+          "several times a week": {
+            "Altered": 0.3333,
+            "Normal": 0.1705
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "High fevers in the last year",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "less than 3 months ago": {
+            "Altered": 2,
+            "Normal": 7
+          },
+          "more than 3 months ago": {
+            "Altered": 8,
+            "Normal": 55
+          },
+          "no": {
+            "Altered": 2,
+            "Normal": 26
+          }
+        },
+        "crosstab": {
+          "less than 3 months ago": {
+            "Altered": 0.1667,
+            "Normal": 0.0795
+          },
+          "more than 3 months ago": {
+            "Altered": 0.6667,
+            "Normal": 0.625
+          },
+          "no": {
+            "Altered": 0.1667,
+            "Normal": 0.2955
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "Number of hours spent sitting per day",
+        "rationale": "Prolonged sedentary behavior can impair metabolic health and hormone balance, which may be reflected in fertility diagnoses. (Also identified statistically by algorithms)",
+        "source": "both",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": false,
+        "groups": {
+          "Altered": {
+            "min": 1.0,
+            "q1": 6.75,
+            "median": 7.5,
+            "q3": 9.0,
+            "max": 16.0
+          },
+          "Normal": {
+            "min": 1.0,
+            "q1": 5.0,
+            "median": 7.0,
+            "q3": 9.0,
+            "max": 342.0
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "Season",
+        "rationale": "Seasonal hormonal fluctuations and environmental factors may affect reproductive health, making season a potential predictor of fertility status. (Also identified statistically by algorithms)",
+        "source": "both",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "fall": {
+            "Altered": 6,
+            "Normal": 25
+          },
+          "spring": {
+            "Altered": 4,
+            "Normal": 33
+          },
+          "summer": {
+            "Altered": 1,
+            "Normal": 3
+          },
+          "winter": {
+            "Altered": 1,
+            "Normal": 27
+          }
+        },
+        "crosstab": {
+          "fall": {
+            "Altered": 0.5,
+            "Normal": 0.2841
+          },
+          "spring": {
+            "Altered": 0.3333,
+            "Normal": 0.375
+          },
+          "summer": {
+            "Altered": 0.0833,
+            "Normal": 0.0341
+          },
+          "winter": {
+            "Altered": 0.0833,
+            "Normal": 0.3068
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "Smoking habit",
+        "rationale": "Tobacco exposure is linked to reduced ovarian reserve and sperm quality, so its interaction with diagnosis can highlight lifestyle\u2011related fertility risks. (Also identified statistically by algorithms)",
+        "source": "both",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "daily": {
+            "Altered": 3,
+            "Normal": 18
+          },
+          "never": {
+            "Altered": 6,
+            "Normal": 50
+          },
+          "occasional": {
+            "Altered": 3,
+            "Normal": 20
+          }
+        },
+        "crosstab": {
+          "daily": {
+            "Altered": 0.25,
+            "Normal": 0.2045
+          },
+          "never": {
+            "Altered": 0.5,
+            "Normal": 0.5682
+          },
+          "occasional": {
+            "Altered": 0.25,
+            "Normal": 0.2273
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "Surgical intervention",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "no": {
+            "Altered": 5,
+            "Normal": 44
+          },
+          "yes": {
+            "Altered": 7,
+            "Normal": 44
+          }
+        },
+        "crosstab": {
+          "no": {
+            "Altered": 0.4167,
+            "Normal": 0.5
+          },
+          "yes": {
+            "Altered": 0.5833,
+            "Normal": 0.5
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "age_hours_ratio",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": false,
+        "groups": {
+          "Altered": {
+            "min": 1.5882,
+            "q1": 3.0,
+            "median": 3.6528,
+            "q3": 4.25,
+            "max": 16.0
+          },
+          "Normal": {
+            "min": 0.0875,
+            "q1": 2.8,
+            "median": 3.9286,
+            "q3": 5.0833,
+            "max": 16.0
+          }
+        }
+      },
+      {
+        "feature_1": "Diagnosis",
+        "feature_2": "log_hours_sitting",
+        "rationale": "Statistical hypothesis predictor against target 'Diagnosis'",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": false,
+        "groups": {
+          "Altered": {
+            "min": 0.6931,
+            "q1": 2.0461,
+            "median": 2.1383,
+            "q3": 2.3026,
+            "max": 2.8332
+          },
+          "Normal": {
+            "min": 0.6931,
+            "q1": 1.7918,
+            "median": 2.0794,
+            "q3": 2.3026,
+            "max": 5.8377
+          }
+        }
+      },
+      {
+        "feature_1": "Frequency of alcohol consumption",
+        "feature_2": "Smoking habit",
+        "rationale": "Algorithmic Cram\u00e9r's V association (V = 0.21)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "daily": {
+            "every day": 1,
+            "hardly ever or never": 7,
+            "once a week": 9,
+            "several times a day": 0,
+            "several times a week": 4
+          },
+          "never": {
+            "every day": 0,
+            "hardly ever or never": 30,
+            "once a week": 17,
+            "several times a day": 1,
+            "several times a week": 8
+          },
+          "occasional": {
+            "every day": 0,
+            "hardly ever or never": 3,
+            "once a week": 13,
+            "several times a day": 0,
+            "several times a week": 7
+          }
+        },
+        "crosstab": {
+          "daily": {
+            "every day": 1.0,
+            "hardly ever or never": 0.175,
+            "once a week": 0.2308,
+            "several times a day": 0.0,
+            "several times a week": 0.2105
+          },
+          "never": {
+            "every day": 0.0,
+            "hardly ever or never": 0.75,
+            "once a week": 0.4359,
+            "several times a day": 1.0,
+            "several times a week": 0.4211
+          },
+          "occasional": {
+            "every day": 0.0,
+            "hardly ever or never": 0.075,
+            "once a week": 0.3333,
+            "several times a day": 0.0,
+            "several times a week": 0.3684
+          }
+        }
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Season",
+        "rationale": "Algorithmic Cram\u00e9r's V association (V = 0.20)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "fall": {
+            "less than 3 months ago": 2,
+            "more than 3 months ago": 25,
+            "no": 4
+          },
+          "spring": {
+            "less than 3 months ago": 6,
+            "more than 3 months ago": 22,
+            "no": 9
+          },
+          "summer": {
+            "less than 3 months ago": 0,
+            "more than 3 months ago": 3,
+            "no": 1
+          },
+          "winter": {
+            "less than 3 months ago": 1,
+            "more than 3 months ago": 13,
+            "no": 14
+          }
+        },
+        "crosstab": {
+          "fall": {
+            "less than 3 months ago": 0.2222,
+            "more than 3 months ago": 0.3968,
+            "no": 0.1429
+          },
+          "spring": {
+            "less than 3 months ago": 0.6667,
+            "more than 3 months ago": 0.3492,
+            "no": 0.3214
+          },
+          "summer": {
+            "less than 3 months ago": 0.0,
+            "more than 3 months ago": 0.0476,
+            "no": 0.0357
+          },
+          "winter": {
+            "less than 3 months ago": 0.1111,
+            "more than 3 months ago": 0.2063,
+            "no": 0.5
+          }
+        }
+      },
+      {
+        "feature_1": "High fevers in the last year",
+        "feature_2": "Surgical intervention",
+        "rationale": "Algorithmic Cram\u00e9r's V association (V = 0.24)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": false,
+        "feature_2_is_numeric": false,
+        "feature_1_is_discrete": true,
+        "feature_2_is_discrete": true,
+        "grouped_counts": {
+          "no": {
+            "less than 3 months ago": 4,
+            "more than 3 months ago": 25,
+            "no": 20
+          },
+          "yes": {
+            "less than 3 months ago": 5,
+            "more than 3 months ago": 38,
+            "no": 8
+          }
+        },
+        "crosstab": {
+          "no": {
+            "less than 3 months ago": 0.4444,
+            "more than 3 months ago": 0.3968,
+            "no": 0.7143
+          },
+          "yes": {
+            "less than 3 months ago": 0.5556,
+            "more than 3 months ago": 0.6032,
+            "no": 0.2857
+          }
+        }
+      },
+      {
+        "feature_1": "Number of hours spent sitting per day",
+        "feature_2": "log_hours_sitting",
+        "rationale": "Algorithmic Pearson correlation (|r| = 0.73)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": true,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": false,
+        "feature_2_is_discrete": false,
+        "points": [
+          {
+            "x": 16.0,
+            "y": 2.8332
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 2.0,
+            "y": 1.0986
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 342.0,
+            "y": 5.8377
+          },
+          {
+            "x": 14.0,
+            "y": 2.7081
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 14.0,
+            "y": 2.7081
+          },
+          {
+            "x": 14.0,
+            "y": 2.7081
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 18.0,
+            "y": 2.9444
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 10.0,
+            "y": 2.3979
+          },
+          {
+            "x": 16.0,
+            "y": 2.8332
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 16.0,
+            "y": 2.8332
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 10.0,
+            "y": 2.3979
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 11.0,
+            "y": 2.4849
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 1.0,
+            "y": 0.6931
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 1.0,
+            "y": 0.6931
+          },
+          {
+            "x": 7.0,
+            "y": 2.0794
+          },
+          {
+            "x": 8.0,
+            "y": 2.1972
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 9.0,
+            "y": 2.3026
+          },
+          {
+            "x": 6.0,
+            "y": 1.9459
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          },
+          {
+            "x": 3.0,
+            "y": 1.3863
+          }
+        ]
+      },
+      {
+        "feature_1": "age_hours_ratio",
+        "feature_2": "log_hours_sitting",
+        "rationale": "Algorithmic Pearson correlation (|r| = 0.80)",
+        "source": "algorithmic",
+        "feature_1_is_numeric": true,
+        "feature_2_is_numeric": true,
+        "feature_1_is_discrete": false,
+        "feature_2_is_discrete": false,
+        "points": [
+          {
+            "x": 1.7647,
+            "y": 2.8332
+          },
+          {
+            "x": 5.0,
+            "y": 1.9459
+          },
+          {
+            "x": 2.7,
+            "y": 2.3026
+          },
+          {
+            "x": 4.0,
+            "y": 2.0794
+          },
+          {
+            "x": 3.0,
+            "y": 2.3026
+          },
+          {
+            "x": 3.0,
+            "y": 2.3026
+          },
+          {
+            "x": 3.3333,
+            "y": 2.1972
+          },
+          {
+            "x": 4.5,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 4.8333,
+            "y": 1.7918
+          },
+          {
+            "x": 4.2857,
+            "y": 1.9459
+          },
+          {
+            "x": 10.6667,
+            "y": 1.0986
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 4.125,
+            "y": 2.0794
+          },
+          {
+            "x": 5.8333,
+            "y": 1.7918
+          },
+          {
+            "x": 3.3,
+            "y": 2.3026
+          },
+          {
+            "x": 3.75,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 3.75,
+            "y": 2.0794
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 3.3333,
+            "y": 2.1972
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 3.75,
+            "y": 2.0794
+          },
+          {
+            "x": 4.0,
+            "y": 2.0794
+          },
+          {
+            "x": 7.0,
+            "y": 1.3863
+          },
+          {
+            "x": 3.0,
+            "y": 2.3026
+          },
+          {
+            "x": 2.4167,
+            "y": 2.4849
+          },
+          {
+            "x": 3.1111,
+            "y": 2.1972
+          },
+          {
+            "x": 2.5,
+            "y": 2.4849
+          },
+          {
+            "x": 3.1111,
+            "y": 2.1972
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 4.0,
+            "y": 2.0794
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 3.0,
+            "y": 2.3026
+          },
+          {
+            "x": 4.2857,
+            "y": 1.9459
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 3.1111,
+            "y": 2.1972
+          },
+          {
+            "x": 4.0,
+            "y": 1.9459
+          },
+          {
+            "x": 3.1111,
+            "y": 2.1972
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 7.75,
+            "y": 1.3863
+          },
+          {
+            "x": 4.2857,
+            "y": 1.9459
+          },
+          {
+            "x": 8.0,
+            "y": 1.3863
+          },
+          {
+            "x": 0.0875,
+            "y": 5.8377
+          },
+          {
+            "x": 1.8667,
+            "y": 2.7081
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 7.0,
+            "y": 1.3863
+          },
+          {
+            "x": 2.4167,
+            "y": 2.4849
+          },
+          {
+            "x": 7.0,
+            "y": 1.3863
+          },
+          {
+            "x": 1.8667,
+            "y": 2.7081
+          },
+          {
+            "x": 2.0,
+            "y": 2.7081
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 3.1111,
+            "y": 2.1972
+          },
+          {
+            "x": 1.4737,
+            "y": 2.9444
+          },
+          {
+            "x": 5.0,
+            "y": 1.7918
+          },
+          {
+            "x": 3.625,
+            "y": 2.0794
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 4.0,
+            "y": 1.9459
+          },
+          {
+            "x": 2.5455,
+            "y": 2.3979
+          },
+          {
+            "x": 1.5882,
+            "y": 2.8332
+          },
+          {
+            "x": 3.0,
+            "y": 2.1972
+          },
+          {
+            "x": 3.8571,
+            "y": 1.9459
+          },
+          {
+            "x": 2.7,
+            "y": 2.3026
+          },
+          {
+            "x": 1.5882,
+            "y": 2.8332
+          },
+          {
+            "x": 4.2857,
+            "y": 1.9459
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 3.0,
+            "y": 2.1972
+          },
+          {
+            "x": 2.3333,
+            "y": 2.4849
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 2.9091,
+            "y": 2.3979
+          },
+          {
+            "x": 7.75,
+            "y": 1.3863
+          },
+          {
+            "x": 3.5,
+            "y": 2.0794
+          },
+          {
+            "x": 6.0,
+            "y": 1.7918
+          },
+          {
+            "x": 2.9167,
+            "y": 2.4849
+          },
+          {
+            "x": 8.25,
+            "y": 1.3863
+          },
+          {
+            "x": 8.75,
+            "y": 1.3863
+          },
+          {
+            "x": 5.5,
+            "y": 1.7918
+          },
+          {
+            "x": 16.0,
+            "y": 0.6931
+          },
+          {
+            "x": 4.8571,
+            "y": 1.9459
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 5.3333,
+            "y": 1.7918
+          },
+          {
+            "x": 4.7143,
+            "y": 1.9459
+          },
+          {
+            "x": 4.125,
+            "y": 2.0794
+          },
+          {
+            "x": 4.125,
+            "y": 2.0794
+          },
+          {
+            "x": 16.0,
+            "y": 0.6931
+          },
+          {
+            "x": 4.0,
+            "y": 2.0794
+          },
+          {
+            "x": 3.5556,
+            "y": 2.1972
+          },
+          {
+            "x": 2.8,
+            "y": 2.3026
+          },
+          {
+            "x": 3.0,
+            "y": 2.3026
+          },
+          {
+            "x": 2.9,
+            "y": 2.3026
+          },
+          {
+            "x": 4.2857,
+            "y": 1.9459
+          },
+          {
+            "x": 7.5,
+            "y": 1.3863
+          },
+          {
+            "x": 7.5,
+            "y": 1.3863
+          }
+        ]
+      }
+    ],
+    "algorithmic_count": 19,
+    "llm_count": 5,
+    "both_count": 5,
+    "union_count": 19
+  },
+  "pairplot_data": {
+    "pairplot_saved": "interactive_client_side",
+    "features_plotted": [
+      "Age",
+      "Number of hours spent sitting per day",
+      "log_hours_sitting",
+      "age_hours_ratio"
+    ],
+    "hue": null,
+    "pairplot_matrix": [
+      [
+        {
+          "type": "diag",
+          "feature": "Age",
+          "bin_centers": [
+            27.45,
+            28.35,
+            29.25,
+            30.15,
+            31.05,
+            31.95,
+            32.85,
+            33.75,
+            34.65,
+            35.55
+          ],
+          "counts": [
+            7,
+            28,
+            5,
+            27,
+            2,
+            17,
+            7,
+            1,
+            4,
+            2
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "Number of hours spent sitting per day",
+          "y_feature": "Age",
+          "points": [
+            {
+              "x": 16.0,
+              "y": 30.0
+            },
+            {
+              "x": 6.0,
+              "y": 35.0
+            },
+            {
+              "x": 9.0,
+              "y": 27.0
+            },
+            {
+              "x": 7.0,
+              "y": 32.0
+            },
+            {
+              "x": 9.0,
+              "y": 30.0
+            },
+            {
+              "x": 9.0,
+              "y": 30.0
+            },
+            {
+              "x": 8.0,
+              "y": 30.0
+            },
+            {
+              "x": 7.0,
+              "y": 36.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 29.0
+            },
+            {
+              "x": 6.0,
+              "y": 30.0
+            },
+            {
+              "x": 2.0,
+              "y": 32.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 7.0,
+              "y": 33.0
+            },
+            {
+              "x": 5.0,
+              "y": 35.0
+            },
+            {
+              "x": 9.0,
+              "y": 33.0
+            },
+            {
+              "x": 7.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 7.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 8.0,
+              "y": 30.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 7.0,
+              "y": 30.0
+            },
+            {
+              "x": 7.0,
+              "y": 32.0
+            },
+            {
+              "x": 3.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 30.0
+            },
+            {
+              "x": 11.0,
+              "y": 29.0
+            },
+            {
+              "x": 8.0,
+              "y": 28.0
+            },
+            {
+              "x": 11.0,
+              "y": 30.0
+            },
+            {
+              "x": 8.0,
+              "y": 28.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 7.0,
+              "y": 32.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 30.0
+            },
+            {
+              "x": 6.0,
+              "y": 30.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 8.0,
+              "y": 28.0
+            },
+            {
+              "x": 6.0,
+              "y": 28.0
+            },
+            {
+              "x": 8.0,
+              "y": 28.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 31.0
+            },
+            {
+              "x": 6.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.0,
+              "y": 32.0
+            },
+            {
+              "x": 342.0,
+              "y": 30.0
+            },
+            {
+              "x": 14.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 28.0
+            },
+            {
+              "x": 11.0,
+              "y": 29.0
+            },
+            {
+              "x": 3.0,
+              "y": 28.0
+            },
+            {
+              "x": 14.0,
+              "y": 28.0
+            },
+            {
+              "x": 14.0,
+              "y": 30.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 8.0,
+              "y": 28.0
+            },
+            {
+              "x": 18.0,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 7.0,
+              "y": 29.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 6.0,
+              "y": 28.0
+            },
+            {
+              "x": 10.0,
+              "y": 28.0
+            },
+            {
+              "x": 16.0,
+              "y": 27.0
+            },
+            {
+              "x": 8.0,
+              "y": 27.0
+            },
+            {
+              "x": 6.0,
+              "y": 27.0
+            },
+            {
+              "x": 9.0,
+              "y": 27.0
+            },
+            {
+              "x": 16.0,
+              "y": 27.0
+            },
+            {
+              "x": 6.0,
+              "y": 30.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 8.0,
+              "y": 27.0
+            },
+            {
+              "x": 11.0,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 10.0,
+              "y": 32.0
+            },
+            {
+              "x": 3.0,
+              "y": 31.0
+            },
+            {
+              "x": 7.0,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 36.0
+            },
+            {
+              "x": 11.0,
+              "y": 35.0
+            },
+            {
+              "x": 3.0,
+              "y": 33.0
+            },
+            {
+              "x": 3.0,
+              "y": 35.0
+            },
+            {
+              "x": 5.0,
+              "y": 33.0
+            },
+            {
+              "x": 1.0,
+              "y": 32.0
+            },
+            {
+              "x": 6.0,
+              "y": 34.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 5.0,
+              "y": 32.0
+            },
+            {
+              "x": 6.0,
+              "y": 33.0
+            },
+            {
+              "x": 7.0,
+              "y": 33.0
+            },
+            {
+              "x": 7.0,
+              "y": 33.0
+            },
+            {
+              "x": 1.0,
+              "y": 32.0
+            },
+            {
+              "x": 7.0,
+              "y": 32.0
+            },
+            {
+              "x": 8.0,
+              "y": 32.0
+            },
+            {
+              "x": 9.0,
+              "y": 28.0
+            },
+            {
+              "x": 9.0,
+              "y": 30.0
+            },
+            {
+              "x": 9.0,
+              "y": 29.0
+            },
+            {
+              "x": 6.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "log_hours_sitting",
+          "y_feature": "Age",
+          "points": [
+            {
+              "x": 2.8332,
+              "y": 30.0
+            },
+            {
+              "x": 1.9459,
+              "y": 35.0
+            },
+            {
+              "x": 2.3026,
+              "y": 27.0
+            },
+            {
+              "x": 2.0794,
+              "y": 32.0
+            },
+            {
+              "x": 2.3026,
+              "y": 30.0
+            },
+            {
+              "x": 2.3026,
+              "y": 30.0
+            },
+            {
+              "x": 2.1972,
+              "y": 30.0
+            },
+            {
+              "x": 2.0794,
+              "y": 36.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 1.7918,
+              "y": 29.0
+            },
+            {
+              "x": 1.9459,
+              "y": 30.0
+            },
+            {
+              "x": 1.0986,
+              "y": 32.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 2.0794,
+              "y": 33.0
+            },
+            {
+              "x": 1.7918,
+              "y": 35.0
+            },
+            {
+              "x": 2.3026,
+              "y": 33.0
+            },
+            {
+              "x": 2.0794,
+              "y": 30.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 2.0794,
+              "y": 30.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 2.1972,
+              "y": 30.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 2.0794,
+              "y": 30.0
+            },
+            {
+              "x": 2.0794,
+              "y": 32.0
+            },
+            {
+              "x": 1.3863,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 30.0
+            },
+            {
+              "x": 2.4849,
+              "y": 29.0
+            },
+            {
+              "x": 2.1972,
+              "y": 28.0
+            },
+            {
+              "x": 2.4849,
+              "y": 30.0
+            },
+            {
+              "x": 2.1972,
+              "y": 28.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 2.0794,
+              "y": 32.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 30.0
+            },
+            {
+              "x": 1.9459,
+              "y": 30.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 2.1972,
+              "y": 28.0
+            },
+            {
+              "x": 1.9459,
+              "y": 28.0
+            },
+            {
+              "x": 2.1972,
+              "y": 28.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 1.3863,
+              "y": 31.0
+            },
+            {
+              "x": 1.9459,
+              "y": 30.0
+            },
+            {
+              "x": 1.3863,
+              "y": 32.0
+            },
+            {
+              "x": 5.8377,
+              "y": 30.0
+            },
+            {
+              "x": 2.7081,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 1.3863,
+              "y": 28.0
+            },
+            {
+              "x": 2.4849,
+              "y": 29.0
+            },
+            {
+              "x": 1.3863,
+              "y": 28.0
+            },
+            {
+              "x": 2.7081,
+              "y": 28.0
+            },
+            {
+              "x": 2.7081,
+              "y": 30.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 2.1972,
+              "y": 28.0
+            },
+            {
+              "x": 2.9444,
+              "y": 28.0
+            },
+            {
+              "x": 1.7918,
+              "y": 30.0
+            },
+            {
+              "x": 2.0794,
+              "y": 29.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 1.9459,
+              "y": 28.0
+            },
+            {
+              "x": 2.3979,
+              "y": 28.0
+            },
+            {
+              "x": 2.8332,
+              "y": 27.0
+            },
+            {
+              "x": 2.1972,
+              "y": 27.0
+            },
+            {
+              "x": 1.9459,
+              "y": 27.0
+            },
+            {
+              "x": 2.3026,
+              "y": 27.0
+            },
+            {
+              "x": 2.8332,
+              "y": 27.0
+            },
+            {
+              "x": 1.9459,
+              "y": 30.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 2.1972,
+              "y": 27.0
+            },
+            {
+              "x": 2.4849,
+              "y": 28.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 2.3979,
+              "y": 32.0
+            },
+            {
+              "x": 1.3863,
+              "y": 31.0
+            },
+            {
+              "x": 2.0794,
+              "y": 28.0
+            },
+            {
+              "x": 1.7918,
+              "y": 36.0
+            },
+            {
+              "x": 2.4849,
+              "y": 35.0
+            },
+            {
+              "x": 1.3863,
+              "y": 33.0
+            },
+            {
+              "x": 1.3863,
+              "y": 35.0
+            },
+            {
+              "x": 1.7918,
+              "y": 33.0
+            },
+            {
+              "x": 0.6931,
+              "y": 32.0
+            },
+            {
+              "x": 1.9459,
+              "y": 34.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 1.7918,
+              "y": 32.0
+            },
+            {
+              "x": 1.9459,
+              "y": 33.0
+            },
+            {
+              "x": 2.0794,
+              "y": 33.0
+            },
+            {
+              "x": 2.0794,
+              "y": 33.0
+            },
+            {
+              "x": 0.6931,
+              "y": 32.0
+            },
+            {
+              "x": 2.0794,
+              "y": 32.0
+            },
+            {
+              "x": 2.1972,
+              "y": 32.0
+            },
+            {
+              "x": 2.3026,
+              "y": 28.0
+            },
+            {
+              "x": 2.3026,
+              "y": 30.0
+            },
+            {
+              "x": 2.3026,
+              "y": 29.0
+            },
+            {
+              "x": 1.9459,
+              "y": 30.0
+            },
+            {
+              "x": 1.3863,
+              "y": 30.0
+            },
+            {
+              "x": 1.3863,
+              "y": 30.0
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "age_hours_ratio",
+          "y_feature": "Age",
+          "points": [
+            {
+              "x": 1.7647,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 35.0
+            },
+            {
+              "x": 2.7,
+              "y": 27.0
+            },
+            {
+              "x": 4.0,
+              "y": 32.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.3333,
+              "y": 30.0
+            },
+            {
+              "x": 4.5,
+              "y": 36.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 4.8333,
+              "y": 29.0
+            },
+            {
+              "x": 4.2857,
+              "y": 30.0
+            },
+            {
+              "x": 10.6667,
+              "y": 32.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 4.125,
+              "y": 33.0
+            },
+            {
+              "x": 5.8333,
+              "y": 35.0
+            },
+            {
+              "x": 3.3,
+              "y": 33.0
+            },
+            {
+              "x": 3.75,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 3.75,
+              "y": 30.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.3333,
+              "y": 30.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.75,
+              "y": 30.0
+            },
+            {
+              "x": 4.0,
+              "y": 32.0
+            },
+            {
+              "x": 7.0,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 2.4167,
+              "y": 29.0
+            },
+            {
+              "x": 3.1111,
+              "y": 28.0
+            },
+            {
+              "x": 2.5,
+              "y": 30.0
+            },
+            {
+              "x": 3.1111,
+              "y": 28.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 4.0,
+              "y": 32.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 4.2857,
+              "y": 30.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 3.1111,
+              "y": 28.0
+            },
+            {
+              "x": 4.0,
+              "y": 28.0
+            },
+            {
+              "x": 3.1111,
+              "y": 28.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 7.75,
+              "y": 31.0
+            },
+            {
+              "x": 4.2857,
+              "y": 30.0
+            },
+            {
+              "x": 8.0,
+              "y": 32.0
+            },
+            {
+              "x": 0.0875,
+              "y": 30.0
+            },
+            {
+              "x": 1.8667,
+              "y": 28.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 7.0,
+              "y": 28.0
+            },
+            {
+              "x": 2.4167,
+              "y": 29.0
+            },
+            {
+              "x": 7.0,
+              "y": 28.0
+            },
+            {
+              "x": 1.8667,
+              "y": 28.0
+            },
+            {
+              "x": 2.0,
+              "y": 30.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 3.1111,
+              "y": 28.0
+            },
+            {
+              "x": 1.4737,
+              "y": 28.0
+            },
+            {
+              "x": 5.0,
+              "y": 30.0
+            },
+            {
+              "x": 3.625,
+              "y": 29.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 4.0,
+              "y": 28.0
+            },
+            {
+              "x": 2.5455,
+              "y": 28.0
+            },
+            {
+              "x": 1.5882,
+              "y": 27.0
+            },
+            {
+              "x": 3.0,
+              "y": 27.0
+            },
+            {
+              "x": 3.8571,
+              "y": 27.0
+            },
+            {
+              "x": 2.7,
+              "y": 27.0
+            },
+            {
+              "x": 1.5882,
+              "y": 27.0
+            },
+            {
+              "x": 4.2857,
+              "y": 30.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 27.0
+            },
+            {
+              "x": 2.3333,
+              "y": 28.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 2.9091,
+              "y": 32.0
+            },
+            {
+              "x": 7.75,
+              "y": 31.0
+            },
+            {
+              "x": 3.5,
+              "y": 28.0
+            },
+            {
+              "x": 6.0,
+              "y": 36.0
+            },
+            {
+              "x": 2.9167,
+              "y": 35.0
+            },
+            {
+              "x": 8.25,
+              "y": 33.0
+            },
+            {
+              "x": 8.75,
+              "y": 35.0
+            },
+            {
+              "x": 5.5,
+              "y": 33.0
+            },
+            {
+              "x": 16.0,
+              "y": 32.0
+            },
+            {
+              "x": 4.8571,
+              "y": 34.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 5.3333,
+              "y": 32.0
+            },
+            {
+              "x": 4.7143,
+              "y": 33.0
+            },
+            {
+              "x": 4.125,
+              "y": 33.0
+            },
+            {
+              "x": 4.125,
+              "y": 33.0
+            },
+            {
+              "x": 16.0,
+              "y": 32.0
+            },
+            {
+              "x": 4.0,
+              "y": 32.0
+            },
+            {
+              "x": 3.5556,
+              "y": 32.0
+            },
+            {
+              "x": 2.8,
+              "y": 28.0
+            },
+            {
+              "x": 3.0,
+              "y": 30.0
+            },
+            {
+              "x": 2.9,
+              "y": 29.0
+            },
+            {
+              "x": 4.2857,
+              "y": 30.0
+            },
+            {
+              "x": 7.5,
+              "y": 30.0
+            },
+            {
+              "x": 7.5,
+              "y": 30.0
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "type": "scatter",
+          "x_feature": "Age",
+          "y_feature": "Number of hours spent sitting per day",
+          "points": [
+            {
+              "x": 30.0,
+              "y": 16.0
+            },
+            {
+              "x": 35.0,
+              "y": 6.0
+            },
+            {
+              "x": 27.0,
+              "y": 9.0
+            },
+            {
+              "x": 32.0,
+              "y": 7.0
+            },
+            {
+              "x": 30.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 8.0
+            },
+            {
+              "x": 36.0,
+              "y": 7.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 29.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 6.0
+            },
+            {
+              "x": 32.0,
+              "y": 2.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 33.0,
+              "y": 7.0
+            },
+            {
+              "x": 35.0,
+              "y": 5.0
+            },
+            {
+              "x": 33.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 7.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 7.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 7.0
+            },
+            {
+              "x": 32.0,
+              "y": 7.0
+            },
+            {
+              "x": 28.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 9.0
+            },
+            {
+              "x": 29.0,
+              "y": 11.0
+            },
+            {
+              "x": 28.0,
+              "y": 8.0
+            },
+            {
+              "x": 30.0,
+              "y": 11.0
+            },
+            {
+              "x": 28.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 32.0,
+              "y": 7.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 30.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 6.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 28.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 6.0
+            },
+            {
+              "x": 28.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 31.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 6.0
+            },
+            {
+              "x": 32.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 342.0
+            },
+            {
+              "x": 28.0,
+              "y": 14.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 28.0,
+              "y": 3.0
+            },
+            {
+              "x": 29.0,
+              "y": 11.0
+            },
+            {
+              "x": 28.0,
+              "y": 3.0
+            },
+            {
+              "x": 28.0,
+              "y": 14.0
+            },
+            {
+              "x": 30.0,
+              "y": 14.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 28.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 18.0
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 29.0,
+              "y": 7.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 28.0,
+              "y": 6.0
+            },
+            {
+              "x": 28.0,
+              "y": 10.0
+            },
+            {
+              "x": 27.0,
+              "y": 16.0
+            },
+            {
+              "x": 27.0,
+              "y": 8.0
+            },
+            {
+              "x": 27.0,
+              "y": 6.0
+            },
+            {
+              "x": 27.0,
+              "y": 9.0
+            },
+            {
+              "x": 27.0,
+              "y": 16.0
+            },
+            {
+              "x": 30.0,
+              "y": 6.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 27.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 11.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 10.0
+            },
+            {
+              "x": 31.0,
+              "y": 3.0
+            },
+            {
+              "x": 28.0,
+              "y": 7.0
+            },
+            {
+              "x": 36.0,
+              "y": 5.0
+            },
+            {
+              "x": 35.0,
+              "y": 11.0
+            },
+            {
+              "x": 33.0,
+              "y": 3.0
+            },
+            {
+              "x": 35.0,
+              "y": 3.0
+            },
+            {
+              "x": 33.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 1.0
+            },
+            {
+              "x": 34.0,
+              "y": 6.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.0
+            },
+            {
+              "x": 33.0,
+              "y": 6.0
+            },
+            {
+              "x": 33.0,
+              "y": 7.0
+            },
+            {
+              "x": 33.0,
+              "y": 7.0
+            },
+            {
+              "x": 32.0,
+              "y": 1.0
+            },
+            {
+              "x": 32.0,
+              "y": 7.0
+            },
+            {
+              "x": 32.0,
+              "y": 8.0
+            },
+            {
+              "x": 28.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 9.0
+            },
+            {
+              "x": 29.0,
+              "y": 9.0
+            },
+            {
+              "x": 30.0,
+              "y": 6.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            }
+          ]
+        },
+        {
+          "type": "diag",
+          "feature": "Number of hours spent sitting per day",
+          "bin_centers": [
+            18.05,
+            52.15,
+            86.25,
+            120.35,
+            154.45,
+            188.55,
+            222.65,
+            256.75,
+            290.85,
+            324.95
+          ],
+          "counts": [
+            99,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "log_hours_sitting",
+          "y_feature": "Number of hours spent sitting per day",
+          "points": [
+            {
+              "x": 2.8332,
+              "y": 16.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 1.0986,
+              "y": 2.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 5.8377,
+              "y": 342.0
+            },
+            {
+              "x": 2.7081,
+              "y": 14.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 2.7081,
+              "y": 14.0
+            },
+            {
+              "x": 2.7081,
+              "y": 14.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.9444,
+              "y": 18.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.3979,
+              "y": 10.0
+            },
+            {
+              "x": 2.8332,
+              "y": 16.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.8332,
+              "y": 16.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.3979,
+              "y": 10.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.4849,
+              "y": 11.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 0.6931,
+              "y": 1.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 0.6931,
+              "y": 1.0
+            },
+            {
+              "x": 2.0794,
+              "y": 7.0
+            },
+            {
+              "x": 2.1972,
+              "y": 8.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 2.3026,
+              "y": 9.0
+            },
+            {
+              "x": 1.9459,
+              "y": 6.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            },
+            {
+              "x": 1.3863,
+              "y": 3.0
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "age_hours_ratio",
+          "y_feature": "Number of hours spent sitting per day",
+          "points": [
+            {
+              "x": 1.7647,
+              "y": 16.0
+            },
+            {
+              "x": 5.0,
+              "y": 6.0
+            },
+            {
+              "x": 2.7,
+              "y": 9.0
+            },
+            {
+              "x": 4.0,
+              "y": 7.0
+            },
+            {
+              "x": 3.0,
+              "y": 9.0
+            },
+            {
+              "x": 3.0,
+              "y": 9.0
+            },
+            {
+              "x": 3.3333,
+              "y": 8.0
+            },
+            {
+              "x": 4.5,
+              "y": 7.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 4.8333,
+              "y": 5.0
+            },
+            {
+              "x": 4.2857,
+              "y": 6.0
+            },
+            {
+              "x": 10.6667,
+              "y": 2.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 4.125,
+              "y": 7.0
+            },
+            {
+              "x": 5.8333,
+              "y": 5.0
+            },
+            {
+              "x": 3.3,
+              "y": 9.0
+            },
+            {
+              "x": 3.75,
+              "y": 7.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 3.75,
+              "y": 7.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 3.3333,
+              "y": 8.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 3.75,
+              "y": 7.0
+            },
+            {
+              "x": 4.0,
+              "y": 7.0
+            },
+            {
+              "x": 7.0,
+              "y": 3.0
+            },
+            {
+              "x": 3.0,
+              "y": 9.0
+            },
+            {
+              "x": 2.4167,
+              "y": 11.0
+            },
+            {
+              "x": 3.1111,
+              "y": 8.0
+            },
+            {
+              "x": 2.5,
+              "y": 11.0
+            },
+            {
+              "x": 3.1111,
+              "y": 8.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 4.0,
+              "y": 7.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 3.0,
+              "y": 9.0
+            },
+            {
+              "x": 4.2857,
+              "y": 6.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 3.1111,
+              "y": 8.0
+            },
+            {
+              "x": 4.0,
+              "y": 6.0
+            },
+            {
+              "x": 3.1111,
+              "y": 8.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 7.75,
+              "y": 3.0
+            },
+            {
+              "x": 4.2857,
+              "y": 6.0
+            },
+            {
+              "x": 8.0,
+              "y": 3.0
+            },
+            {
+              "x": 0.0875,
+              "y": 342.0
+            },
+            {
+              "x": 1.8667,
+              "y": 14.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 7.0,
+              "y": 3.0
+            },
+            {
+              "x": 2.4167,
+              "y": 11.0
+            },
+            {
+              "x": 7.0,
+              "y": 3.0
+            },
+            {
+              "x": 1.8667,
+              "y": 14.0
+            },
+            {
+              "x": 2.0,
+              "y": 14.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 3.1111,
+              "y": 8.0
+            },
+            {
+              "x": 1.4737,
+              "y": 18.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 3.625,
+              "y": 7.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 4.0,
+              "y": 6.0
+            },
+            {
+              "x": 2.5455,
+              "y": 10.0
+            },
+            {
+              "x": 1.5882,
+              "y": 16.0
+            },
+            {
+              "x": 3.0,
+              "y": 8.0
+            },
+            {
+              "x": 3.8571,
+              "y": 6.0
+            },
+            {
+              "x": 2.7,
+              "y": 9.0
+            },
+            {
+              "x": 1.5882,
+              "y": 16.0
+            },
+            {
+              "x": 4.2857,
+              "y": 6.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 3.0,
+              "y": 8.0
+            },
+            {
+              "x": 2.3333,
+              "y": 11.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 2.9091,
+              "y": 10.0
+            },
+            {
+              "x": 7.75,
+              "y": 3.0
+            },
+            {
+              "x": 3.5,
+              "y": 7.0
+            },
+            {
+              "x": 6.0,
+              "y": 5.0
+            },
+            {
+              "x": 2.9167,
+              "y": 11.0
+            },
+            {
+              "x": 8.25,
+              "y": 3.0
+            },
+            {
+              "x": 8.75,
+              "y": 3.0
+            },
+            {
+              "x": 5.5,
+              "y": 5.0
+            },
+            {
+              "x": 16.0,
+              "y": 1.0
+            },
+            {
+              "x": 4.8571,
+              "y": 6.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 5.3333,
+              "y": 5.0
+            },
+            {
+              "x": 4.7143,
+              "y": 6.0
+            },
+            {
+              "x": 4.125,
+              "y": 7.0
+            },
+            {
+              "x": 4.125,
+              "y": 7.0
+            },
+            {
+              "x": 16.0,
+              "y": 1.0
+            },
+            {
+              "x": 4.0,
+              "y": 7.0
+            },
+            {
+              "x": 3.5556,
+              "y": 8.0
+            },
+            {
+              "x": 2.8,
+              "y": 9.0
+            },
+            {
+              "x": 3.0,
+              "y": 9.0
+            },
+            {
+              "x": 2.9,
+              "y": 9.0
+            },
+            {
+              "x": 4.2857,
+              "y": 6.0
+            },
+            {
+              "x": 7.5,
+              "y": 3.0
+            },
+            {
+              "x": 7.5,
+              "y": 3.0
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "type": "scatter",
+          "x_feature": "Age",
+          "y_feature": "log_hours_sitting",
+          "points": [
+            {
+              "x": 30.0,
+              "y": 2.8332
+            },
+            {
+              "x": 35.0,
+              "y": 1.9459
+            },
+            {
+              "x": 27.0,
+              "y": 2.3026
+            },
+            {
+              "x": 32.0,
+              "y": 2.0794
+            },
+            {
+              "x": 30.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 2.1972
+            },
+            {
+              "x": 36.0,
+              "y": 2.0794
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 29.0,
+              "y": 1.7918
+            },
+            {
+              "x": 30.0,
+              "y": 1.9459
+            },
+            {
+              "x": 32.0,
+              "y": 1.0986
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 33.0,
+              "y": 2.0794
+            },
+            {
+              "x": 35.0,
+              "y": 1.7918
+            },
+            {
+              "x": 33.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 2.0794
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 30.0,
+              "y": 2.0794
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 30.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 30.0,
+              "y": 2.0794
+            },
+            {
+              "x": 32.0,
+              "y": 2.0794
+            },
+            {
+              "x": 28.0,
+              "y": 1.3863
+            },
+            {
+              "x": 30.0,
+              "y": 2.3026
+            },
+            {
+              "x": 29.0,
+              "y": 2.4849
+            },
+            {
+              "x": 28.0,
+              "y": 2.1972
+            },
+            {
+              "x": 30.0,
+              "y": 2.4849
+            },
+            {
+              "x": 28.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 32.0,
+              "y": 2.0794
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 30.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 1.9459
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 28.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 1.9459
+            },
+            {
+              "x": 28.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 31.0,
+              "y": 1.3863
+            },
+            {
+              "x": 30.0,
+              "y": 1.9459
+            },
+            {
+              "x": 32.0,
+              "y": 1.3863
+            },
+            {
+              "x": 30.0,
+              "y": 5.8377
+            },
+            {
+              "x": 28.0,
+              "y": 2.7081
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 28.0,
+              "y": 1.3863
+            },
+            {
+              "x": 29.0,
+              "y": 2.4849
+            },
+            {
+              "x": 28.0,
+              "y": 1.3863
+            },
+            {
+              "x": 28.0,
+              "y": 2.7081
+            },
+            {
+              "x": 30.0,
+              "y": 2.7081
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 28.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.9444
+            },
+            {
+              "x": 30.0,
+              "y": 1.7918
+            },
+            {
+              "x": 29.0,
+              "y": 2.0794
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 28.0,
+              "y": 1.9459
+            },
+            {
+              "x": 28.0,
+              "y": 2.3979
+            },
+            {
+              "x": 27.0,
+              "y": 2.8332
+            },
+            {
+              "x": 27.0,
+              "y": 2.1972
+            },
+            {
+              "x": 27.0,
+              "y": 1.9459
+            },
+            {
+              "x": 27.0,
+              "y": 2.3026
+            },
+            {
+              "x": 27.0,
+              "y": 2.8332
+            },
+            {
+              "x": 30.0,
+              "y": 1.9459
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 27.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.4849
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 32.0,
+              "y": 2.3979
+            },
+            {
+              "x": 31.0,
+              "y": 1.3863
+            },
+            {
+              "x": 28.0,
+              "y": 2.0794
+            },
+            {
+              "x": 36.0,
+              "y": 1.7918
+            },
+            {
+              "x": 35.0,
+              "y": 2.4849
+            },
+            {
+              "x": 33.0,
+              "y": 1.3863
+            },
+            {
+              "x": 35.0,
+              "y": 1.3863
+            },
+            {
+              "x": 33.0,
+              "y": 1.7918
+            },
+            {
+              "x": 32.0,
+              "y": 0.6931
+            },
+            {
+              "x": 34.0,
+              "y": 1.9459
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 32.0,
+              "y": 1.7918
+            },
+            {
+              "x": 33.0,
+              "y": 1.9459
+            },
+            {
+              "x": 33.0,
+              "y": 2.0794
+            },
+            {
+              "x": 33.0,
+              "y": 2.0794
+            },
+            {
+              "x": 32.0,
+              "y": 0.6931
+            },
+            {
+              "x": 32.0,
+              "y": 2.0794
+            },
+            {
+              "x": 32.0,
+              "y": 2.1972
+            },
+            {
+              "x": 28.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 2.3026
+            },
+            {
+              "x": 29.0,
+              "y": 2.3026
+            },
+            {
+              "x": 30.0,
+              "y": 1.9459
+            },
+            {
+              "x": 30.0,
+              "y": 1.3863
+            },
+            {
+              "x": 30.0,
+              "y": 1.3863
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "Number of hours spent sitting per day",
+          "y_feature": "log_hours_sitting",
+          "points": [
+            {
+              "x": 16.0,
+              "y": 2.8332
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 2.0,
+              "y": 1.0986
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 342.0,
+              "y": 5.8377
+            },
+            {
+              "x": 14.0,
+              "y": 2.7081
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 14.0,
+              "y": 2.7081
+            },
+            {
+              "x": 14.0,
+              "y": 2.7081
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 18.0,
+              "y": 2.9444
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 10.0,
+              "y": 2.3979
+            },
+            {
+              "x": 16.0,
+              "y": 2.8332
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 16.0,
+              "y": 2.8332
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 10.0,
+              "y": 2.3979
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 11.0,
+              "y": 2.4849
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 1.0,
+              "y": 0.6931
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 1.0,
+              "y": 0.6931
+            },
+            {
+              "x": 7.0,
+              "y": 2.0794
+            },
+            {
+              "x": 8.0,
+              "y": 2.1972
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 9.0,
+              "y": 2.3026
+            },
+            {
+              "x": 6.0,
+              "y": 1.9459
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            },
+            {
+              "x": 3.0,
+              "y": 1.3863
+            }
+          ]
+        },
+        {
+          "type": "diag",
+          "feature": "log_hours_sitting",
+          "bin_centers": [
+            0.9504,
+            1.4648,
+            1.9793,
+            2.4938,
+            3.0082,
+            3.5227,
+            4.0371,
+            4.5516,
+            5.066,
+            5.5805
+          ],
+          "counts": [
+            3,
+            10,
+            51,
+            31,
+            4,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "age_hours_ratio",
+          "y_feature": "log_hours_sitting",
+          "points": [
+            {
+              "x": 1.7647,
+              "y": 2.8332
+            },
+            {
+              "x": 5.0,
+              "y": 1.9459
+            },
+            {
+              "x": 2.7,
+              "y": 2.3026
+            },
+            {
+              "x": 4.0,
+              "y": 2.0794
+            },
+            {
+              "x": 3.0,
+              "y": 2.3026
+            },
+            {
+              "x": 3.0,
+              "y": 2.3026
+            },
+            {
+              "x": 3.3333,
+              "y": 2.1972
+            },
+            {
+              "x": 4.5,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 4.8333,
+              "y": 1.7918
+            },
+            {
+              "x": 4.2857,
+              "y": 1.9459
+            },
+            {
+              "x": 10.6667,
+              "y": 1.0986
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 4.125,
+              "y": 2.0794
+            },
+            {
+              "x": 5.8333,
+              "y": 1.7918
+            },
+            {
+              "x": 3.3,
+              "y": 2.3026
+            },
+            {
+              "x": 3.75,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 3.75,
+              "y": 2.0794
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 3.3333,
+              "y": 2.1972
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 3.75,
+              "y": 2.0794
+            },
+            {
+              "x": 4.0,
+              "y": 2.0794
+            },
+            {
+              "x": 7.0,
+              "y": 1.3863
+            },
+            {
+              "x": 3.0,
+              "y": 2.3026
+            },
+            {
+              "x": 2.4167,
+              "y": 2.4849
+            },
+            {
+              "x": 3.1111,
+              "y": 2.1972
+            },
+            {
+              "x": 2.5,
+              "y": 2.4849
+            },
+            {
+              "x": 3.1111,
+              "y": 2.1972
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 4.0,
+              "y": 2.0794
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 3.0,
+              "y": 2.3026
+            },
+            {
+              "x": 4.2857,
+              "y": 1.9459
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 3.1111,
+              "y": 2.1972
+            },
+            {
+              "x": 4.0,
+              "y": 1.9459
+            },
+            {
+              "x": 3.1111,
+              "y": 2.1972
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 7.75,
+              "y": 1.3863
+            },
+            {
+              "x": 4.2857,
+              "y": 1.9459
+            },
+            {
+              "x": 8.0,
+              "y": 1.3863
+            },
+            {
+              "x": 0.0875,
+              "y": 5.8377
+            },
+            {
+              "x": 1.8667,
+              "y": 2.7081
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 7.0,
+              "y": 1.3863
+            },
+            {
+              "x": 2.4167,
+              "y": 2.4849
+            },
+            {
+              "x": 7.0,
+              "y": 1.3863
+            },
+            {
+              "x": 1.8667,
+              "y": 2.7081
+            },
+            {
+              "x": 2.0,
+              "y": 2.7081
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 3.1111,
+              "y": 2.1972
+            },
+            {
+              "x": 1.4737,
+              "y": 2.9444
+            },
+            {
+              "x": 5.0,
+              "y": 1.7918
+            },
+            {
+              "x": 3.625,
+              "y": 2.0794
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 4.0,
+              "y": 1.9459
+            },
+            {
+              "x": 2.5455,
+              "y": 2.3979
+            },
+            {
+              "x": 1.5882,
+              "y": 2.8332
+            },
+            {
+              "x": 3.0,
+              "y": 2.1972
+            },
+            {
+              "x": 3.8571,
+              "y": 1.9459
+            },
+            {
+              "x": 2.7,
+              "y": 2.3026
+            },
+            {
+              "x": 1.5882,
+              "y": 2.8332
+            },
+            {
+              "x": 4.2857,
+              "y": 1.9459
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 3.0,
+              "y": 2.1972
+            },
+            {
+              "x": 2.3333,
+              "y": 2.4849
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 2.9091,
+              "y": 2.3979
+            },
+            {
+              "x": 7.75,
+              "y": 1.3863
+            },
+            {
+              "x": 3.5,
+              "y": 2.0794
+            },
+            {
+              "x": 6.0,
+              "y": 1.7918
+            },
+            {
+              "x": 2.9167,
+              "y": 2.4849
+            },
+            {
+              "x": 8.25,
+              "y": 1.3863
+            },
+            {
+              "x": 8.75,
+              "y": 1.3863
+            },
+            {
+              "x": 5.5,
+              "y": 1.7918
+            },
+            {
+              "x": 16.0,
+              "y": 0.6931
+            },
+            {
+              "x": 4.8571,
+              "y": 1.9459
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 5.3333,
+              "y": 1.7918
+            },
+            {
+              "x": 4.7143,
+              "y": 1.9459
+            },
+            {
+              "x": 4.125,
+              "y": 2.0794
+            },
+            {
+              "x": 4.125,
+              "y": 2.0794
+            },
+            {
+              "x": 16.0,
+              "y": 0.6931
+            },
+            {
+              "x": 4.0,
+              "y": 2.0794
+            },
+            {
+              "x": 3.5556,
+              "y": 2.1972
+            },
+            {
+              "x": 2.8,
+              "y": 2.3026
+            },
+            {
+              "x": 3.0,
+              "y": 2.3026
+            },
+            {
+              "x": 2.9,
+              "y": 2.3026
+            },
+            {
+              "x": 4.2857,
+              "y": 1.9459
+            },
+            {
+              "x": 7.5,
+              "y": 1.3863
+            },
+            {
+              "x": 7.5,
+              "y": 1.3863
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "type": "scatter",
+          "x_feature": "Age",
+          "y_feature": "age_hours_ratio",
+          "points": [
+            {
+              "x": 30.0,
+              "y": 1.7647
+            },
+            {
+              "x": 35.0,
+              "y": 5.0
+            },
+            {
+              "x": 27.0,
+              "y": 2.7
+            },
+            {
+              "x": 32.0,
+              "y": 4.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.3333
+            },
+            {
+              "x": 36.0,
+              "y": 4.5
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 29.0,
+              "y": 4.8333
+            },
+            {
+              "x": 30.0,
+              "y": 4.2857
+            },
+            {
+              "x": 32.0,
+              "y": 10.6667
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 33.0,
+              "y": 4.125
+            },
+            {
+              "x": 35.0,
+              "y": 5.8333
+            },
+            {
+              "x": 33.0,
+              "y": 3.3
+            },
+            {
+              "x": 30.0,
+              "y": 3.75
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 30.0,
+              "y": 3.75
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.3333
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.75
+            },
+            {
+              "x": 32.0,
+              "y": 4.0
+            },
+            {
+              "x": 28.0,
+              "y": 7.0
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 29.0,
+              "y": 2.4167
+            },
+            {
+              "x": 28.0,
+              "y": 3.1111
+            },
+            {
+              "x": 30.0,
+              "y": 2.5
+            },
+            {
+              "x": 28.0,
+              "y": 3.1111
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 32.0,
+              "y": 4.0
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 30.0,
+              "y": 4.2857
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 28.0,
+              "y": 3.1111
+            },
+            {
+              "x": 28.0,
+              "y": 4.0
+            },
+            {
+              "x": 28.0,
+              "y": 3.1111
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 31.0,
+              "y": 7.75
+            },
+            {
+              "x": 30.0,
+              "y": 4.2857
+            },
+            {
+              "x": 32.0,
+              "y": 8.0
+            },
+            {
+              "x": 30.0,
+              "y": 0.0875
+            },
+            {
+              "x": 28.0,
+              "y": 1.8667
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 28.0,
+              "y": 7.0
+            },
+            {
+              "x": 29.0,
+              "y": 2.4167
+            },
+            {
+              "x": 28.0,
+              "y": 7.0
+            },
+            {
+              "x": 28.0,
+              "y": 1.8667
+            },
+            {
+              "x": 30.0,
+              "y": 2.0
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 28.0,
+              "y": 3.1111
+            },
+            {
+              "x": 28.0,
+              "y": 1.4737
+            },
+            {
+              "x": 30.0,
+              "y": 5.0
+            },
+            {
+              "x": 29.0,
+              "y": 3.625
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 28.0,
+              "y": 4.0
+            },
+            {
+              "x": 28.0,
+              "y": 2.5455
+            },
+            {
+              "x": 27.0,
+              "y": 1.5882
+            },
+            {
+              "x": 27.0,
+              "y": 3.0
+            },
+            {
+              "x": 27.0,
+              "y": 3.8571
+            },
+            {
+              "x": 27.0,
+              "y": 2.7
+            },
+            {
+              "x": 27.0,
+              "y": 1.5882
+            },
+            {
+              "x": 30.0,
+              "y": 4.2857
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 27.0,
+              "y": 3.0
+            },
+            {
+              "x": 28.0,
+              "y": 2.3333
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 32.0,
+              "y": 2.9091
+            },
+            {
+              "x": 31.0,
+              "y": 7.75
+            },
+            {
+              "x": 28.0,
+              "y": 3.5
+            },
+            {
+              "x": 36.0,
+              "y": 6.0
+            },
+            {
+              "x": 35.0,
+              "y": 2.9167
+            },
+            {
+              "x": 33.0,
+              "y": 8.25
+            },
+            {
+              "x": 35.0,
+              "y": 8.75
+            },
+            {
+              "x": 33.0,
+              "y": 5.5
+            },
+            {
+              "x": 32.0,
+              "y": 16.0
+            },
+            {
+              "x": 34.0,
+              "y": 4.8571
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 32.0,
+              "y": 5.3333
+            },
+            {
+              "x": 33.0,
+              "y": 4.7143
+            },
+            {
+              "x": 33.0,
+              "y": 4.125
+            },
+            {
+              "x": 33.0,
+              "y": 4.125
+            },
+            {
+              "x": 32.0,
+              "y": 16.0
+            },
+            {
+              "x": 32.0,
+              "y": 4.0
+            },
+            {
+              "x": 32.0,
+              "y": 3.5556
+            },
+            {
+              "x": 28.0,
+              "y": 2.8
+            },
+            {
+              "x": 30.0,
+              "y": 3.0
+            },
+            {
+              "x": 29.0,
+              "y": 2.9
+            },
+            {
+              "x": 30.0,
+              "y": 4.2857
+            },
+            {
+              "x": 30.0,
+              "y": 7.5
+            },
+            {
+              "x": 30.0,
+              "y": 7.5
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "Number of hours spent sitting per day",
+          "y_feature": "age_hours_ratio",
+          "points": [
+            {
+              "x": 16.0,
+              "y": 1.7647
+            },
+            {
+              "x": 6.0,
+              "y": 5.0
+            },
+            {
+              "x": 9.0,
+              "y": 2.7
+            },
+            {
+              "x": 7.0,
+              "y": 4.0
+            },
+            {
+              "x": 9.0,
+              "y": 3.0
+            },
+            {
+              "x": 9.0,
+              "y": 3.0
+            },
+            {
+              "x": 8.0,
+              "y": 3.3333
+            },
+            {
+              "x": 7.0,
+              "y": 4.5
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 5.0,
+              "y": 4.8333
+            },
+            {
+              "x": 6.0,
+              "y": 4.2857
+            },
+            {
+              "x": 2.0,
+              "y": 10.6667
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 7.0,
+              "y": 4.125
+            },
+            {
+              "x": 5.0,
+              "y": 5.8333
+            },
+            {
+              "x": 9.0,
+              "y": 3.3
+            },
+            {
+              "x": 7.0,
+              "y": 3.75
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 7.0,
+              "y": 3.75
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 8.0,
+              "y": 3.3333
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 7.0,
+              "y": 3.75
+            },
+            {
+              "x": 7.0,
+              "y": 4.0
+            },
+            {
+              "x": 3.0,
+              "y": 7.0
+            },
+            {
+              "x": 9.0,
+              "y": 3.0
+            },
+            {
+              "x": 11.0,
+              "y": 2.4167
+            },
+            {
+              "x": 8.0,
+              "y": 3.1111
+            },
+            {
+              "x": 11.0,
+              "y": 2.5
+            },
+            {
+              "x": 8.0,
+              "y": 3.1111
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 7.0,
+              "y": 4.0
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 9.0,
+              "y": 3.0
+            },
+            {
+              "x": 6.0,
+              "y": 4.2857
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 8.0,
+              "y": 3.1111
+            },
+            {
+              "x": 6.0,
+              "y": 4.0
+            },
+            {
+              "x": 8.0,
+              "y": 3.1111
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 3.0,
+              "y": 7.75
+            },
+            {
+              "x": 6.0,
+              "y": 4.2857
+            },
+            {
+              "x": 3.0,
+              "y": 8.0
+            },
+            {
+              "x": 342.0,
+              "y": 0.0875
+            },
+            {
+              "x": 14.0,
+              "y": 1.8667
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 3.0,
+              "y": 7.0
+            },
+            {
+              "x": 11.0,
+              "y": 2.4167
+            },
+            {
+              "x": 3.0,
+              "y": 7.0
+            },
+            {
+              "x": 14.0,
+              "y": 1.8667
+            },
+            {
+              "x": 14.0,
+              "y": 2.0
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 8.0,
+              "y": 3.1111
+            },
+            {
+              "x": 18.0,
+              "y": 1.4737
+            },
+            {
+              "x": 5.0,
+              "y": 5.0
+            },
+            {
+              "x": 7.0,
+              "y": 3.625
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 6.0,
+              "y": 4.0
+            },
+            {
+              "x": 10.0,
+              "y": 2.5455
+            },
+            {
+              "x": 16.0,
+              "y": 1.5882
+            },
+            {
+              "x": 8.0,
+              "y": 3.0
+            },
+            {
+              "x": 6.0,
+              "y": 3.8571
+            },
+            {
+              "x": 9.0,
+              "y": 2.7
+            },
+            {
+              "x": 16.0,
+              "y": 1.5882
+            },
+            {
+              "x": 6.0,
+              "y": 4.2857
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 8.0,
+              "y": 3.0
+            },
+            {
+              "x": 11.0,
+              "y": 2.3333
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 10.0,
+              "y": 2.9091
+            },
+            {
+              "x": 3.0,
+              "y": 7.75
+            },
+            {
+              "x": 7.0,
+              "y": 3.5
+            },
+            {
+              "x": 5.0,
+              "y": 6.0
+            },
+            {
+              "x": 11.0,
+              "y": 2.9167
+            },
+            {
+              "x": 3.0,
+              "y": 8.25
+            },
+            {
+              "x": 3.0,
+              "y": 8.75
+            },
+            {
+              "x": 5.0,
+              "y": 5.5
+            },
+            {
+              "x": 1.0,
+              "y": 16.0
+            },
+            {
+              "x": 6.0,
+              "y": 4.8571
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 5.0,
+              "y": 5.3333
+            },
+            {
+              "x": 6.0,
+              "y": 4.7143
+            },
+            {
+              "x": 7.0,
+              "y": 4.125
+            },
+            {
+              "x": 7.0,
+              "y": 4.125
+            },
+            {
+              "x": 1.0,
+              "y": 16.0
+            },
+            {
+              "x": 7.0,
+              "y": 4.0
+            },
+            {
+              "x": 8.0,
+              "y": 3.5556
+            },
+            {
+              "x": 9.0,
+              "y": 2.8
+            },
+            {
+              "x": 9.0,
+              "y": 3.0
+            },
+            {
+              "x": 9.0,
+              "y": 2.9
+            },
+            {
+              "x": 6.0,
+              "y": 4.2857
+            },
+            {
+              "x": 3.0,
+              "y": 7.5
+            },
+            {
+              "x": 3.0,
+              "y": 7.5
+            }
+          ]
+        },
+        {
+          "type": "scatter",
+          "x_feature": "log_hours_sitting",
+          "y_feature": "age_hours_ratio",
+          "points": [
+            {
+              "x": 2.8332,
+              "y": 1.7647
+            },
+            {
+              "x": 1.9459,
+              "y": 5.0
+            },
+            {
+              "x": 2.3026,
+              "y": 2.7
+            },
+            {
+              "x": 2.0794,
+              "y": 4.0
+            },
+            {
+              "x": 2.3026,
+              "y": 3.0
+            },
+            {
+              "x": 2.3026,
+              "y": 3.0
+            },
+            {
+              "x": 2.1972,
+              "y": 3.3333
+            },
+            {
+              "x": 2.0794,
+              "y": 4.5
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 4.8333
+            },
+            {
+              "x": 1.9459,
+              "y": 4.2857
+            },
+            {
+              "x": 1.0986,
+              "y": 10.6667
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 2.0794,
+              "y": 4.125
+            },
+            {
+              "x": 1.7918,
+              "y": 5.8333
+            },
+            {
+              "x": 2.3026,
+              "y": 3.3
+            },
+            {
+              "x": 2.0794,
+              "y": 3.75
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 2.0794,
+              "y": 3.75
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.1972,
+              "y": 3.3333
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 3.75
+            },
+            {
+              "x": 2.0794,
+              "y": 4.0
+            },
+            {
+              "x": 1.3863,
+              "y": 7.0
+            },
+            {
+              "x": 2.3026,
+              "y": 3.0
+            },
+            {
+              "x": 2.4849,
+              "y": 2.4167
+            },
+            {
+              "x": 2.1972,
+              "y": 3.1111
+            },
+            {
+              "x": 2.4849,
+              "y": 2.5
+            },
+            {
+              "x": 2.1972,
+              "y": 3.1111
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 2.0794,
+              "y": 4.0
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 2.3026,
+              "y": 3.0
+            },
+            {
+              "x": 1.9459,
+              "y": 4.2857
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 2.1972,
+              "y": 3.1111
+            },
+            {
+              "x": 1.9459,
+              "y": 4.0
+            },
+            {
+              "x": 2.1972,
+              "y": 3.1111
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 1.3863,
+              "y": 7.75
+            },
+            {
+              "x": 1.9459,
+              "y": 4.2857
+            },
+            {
+              "x": 1.3863,
+              "y": 8.0
+            },
+            {
+              "x": 5.8377,
+              "y": 0.0875
+            },
+            {
+              "x": 2.7081,
+              "y": 1.8667
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 1.3863,
+              "y": 7.0
+            },
+            {
+              "x": 2.4849,
+              "y": 2.4167
+            },
+            {
+              "x": 1.3863,
+              "y": 7.0
+            },
+            {
+              "x": 2.7081,
+              "y": 1.8667
+            },
+            {
+              "x": 2.7081,
+              "y": 2.0
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 2.1972,
+              "y": 3.1111
+            },
+            {
+              "x": 2.9444,
+              "y": 1.4737
+            },
+            {
+              "x": 1.7918,
+              "y": 5.0
+            },
+            {
+              "x": 2.0794,
+              "y": 3.625
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 1.9459,
+              "y": 4.0
+            },
+            {
+              "x": 2.3979,
+              "y": 2.5455
+            },
+            {
+              "x": 2.8332,
+              "y": 1.5882
+            },
+            {
+              "x": 2.1972,
+              "y": 3.0
+            },
+            {
+              "x": 1.9459,
+              "y": 3.8571
+            },
+            {
+              "x": 2.3026,
+              "y": 2.7
+            },
+            {
+              "x": 2.8332,
+              "y": 1.5882
+            },
+            {
+              "x": 1.9459,
+              "y": 4.2857
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 2.1972,
+              "y": 3.0
+            },
+            {
+              "x": 2.4849,
+              "y": 2.3333
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 2.3979,
+              "y": 2.9091
+            },
+            {
+              "x": 1.3863,
+              "y": 7.75
+            },
+            {
+              "x": 2.0794,
+              "y": 3.5
+            },
+            {
+              "x": 1.7918,
+              "y": 6.0
+            },
+            {
+              "x": 2.4849,
+              "y": 2.9167
+            },
+            {
+              "x": 1.3863,
+              "y": 8.25
+            },
+            {
+              "x": 1.3863,
+              "y": 8.75
+            },
+            {
+              "x": 1.7918,
+              "y": 5.5
+            },
+            {
+              "x": 0.6931,
+              "y": 16.0
+            },
+            {
+              "x": 1.9459,
+              "y": 4.8571
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 1.7918,
+              "y": 5.3333
+            },
+            {
+              "x": 1.9459,
+              "y": 4.7143
+            },
+            {
+              "x": 2.0794,
+              "y": 4.125
+            },
+            {
+              "x": 2.0794,
+              "y": 4.125
+            },
+            {
+              "x": 0.6931,
+              "y": 16.0
+            },
+            {
+              "x": 2.0794,
+              "y": 4.0
+            },
+            {
+              "x": 2.1972,
+              "y": 3.5556
+            },
+            {
+              "x": 2.3026,
+              "y": 2.8
+            },
+            {
+              "x": 2.3026,
+              "y": 3.0
+            },
+            {
+              "x": 2.3026,
+              "y": 2.9
+            },
+            {
+              "x": 1.9459,
+              "y": 4.2857
+            },
+            {
+              "x": 1.3863,
+              "y": 7.5
+            },
+            {
+              "x": 1.3863,
+              "y": 7.5
+            }
+          ]
+        },
+        {
+          "type": "diag",
+          "feature": "age_hours_ratio",
+          "bin_centers": [
+            0.8831,
+            2.4743,
+            4.0656,
+            5.6569,
+            7.2481,
+            8.8394,
+            10.4306,
+            12.0219,
+            13.6131,
+            15.2044
+          ],
+          "counts": [
+            4,
+            38,
+            28,
+            17,
+            8,
+            2,
+            1,
+            0,
+            0,
+            2
+          ]
+        }
+      ]
+    ]
+  },
+  "target_interaction_data": {
+    "target_col": "Diagnosis",
+    "feature_col": "Season",
+    "feature_is_numeric": false,
+    "target_is_numeric": false,
+    "feature_is_discrete": true,
+    "target_is_discrete": true,
+    "grouped_counts": {
+      "Altered": {
+        "fall": 6,
+        "spring": 4,
+        "summer": 1,
+        "winter": 1
+      },
+      "Normal": {
+        "fall": 25,
+        "spring": 33,
+        "summer": 3,
+        "winter": 27
+      }
+    },
+    "crosstab": {
+      "Altered": {
+        "fall": 0.1935,
+        "spring": 0.1081,
+        "summer": 0.25,
+        "winter": 0.0357
+      },
+      "Normal": {
+        "fall": 0.8065,
+        "spring": 0.8919,
+        "summer": 0.75,
+        "winter": 0.9643
+      }
+    }
+  },
+  "extracted_insights": {
+    "key_findings": [
+      "Dataset contains 100 rows and 12 columns.",
+      "Processed missing values and computed statistical distributions."
+    ],
+    "statistically_significant_predictors": []
+  },
+  "pipeline_validation": {
+    "is_consistent": true,
+    "warnings": [],
+    "validated_target": "Diagnosis",
+    "statistically_significant_count": 0,
+    "engineered_features_count": 2
+  }
+}
