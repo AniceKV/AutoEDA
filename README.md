@@ -161,7 +161,7 @@ We evaluated the resilience of **AutoEDA's** rollback recovery engine against na
 | **End-to-End Run Success Rate** | **100.00%** | **81.50%** |
 | **Average Rollback Latency** | **0.0948 ms** | N/A |
 
-*   **100% Self-Healing**: Standard agents crashed on every injected bug, polluting memory and rendering the session unviable. AutoEDA captured the tracebacks, rolled back the state, and successfully re-routed tasks—achieving a **100% run success rate**.
+*   **Self-Healing**: Standard agents crashed on every injected bug, polluting memory and rendering the session unviable. AutoEDA captured the tracebacks, rolled back the state, and successfully re-routed tasks—achieving a **100% run success rate**.
 *   **Sub-Millisecond Restoration**: Discarding memory pollution and restoring the dataset to a pristine version takes just **0.0948 milliseconds**, presenting zero noticeable lag to the user.
 
 ---
