@@ -57,19 +57,19 @@ All predictors below were tested against `Target` and found statistically signif
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `Relationship` | Chi-Square | 0.4534 | Medium association | 0.0000e+00 | Family relationship types are linked to differences in income levels. |
-| `Martial_Status` | Chi-Square | 0.4472 | Medium association | 0.0000e+00 | Marital status shows a connection with how much people earn. |
-| `Education` | Chi-Square | 0.3682 | Medium association | 0.0000e+00 | Education level relates to variations in earnings. |
-| `Occupation` | Chi-Square | 0.3486 | Medium association | 0.0000e+00 | Job type influences the likelihood of higher income. |
-| `Education_Num` | ANOVA | 0.3352 | Large effect | 0.0000e+00 | More years of schooling correspond to higher earnings. |
-| `Age` | ANOVA | 0.234 | Large effect | 0.0000e+00 | Age groups differ in their typical income levels. |
-| `Hours_per_week` | ANOVA | 0.2297 | Large effect | 0.0000e+00 | Working more hours per week is associated with higher pay. |
-| `Capital_Gain` | ANOVA | 0.2233 | Large effect | 0.0000e+00 | Capital gains contribute to higher overall income. |
-| `Sex` | Chi-Square | 0.2159 | Small association | 0.0000e+00 | Gender shows a relationship with income distribution. |
-| `Workclass` | Chi-Square | 0.1634 | Small association | 1.9338e-174 | Employment class affects typical earnings. |
-| `Capital_Loss` | ANOVA | 0.1505 | Large effect | 2.6865e-164 | Capital losses are linked to lower income levels. |
-| `Race` | Chi-Square | 0.1002 | Small association | 2.3060e-70 | Race groups display different income patterns. |
-| `Country` | Chi-Square | 0.0931 | Negligible association | 8.2804e-45 | Country of origin influences income outcomes. |
+| `Relationship` | Chi-Square | 0.4534 | Medium association | 0.0000e+00 | People’s relationship status (e.g., spouse, child) relates to income because family responsibilities can affect work hours and earnings. |
+| `Martial_Status` | Chi-Square | 0.4472 | Medium association | 0.0000e+00 | Marital status influences earnings since married individuals often have different financial needs and job stability than singles. |
+| `Education` | Chi-Square | 0.3682 | Medium association | 0.0000e+00 | Education level matters because higher schooling typically opens doors to better-paying jobs. |
+| `Occupation` | Chi-Square | 0.3486 | Medium association | 0.0000e+00 | Occupation type affects income as different jobs pay varying wages. |
+| `Education_Num` | ANOVA | 0.3352 | Large effect | 0.0000e+00 | More years of schooling are linked to higher earnings, reflecting skill accumulation. |
+| `Age` | ANOVA | 0.234 | Large effect | 0.0000e+00 | Age correlates with income because experience and career progression often increase earnings over time. |
+| `Hours_per_week` | ANOVA | 0.2297 | Large effect | 0.0000e+00 | Working more hours per week generally leads to higher pay, though overtime rules apply. |
+| `Capital_Gain` | ANOVA | 0.2233 | Large effect | 0.0000e+00 | Capital gains boost total income, indicating investment returns contribute to earnings. |
+| `Sex` | Chi-Square | 0.2159 | Small association | 0.0000e+00 | Gender shows income differences, reflecting broader societal wage gaps. |
+| `Workclass` | Chi-Square | 0.1634 | Small association | 1.9338e-174 | Work class (e.g., private, self‑employed) influences earnings due to varying employment conditions. |
+| `Capital_Loss` | ANOVA | 0.1505 | Large effect | 2.6865e-164 | Capital losses reduce overall income, showing negative investment outcomes affect earnings. |
+| `Race` | Chi-Square | 0.1002 | Small association | 2.3060e-70 | Race is associated with income disparities, highlighting systemic inequality. |
+| `Country` | Chi-Square | 0.0931 | Negligible association | 8.2804e-45 | Country of origin relates to earnings, reflecting economic differences across regions. |
 
 ---
 

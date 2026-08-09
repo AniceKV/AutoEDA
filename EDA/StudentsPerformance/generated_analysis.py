@@ -7,7 +7,16 @@ import json
 df = pd.read_csv(DATA_FILEPATH)
 
 # --- 1. Derived Domain Attributes & Composite Metrics ---
-# Derived Domain Metrics Specs: []
+# Derived Domain Metrics Specs: [
+  {
+    "feature_name": "average_score",
+    "formula": "(`math score` + `reading score` + `writing score`) / 3",
+    "data_type": "float64",
+    "rationale": "High-signal feature engineering transformation",
+    "correlation_with_target": 0.9657
+  }
+]
+df['average_score'] = df['(`math score` + `reading score` + `writing score`)'] / (df['3'].abs() + 1e-5)
 
 # --- 2. LLM-Coded Predictive Modeling Strategy Blueprint ---
 predictive_blueprint = {

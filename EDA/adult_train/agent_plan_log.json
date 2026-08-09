@@ -1,7 +1,7 @@
 [
   {
     "loop": 1,
-    "llm_output": "```json\n[\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"fnlwgt\",\n        \"Education_Num\",\n        \"Capital_Gain\",\n        \"Capital_Loss\",\n        \"Hours_per_week\",\n        \"Workclass\",\n        \"Education\",\n        \"Martial_Status\",\n        \"Occupation\",\n        \"Relationship\",\n        \"Race\",\n        \"Sex\",\n        \"Country\"\n      ],\n      \"save_path\": \"feature_distributions.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Age\",\n      \"save_path\": \"target_vs_Age.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"fnlwgt\",\n      \"save_path\": \"target_vs_fnlwgt.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Education_Num\",\n      \"save_path\": \"target_vs_Education_Num.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Capital_Gain\",\n      \"save_path\": \"target_vs_Capital_Gain.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Capital_Loss\",\n      \"save_path\": \"target_vs_Capital_Loss.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Hours_per_week\",\n      \"save_path\": \"target_vs_Hours_per_week.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Workclass\",\n      \"save_path\": \"target_vs_Workclass.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Education\",\n      \"save_path\": \"target_vs_Education.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Martial_Status\",\n      \"save_path\": \"target_vs_Martial_Status.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Occupation\",\n      \"save_path\": \"target_vs_Occupation.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Relationship\",\n      \"save_path\": \"target_vs_Relationship.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Race\",\n      \"save_path\": \"target_vs_Race.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Sex\",\n      \"save_path\": \"target_vs_Sex.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Country\",\n      \"save_path\": \"target_vs_Country.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Age\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Older individuals may work different hours; age\u2011hours relationship can reveal work\u2011life patterns.\"\n        },\n        {\n          \"x\": \"Education_Num\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Higher education may correlate with professional jobs that have distinct work hour patterns.\"\n        },\n        {\n          \"x\": \"Capital_Gain\",\n          \"y\": \"Capital_Loss\",\n          \"rationale\": \"Both represent financial gains/losses; their joint distribution may indicate wealth volatility.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Capital_Gain\",\n          \"rationale\": \"Income\u2011related capital gains may increase with age due to career progression.\"\n        },\n        {\n          \"x\": \"Hours_per_week\",\n          \"y\": \"Capital_Gain\",\n          \"rationale\": \"Longer work hours could be associated with higher capital gains.\"\n        },\n        {\n          \"x\": \"Education_Num\",\n          \"y\": \"Capital_Gain\",\n          \"rationale\": \"Education level often influences earning potential, reflected in capital gains.\"\n        }\n      ],\n      \"save_path\": \"semantic_bivariate_relationships.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_pairplot\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"Hours_per_week\",\n        \"Education_Num\",\n        \"Capital_Gain\"\n      ],\n      \"hue\": \"Target\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
+    "llm_output": "```json\n[\n  {\n    \"tool\": \"plot_feature_distributions\",\n    \"args\": {\n      \"columns\": [\n        \"Age\",\n        \"fnlwgt\",\n        \"Education_Num\",\n        \"Capital_Gain\",\n        \"Capital_Loss\",\n        \"Hours_per_week\",\n        \"Workclass\",\n        \"Education\",\n        \"Martial_Status\",\n        \"Occupation\",\n        \"Relationship\",\n        \"Race\",\n        \"Sex\",\n        \"Country\"\n      ],\n      \"save_path\": \"feature_distributions.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Age\",\n      \"save_path\": \"target_vs_Age.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"fnlwgt\",\n      \"save_path\": \"target_vs_fnlwgt.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Education_Num\",\n      \"save_path\": \"target_vs_Education_Num.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Capital_Gain\",\n      \"save_path\": \"target_vs_Capital_Gain.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Capital_Loss\",\n      \"save_path\": \"target_vs_Capital_Loss.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Hours_per_week\",\n      \"save_path\": \"target_vs_Hours_per_week.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Workclass\",\n      \"save_path\": \"target_vs_Workclass.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Education\",\n      \"save_path\": \"target_vs_Education.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Martial_Status\",\n      \"save_path\": \"target_vs_Martial_Status.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Occupation\",\n      \"save_path\": \"target_vs_Occupation.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Relationship\",\n      \"save_path\": \"target_vs_Relationship.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Race\",\n      \"save_path\": \"target_vs_Race.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Sex\",\n      \"save_path\": \"target_vs_Sex.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_target_interaction\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"feature_col\": \"Country\",\n      \"save_path\": \"target_vs_Country.png\"\n    }\n  },\n  {\n    \"tool\": \"plot_semantic_bivariate_relationships\",\n    \"args\": {\n      \"bivariate_pairs\": [\n        {\n          \"x\": \"Age\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Older individuals may work fewer hours due to retirement or part\u2011time preferences.\"\n        },\n        {\n          \"x\": \"Education_Num\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Higher education levels could correlate with professional jobs that have different work\u2011hour patterns.\"\n        },\n        {\n          \"x\": \"Capital_Gain\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Individuals with higher capital gains might be working longer hours or hold higher\u2011paying positions.\"\n        },\n        {\n          \"x\": \"Age\",\n          \"y\": \"Capital_Gain\",\n          \"rationale\": \"Capital gains may accumulate over a career, potentially increasing with age.\"\n        },\n        {\n          \"x\": \"Education\",\n          \"y\": \"Occupation\",\n          \"rationale\": \"Educational attainment strongly influences occupational categories.\"\n        },\n        {\n          \"x\": \"Workclass\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Different employment classes (private, self\u2011emp, gov) often have distinct average weekly hours.\"\n        },\n        {\n          \"x\": \"Sex\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Gender disparities in labor market participation may reflect differing average work hours.\"\n        },\n        {\n          \"x\": \"Race\",\n          \"y\": \"Hours_per_week\",\n          \"rationale\": \"Exploring potential socioeconomic disparities across racial groups in weekly work hours.\"\n        },\n        {\n          \"x\": \"Country\",\n          \"y\": \"Target\",\n          \"rationale\": \"Country of origin may capture regional economic differences affecting income level.\"\n        }\n      ]\n    }\n  },\n  {\n    \"tool\": \"plot_correlation_matrix\",\n    \"args\": {\n      \"save_path\": \"correlation_matrix.png\"\n    }\n  },\n  {\n    \"tool\": \"run_statistical_hypothesis_tests\",\n    \"args\": {\n      \"target_col\": \"Target\",\n      \"alpha\": 0.05\n    }\n  },\n  {\n    \"tool\": \"finish_analysis\",\n    \"args\": {}\n  }\n]\n```",
     "plan": [
       {
         "tool": "plot_feature_distributions",
@@ -159,48 +159,56 @@
             {
               "x": "Age",
               "y": "Hours_per_week",
-              "rationale": "Older individuals may work different hours; age\u2011hours relationship can reveal work\u2011life patterns."
+              "rationale": "Older individuals may work fewer hours due to retirement or part\u2011time preferences."
             },
             {
               "x": "Education_Num",
               "y": "Hours_per_week",
-              "rationale": "Higher education may correlate with professional jobs that have distinct work hour patterns."
+              "rationale": "Higher education levels could correlate with professional jobs that have different work\u2011hour patterns."
             },
             {
               "x": "Capital_Gain",
-              "y": "Capital_Loss",
-              "rationale": "Both represent financial gains/losses; their joint distribution may indicate wealth volatility."
+              "y": "Hours_per_week",
+              "rationale": "Individuals with higher capital gains might be working longer hours or hold higher\u2011paying positions."
             },
             {
               "x": "Age",
               "y": "Capital_Gain",
-              "rationale": "Income\u2011related capital gains may increase with age due to career progression."
+              "rationale": "Capital gains may accumulate over a career, potentially increasing with age."
             },
             {
-              "x": "Hours_per_week",
-              "y": "Capital_Gain",
-              "rationale": "Longer work hours could be associated with higher capital gains."
+              "x": "Education",
+              "y": "Occupation",
+              "rationale": "Educational attainment strongly influences occupational categories."
             },
             {
-              "x": "Education_Num",
-              "y": "Capital_Gain",
-              "rationale": "Education level often influences earning potential, reflected in capital gains."
+              "x": "Workclass",
+              "y": "Hours_per_week",
+              "rationale": "Different employment classes (private, self\u2011emp, gov) often have distinct average weekly hours."
+            },
+            {
+              "x": "Sex",
+              "y": "Hours_per_week",
+              "rationale": "Gender disparities in labor market participation may reflect differing average work hours."
+            },
+            {
+              "x": "Race",
+              "y": "Hours_per_week",
+              "rationale": "Exploring potential socioeconomic disparities across racial groups in weekly work hours."
+            },
+            {
+              "x": "Country",
+              "y": "Target",
+              "rationale": "Country of origin may capture regional economic differences affecting income level."
             }
           ],
-          "save_path": "semantic_bivariate_relationships.png",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\ce1e0998-50a9-421f-905f-ddc962645911"
         }
       },
       {
-        "tool": "plot_pairplot",
+        "tool": "plot_correlation_matrix",
         "args": {
-          "columns": [
-            "Age",
-            "Hours_per_week",
-            "Education_Num",
-            "Capital_Gain"
-          ],
-          "hue": "Target",
+          "save_path": "correlation_matrix.png",
           "output_dir": "C:\\Users\\Anish Kumar Verma\\PycharmProjects\\AutoEDA\\sandbox_run\\ce1e0998-50a9-421f-905f-ddc962645911"
         }
       },
@@ -233,8 +241,8 @@
       "plot_target_interaction successful.",
       "plot_target_interaction successful.",
       "plot_target_interaction successful.",
-      "plot_semantic_bivariate_relationships successful. Count: 6",
-      "plot_pairplot successful.",
+      "plot_semantic_bivariate_relationships successful. Count: 9",
+      "plot_correlation_matrix successful.",
       "run_statistical_hypothesis_tests successful. Significant predictors: ['Relationship', 'Martial_Status', 'Education', 'Occupation', 'Education_Num', 'Age', 'Hours_per_week', 'Capital_Gain', 'Sex', 'Workclass', 'Capital_Loss', 'Race', 'Country']",
       "Agent called finish_analysis. Terminating loop."
     ]

@@ -73,6 +73,7 @@ class AutoEDAAgent:
         api_key: Optional[str] = None,
         model_name: Optional[str] = None,
         status_callback: Optional[Any] = None,
+        answer_fn: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Agentic Tool-Based Orchestrator for AutoEDA."""
         effective_api_key = get_api_key(api_key)
@@ -271,16 +272,26 @@ class AutoEDAAgent:
                     question = args.get("question", "I need some clarification to proceed.")
                     print(f"[agent_loop] Agent asked a question: {question}")
 
-                    with open(state_file, "w") as f:
-                        json.dump(agent_state, f)
-                    df.to_csv(df_file, index=False)
+                    if answer_fn is not None:
+                        try:
+                            answer = answer_fn(question)
+                        except Exception as e:
+                            print(f"[agent_loop] Warning: answer_fn failed ({e}). Defaulting to 'infer it yourself'.")
+                            answer = "infer it yourself"
+                        print(f"[agent_loop] Automatically answered via answer_fn: {answer}")
+                        step_results.append(f"Agent asked a clarifying question: '{question}'. User provided answer: '{answer}'.")
+                        break
+                    else:
+                        with open(state_file, "w") as f:
+                            json.dump(agent_state, f)
+                        df.to_csv(df_file, index=False)
 
-                    return {
-                        "success": True,
-                        "status": "question",
-                        "question": question,
-                        "conversation_history": conversation_history
-                    }
+                        return {
+                            "success": True,
+                            "status": "question",
+                            "question": question,
+                            "conversation_history": conversation_history
+                        }
 
                 if tool_name in _vis_tools:
                     args["output_dir"] = workspace_dir
@@ -539,6 +550,7 @@ def run_tool_based_eda(
     api_key: Optional[str] = None,
     model_name: Optional[str] = None,
     status_callback: Optional[Any] = None,
+    answer_fn: Optional[Any] = None,
 ) -> Dict[str, Any]:
     return default_agent.run_tool_based_eda(
         data_path=data_path,
@@ -548,7 +560,8 @@ def run_tool_based_eda(
         conversation_history=conversation_history,
         api_key=api_key,
         model_name=model_name,
-        status_callback=status_callback
+        status_callback=status_callback,
+        answer_fn=answer_fn
     )
 
 

@@ -85,8 +85,12 @@ class AutoEDAEngine:
         conversation_history: Optional[List[Dict[str, Any]]] = None,
         api_key: Optional[str] = None,
         model_name: Optional[str] = None,
+        answer_fn: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Runs full end-to-end tool-based EDA agent analysis on the target dataset."""
+        if answer_fn is None:
+            answer_fn = lambda q: "infer it yourself"
+            
         return self.agent.run_tool_based_eda(
             data_path=data_path,
             user_request=user_request,
@@ -95,6 +99,7 @@ class AutoEDAEngine:
             conversation_history=conversation_history,
             api_key=api_key,
             model_name=model_name,
+            answer_fn=answer_fn,
         )
 
     def profile_file(self, data_path: str, output_dir: str = "./sandbox_run") -> Dict[str, Any]:

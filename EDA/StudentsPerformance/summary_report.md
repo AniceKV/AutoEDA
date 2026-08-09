@@ -38,22 +38,23 @@ No numeric outlier statistics reported.
 ---
 
 ## 4. Derived Domain Attributes & Composite Metrics
-No custom derived domain metrics synthesized during this run.
+- **`average_score`**: Formula: `(`math score` + `reading score` + `writing score`) / 3` | Purpose: High-signal feature engineering transformation
 
 ---
 
 ## 5. Statistical Hypothesis Testing & Key Predictors
-All predictors below were tested against `writing score` and found statistically significant (p < 0.05), ranked by effect size.
+All predictors below were tested against `average_score` and found statistically significant (p < 0.05), ranked by effect size.
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `reading score` | Pearson Correlation | 0.9546 | Strong correlation | 0.0000e+00 | Higher reading scores tend to accompany higher writing scores, indicating strong link between reading ability and writing performance. |
-| `math score` | Pearson Correlation | 0.8026 | Strong correlation | 3.3760e-226 | Students with higher math scores also tend to achieve higher writing scores, showing a notable relationship across academic subjects. |
-| `test preparation course` | ANOVA | 0.3129 | Large effect | 3.6853e-24 | Completing the test preparation course is associated with higher writing scores, suggesting the course benefits overall test performance. |
-| `gender` | ANOVA | 0.3012 | Large effect | 2.0199e-22 | Writing scores differ by gender, indicating that gender groups show distinct performance patterns on writing tasks. |
-| `parental level of education` | ANOVA | 0.2602 | Large effect | 1.1203e-13 | Students whose parents have higher education levels tend to score higher in writing, reflecting the influence of home educational background. |
-| `lunch` | ANOVA | 0.2458 | Large effect | 3.1862e-15 | Students receiving standard lunch report higher writing scores than those with free/reduced lunch, highlighting socioeconomic factors. |
-| `race/ethnicity` | ANOVA | 0.1673 | Large effect | 1.0979e-05 | Writing performance varies across race/ethnicity groups, showing that cultural or demographic factors relate to writing outcomes. |
+| `reading score` | Pearson Correlation | 0.9703 | Strong correlation | 0.0000e+00 | Students who score higher in reading tend to have higher overall average scores. |
+| `writing score` | Pearson Correlation | 0.9657 | Strong correlation | 0.0000e+00 | Strong writing performance is linked to a higher overall average score. |
+| `math score` | Pearson Correlation | 0.9187 | Strong correlation | 0.0000e+00 | Better math results usually accompany a higher overall average score. |
+| `lunch` | ANOVA | 0.2901 | Large effect | 7.7368e-21 | Students receiving free or reduced lunch often have lower average scores. |
+| `test preparation course` | ANOVA | 0.2567 | Large effect | 1.6338e-16 | Completing a test preparation course is associated with higher average scores. |
+| `parental level of education` | ANOVA | 0.2265 | Large effect | 4.3810e-10 | Higher parental education levels tend to correspond with higher student average scores. |
+| `race/ethnicity` | ANOVA | 0.1878 | Large effect | 3.2259e-07 | Average scores differ across race and ethnicity groups, reflecting broader societal influences. |
+| `gender` | ANOVA | 0.1309 | Medium effect | 3.3120e-05 | Male and female students show modest differences in average scores. |
 
 ---
 
@@ -62,7 +63,10 @@ All predictors below were tested against `writing score` and found statistically
 
 | Feature 1 | Feature 2 | Correlation (r) | Interpretation |
 |---|---|---|---|
+| `math score` | `average_score` | 0.9187 | Strong correlation |
 | `reading score` | `writing score` | 0.9546 | Strong correlation |
+| `reading score` | `average_score` | 0.9703 | Strong correlation |
+| `writing score` | `average_score` | 0.9657 | Strong correlation |
 
 
 ---
@@ -89,23 +93,25 @@ No custom chart image assets found in directory (Interactive Plotly visualizatio
 ---
 
 ## 9. Predictive Modeling Strategy Blueprint
-- **Target Definition:** Undefined (Unsupervised)
-- **Problem Type:** Unsupervised / Exploratory
+- **Target Definition:** average_score
+- **Problem Type:** Regression
 ### Recommended Algorithms
-- K-Means Clustering
-- Hierarchical Agglomerative Clustering
-- Principal Component Analysis (PCA) for Dimensionality Reduction
+- Regularized Linear Regression (Ridge / Lasso)
+- Random Forest Regressor
+- Gradient Boosting Regressor
+- Support Vector Regressor (SVR)
 ### Feature Selection Strategy
 - Exclude high-cardinality ID or text name columns
 - Rank features using cross-validated permutation importance and mutual information
 - Remove collinear features exceeding correlation threshold > 0.85
 ### Validation Strategy
-- Evaluate Silhouette Score and Inertia elbow curve
+- K-Fold Cross-Validation (5 folds)
+- Evaluate MAE, RMSE, R-Squared, and Residual Error distribution
 ### Overfitting Risk Mitigation
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns.
+- **Executive Summary:** Target: 'average_score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 9 columns.
 
 ---
 
