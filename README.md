@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 **Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
-
+**Example-report** [eda_report_Titanic-Dataset.html](eda_report_Titanic-Dataset.html)
 ---
 
 ## Configuration
