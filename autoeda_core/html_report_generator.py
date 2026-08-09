@@ -11,7 +11,10 @@ from jinja2 import Template
 from typing import Dict, Any, List, Optional
 from .profiler import is_non_distributional_column
 
-pio.templates.default = "plotly_dark"
+try:
+    pio.templates.default = "plotly_dark"
+except Exception:
+    pass
 
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">

@@ -181,3 +181,5 @@ def test_backward_compatibility_wrappers(sample_df, temp_csv_path, tmp_path):
 
     dist = plot_feature_distributions(sample_df)
     assert "visual_distributions" in dist
+
+

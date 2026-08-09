@@ -1,5 +1,5 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\my_analysis_output`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\ce1e0998-50a9-421f-905f-ddc962645911`
 **Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
@@ -8,7 +8,7 @@
 ## 1. Dataset Overview
 - **Dataset Identifier:** `StudentsPerformance.csv`
 - **Dimensions:** `1000` rows x `8` columns
-- **Target Variable:** `math score`
+- **Target Variable:** `average_score`
 - **Data Quality:** No missing values detected in raw profile.
 
 ---
@@ -43,17 +43,17 @@ No custom derived domain metrics synthesized during this run.
 ---
 
 ## 5. Statistical Hypothesis Testing & Key Predictors
-All predictors below were tested against `math score` and found statistically significant (p < 0.05), ranked by effect size.
+All predictors below were tested against `writing score` and found statistically significant (p < 0.05), ranked by effect size.
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `reading score` | Pearson Correlation | 0.8176 | Strong correlation | 1.7878e-241 | Students who score well in reading also tend to achieve higher math scores, reflecting overall academic strength. |
-| `writing score` | Pearson Correlation | 0.8026 | Strong correlation | 3.3760e-226 | Strong writing performance is associated with higher math scores, suggesting that language skills relate to math achievement. |
-| `lunch` | ANOVA | 0.3509 | Large effect | 2.4132e-30 | Students receiving standard lunch tend to have higher math scores than those with reduced lunch, indicating socioeconomic influence. |
-| `race/ethnicity` | ANOVA | 0.2354 | Large effect | 1.3732e-11 | Certain race/ethnicity groups show higher average math scores, highlighting potential disparities in educational outcomes. |
-| `parental level of education` | ANOVA | 0.1782 | Large effect | 5.5923e-06 | Students whose parents have higher education levels often achieve better math scores, reflecting family educational background impact. |
-| `test preparation course` | ANOVA | 0.1777 | Large effect | 1.5359e-08 | Completing a test preparation course is linked to higher math scores, indicating benefit from targeted study. |
-| `gender` | ANOVA | 0.168 | Large effect | 9.1202e-08 | Male and female students show modest differences in math scores, suggesting gender-related performance variation. |
+| `reading score` | Pearson Correlation | 0.9546 | Strong correlation | 0.0000e+00 | Students with higher reading scores tend to achieve higher writing scores, reflecting the importance of reading proficiency for writing performance. |
+| `math score` | Pearson Correlation | 0.8026 | Strong correlation | 3.3760e-226 | Higher math scores are associated with higher writing scores, suggesting that overall academic ability relates to writing performance. |
+| `test preparation course` | ANOVA | 0.3129 | Large effect | 3.6853e-24 | Students who completed a test preparation course generally score higher on writing, indicating the benefit of targeted preparation. |
+| `gender` | ANOVA | 0.3012 | Large effect | 2.0199e-22 | Writing scores differ by gender, highlighting that gender-related factors may influence writing outcomes. |
+| `parental level of education` | ANOVA | 0.2602 | Large effect | 1.1203e-13 | Higher parental education levels correspond with higher student writing scores, reflecting the role of home educational environment. |
+| `lunch` | ANOVA | 0.2458 | Large effect | 3.1862e-15 | Students receiving standard lunch report higher writing scores than those with reduced lunch, suggesting socioeconomic links. |
+| `race/ethnicity` | ANOVA | 0.1673 | Large effect | 1.0979e-05 | Writing performance varies across race/ethnicity groups, indicating that cultural or systemic factors may affect scores. |
 
 ---
 
@@ -89,25 +89,23 @@ No custom chart image assets found in directory (Interactive Plotly visualizatio
 ---
 
 ## 9. Predictive Modeling Strategy Blueprint
-- **Target Definition:** math score
-- **Problem Type:** Regression
+- **Target Definition:** Undefined (Unsupervised)
+- **Problem Type:** Unsupervised / Exploratory
 ### Recommended Algorithms
-- Regularized Linear Regression (Ridge / Lasso)
-- Random Forest Regressor
-- Gradient Boosting Regressor
-- Support Vector Regressor (SVR)
+- K-Means Clustering
+- Hierarchical Agglomerative Clustering
+- Principal Component Analysis (PCA) for Dimensionality Reduction
 ### Feature Selection Strategy
 - Exclude high-cardinality ID or text name columns
 - Rank features using cross-validated permutation importance and mutual information
 - Remove collinear features exceeding correlation threshold > 0.85
 ### Validation Strategy
-- K-Fold Cross-Validation (5 folds)
-- Evaluate MAE, RMSE, R-Squared, and Residual Error distribution
+- Evaluate Silhouette Score and Inertia elbow curve
 ### Overfitting Risk Mitigation
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'math score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 8 columns.
+- **Executive Summary:** Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns.
 
 ---
 

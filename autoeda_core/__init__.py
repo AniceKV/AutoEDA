@@ -94,11 +94,8 @@ class AutoEDAEngine:
         conversation_history: Optional[List[Dict[str, Any]]] = None,
         api_key: Optional[str] = None,
         model_name: Optional[str] = None,
-        answer_fn: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Runs full end-to-end tool-based EDA agent analysis on the target dataset."""
-        if answer_fn is None:
-            answer_fn = lambda q: "infer it yourself"
 
         # Per-call args override instance-level defaults (llm_config resolves the rest)
         effective_key = api_key or self.api_key
@@ -112,7 +109,6 @@ class AutoEDAEngine:
             conversation_history=conversation_history,
             api_key=effective_key,
             model_name=effective_model,
-            answer_fn=answer_fn,
         )
 
     def profile_file(self, data_path: str, output_dir: str = "./sandbox_run") -> Dict[str, Any]:

@@ -71,7 +71,6 @@ class AutoEDAAgent:
         api_key: Optional[str] = None,
         model_name: Optional[str] = None,
         status_callback: Optional[Any] = None,
-        answer_fn: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Agentic Tool-Based Orchestrator for AutoEDA."""
         effective_api_key = llm_config.get_api_key(override=api_key)
@@ -269,6 +268,29 @@ class AutoEDAAgent:
                 if tool_name == "ask_clarifying_question":
                     question = args.get("question", "I need some clarification to proceed.")
                     print(f"[agent_loop] Agent asked a question: {question}")
+
+                    is_django = "DJANGO_SETTINGS_MODULE" in os.environ
+                    if not is_django:
+                        try:
+                            user_answer = input(f"\n[Agent Question]: {question}\nYour answer: ")
+                        except Exception as e:
+                            print(f"[agent_loop] Error getting user input: {e}")
+                            user_answer = None
+
+                        if user_answer is not None and str(user_answer).strip() != "":
+                            prompt_hint = ""
+                            if any(k in str(user_answer).lower() for k in ["infer", "auto", "decide", "your choice", "yourself"]):
+                                prompt_hint = " Please infer or select the most appropriate target column / defaults yourself and proceed with analysis tools."
+                            
+                            answer_text = f"Answer to clarifying question '{question}': {user_answer}.{prompt_hint}"
+                            conversation_history.append({
+                                "role": "user",
+                                "content": answer_text
+                            })
+                            step_results.append(
+                                f"Asked clarifying question '{question}'. Received answer: '{user_answer}'."
+                            )
+                            break
 
                     with open(state_file, "w") as f:
                         json.dump(agent_state, f)
@@ -538,7 +560,6 @@ def run_tool_based_eda(
     api_key: Optional[str] = None,
     model_name: Optional[str] = None,
     status_callback: Optional[Any] = None,
-    answer_fn: Optional[Any] = None,
 ) -> Dict[str, Any]:
     return default_agent.run_tool_based_eda(
         data_path=data_path,
@@ -549,7 +570,6 @@ def run_tool_based_eda(
         api_key=api_key,
         model_name=model_name,
         status_callback=status_callback,
-        answer_fn=answer_fn,
     )
 
 

@@ -13,7 +13,7 @@
       "rows": 1000,
       "columns": 8
     },
-    "target_column": "math score",
+    "target_column": "average_score",
     "column_summary": {
       "gender": {
         "dtype": "str",
@@ -226,76 +226,75 @@
     }
   ],
   "statistical_hypothesis_tests": {
-    "target_col": "math score",
+    "target_col": "writing score",
     "significant_predictors": [
       "reading score",
-      "writing score",
-      "lunch",
-      "race/ethnicity",
-      "parental level of education",
+      "math score",
       "test preparation course",
-      "gender"
+      "gender",
+      "parental level of education",
+      "lunch",
+      "race/ethnicity"
     ],
     "ranked_significant_details": [
       {
         "feature": "reading score",
         "test": "Pearson Correlation",
-        "effect_size": 0.8176,
+        "effect_size": 0.9546,
         "effect_size_label": "Strong correlation",
-        "p_value": 1.7877531099062542e-241
+        "p_value": 0.0
       },
       {
-        "feature": "writing score",
+        "feature": "math score",
         "test": "Pearson Correlation",
         "effect_size": 0.8026,
         "effect_size_label": "Strong correlation",
         "p_value": 3.3760270425673496e-226
       },
       {
-        "feature": "lunch",
-        "test": "ANOVA",
-        "effect_size": 0.3509,
-        "effect_size_label": "Large effect",
-        "p_value": 2.4131955993135827e-30
-      },
-      {
-        "feature": "race/ethnicity",
-        "test": "ANOVA",
-        "effect_size": 0.2354,
-        "effect_size_label": "Large effect",
-        "p_value": 1.373219403036373e-11
-      },
-      {
-        "feature": "parental level of education",
-        "test": "ANOVA",
-        "effect_size": 0.1782,
-        "effect_size_label": "Large effect",
-        "p_value": 5.592272384104114e-06
-      },
-      {
         "feature": "test preparation course",
         "test": "ANOVA",
-        "effect_size": 0.1777,
+        "effect_size": 0.3129,
         "effect_size_label": "Large effect",
-        "p_value": 1.5359134607147785e-08
+        "p_value": 3.685291735245667e-24
       },
       {
         "feature": "gender",
         "test": "ANOVA",
-        "effect_size": 0.168,
+        "effect_size": 0.3012,
         "effect_size_label": "Large effect",
-        "p_value": 9.120185549328429e-08
+        "p_value": 2.0198777068677654e-22
+      },
+      {
+        "feature": "parental level of education",
+        "test": "ANOVA",
+        "effect_size": 0.2602,
+        "effect_size_label": "Large effect",
+        "p_value": 1.1202799969765113e-13
+      },
+      {
+        "feature": "lunch",
+        "test": "ANOVA",
+        "effect_size": 0.2458,
+        "effect_size_label": "Large effect",
+        "p_value": 3.186189583166509e-15
+      },
+      {
+        "feature": "race/ethnicity",
+        "test": "ANOVA",
+        "effect_size": 0.1673,
+        "effect_size_label": "Large effect",
+        "p_value": 1.0979189070061419e-05
       }
     ]
   },
   "predictive_modeling_blueprint": {
-    "target_definition": "math score",
-    "problem_type": "Regression",
+    "target_definition": "Undefined (Unsupervised)",
+    "problem_type": "Unsupervised / Exploratory",
     "recommended_algorithms": [
-      "Regularized Linear Regression (Ridge / Lasso)",
-      "Random Forest Regressor",
-      "Gradient Boosting Regressor",
-      "Support Vector Regressor (SVR)"
+      "K-Means Clustering",
+      "Hierarchical Agglomerative Clustering",
+      "Principal Component Analysis (PCA) for Dimensionality Reduction"
     ],
     "feature_selection_strategy": [
       "Exclude high-cardinality ID or text name columns",
@@ -303,15 +302,14 @@
       "Remove collinear features exceeding correlation threshold > 0.85"
     ],
     "validation_strategy": [
-      "K-Fold Cross-Validation (5 folds)",
-      "Evaluate MAE, RMSE, R-Squared, and Residual Error distribution"
+      "Evaluate Silhouette Score and Inertia elbow curve"
     ],
     "overfitting_risk_mitigation": [
       "Apply regularization penalties (L1/L2)",
       "Limit tree depth and enforce minimum samples per leaf",
       "Perform hyperparameter tuning strictly within cross-validation folds"
     ],
-    "executive_summary": "Target: 'math score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 8 columns."
+    "executive_summary": "Target: 'Undefined (Unsupervised)' (Unsupervised / Exploratory). Model recommendations and validation strategy tailored for 1000 rows x 8 columns."
   },
   "visual_distributions": {
     "gender": {
@@ -2800,8 +2798,8 @@
       {
         "feature_1": "gender",
         "feature_2": "math score",
-        "rationale": "Domain interaction of 'gender' against primary target 'math score' (Also identified statistically by algorithms)",
-        "source": "both",
+        "rationale": "Segmented behavior of numerical 'math score' across categorical 'gender'",
+        "source": "llm_inferred",
         "feature_1_is_numeric": false,
         "feature_2_is_numeric": true,
         "feature_1_is_discrete": true,
@@ -2824,137 +2822,10 @@
         }
       },
       {
-        "feature_1": "lunch",
-        "feature_2": "math score",
-        "rationale": "Domain interaction of 'lunch' against primary target 'math score' (Also identified statistically by algorithms)",
-        "source": "both",
-        "feature_1_is_numeric": false,
-        "feature_2_is_numeric": true,
-        "feature_1_is_discrete": true,
-        "feature_2_is_discrete": false,
-        "groups": {
-          "free/reduced": {
-            "min": 0.0,
-            "q1": 49.0,
-            "median": 60.0,
-            "q3": 69.0,
-            "max": 100.0
-          },
-          "standard": {
-            "min": 19.0,
-            "q1": 61.0,
-            "median": 69.0,
-            "q3": 80.0,
-            "max": 100.0
-          }
-        }
-      },
-      {
-        "feature_1": "math score",
-        "feature_2": "parental level of education",
-        "rationale": "Domain interaction of 'parental level of education' against primary target 'math score' (Also identified statistically by algorithms)",
-        "source": "both",
-        "feature_1_is_numeric": true,
-        "feature_2_is_numeric": false,
-        "feature_1_is_discrete": false,
-        "feature_2_is_discrete": true,
-        "groups": {
-          "associate's degree": {
-            "min": 26.0,
-            "q1": 57.0,
-            "median": 67.0,
-            "q3": 80.0,
-            "max": 100.0
-          },
-          "bachelor's degree": {
-            "min": 29.0,
-            "q1": 61.0,
-            "median": 68.0,
-            "q3": 79.0,
-            "max": 100.0
-          },
-          "high school": {
-            "min": 8.0,
-            "q1": 53.75,
-            "median": 63.0,
-            "q3": 72.0,
-            "max": 99.0
-          },
-          "master's degree": {
-            "min": 40.0,
-            "q1": 55.5,
-            "median": 73.0,
-            "q3": 81.0,
-            "max": 95.0
-          },
-          "some college": {
-            "min": 19.0,
-            "q1": 59.0,
-            "median": 67.5,
-            "q3": 76.0,
-            "max": 100.0
-          },
-          "some high school": {
-            "min": 0.0,
-            "q1": 53.0,
-            "median": 65.0,
-            "q3": 74.0,
-            "max": 97.0
-          }
-        }
-      },
-      {
-        "feature_1": "math score",
-        "feature_2": "race/ethnicity",
-        "rationale": "Domain interaction of 'race/ethnicity' against primary target 'math score' (Also identified statistically by algorithms)",
-        "source": "both",
-        "feature_1_is_numeric": true,
-        "feature_2_is_numeric": false,
-        "feature_1_is_discrete": false,
-        "feature_2_is_discrete": true,
-        "groups": {
-          "group A": {
-            "min": 28.0,
-            "q1": 51.0,
-            "median": 61.0,
-            "q3": 71.0,
-            "max": 100.0
-          },
-          "group B": {
-            "min": 8.0,
-            "q1": 54.0,
-            "median": 63.0,
-            "q3": 74.0,
-            "max": 97.0
-          },
-          "group C": {
-            "min": 0.0,
-            "q1": 55.0,
-            "median": 65.0,
-            "q3": 74.0,
-            "max": 98.0
-          },
-          "group D": {
-            "min": 26.0,
-            "q1": 59.0,
-            "median": 69.0,
-            "q3": 77.0,
-            "max": 100.0
-          },
-          "group E": {
-            "min": 30.0,
-            "q1": 64.75,
-            "median": 74.5,
-            "q3": 85.0,
-            "max": 100.0
-          }
-        }
-      },
-      {
         "feature_1": "math score",
         "feature_2": "reading score",
-        "rationale": "Algorithmic Pearson correlation (|r| = 0.82)",
-        "source": "algorithmic",
+        "rationale": "Numeric scale comparison and scatter relationship of 'math score' vs 'reading score' (Also identified statistically by algorithms)",
+        "source": "both",
         "feature_1_is_numeric": true,
         "feature_2_is_numeric": true,
         "feature_1_is_discrete": false,
@@ -4561,32 +4432,6 @@
             "y": 71.0
           }
         ]
-      },
-      {
-        "feature_1": "math score",
-        "feature_2": "test preparation course",
-        "rationale": "Domain interaction of 'test preparation course' against primary target 'math score' (Also identified statistically by algorithms)",
-        "source": "both",
-        "feature_1_is_numeric": true,
-        "feature_2_is_numeric": false,
-        "feature_1_is_discrete": false,
-        "feature_2_is_discrete": true,
-        "groups": {
-          "completed": {
-            "min": 23.0,
-            "q1": 60.0,
-            "median": 69.0,
-            "q3": 79.0,
-            "max": 100.0
-          },
-          "none": {
-            "min": 0.0,
-            "q1": 54.0,
-            "median": 64.0,
-            "q3": 74.75,
-            "max": 100.0
-          }
-        }
       },
       {
         "feature_1": "math score",
@@ -7813,10 +7658,10 @@
         ]
       }
     ],
-    "algorithmic_count": 8,
-    "llm_count": 5,
-    "both_count": 5,
-    "union_count": 8
+    "algorithmic_count": 3,
+    "llm_count": 2,
+    "both_count": 1,
+    "union_count": 4
   },
   "pairplot_data": {
     "pairplot_saved": "interactive_client_side",
@@ -15162,7 +15007,7 @@
     ]
   },
   "target_interaction_data": {
-    "target_col": "math score",
+    "target_col": "writing score",
     "feature_col": "gender",
     "feature_is_numeric": false,
     "target_is_numeric": true,
@@ -15170,17 +15015,17 @@
     "target_is_discrete": false,
     "groups": {
       "female": {
-        "min": 0.0,
-        "q1": 54.0,
-        "median": 65.0,
-        "q3": 74.0,
+        "min": 10.0,
+        "q1": 64.0,
+        "median": 74.0,
+        "q3": 82.0,
         "max": 100.0
       },
       "male": {
-        "min": 27.0,
-        "q1": 59.0,
-        "median": 69.0,
-        "q3": 79.0,
+        "min": 15.0,
+        "q1": 53.0,
+        "median": 64.0,
+        "q3": 73.75,
         "max": 100.0
       }
     }
@@ -15192,18 +15037,21 @@
     ],
     "statistically_significant_predictors": [
       "reading score",
-      "writing score",
-      "lunch",
-      "race/ethnicity",
-      "parental level of education",
+      "math score",
       "test preparation course",
-      "gender"
+      "gender",
+      "parental level of education",
+      "lunch",
+      "race/ethnicity"
     ]
   },
   "pipeline_validation": {
-    "is_consistent": true,
-    "warnings": [],
-    "validated_target": "math score",
+    "is_consistent": false,
+    "warnings": [
+      "Target mismatch between dataset overview ('average_score') and hypothesis tests ('writing score').",
+      "Target mismatch between dataset overview ('average_score') and predictive blueprint ('Undefined (Unsupervised)')."
+    ],
+    "validated_target": "average_score",
     "statistically_significant_count": 7,
     "engineered_features_count": 0
   }

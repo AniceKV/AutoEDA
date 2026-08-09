@@ -50,9 +50,6 @@ results = engine.analyze(
     data_path="path/to/your/dataset.csv",
     user_request="Perform full exploratory data analysis",
     workspace_dir="./my_analysis_output",
-    # (Optional) Provide automated answers to agent clarifying questions
-    # e.g., if the agent asks what the target variable is. Default is "infer it yourself"
-    answer_fn=lambda question: "infer it yourself"
 )
 ```
 
