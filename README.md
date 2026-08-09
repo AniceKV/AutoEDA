@@ -41,15 +41,11 @@ pip install edanet
 ```python
 from autoeda_core import AutoEDAEngine
 
-# Initialize the engine (automatically reads from your environment variables or .env)
-# make sure the OPENROUTER_API_KEY and EDA_MODEL is set (setup guide is above)
 engine = AutoEDAEngine()
 
-# Run a full agentic analysis on any CSV dataset
 results = engine.analyze(
     data_path="path/to/your/dataset.csv",
     user_request="Perform full exploratory data analysis",
-    workspace_dir="./my_analysis_output",
 )
 ```
 
