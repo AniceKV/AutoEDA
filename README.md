@@ -8,6 +8,46 @@
 
 **Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
 
+---
+
+## Configuration
+
+You can configure AutoEDA by setting these environment variables (or putting them in a `.env` file):
+
+| Var | Required | Default | Purpose |
+| :--- | :---: | :--- | :--- |
+| **`OPENROUTER_API_KEY`** | Yes | — | Your API key from [OpenRouter](https://openrouter.ai/keys) |
+| **`EDA_MODEL`** | No | `openrouter/free` | Any valid model ID (e.g., `openrouter/free`, `meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
+| **`OPENROUTER_BASE_URL`** | No | `https://openrouter.ai/api/v1` | Override this to point to a local endpoint (e.g. `http://localhost:1234/v1` for LM Studio) or another OpenAI-compatible provider. |
+
+**Examples:**
+- **Default (Free tier):** Just set `OPENROUTER_API_KEY="sk-or-..."`. It will automatically use OpenRouter's live free models.
+- **Specific Free Model:** Set `EDA_MODEL="meta-llama/llama-3.3-70b:free"`
+- **Paid Premium Model:** Set `EDA_MODEL="anthropic/claude-3.5-sonnet"`
+- **Custom Local Endpoint (LM Studio/Ollama):** Set `OPENROUTER_BASE_URL="http://localhost:1234/v1"` and `EDA_MODEL="local-model-name"`
+
+## Usage as a Python Library (edanet)
+
+AutoEDA's core engine is packaged as `edanet` for easy integration into your own scripts or notebooks.
+
+```bash
+pip install edanet
+```
+
+```python
+from autoeda_core import AutoEDAEngine
+
+# Initialize the engine (automatically reads from your environment variables or .env)
+engine = AutoEDAEngine()
+
+# Run a full agentic analysis on any CSV dataset
+results = engine.analyze(
+    data_path="path/to/your/dataset.csv",
+    user_request="Perform full exploratory data analysis",
+    workspace_dir="./my_analysis_output"
+)
+```
+
 AutoEDA is an enterprise-grade, zero-crash agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
 
 By shifting from unstable, raw Python script generation to **Structured JSON Tool-Plans** mapped onto parameter-clamped statistical actions, AutoEDA eliminates common LLM failure points: syntax hallucinations, library crashes, and data corruption.
@@ -145,46 +185,7 @@ cd AutoEDA
 pip install -r requirements.txt
 ```
 
-### 2. Configuration
 
-You can configure AutoEDA by setting these environment variables (or putting them in a `.env` file):
-
-| Var | Required | Default | Purpose |
-| :--- | :---: | :--- | :--- |
-| **`OPENROUTER_API_KEY`** | Yes | — | Your API key from [OpenRouter](https://openrouter.ai/keys) |
-| **`EDA_MODEL`** | No | `openrouter/free` | Any valid model ID (e.g., `openrouter/free`, `meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
-| **`OPENROUTER_BASE_URL`** | No | `https://openrouter.ai/api/v1` | Override this to point to a local endpoint (e.g. `http://localhost:1234/v1` for LM Studio) or another OpenAI-compatible provider. |
-
-**Examples:**
-- **Default (Free tier):** Just set `OPENROUTER_API_KEY="sk-or-..."`. It will automatically use OpenRouter's live free models.
-- **Specific Free Model:** Set `EDA_MODEL="meta-llama/llama-3.3-70b:free"`
-- **Paid Premium Model:** Set `EDA_MODEL="anthropic/claude-3.5-sonnet"`
-- **Custom Local Endpoint (LM Studio/Ollama):** Set `OPENROUTER_BASE_URL="http://localhost:1234/v1"` and `EDA_MODEL="local-model-name"`
-
-### 3. Usage as a Python Library (edanet)
-
-AutoEDA's core engine is packaged as `edanet` for easy integration into your own scripts or notebooks.
-
-```bash
-pip install edanet
-```
-
-```python
-from autoeda_core import AutoEDAEngine
-
-# Initialize the engine (automatically reads from your environment variables or .env)
-engine = AutoEDAEngine()
-
-# Run a full agentic analysis on any CSV dataset
-results = engine.analyze(
-    data_path="path/to/your/dataset.csv",
-    user_request="Perform full exploratory data analysis",
-    workspace_dir="./my_analysis_output"
-)
-
-# Compile the final interactive HTML report
-report_html = engine.compile_html(workspace_dir="./my_analysis_output")
-```
 
 ### 4. Running Local Offline Models (LM Studio / Ollama)
 For a 100% free, low-latency, private offline environment:
