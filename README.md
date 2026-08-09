@@ -6,8 +6,10 @@
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
-**Example-report** [eda_report_Titanic-Dataset.html](eda_report_Titanic-Dataset.html)
+**Live Application:** [AutoEDA](https://autoeda-fjgz.onrender.com/)
+
+**Example Report:** [Titanic EDA Report](eda_report_Titanic-Dataset.html)
+
 ---
 
 ## Configuration
