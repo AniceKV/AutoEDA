@@ -14,6 +14,7 @@ edanet.egg-info/SOURCES.txt
 edanet.egg-info/dependency_links.txt
 edanet.egg-info/requires.txt
 edanet.egg-info/top_level.txt
+tests/test.py
 tests/test_classful_architecture.py
 tests/test_datastore.py
 tests/test_summary_generator.py

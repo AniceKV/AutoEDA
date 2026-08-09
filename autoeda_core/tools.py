@@ -330,10 +330,22 @@ class FeatureEngineer:
             pass
 
         try:
-            local_dict = {col: df[col] for col in df.columns}
-            local_dict["np"] = np
-            local_dict["pd"] = pd
-            res = eval(formula_str, {"__builtins__": None}, local_dict)
+            sorted_cols = sorted(df.columns, key=len, reverse=True)
+            mapped_formula = formula_str
+            local_dict = {"np": np, "pd": pd}
+            col_to_idx = {str(col): i for i, col in enumerate(df.columns)}
+            
+            for col, i in col_to_idx.items():
+                local_dict[f"__COL_{i}__"] = df[col]
+            
+            for col in sorted_cols:
+                col_str = str(col)
+                i = col_to_idx[col_str]
+                escaped_col = re.escape(col_str)
+                pattern = r'(?<![a-zA-Z0-9_])' + escaped_col + r'(?![a-zA-Z0-9_])'
+                mapped_formula = re.sub(pattern, f"__COL_{i}__", mapped_formula)
+
+            res = eval(mapped_formula, {"__builtins__": None}, local_dict)
             if isinstance(res, (pd.Series, np.ndarray, list)):
                 return pd.Series(res, index=df.index)
         except Exception:
