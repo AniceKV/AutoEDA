@@ -52,11 +52,11 @@ results = engine.analyze(
 )
 ```
 
-AutoEDA is an enterprise-grade, zero-crash agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
+AutoEDA is an low cost agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
 
 By shifting from unstable, raw Python script generation to **Structured JSON Tool-Plans** mapped onto parameter-clamped statistical actions, AutoEDA eliminates common LLM failure points: syntax hallucinations, library crashes, and data corruption.
 
-**Cost-Effective**: Thanks to an optimized prompt architecture and intelligent tool routing, the average API call cost is approximately **1.5 cents ($0.015) per complete dataset analysis**.
+**Cost-Effective**: Thanks to an optimized prompt architecture and intelligent tool routing, the average token cosumption is around 3000 tokens per analysis
 
 ---
 
@@ -145,7 +145,7 @@ The table below documents the transformation of **AutoEDA Pro** when migrating f
 | **10,000** | 5.4785s | 0.0311s | **176.1x faster** | 458.6 KB | 45.36 KB | **10.1x smaller** |
 | **32,000** | 9.0163s | 0.0456s | **197.7x faster** | 481.8 KB | 45.46 KB | **10.6x smaller** |
 
-*   **Sub-50ms Computational Core**: Restructuring the Python backend to run C-optimized statistical aggregation (using Pandas & NumPy) instead of instantiating heavy GUI draw canvases reduces the runtime to just **45.6 ms for 32,000 rows**.
+
 *   **Flat Payload Scaling**: Regardless of row depth, the compiled output remains compressed to **~45 KB**, ensuring instantaneous data transmission and fluid browser rendering.
 
 ---
