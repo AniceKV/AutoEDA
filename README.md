@@ -161,7 +161,32 @@ You can configure AutoEDA by setting these environment variables (or putting the
 - **Paid Premium Model:** Set `EDA_MODEL="anthropic/claude-3.5-sonnet"`
 - **Custom Local Endpoint (LM Studio/Ollama):** Set `OPENROUTER_BASE_URL="http://localhost:1234/v1"` and `EDA_MODEL="local-model-name"`
 
-### 3. Running Local Offline Models (LM Studio / Ollama)
+### 3. Usage as a Python Library (edanet)
+
+AutoEDA's core engine is packaged as `edanet` for easy integration into your own scripts or notebooks.
+
+```bash
+pip install edanet
+```
+
+```python
+from autoeda_core import AutoEDAEngine
+
+# Initialize the engine (automatically reads from your environment variables or .env)
+engine = AutoEDAEngine()
+
+# Run a full agentic analysis on any CSV dataset
+results = engine.analyze(
+    data_path="path/to/your/dataset.csv",
+    user_request="Perform full exploratory data analysis",
+    workspace_dir="./my_analysis_output"
+)
+
+# Compile the final interactive HTML report
+report_html = engine.compile_html(workspace_dir="./my_analysis_output")
+```
+
+### 4. Running Local Offline Models (LM Studio / Ollama)
 For a 100% free, low-latency, private offline environment:
 1. Fire up **LM Studio** and head to the **Local Server** (double-plug) tab.
 2. Load a compact model (e.g. `qwen2.5-coder-7b` or `gemma-2-2b-it`).
