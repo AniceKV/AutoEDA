@@ -8,7 +8,6 @@ import sys
 import json
 import re
 from typing import Dict, Any, List, Optional
-from dotenv import load_dotenv, find_dotenv
 
 # Try importing OpenAI client module for OpenRouter API synthesis
 try:
@@ -16,8 +15,6 @@ try:
     HAS_OPENROUTER = True
 except ImportError:
     HAS_OPENROUTER = False
-
-load_dotenv(dotenv_path=find_dotenv(usecwd=True), override=True)
 
 # Files to explicitly exclude from the summary generation input
 EXCLUDED_FILES = {"generated_analysis.py", "summary_report.md", "executive_summary.md"}

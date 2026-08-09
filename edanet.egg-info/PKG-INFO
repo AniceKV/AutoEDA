@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: edanet
-Version: 0.1.2
+Version: 0.2.0
 Summary: AutoEDA Core Engine
 Author: Anish Kumar Verma
 Project-URL: Homepage, https://github.com/AniceKV/AutoEDA
@@ -11,7 +11,6 @@ License-File: LICENSE
 Requires-Dist: pandas>=2.0.0
 Requires-Dist: numpy>=1.24.0
 Requires-Dist: scipy>=1.10.0
-Requires-Dist: scikit-learn>=1.2.0
 Requires-Dist: seaborn>=0.12.0
 Requires-Dist: matplotlib>=3.6.0
 Requires-Dist: plotly>=5.0.0
@@ -20,8 +19,6 @@ Requires-Dist: openai>=1.0.0
 Requires-Dist: pydantic>=2.0.0
 Requires-Dist: python-dotenv>=1.0.0
 Requires-Dist: Jinja2>=3.0.0
-Requires-Dist: requests>=2.28.0
-Requires-Dist: markdown>=3.4.0
 Dynamic: license-file
 
 # AutoEDA — Stateful Agentic Exploratory Data Analysis & Predictive Modeling
@@ -32,7 +29,11 @@ Dynamic: license-file
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**Live Application:** [https://autoeda-fjgz.onrender.com/](https://autoeda-fjgz.onrender.com/)
+**Live Application:** [AutoEDA](https://autoeda-fjgz.onrender.com/)
+
+---
+
+**Example Report:** [Titanic EDA Report](eda_report_Titanic-Dataset.html)
 
 ---
 
@@ -42,8 +43,8 @@ You can configure AutoEDA by setting these environment variables (or putting the
 
 | Var | Required | Default | Purpose |
 | :--- | :---: | :--- | :--- |
-| **`OPENROUTER_API_KEY`** | Yes | — | Your API key from [OpenRouter](https://openrouter.ai/keys) |
-| **`EDA_MODEL`** | No | `openrouter/free` | Any valid model ID (e.g., `openrouter/free`, `meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
+| **`OPENROUTER_API_KEY`** | Yes | -- | Your API key from [OpenRouter](https://openrouter.ai/keys) |
+| **`EDA_MODEL`** | Yes | -- | Any valid model ID (use can choose free ones too) (e.g.,`meta-llama/llama-3.3-70b:free`, `anthropic/claude-3.5-sonnet`) |
 | **`OPENROUTER_BASE_URL`** | No | `https://openrouter.ai/api/v1` | Override this to point to a local endpoint (e.g. `http://localhost:1234/v1` for LM Studio) or another OpenAI-compatible provider. |
 
 **Examples:**
@@ -64,21 +65,25 @@ pip install edanet
 from autoeda_core import AutoEDAEngine
 
 # Initialize the engine (automatically reads from your environment variables or .env)
+# make sure the OPENROUTER_API_KEY and EDA_MODEL is set (setup guide is above)
 engine = AutoEDAEngine()
 
 # Run a full agentic analysis on any CSV dataset
 results = engine.analyze(
     data_path="path/to/your/dataset.csv",
     user_request="Perform full exploratory data analysis",
-    workspace_dir="./my_analysis_output"
+    workspace_dir="./my_analysis_output",
+    # (Optional) Provide automated answers to agent clarifying questions
+    # e.g., if the agent asks what the target variable is. Default is "infer it yourself"
+    answer_fn=lambda question: "infer it yourself"
 )
 ```
 
-AutoEDA is an enterprise-grade, zero-crash agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
+AutoEDA is an low cost agentic pipeline designed to perform end-to-end Exploratory Data Analysis, statistical profiling, and predictive modeling on tabular datasets. Built around a strict **Planner-Executor Decoupling Architecture**, AutoEDA operates with complete safety and determinism. It allows compact local models (such as **Qwen 2.5/3.5**, **Gemma 2**, or **Llama 3**) to construct and execute complex mathematical workflows without the instability of arbitrary code execution.
 
 By shifting from unstable, raw Python script generation to **Structured JSON Tool-Plans** mapped onto parameter-clamped statistical actions, AutoEDA eliminates common LLM failure points: syntax hallucinations, library crashes, and data corruption.
 
-**Cost-Effective**: Thanks to an optimized prompt architecture and intelligent tool routing, the average API call cost is approximately **1.5 cents ($0.015) per complete dataset analysis**.
+**Cost-Effective**: Thanks to an optimized prompt architecture and intelligent tool routing, the average token cosumption is around 3000 tokens per analysis
 
 ---
 
@@ -167,7 +172,7 @@ The table below documents the transformation of **AutoEDA Pro** when migrating f
 | **10,000** | 5.4785s | 0.0311s | **176.1x faster** | 458.6 KB | 45.36 KB | **10.1x smaller** |
 | **32,000** | 9.0163s | 0.0456s | **197.7x faster** | 481.8 KB | 45.46 KB | **10.6x smaller** |
 
-*   **Sub-50ms Computational Core**: Restructuring the Python backend to run C-optimized statistical aggregation (using Pandas & NumPy) instead of instantiating heavy GUI draw canvases reduces the runtime to just **45.6 ms for 32,000 rows**.
+
 *   **Flat Payload Scaling**: Regardless of row depth, the compiled output remains compressed to **~45 KB**, ensuring instantaneous data transmission and fluid browser rendering.
 
 ---
@@ -183,7 +188,7 @@ We evaluated the resilience of **AutoEDA's** rollback recovery engine against na
 | **End-to-End Run Success Rate** | **100.00%** | **81.50%** |
 | **Average Rollback Latency** | **0.0948 ms** | N/A |
 
-*   **100% Self-Healing**: Standard agents crashed on every injected bug, polluting memory and rendering the session unviable. AutoEDA captured the tracebacks, rolled back the state, and successfully re-routed tasks—achieving a **100% run success rate**.
+*   **Self-Healing**: Standard agents crashed on every injected bug, polluting memory and rendering the session unviable. AutoEDA captured the tracebacks, rolled back the state, and successfully re-routed tasks—achieving a **100% run success rate**.
 *   **Sub-Millisecond Restoration**: Discarding memory pollution and restoring the dataset to a pristine version takes just **0.0948 milliseconds**, presenting zero noticeable lag to the user.
 
 ---

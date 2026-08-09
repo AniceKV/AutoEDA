@@ -6,13 +6,12 @@ import time
 import pandas as pd
 from typing import Dict, Any, List, Optional, Tuple
 from openai import OpenAI
-from dotenv import load_dotenv, find_dotenv
 
 from . import tools
 from .profiler import run_and_save_profile
 from .summary_generator import create_summary, extract_dataset_name
 from .html_report_generator import generate_html_report
-load_dotenv(dotenv_path=find_dotenv(usecwd=True), override=True)
+from . import llm_config
 
 
 class AutoEDAAgent:
@@ -72,16 +71,14 @@ class AutoEDAAgent:
         api_key: Optional[str] = None,
         model_name: Optional[str] = None,
         status_callback: Optional[Any] = None,
+        answer_fn: Optional[Any] = None,
     ) -> Dict[str, Any]:
         """Agentic Tool-Based Orchestrator for AutoEDA."""
-        effective_api_key = os.getenv("OPENROUTER_API_KEY") or api_key
-        if not effective_api_key:
-            raise ValueError("OPENROUTER_API_KEY is missing. Set it in your environment / .env file.")
-
-        effective_model = model_name or os.getenv("EDA_MODEL", "google/gemini-3.6-flash")
+        effective_api_key = llm_config.get_api_key(override=api_key)
+        effective_model = llm_config.get_model(override=model_name)
 
         client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=llm_config.get_base_url(),
             api_key=effective_api_key,
         )
         if conversation_history is None:
@@ -541,6 +538,7 @@ def run_tool_based_eda(
     api_key: Optional[str] = None,
     model_name: Optional[str] = None,
     status_callback: Optional[Any] = None,
+    answer_fn: Optional[Any] = None,
 ) -> Dict[str, Any]:
     return default_agent.run_tool_based_eda(
         data_path=data_path,
@@ -550,7 +548,8 @@ def run_tool_based_eda(
         conversation_history=conversation_history,
         api_key=api_key,
         model_name=model_name,
-        status_callback=status_callback
+        status_callback=status_callback,
+        answer_fn=answer_fn,
     )
 
 

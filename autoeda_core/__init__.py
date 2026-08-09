@@ -3,7 +3,7 @@ AutoEDA Core Engine Package
 Classful Architecture & Unified Engine Facade
 """
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 from typing import Dict, Any, Optional, List
 
@@ -63,14 +63,23 @@ class AutoEDAEngine:
     Unified High-Level Engine Facade for AutoEDA.
     Provides single-point access to profiling, agent execution, statistical analysis,
     summary compilation, and interactive HTML report generation.
+
+    Credentials are resolved in priority order:
+        1. Explicit arg passed to analyze() / __init__()
+        2. Environment variable (OPENROUTER_API_KEY / EDA_MODEL)
+        3. .env file in current working directory
     """
     def __init__(
         self,
+        api_key: Optional[str] = None,
+        model_name: Optional[str] = None,
         profiler: Optional[DataProfiler] = None,
         agent: Optional[AutoEDAAgent] = None,
         summary_generator: Optional[ExecutiveSummaryGenerator] = None,
         html_compiler: Optional[HTMLReportCompiler] = None,
     ):
+        self.api_key = api_key
+        self.model_name = model_name
         self.profiler = profiler or DataProfiler()
         self.agent = agent or AutoEDAAgent()
         self.summary_generator = summary_generator or ExecutiveSummaryGenerator()
@@ -90,15 +99,19 @@ class AutoEDAEngine:
         """Runs full end-to-end tool-based EDA agent analysis on the target dataset."""
         if answer_fn is None:
             answer_fn = lambda q: "infer it yourself"
-            
+
+        # Per-call args override instance-level defaults (llm_config resolves the rest)
+        effective_key = api_key or self.api_key
+        effective_model = model_name or self.model_name
+
         return self.agent.run_tool_based_eda(
             data_path=data_path,
             user_request=user_request,
             workspace_dir=workspace_dir,
             generate_summary=generate_summary,
             conversation_history=conversation_history,
-            api_key=api_key,
-            model_name=model_name,
+            api_key=effective_key,
+            model_name=effective_model,
             answer_fn=answer_fn,
         )
 
