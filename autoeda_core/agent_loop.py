@@ -24,7 +24,7 @@ class AutoEDAAgent:
 
     def parse_llm_json_plan(self, raw_text: str) -> List[Dict[str, Any]]:
         """Cleans markdown code blocks and parses the JSON array tool plan from LLM output."""
-        pattern = r"```(?:json)?(.*?)```"
+        pattern = r"```(?:json)?(.*?)```" #json parser for the llm output
         match = re.search(pattern, raw_text, re.DOTALL)
         cleaned = match.group(1).strip() if match else raw_text.strip()
 

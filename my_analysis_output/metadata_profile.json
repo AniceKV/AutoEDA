@@ -1,0 +1,196 @@
+{
+    "dataset_name": "StudentsPerformance.csv",
+    "dimensions": {
+        "rows": 1000,
+        "columns": 8
+    },
+    "missing_values_summary": {},
+    "schema": {
+        "gender": {
+            "type": "str",
+            "cardinality": 2,
+            "key_metric": "Top Values: 'female': 518, 'male': 482"
+        },
+        "race/ethnicity": {
+            "type": "str",
+            "cardinality": 5,
+            "key_metric": "Top Values: 'group C': 319, 'group D': 262, 'group B': 190"
+        },
+        "parental level of education": {
+            "type": "str",
+            "cardinality": 6,
+            "key_metric": "Top Values: 'some college': 226, 'associate's degree': 222, 'high school': 196"
+        },
+        "lunch": {
+            "type": "str",
+            "cardinality": 2,
+            "key_metric": "Top Values: 'standard': 645, 'free/reduced': 355"
+        },
+        "test preparation course": {
+            "type": "str",
+            "cardinality": 2,
+            "key_metric": "Top Values: 'none': 642, 'completed': 358"
+        },
+        "math score": {
+            "type": "int64",
+            "cardinality": 81,
+            "key_metric": "Range: [0.00 to 100.00] | Mean: 66.09 | Median: 66.00"
+        },
+        "reading score": {
+            "type": "int64",
+            "cardinality": 72,
+            "key_metric": "Range: [17.00 to 100.00] | Mean: 69.17 | Median: 70.00"
+        },
+        "writing score": {
+            "type": "int64",
+            "cardinality": 77,
+            "key_metric": "Range: [10.00 to 100.00] | Mean: 68.05 | Median: 69.00"
+        }
+    },
+    "columns": [
+        {
+            "column": "gender",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.2,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "race/ethnicity",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 5,
+            "unique_pct": 0.5,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "parental level of education",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 6,
+            "unique_pct": 0.6,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "lunch",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.2,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "test preparation course",
+            "dtype": "str",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 2,
+            "unique_pct": 0.2,
+            "mean": null,
+            "median": null,
+            "std": null,
+            "min": null,
+            "max": null,
+            "q1": null,
+            "q3": null,
+            "iqr": null,
+            "skew": null,
+            "kurtosis": null
+        },
+        {
+            "column": "math score",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 81,
+            "unique_pct": 8.1,
+            "mean": 66.089,
+            "median": 66.0,
+            "std": 15.16308009600945,
+            "min": 0.0,
+            "max": 100.0,
+            "q1": 57.0,
+            "q3": 77.0,
+            "iqr": 20.0,
+            "skew": -0.27893514909431694,
+            "kurtosis": 0.27496405752108455
+        },
+        {
+            "column": "reading score",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 72,
+            "unique_pct": 7.2,
+            "mean": 69.169,
+            "median": 70.0,
+            "std": 14.600191937252216,
+            "min": 17.0,
+            "max": 100.0,
+            "q1": 59.0,
+            "q3": 79.0,
+            "iqr": 20.0,
+            "skew": -0.25910451810923063,
+            "kurtosis": -0.0682654585647704
+        },
+        {
+            "column": "writing score",
+            "dtype": "int64",
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "cardinality": 77,
+            "unique_pct": 7.7,
+            "mean": 68.054,
+            "median": 69.0,
+            "std": 15.19565701086965,
+            "min": 10.0,
+            "max": 100.0,
+            "q1": 57.75,
+            "q3": 79.0,
+            "iqr": 21.25,
+            "skew": -0.28944397150761897,
+            "kurtosis": -0.03336461500693577
+        }
+    ]
+}

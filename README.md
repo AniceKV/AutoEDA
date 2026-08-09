@@ -46,6 +46,7 @@ engine = AutoEDAEngine()
 results = engine.analyze(
     data_path="path/to/your/dataset.csv",
     user_request="Perform full exploratory data analysis",
+    
 )
 ```
 
