@@ -10,6 +10,7 @@ import plotly.io as pio
 from jinja2 import Template
 from typing import Dict, Any, List, Optional
 from .profiler import is_non_distributional_column
+from .toolset.utils import _json_safe
 
 try:
     pio.templates.default = "plotly_dark"
@@ -1787,6 +1788,8 @@ class HTMLReportCompiler:
         else:
             cat_assoc_list = []
 
+        safe_metrics = _json_safe(metrics)
+        safe_var_charts = _json_safe(var_charts_json)
         html_content = tmpl.render(
             dataset_name=dataset_name,
             generation_time=pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -1800,13 +1803,13 @@ class HTMLReportCompiler:
             dtype_chart_json=dtype_chart_json,
             missing_chart_json=missing_chart_json,
             corr_chart_json=corr_chart_json,
-            var_charts_json=json.dumps(var_charts_json),
+            var_charts_json=json.dumps(safe_var_charts),
             agent_trajectory=agent_trajectory,
             visual_artifacts=visual_artifacts,
             categorical_associations=cat_assoc_list,
             engineered_features=metrics.get("engineered_features", []),
             predictive_blueprint=metrics.get("predictive_modeling_blueprint", {}),
-            metrics_json=json.dumps(metrics, indent=2)
+            metrics_json=json.dumps(safe_metrics, indent=2)
         )
 
         if not output_path:

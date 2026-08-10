@@ -21,6 +21,30 @@ from ..llm_config import get_api_key, get_model, get_base_url
 sns.set_theme(style="whitegrid")
 
 
+def _json_safe(obj: Any) -> Any:
+    """Recursively convert numpy/pandas/scalar objects into JSON-serializable Python values."""
+    if isinstance(obj, dict):
+        return {str(k): _json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple, set)):
+        return [_json_safe(v) for v in obj]
+    if isinstance(obj, np.ndarray):
+        return [_json_safe(v) for v in obj.tolist()]
+    if isinstance(obj, np.generic):
+        return _json_safe(obj.item())
+    if isinstance(obj, (pd.Timestamp,)):
+        return obj.isoformat()
+    if isinstance(obj, (pd.Timedelta,)):
+        return str(obj)
+    if isinstance(obj, (pd.Series, pd.Index)):
+        return [_json_safe(v) for v in obj.tolist()]
+    if isinstance(obj, (str, int, float, bool)) or obj is None:
+        return obj
+    if hasattr(obj, "model_dump"):
+        return _json_safe(obj.model_dump())
+    if hasattr(obj, "to_dict"):
+        return _json_safe(obj.to_dict())
+    return str(obj)
+
 
 def _sanitize_col_name(col: str) -> str:
     """Sanitize a column name into a filesystem-safe string."""

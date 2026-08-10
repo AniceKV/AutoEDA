@@ -21,7 +21,7 @@ from ..llm_config import get_api_key, get_model, get_base_url
 sns.set_theme(style="whitegrid")
 
 
-from .utils import _sanitize_col_name, _safe_float, _is_numeric_col
+from .utils import _sanitize_col_name, _safe_float, _is_numeric_col, _json_safe
 from .data_visualizer import DataVisualizer, default_visualizer
 from .predictive_blueprinter import PredictiveBlueprinter, default_predictive_blueprinter
 from .report_validator import ReportValidator, default_report_validator
@@ -119,8 +119,9 @@ class MetricsCompiler:
         metrics_dict["pipeline_validation"] = self.validator.validate_report_consistency(metrics_dict)
 
         metrics_path = os.path.join(output_dir, "metrics.json")
+        safe_metrics = _json_safe(metrics_dict)
         with open(metrics_path, "w", encoding="utf-8") as f:
-            json.dump(metrics_dict, f, indent=2)
+            json.dump(safe_metrics, f, indent=2)
 
         print(f"[tools] Canonical metrics.json successfully saved to: {os.path.abspath(metrics_path)}")
         return metrics_path
