@@ -13,4 +13,4 @@ app.py
 django_app/.sessions/
 django_app/staticfiles/
 tests/benchmark_sandbox/
-benchmark/
+benchmarks/
