@@ -85,11 +85,33 @@ class DataVisualizer:
                         "interpretation": self.hypothesis_tester.interpret_effect_size("Correlation Ratio", eta)
                     })
 
+        high_correlation_pairs = [
+            {
+                "feature_1": pair["feature_1"],
+                "feature_2": pair["feature_2"],
+                "correlation": pair["correlation"],
+                "interpretation": pair["interpretation"],
+            }
+            for pair in key_correlations
+        ]
+
+        cross_type_redundant_pairs_legacy = [
+            {
+                "categorical_feature": pair["categorical_col"],
+                "numeric_feature": pair["numeric_col"],
+                "correlation_ratio_eta": pair["eta"],
+                "interpretation": pair["interpretation"],
+            }
+            for pair in cross_type_redundant_pairs
+        ]
+
         return {
             "plot_saved": "interactive_client_side",
             "correlation_matrix": corr_matrix,
+            "high_correlation_pairs": high_correlation_pairs,
             "key_correlations": key_correlations,
             "categorical_associations": cat_assoc,
+            "cross_type_redundant_pairs_legacy": cross_type_redundant_pairs_legacy,
             "cross_type_redundant_pairs": cross_type_redundant_pairs
         }
 

@@ -177,7 +177,37 @@ def _load_metrics(eda_dir: str, csv_path: str = "") -> dict:
             except Exception:
                 pass
 
-    return metrics
+    def _normalize_correlation_heatmap_payload(payload: dict) -> dict:
+        if not isinstance(payload, dict):
+            return payload
+
+        existing_heatmap = payload.get("correlation_data_heatmap")
+        if isinstance(existing_heatmap, dict) and existing_heatmap.get("z_matrix"):
+            payload["correlation_data"] = existing_heatmap
+            return payload
+
+        source = payload.get("correlation_analysis") or payload.get("correlation_data") or {}
+        corr_matrix = source.get("correlation_matrix") if isinstance(source, dict) else None
+
+        if isinstance(corr_matrix, dict) and corr_matrix:
+            labels = list(corr_matrix.keys())
+            z_matrix = [
+                [corr_matrix.get(row_label, {}).get(col_label, 0) for col_label in labels]
+                for row_label in labels
+            ]
+            heatmap_payload = {
+                "z_matrix": z_matrix,
+                "x_labels": labels,
+                "y_labels": labels,
+            }
+            payload["correlation_data_heatmap"] = heatmap_payload
+            payload["correlation_data"] = heatmap_payload
+        elif isinstance(source, dict) and source.get("z_matrix"):
+            payload["correlation_data"] = source
+
+        return payload
+
+    return _normalize_correlation_heatmap_payload(metrics)
 
 
 def _load_summary(eda_dir: str) -> str:
@@ -373,8 +403,6 @@ def index(request):
         os.path.basename(p)
         for p in sorted(glob.glob(os.path.join(test_data_dir, "*.csv")))
     ]
-
-    # --- Agent question (if pipeline paused) ---
     agent_question = None
     if pipeline_state and pipeline_state.get("status") == "question":
         agent_question = pipeline_state.get("question", "")

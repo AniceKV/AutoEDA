@@ -84,6 +84,13 @@ class MetricsCompiler:
         pairplot_res = self.visualizer.plot_pairplot(df)
         target_inter_res = self.visualizer.plot_target_interaction(df, target_col=target_col, top_n=10)
 
+        corr_lookup = corr_matrix_res.get("correlation_matrix", {}) if isinstance(corr_matrix_res, dict) else {}
+        corr_labels = list(corr_lookup.keys())
+        corr_z_matrix = [
+            [corr_lookup.get(row_label, {}).get(col_label, 0) for col_label in corr_labels]
+            for row_label in corr_labels
+        ] if corr_labels else []
+
         metrics_dict = {
             "dataset_overview": {
                 "dataset_path": os.path.abspath(dataset_path),
@@ -102,6 +109,11 @@ class MetricsCompiler:
             "predictive_modeling_blueprint": blueprint_res or self.blueprinter.generate_predictive_blueprint(df, target_col),
             "visual_distributions": dist_res.get("visual_distributions", {}),
             "correlation_data": corr_matrix_res,
+            "correlation_data_heatmap": {
+                "z_matrix": corr_z_matrix,
+                "x_labels": corr_labels,
+                "y_labels": corr_labels,
+            },
             "bivariate_data": bivariate_res.get("bivariate_data", []),
             "bivariate_union": bivariate_union_res,
             "pairplot_data": pairplot_res,
