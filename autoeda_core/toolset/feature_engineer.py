@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 from typing import Dict, Any, List, Optional, Tuple
 from pydantic import BaseModel, Field
+import numpy as np
 
 from ..profiler import is_non_distributional_column
 from ..llm_config import get_api_key, get_model, get_base_url
