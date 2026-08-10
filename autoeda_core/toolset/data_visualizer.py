@@ -621,7 +621,7 @@ class DataVisualizer:
 
 
     def compute_algorithmic_bivariate_pairs(   self, df: pd.DataFrame, target_col: Optional[str] = None, **kwargs ) -> List[Dict[str, Any]]:
-        """
+        r"""
                     START
                       │
                       ▼
