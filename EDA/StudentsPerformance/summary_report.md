@@ -1,5 +1,5 @@
 # Executive EDA & Dataset Summary Report
-**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\my_analysis_output`
+**Target Directory:** `C:\Users\Anish Kumar Verma\PycharmProjects\AutoEDA\sandbox_run\eb8252cd-73f1-4c19-afab-3b1db3c3cd95`
 **Processed Files:** `agent_plan_log.json`, `agent_state.json`, `current_df.csv`, `metadata_profile.json`, `metrics.json`
 **Excluded Files:** `generated_analysis.py` (Script excluded from summary)
 
@@ -8,7 +8,7 @@
 ## 1. Dataset Overview
 - **Dataset Identifier:** `StudentsPerformance.csv`
 - **Dimensions:** `1000` rows x `8` columns
-- **Target Variable:** `math score`
+- **Target Variable:** `average_score`
 - **Data Quality:** No missing values detected in raw profile.
 
 ---
@@ -38,35 +38,28 @@ No numeric outlier statistics reported.
 ---
 
 ## 4. Derived Domain Attributes & Composite Metrics
-- **`total_score`**: Formula: `math score + reading score + writing score` | Purpose: Sum of all three subject scores
-- **`average_score`**: Formula: `(math score + reading score + writing score) / 3` | Purpose: Mean of the three subject scores
-- **`reading_math_ratio`**: Formula: `reading score / (math score + 1e-6)` | Purpose: Ratio of reading to math score to capture relative strengths
-- **`writing_math_ratio`**: Formula: `writing score / (math score + 1e-6)` | Purpose: Ratio of writing to math score
+- **`average_score`**: Formula: `(`math score` + `reading score` + `writing score`) / 3` | Purpose: High-signal feature engineering transformation
 
 ---
 
 ## 5. Statistical Hypothesis Testing & Key Predictors
-All predictors below were tested against `math score` and found statistically significant (p < 0.05), ranked by effect size.
+All predictors below were tested against `average_score` and found statistically significant (p < 0.05), ranked by effect size.
 
 | Feature | Test Type | Effect Size | Label | P-Value | Why It Matters |
 |---|---|---|---|---|---|
-| `reading score` | Pearson Correlation | 0.8176 | Strong correlation | 1.7878e-241 | Students who read well also tend to achieve higher math scores, reflecting overall academic proficiency. |
-| `writing score` | Pearson Correlation | 0.8026 | Strong correlation | 3.3760e-226 | Students with strong writing abilities also tend to score higher in math, indicating linked academic skills. |
-| `lunch` | ANOVA | 0.3509 | Large effect | 2.4132e-30 | Students receiving standard lunch generally score higher in math than those on reduced or free meals, suggesting nutrition impact. |
-| `race/ethnicity` | ANOVA | 0.2354 | Large effect | 1.3732e-11 | Math performance varies across racial/ethnic groups, indicating differing educational outcomes among these populations. |
-| `parental level of education` | ANOVA | 0.1782 | Large effect | 5.5923e-06 | Students whose parents have higher education levels tend to earn higher math scores, reflecting home learning advantages. |
-| `test preparation course` | ANOVA | 0.1777 | Large effect | 1.5359e-08 | Students who completed a test preparation course often achieve higher math scores, showing benefit of targeted study. |
-| `gender` | ANOVA | 0.168 | Large effect | 9.1202e-08 | Male and female students show modest differences in math scores, indicating gender-related performance variation. |
+| `reading score` | Pearson Correlation | 0.9703 | Strong correlation | 0.0000e+00 | Higher reading scores tend to accompany higher overall average scores, showing reading ability closely aligns with overall academic performance. |
+| `writing score` | Pearson Correlation | 0.9657 | Strong correlation | 0.0000e+00 | Students with stronger writing scores usually achieve higher average scores, highlighting the importance of writing skills for overall achievement. |
+| `math score` | Pearson Correlation | 0.9187 | Strong correlation | 0.0000e+00 | Better math scores are linked to higher average scores, indicating math proficiency is a key component of overall success. |
+| `lunch` | ANOVA | 0.2901 | Large effect | 7.7368e-21 | Students receiving standard lunch tend to have higher average scores than those with free/reduced lunch, reflecting socioeconomic influences on performance. |
+| `test preparation course` | ANOVA | 0.2567 | Large effect | 1.6338e-16 | Completing a test preparation course is associated with higher average scores, suggesting focused study boosts overall performance. |
+| `parental level of education` | ANOVA | 0.2265 | Large effect | 4.3810e-10 | Higher parental education levels correspond with higher student average scores, indicating family educational background supports student achievement. |
+| `race/ethnicity` | ANOVA | 0.1878 | Large effect | 3.2259e-07 | Average scores vary across race/ethnicity groups, reflecting broader societal factors that affect student outcomes. |
+| `gender` | ANOVA | 0.1309 | Medium effect | 3.3120e-05 | Male and female students show modest differences in average scores, highlighting slight gender-related performance variations. |
 
 ---
 
 ## 6. Redundancy & Multicollinearity Analysis
-**Numeric-Numeric High Correlation Pairs (|r| >= 0.85):**
-
-| Feature 1 | Feature 2 | Correlation (r) | Interpretation |
-|---|---|---|---|
-| `reading score` | `writing score` | 0.9546 | Strong correlation |
-
+No high-correlation or cross-type redundant feature pairs detected (threshold: |r| or Eta >= 0.85).
 
 ---
 
@@ -76,23 +69,12 @@ No custom chart image assets found in directory (Interactive Plotly visualizatio
 ---
 
 ## 8. Categorical Associations (Cramer's V)
-| Feature 1 | Feature 2 | Cramer's V |
-|---|---|---|
-| `gender` | `race/ethnicity` | 0.0709 |
-| `gender` | `parental level of education` | 0.0 |
-| `gender` | `lunch` | 0.0 |
-| `gender` | `test preparation course` | 0.0 |
-| `race/ethnicity` | `parental level of education` | 0.0487 |
-| `race/ethnicity` | `lunch` | 0.0 |
-| `race/ethnicity` | `test preparation course` | 0.0385 |
-| `parental level of education` | `lunch` | 0.0 |
-| `parental level of education` | `test preparation course` | 0.0674 |
-| `lunch` | `test preparation course` | 0.0 |
+No categorical associations available.
 
 ---
 
 ## 9. Predictive Modeling Strategy Blueprint
-- **Target Definition:** math score
+- **Target Definition:** average_score
 - **Problem Type:** Regression
 ### Recommended Algorithms
 - Regularized Linear Regression (Ridge / Lasso)
@@ -110,7 +92,7 @@ No custom chart image assets found in directory (Interactive Plotly visualizatio
 - Apply regularization penalties (L1/L2)
 - Limit tree depth and enforce minimum samples per leaf
 - Perform hyperparameter tuning strictly within cross-validation folds
-- **Executive Summary:** Target: 'math score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 12 columns.
+- **Executive Summary:** Target: 'average_score' (Regression). Model recommendations and validation strategy tailored for 1000 rows x 9 columns.
 
 ---
 
